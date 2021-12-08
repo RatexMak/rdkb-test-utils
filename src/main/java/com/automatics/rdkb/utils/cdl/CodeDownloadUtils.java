@@ -158,12 +158,8 @@ public class CodeDownloadUtils {
 	    imageVersion = imageVersion.trim();
 	    LOGGER.debug("Image version : " + imageVersion);
 	    requestImageVersion = requestImageVersion.trim();
-	    // To check SIGNED_BUILD_IMAGE_EXTENSION_UNDERSCORE (_signed ) in
-	    // arrisxb6 build
-	    // RDK-B ccs files are lower case one. we should avoid checking case sensitive
-	    // checks.
 	    requestImageVersion = StringUtils
-		    .replaceEach(requestImageVersion, RDKBTestConstants.IMAGE_VERSION, AutomaticsConstants.REPLACE)
+		    .replaceEach(requestImageVersion, RDKBTestConstants.IMAGE_VERSION, RDKBTestConstants.REPLACE)
 		    .trim();
 	    versionMatches = requestImageVersion.equalsIgnoreCase(imageVersion);
 	    LOGGER.debug("verifyImageVersionFromVersionText - " + versionMatches);

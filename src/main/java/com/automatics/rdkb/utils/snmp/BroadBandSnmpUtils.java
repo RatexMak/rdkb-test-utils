@@ -17,30 +17,37 @@
  */
 package com.automatics.rdkb.utils.snmp;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.automatics.constants.SnmpConstants;
 import com.automatics.device.Dut;
-import com.automatics.tap.AutomaticsTapApi;
-import com.automatics.utils.CommonMethods;
-import com.automatics.rdkb.utils.BroadBandCommonUtils;
+import com.automatics.exceptions.TestException;
+import com.automatics.providers.snmp.SnmpProvider;
+import com.automatics.providers.snmp.SnmpProviderFactory;
+import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandTraceConstants;
-import com.automatics.rdkb.constants.BroadBandWebPaConstants;
-import com.automatics.rdkb.constants.BroadBandCommandConstants;
-import com.automatics.constants.SnmpConstants;
+import com.automatics.rdkb.utils.BroadBandCommonUtils;
+import com.automatics.rdkb.utils.CommonUtils;
 import com.automatics.snmp.SnmpCommand;
 import com.automatics.snmp.SnmpDataType;
 import com.automatics.snmp.SnmpParams;
 import com.automatics.snmp.SnmpProtocol;
-import com.automatics.rdkb.utils.CommonUtils;
+import com.automatics.tap.AutomaticsTapApi;
+import com.automatics.utils.BeanUtils;
+import com.automatics.utils.CommonMethods;
 
 /**
  * Utility class for Broad Band specific SNMP utility. Common SNMP related
  * Utilities are in {@link SnmpUtils} in rdkv-utils, please refer before
  * defining any new methods to avoid duplication.
  * 
- * @author Athira
+ * @Refactor Athira, Alan_Bivera
  * 
  */
 public class BroadBandSnmpUtils {
@@ -206,7 +213,49 @@ public class BroadBandSnmpUtils {
 		}
 		return result;
 	}
+	/**
+	 * Utility method to execute SNMP get with table index on ECM side.
+	 * 
+	 * @param AutomaticsTapApi The {@link AutomaticsTapApi} instance.
+	 * @param device           The device to be queried.
+	 * @param mibOrOid         The MIB or OID need to be queried.
+	 * @param tableIndex       The table index.
+	 * @return Command output.
+	 */
+	public static String snmpSetOnEcm_V3(AutomaticsTapApi tapEnv, Dut device, String mibOrOid, SnmpDataType datatype,
+			String value) {
 
+		String result = null;
+		SnmpParams snmpParam = null;
+		String snmpProtocol = System.setProperty(SnmpConstants.SYSTEM_PARAM_SNMP_VERSION, SnmpProtocol.SNMP_V3.toString());
+		LOGGER.info("Current SNMP protocol: " + snmpProtocol);
+
+		snmpParam = new SnmpParams();
+		snmpParam.setSnmpCommand(SnmpCommand.SET);
+		snmpParam.setSnmpCommunity("CUSTOM");
+		snmpParam.setMibOid(mibOrOid.trim());
+		snmpParam.setCommandOption("-t 10 ");
+		snmpParam.setCommandOption("-OQ -v 3 -u docsisManager");
+		snmpParam.setDataType(datatype);
+		snmpParam.setValue(value);
+
+		result = tapEnv.executeSnmpCommand(device, snmpParam);
+
+		for (int retryCount = 0; getRetries(result, snmpProtocol, retryCount); ++retryCount) {
+			LOGGER.info("Retrying snmp .Retry count :" + retryCount);
+			snmpParam = new SnmpParams();
+			snmpParam.setSnmpCommand(SnmpCommand.SET);
+			snmpParam.setSnmpCommunity("CUSTOM");
+			snmpParam.setMibOid(mibOrOid.trim());
+			snmpParam.setCommandOption("-t 10 ");
+			snmpParam.setCommandOption("-OQ -v 3 -u docsisManager");
+			snmpParam.setDataType(datatype);
+			snmpParam.setValue(value);
+
+			result = tapEnv.executeSnmpCommand(device, snmpParam);
+		}
+		return result;
+	}
 	private static boolean getRetries(String commandOutput, String snmpProtocol, int retryCount) {
 		boolean shouldRetry = false;
 		int retry = 0;
@@ -319,6 +368,22 @@ public class BroadBandSnmpUtils {
 	}
 
 	/**
+	 * Utility method to execute SNMP GET command on RDKB devices both XB and XF
+	 * devices.
+	 * 
+	 * @param tapEnv       The {@link AutomaticsTapApi} instance
+	 * @param device       The device to be validated.
+	 * @param oidOrMibName The MIB or OID name.
+	 * @return Provides the SNMP GET Command output.
+	 */
+	public static String executeSnmpGetOnRdkDevicesWithTableIndex(AutomaticsTapApi tapEnv, Dut device, String oidOrMibName ,String tableIndex) {
+		String snmpCommandOutput = null;
+
+		oidOrMibName = oidOrMibName + "." + tableIndex;
+		snmpCommandOutput = BroadBandSnmpUtils.snmpGetOnEcm(tapEnv, device, oidOrMibName);
+		return snmpCommandOutput;
+	}
+	/**
 	 * Utils method to check SNMP status
 	 * 
 	 * @param tapEnv
@@ -331,6 +396,7 @@ public class BroadBandSnmpUtils {
 			String snmpOutput = null; // stores SNMP output
 			long pollDuration = 0L; // stores the poll duration
 			long startTime = 0L; // stores the current system time
+			String oidOrMibName = null;
 
 			LOGGER.info("##VERIFYING SNMP IS UP##");
 			pollDuration = BroadBandTestConstants.FIVE_MINUTES;
@@ -339,12 +405,14 @@ public class BroadBandSnmpUtils {
 				LOGGER.info("GOING TO WAIT FOR 30 SECONDS");
 				tapEnv.waitTill(BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
 				try {
-					snmpOutput = executeSnmpGetOnRdkDevices(tapEnv, device, BroadBandSnmpMib.ECM_SYS_DESCR.getOid());
+					snmpOutput = executeSnmpGetOnRdkDevicesWithTableIndex(tapEnv, device, BroadBandSnmpMib.ECM_SYS_DESCR.getOid(), BroadBandSnmpMib.ECM_SYS_DESCR.getTableIndex());
+					LOGGER.info("snmpOutput is : " +snmpOutput);
 				} catch (Exception exception) {
 					// Log & Suppress the Exception.
 					LOGGER.error("EXCEPTION OCCURRED WHILE DOING SNMP OPERATION: " + exception.getMessage());
 				}
 				String firmwareVersion = device.getFirmwareVersion();
+				LOGGER.info("firmwareVersion is : " +firmwareVersion);
 				status = CommonMethods.isNotNull(snmpOutput) && CommonMethods.isNotNull(firmwareVersion)
 						&& CommonUtils.patternSearchFromTargetString(snmpOutput, firmwareVersion);
 			} while ((System.currentTimeMillis() - startTime) < pollDuration && !status);
@@ -369,25 +437,6 @@ public class BroadBandSnmpUtils {
 	 */
 	public static String formatMacAddressWithoutLeadingZeros(String macAddress) {
 		return BroadBandCommonUtils.formatIpOrMacWithoutLeadingZeros(macAddress);
-	}
-
-	/**
-	 * Utility method to execute SNMP GET command with table index on RDKB devices
-	 * both XB and XF devices.
-	 * 
-	 * @param tapEnv       The {@link AutomaticsTapApi} instance
-	 * @param device       The device to be validated.
-	 * @param oidOrMibName The MIB or OID name.
-	 * @param tableIndex   The table index to be appended.
-	 * @return Provides the SNMP GET Command output.
-	 */
-	public static String executeSnmpGetWithTableIndexOnRdkDevices(AutomaticsTapApi tapEnv, Dut device,
-			String oidOrMibName, String tableIndex) {
-		String snmpCommandOutput = null;
-		String snmpProtocol = System.getProperty(SnmpConstants.SYSTEM_PARAM_SNMP_VERSION,
-				SnmpProtocol.SNMP_V2.toString());
-		snmpCommandOutput = BroadBandSnmpUtils.snmpGetOnEcm(tapEnv, device, oidOrMibName, tableIndex);
-		return snmpCommandOutput;
 	}
 
 	/**
@@ -421,4 +470,757 @@ public class BroadBandSnmpUtils {
 		LOGGER.info("Expected software version  = " + expectedSoftwareVersion);
 		return expectedSoftwareVersion;
 	}
+    /**
+     * Utility method to execute SNMP WALK command on RDKB devices both XB and XF devices.
+     * 
+     * @param tapEnv
+     *            The {@link AutomaticsTapApi} instance
+     * @param device
+     *            The device to be validated.
+     * @param oidOrMibName
+     *            The MIB or OID name.
+     * @return Provides the SNMP WALK Command output.
+     */
+    public static String executeSnmpWalkOnRdkDevices(AutomaticsTapApi tapEnv, Dut device, String oidOrMibName) {
+	String snmpCommandOutput = null;
+	snmpCommandOutput = CommonMethods.snmpWalkOnEstb(tapEnv, device, oidOrMibName);
+	return snmpCommandOutput;
+    }
+
+    /**
+     * Helper method to parse the system descriptor properties from SNMP command and store it in HashMap for further
+     * processing.
+     * 
+     * sample systemdescriptor output to understand logic SNMPv2-MIB::sysDescr.0 = ARRIS DOCSIS 3.1 / PacketCable 2.0
+     * Touchstone Residential Gateway <<HW_REV: 7; VENDOR: ARRIS Group, Inc.; BOOTR: 0.1.9.430478; SW_REV:
+     * TG3482_VBN_stable2_20170409005444sdy_NG; MODEL: TG3482G>> Obtained system descriptor is split according to
+     * symbols present in output and the result is stored in a hash map.
+     * 
+     * @param sysDescrSnmpOutput
+     *            The SNMP command output.
+     * @return HashMap which gives the system descriptor properties.
+     */
+    public static HashMap<String, String> parseSystemDescriptorInformationFromSnmpOutput(String sysDescrSnmpOutput)
+	    throws Exception {
+
+	LOGGER.debug("STARTING METHOD : parseSystemDescriptorInformationFromSnmpOutput()");
+
+	HashMap<String, String> systemDescriptor = new HashMap<String, String>();
+
+	if (CommonMethods.isNotNull(sysDescrSnmpOutput)
+		&& sysDescrSnmpOutput.contains(BroadBandTestConstants.LEFT_SHIFT_OPERATOR)
+		&& sysDescrSnmpOutput.contains(BroadBandTestConstants.RIGHT_SHIFT_OPERATOR)) {
+
+	    String[] requiredDescriptor = sysDescrSnmpOutput.split(BroadBandTestConstants.LEFT_SHIFT_OPERATOR)[1]
+		    .replace(BroadBandTestConstants.RIGHT_SHIFT_OPERATOR, BroadBandTestConstants.EMPTY_STRING)
+		    .split(BroadBandTestConstants.SEMI_COLON);
+	    for (String sysDescrField : requiredDescriptor) {
+
+		String[] sysDescrFieldKeyValue = sysDescrField.split(BroadBandTestConstants.DELIMITER_COLON);
+
+		if (CommonMethods.isNotNull(sysDescrFieldKeyValue[0])) {
+		    systemDescriptor.put(sysDescrFieldKeyValue[0].trim(), sysDescrFieldKeyValue[1].trim());
+		} else {
+		    LOGGER.error(
+			    "parseSystemDescriptorInformationFromSnmpOutput : Either key or value is null observed in system Descriptor field = "
+				    + sysDescrField);
+		}
+
+	    }
+	} else {
+	    throw new Exception("Invalid sysDescSnmprOutput!!!!!!!!");
+	}
+
+	LOGGER.debug("ENDING : parseSystemDescriptorInformationFromSnmpOutput()");
+	return systemDescriptor;
+    }
+    /**
+     * Utility method to execute SNMP set with default table index
+     * 
+     * @param device
+     * @param tapApi
+     * @param mibOrOid
+     * @param tableIndex
+     * @param dataType
+     * @param value
+     * @return Command output
+     */
+    public static String retrieveSnmpV3SetOutputWithDefaultIndexOnRdkDevices(Dut device, AutomaticsTapApi tapApi,
+	    String mibOrOid, SnmpDataType dataType, String value) {
+	String snmpOutput = null;
+	try {
+	    snmpOutput = BroadBandSnmpUtils.snmpSetOnEcm(tapApi, device, mibOrOid, dataType, value);
+	} catch (Exception exception) {
+	    LOGGER.error("EXCEPTION OCCURRED WHILE DOING SNMP OPERATION: " + exception.getMessage());
+	}
+	return snmpOutput;
+    }   
+
+    /**
+     * Utility method to execute SNMP set with default table index
+     * 
+     * @param device
+     * @param tapApi
+     * @param mibOrOid
+     * @param tableIndex
+     * @param dataType
+     * @param value
+     * @return Command output
+     */
+    public static String retrieveSnmpV3SetOutputWithDefaultIndexOnRdkDevices_V3(Dut device, AutomaticsTapApi tapApi,
+	    String mibOrOid, SnmpDataType dataType, String value) {
+	String snmpOutput = null;
+	try {
+	    snmpOutput = BroadBandSnmpUtils.snmpSetOnEcm_V3(tapApi, device, mibOrOid, dataType, value);
+	} catch (Exception exception) {
+	    LOGGER.error("EXCEPTION OCCURRED WHILE DOING SNMP OPERATION: " + exception.getMessage());
+	}
+	return snmpOutput;
+    }
+    
+    /**
+     * Utility method to retrieve the CMTS MAC address using CMTS MAC Address using SNMP MIB
+     * docsIfCmCmtsAddress.2(1.3.6.1.2.1.10.127.1.2.1.1.1.2) and verify with MAC Address retrieved using Arp table.
+     * 
+     * @param device
+     *            The Dut to be validated.
+     * @param tapEnv
+     *            The {@link AutomaticsTapApi} reference.
+     * 
+     * @return CMTS Mac Address where this particular device connected.
+     * @author Govardhan
+     */
+    public static String getCmtsMacAddressUsingSnmpCommand(Dut device, AutomaticsTapApi tapEnv) {
+	String snmpDocsisCmtsMacAddress = BroadBandSnmpUtils.snmpGetOnEcm(tapEnv, device,
+		BroadBandSnmpMib.ECM_DOCS_IF_CM_CMTS_MAC_ADDRESS.getOid(), "2");
+	return snmpDocsisCmtsMacAddress;
+    }
+
+ /**
+     * Utility method to execute SNMP set with invalid community string
+     * 
+     * @param tapEnv
+     *            The {@link AutomaticsTapApi} instance.
+     * @param device
+     *            The device to be queried.
+     * @param mibOrOid
+     *            The MIB that needs to be queried
+     * @param dataType
+     *            {@link SnmpDataType}
+     * @param value
+     *            value to set
+     * @param tableIndex
+     *            The table index of the MIB to be queried
+     * 
+     * @return Command output
+     */
+    public static String snmpSetOnEcmForInvalidCommunityString(AutomaticsTapApi tapEnv, Dut device, String mibOrOid, SnmpDataType dataType, String value,  String tableIndex) {
+
+	String result = null;
+	SnmpParams snmpParam = new SnmpParams();
+	String snmpProtocol = System.getProperty(SnmpConstants.SYSTEM_PARAM_SNMP_VERSION,
+		SnmpProtocol.SNMP_V2.toString());
+	SnmpProtocol snmpVersion = SnmpProtocol.SNMP_V2;
+	if (SnmpProtocol.SNMP_V3.getProtocolVersion().equals(snmpProtocol)) {
+	    snmpVersion = SnmpProtocol.SNMP_V3;
+	}
+	LOGGER.info("Current SNMP protocol: " + snmpProtocol);
+	mibOrOid = mibOrOid + "." + tableIndex;
+	LOGGER.info("mibOrOid to execute: " + mibOrOid);
+
+	SnmpProviderFactory providerFactory = BeanUtils.getSnmpFactoryProvider();
+	SnmpProvider snmpProviderImpl = providerFactory.getSnmpProvider(snmpVersion);
+	if (null != snmpProviderImpl) {
+	    snmpParam.setSnmpCommand(SnmpCommand.SET);
+	    snmpParam.setSnmpCommunity("PRIVATE");
+	    snmpParam.setSnmpVersion(snmpVersion);
+	    snmpParam.setMibOid(mibOrOid);
+	    snmpParam.setDataType(dataType);
+	    snmpParam.setValue(value);
+	    result = snmpProviderImpl.doSet(device, snmpParam);
+	}
+	return result;
+	
+    }
+
+
+    /**
+     * Utility method to execute SNMP get with table index on ECM side for negative scenario.
+     * 
+     * @param tapEnv
+     *            The {@link AutomaticsTapApi} instance.
+     * @param device
+     *            {@link Dut}The device to be queried.
+     * @param mibOrOid
+     *            The MIB or OID need to be queried.
+     * @param tableIndex
+     *            The table index.
+     * @return Command output.
+     */
+    public static String snmpGetOnEcmForInvalidCommunityString(AutomaticsTapApi tapEnv, Dut device, String mibOrOid,  String tableIndex) {
+
+	String result = null;
+	SnmpParams snmpParam = new SnmpParams();
+	String snmpProtocol = System.getProperty(SnmpConstants.SYSTEM_PARAM_SNMP_VERSION,
+		SnmpProtocol.SNMP_V2.toString());
+	SnmpProtocol snmpVersion = SnmpProtocol.SNMP_V2;
+	if (SnmpProtocol.SNMP_V3.getProtocolVersion().equals(snmpProtocol)) {
+	    snmpVersion = SnmpProtocol.SNMP_V3;
+	}
+	LOGGER.info("Current SNMP protocol: " + snmpProtocol);
+	mibOrOid = mibOrOid + "." + tableIndex;
+	LOGGER.info("mibOrOid to execute: " + mibOrOid);
+
+	SnmpProviderFactory providerFactory = BeanUtils.getSnmpFactoryProvider();
+	SnmpProvider snmpProviderImpl = providerFactory.getSnmpProvider(snmpVersion);
+	if (null != snmpProviderImpl) {
+	    snmpParam.setSnmpCommand(SnmpCommand.GET);
+	    snmpParam.setSnmpCommunity("PRIVATE");
+	    snmpParam.setSnmpVersion(snmpVersion);
+	    snmpParam.setMibOid(mibOrOid);
+	    snmpParam.setCommandOption("t 30 ");
+	    result = snmpProviderImpl.doGet(device, snmpParam);
+	}
+	return result;
+	
+    }
+    
+    /**
+     * Utility method to execute SNMP get with table index on MTA side
+     * 
+     * @param tapEnv
+     *            The {@link AutomaticsTapApi} instance.
+     * @param device
+     *            {@link Dut}The device to be queried.
+     * @param mibOrOid
+     *            The MIB or OID need to be queried.
+     * @param tableIndex
+     *            The table index.
+     * @param mtaAddress
+     *            MTA address
+     * @return Command output.
+     */
+    public static String snmpGetOnEmta(AutomaticsTapApi tapEnv, Dut device, String mibOrOid,  String tableIndex,String mtaAddress) {
+
+	String result = null;
+	SnmpParams snmpParam = new SnmpParams();
+	mibOrOid = mibOrOid + "." + tableIndex;
+	LOGGER.info("mibOrOid to execute: " + mibOrOid);
+
+	    snmpParam.setSnmpCommand(SnmpCommand.GET);
+	    snmpParam.setIpAddress(mtaAddress);
+	    snmpParam.setMibOid(mibOrOid);
+	    snmpParam.setCommandOption("t 30 ");
+	  result = tapEnv.executeSnmpCommand(device, snmpParam);
+	return result;
+	
+    }
+    
+    /**
+     * Utility method to execute SNMP set with table index on ECM side.
+     * 
+     * @param AutomaticsTapApi
+     *            The {@link AutomaticsTapApi} instance.
+     * @param device
+     *            The device to be queried.
+     * @param mibOrOid
+     *            The MIB or OID need to be queried.
+     * @param datatype
+     *            {@link SnmpDataType}
+     * @param tableIndex
+     *            The table index.
+     * @param value
+     *            value to set
+     * @param mtaAddress
+     *            MTA address
+     * @return Command output.
+     */
+    public static String snmpSetOnEmta(AutomaticsTapApi tapEnv, Dut device, String mibOrOid, SnmpDataType datatype,
+	    String value,String tableIndex, String mtaAddress) {
+
+	String result = null;
+	SnmpParams snmpParam = null;
+	String snmpProtocol = System.getProperty(SnmpConstants.SYSTEM_PARAM_SNMP_VERSION,
+		SnmpProtocol.SNMP_V2.toString());
+	mibOrOid = mibOrOid + "." + tableIndex;
+	LOGGER.info("mibOrOid to execute: " + mibOrOid);
+
+	snmpParam = new SnmpParams();
+	snmpParam.setSnmpCommand(SnmpCommand.SET);
+	snmpParam.setMibOid(mibOrOid.trim());
+	snmpParam.setCommandOption("t 30 ");
+	snmpParam.setIpAddress(mtaAddress);
+	snmpParam.setDataType(datatype);
+	snmpParam.setValue(value);
+
+	result = tapEnv.executeSnmpCommand(device, snmpParam);
+
+	for (int retryCount = 0; getRetries(result, snmpProtocol, retryCount); ++retryCount) {
+	    LOGGER.info("Retrying snmp .Retry count :" + retryCount);
+	    snmpParam = new SnmpParams();
+	    snmpParam.setSnmpCommand(SnmpCommand.SET);
+	    snmpParam.setMibOid(mibOrOid.trim());
+	    snmpParam.setCommandOption("t 30 ");
+	    snmpParam.setIpAddress(mtaAddress);
+	    snmpParam.setDataType(datatype);
+	    snmpParam.setValue(value);
+
+	    result = tapEnv.executeSnmpCommand(device, snmpParam);
+	}
+	return result;
+    }
+
+/**
+     * Helper method to identify whether given oid is CM related or not
+     * 
+     * @param mibOrOid
+     *            OID to be classified
+     * @return true if it is CM related OIDs
+     */
+    private static boolean isCableModemRelatedOid(String mibOrOid) {
+	boolean isCmRelated = false;
+	if (CommonMethods.isNotNull(mibOrOid)) {
+	    mibOrOid = mibOrOid.trim();
+	    isCmRelated =  (mibOrOid.startsWith("1.3.6.1.4.1.4491") || mibOrOid.startsWith("1.3.6.1.2.1")
+			    || mibOrOid.startsWith(".1.3.6.1.4.1.4491") || mibOrOid.startsWith(".1.3.6.1.2.1"));
+	    LOGGER.info((isCmRelated ? "Cable Modem Related OID : " : "RDKB or MoCA Related OID : ") + mibOrOid);
+	}
+
+	return isCmRelated;
+    }
+    
+    /**
+     * Utility method to execute SNMP GET command with table index on RDKB devices.
+     * 
+     * @param tapEnv
+     *            The {@link AutomaticsTapApi} instance
+     * @param device
+     *            The device to be validated.
+     * @param oidOrMibName
+     *            The MIB or OID name.
+     * @param tableIndex
+     *            The table index to be appended.
+     * @return Provides the SNMP GET Command output.
+     */
+    public static String executeSnmpGetWithTableIndexOnRdkDevices(AutomaticsTapApi tapEnv, Dut device,
+	    String oidOrMibName, String tableIndex) {
+	String snmpCommandOutput = null;
+	if (isCableModemRelatedOid(oidOrMibName)) {
+	    snmpCommandOutput = BroadBandSnmpUtils.snmpGetOnEcm(tapEnv, device, oidOrMibName, tableIndex);
+	} else {
+	    oidOrMibName = oidOrMibName + "." + tableIndex;
+	    snmpCommandOutput = CommonMethods.snmpGetOnEstb(tapEnv, device, device.getHostIpAddress(), oidOrMibName);
+
+	}
+	return snmpCommandOutput;
+    }
+
+    /**
+     * Utility methods to verify the currently running firmware version using sysDescr SNMP MIBs.
+     * 
+     * @param device
+     *            The Dut to be validated.
+     * @param buildImageWithoutExtension
+     *            The build name to be validated.
+     * @return true if build name matches with sysDescr SW VER.
+     * @refactor Govardhan
+     */
+    public static boolean verifyCurrentlyRunningFirmwareVersionUsingSysDescrSnmpCommand(AutomaticsTapApi tapEnv,
+	    Dut device, String buildImage) {
+
+	boolean deviceUpgradedSuccessfully = false;
+	String snmpSystemDescrOutput = BroadBandSnmpUtils.executeSnmpWalkOnRdkDevices(tapEnv, device,
+		BroadBandSnmpMib.ESTB_SYS_DESCRIPTION.getOid());
+	
+	 LOGGER.info("Snmp System Description output is : "+snmpSystemDescrOutput);
+
+	if (CommonMethods.isNotNull(snmpSystemDescrOutput)) {
+	    deviceUpgradedSuccessfully = verifyFirmwareVersionUsingSnmp(snmpSystemDescrOutput, buildImage);
+	}
+	return deviceUpgradedSuccessfully;
+    }
+
+    /**
+     * Method to verify if the box is having the expected firmware version using SNMP
+     * 
+     * @param device
+     *            The Dut to be validated.
+     * @return status true if the firmware version matches else false
+     * @refactor Govardhan
+     */
+    public static boolean verifyFirmwareVersionUsingSnmp(String snmpSystemDescrOutput,
+	    String buildImageWithoutExtension) {
+	boolean status = false;
+	snmpSystemDescrOutput = snmpSystemDescrOutput.replace(";", "\r\n");
+	String softwareVersion = CommonMethods.patternFinder(snmpSystemDescrOutput,
+		BroadBandTestConstants.SOFTWARE_VERSION_PATTERN);
+	if (CommonMethods.isNotNull(softwareVersion)) {
+	    status = softwareVersion.toLowerCase().contains(buildImageWithoutExtension.toLowerCase());
+	}
+	return status;
+    }
+    
+    /**
+     * Utility method to execute SNMP walk with table index on ECM side.
+     * 
+     * @param AutomaticsTapApi
+     *            The {@link AutomaticsTapApi} instance.
+     * @param device
+     *            The device to be queried.
+     * @param mibOrOid
+     *            The MIB or OID need to be queried.
+     * @return Command output.
+     */
+    public static String snmpWalkOnEcm(AutomaticsTapApi tapEnv, Dut device, String mibOrOid) {
+
+	String result = null;
+	SnmpParams snmpParam = null;
+
+	snmpParam = new SnmpParams();
+	snmpParam.setSnmpCommand(SnmpCommand.WALK);
+	snmpParam.setMibOid(mibOrOid.trim());
+
+	result = tapEnv.executeSnmpCommand(device, snmpParam);
+
+	return result;
+    }
+
+    /**
+     * Utility methods to verify docsis event text.
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param device
+     *            The settop to be validated.
+     * @param eventCount
+     *            DocsisEventText
+     * 
+     * @return true if event count matches with event text count.
+     */
+    public static boolean verifyDocsisEventText(AutomaticsTapApi tapEnv, Dut device, int eventCount) {
+
+	boolean status = false;
+	List<String> match = new ArrayList<String>();
+
+	String snmpCommandOutput = snmpWalkOnEcm(tapEnv, device, BroadBandSnmpMib.ESTB_DOCS_IS_EVENT_TEXT.getOid());
+	if (!snmpCommandOutput.contains(SnmpConstants.NO_SUCH_OID_RESPONSE)
+		&& !snmpCommandOutput.contains(BroadBandTestConstants.SNMP_TIME_OUT_RESPONSE)) {
+	    // returns all the matched list for the given pattern
+	    match = BroadBandCommonUtils.patternFinderForMultipleMatches(snmpCommandOutput,
+		    BroadBandTestConstants.DOCSIS_EVENT_TEXT_PATTERN);
+	    int eventTextCount = match.size();
+	    if (eventTextCount == eventCount) {
+		status = true;
+	    }
+	}
+	return status;
+    }
+
+    /**
+     * Utility methods to verify Docs Dev Server Boot State.
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param device
+     *            The settop to be validated.
+     * 
+     * @return true if OID value is 1
+     */
+    public static boolean verifyDocsDevServerBootState(AutomaticsTapApi tapEnv, Dut device) {
+	boolean status = false;
+
+	String snmpOutPut = snmpWalkOnEcm(tapEnv, device, BroadBandSnmpMib.ESTB_DOCS_DEV_SERVER_BOOT_STATE.getOid());
+	LOGGER.info("snmp OutPut : " + snmpOutPut);
+	if (CommonMethods.isNotNull(snmpOutPut)) {
+	    status = snmpOutPut.contains(BroadBandTestConstants.TRUE_FLAG);
+	}
+	return status;
+    }
+
+    /**
+     * Utility methods to verify DocsIf CM Status Transmission Power
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param device
+     *            The settop to be validated.
+     * 
+     * @return true if OID value is between the limit range from 80 to 580
+     */
+    public static boolean verifyDocsIfCmStatusTxPower(AutomaticsTapApi tapEnv, Dut device) {
+	boolean status = false;
+	List<String> match = new ArrayList<String>();
+
+	String snmpCommandOutput = snmpWalkOnEcm(tapEnv, device,
+		BroadBandSnmpMib.ECM_DOCS_IF_CM_STATUS_TX_POWER.getOid());
+	LOGGER.info("Snmp command output of mib 'docsIfCmStatusTxPower': " + snmpCommandOutput);
+	match = BroadBandCommonUtils.patternFinderForMultipleMatches(snmpCommandOutput,
+		BroadBandTestConstants.DOCSIF_MIB_VALUE_PATTERN);
+	status = BroadBandCommonUtils.compareListBetweenLimitRange(match, BroadBandTestConstants.INT_VALUE_EIGHTY,
+		BroadBandTestConstants.INT_VALUE_FIVE_HUNDRED_AND_EIGHTY);
+
+	return status;
+    }
+
+    /**
+     * Utility methods to verify DocsIf Down Channel Power
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param device
+     *            The settop to be validated.
+     * 
+     * @return true if OID value is between the limit range from -150 to 150
+     */
+    public static boolean verifyDocsIfDownChannelPower(AutomaticsTapApi tapEnv, Dut device) {
+	boolean status = false;
+	List<String> match = new ArrayList<String>();
+
+	String snmpCommandOutput = snmpWalkOnEcm(tapEnv, device,
+		BroadBandSnmpMib.ECM_DOCS_IF_DOWN_CHANNEL_POWER_MIB.getOid());
+	LOGGER.info("Snmp command output of mib 'docsIfDownChannelPower': " + snmpCommandOutput);
+	match = BroadBandCommonUtils.patternFinderForMultipleMatches(snmpCommandOutput,
+		BroadBandTestConstants.DOCSIF_MIB_VALUE_PATTERN);
+	status = BroadBandCommonUtils.compareListBetweenLimitRange(match,
+		BroadBandTestConstants.INT_VALUE_MINUS_HUNDRED_AND_FIFTY,
+		BroadBandTestConstants.INT_VALUE_HUNDRED_AND_FIFTY);
+
+	return status;
+    }
+
+    /**
+     * Utility methods to verify DocsIf SigQSignal Noise
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param device
+     *            The settop to be validated.
+     * 
+     * @return true if OID value is greater than or equal to 120
+     */
+    public static boolean verifyDocsIfSigQSignalNoise(AutomaticsTapApi tapEnv, Dut device) {
+	boolean status = false;
+	List<String> match = new ArrayList<String>();
+
+	String snmpCommandOutput = snmpWalkOnEcm(tapEnv, device,
+		BroadBandSnmpMib.ECM_DOCSIS_SIGNAL_QUALITY_EXTENDED_RX_MER_TABLE.getOid());
+	LOGGER.info("Snmp command output of mib 'docsIf3SignalQualityExtTable': " + snmpCommandOutput);
+	match = BroadBandCommonUtils.patternFinderForMultipleMatches(snmpCommandOutput,
+		BroadBandTestConstants.DOCSIF_MIB_VALUE_PATTERN);
+	status = BroadBandCommonUtils.compareListWithLimitValue(match,
+		BroadBandTestConstants.INT_VALUE_HUNDRED_AND_TWENTY);
+
+	return status;
+    }
+
+    /**
+     * Utility methods to verify System up time
+     * 
+     * @param settop
+     *            The settop to be validated.
+     * 
+     * @return true if SNMP MIB response and output of 'cat /proc/uptime' command are same
+     */
+    public static boolean verifySysUpTime(AutomaticsTapApi tapEnv, Dut device) throws Exception {
+	boolean status = false;
+	String errorMessage = null;
+	// uptime in seconds
+	String uptimeCmdResponse = CommonUtils.getUptimeFromProc(tapEnv, device);
+	LOGGER.info("Uptime from /proc/uptime = " + uptimeCmdResponse);
+
+	if (CommonUtils.isNotEmptyOrNull(uptimeCmdResponse)) {
+
+	    String snmpCommandOutput = BroadBandSnmpUtils.executeSnmpWalkOnRdkDevices(tapEnv, device,
+	    		BroadBandSnmpMib.ESTB_SYS_UP_TIME.getOid());
+
+	    LOGGER.info("Uptime from snmp = " + snmpCommandOutput);
+
+	    if (CommonMethods.isNotNull(snmpCommandOutput)) {
+		status = BroadBandCommonUtils.verifyUptimeFromSnmpOutput(snmpCommandOutput, uptimeCmdResponse);
+	    } else {
+		errorMessage = "Failed to retrieve uptime from snmp ";
+		LOGGER.error(errorMessage);
+		LOGGER.error("snmpCommandOutput = " + snmpCommandOutput);
+		throw new TestException(errorMessage);
+	    }
+
+	} else {
+	    errorMessage = "Failed to retrieve uptime from STB using uptime command";
+	    LOGGER.error(errorMessage);
+	    LOGGER.error("Response = " + uptimeCmdResponse);
+	    throw new TestException(errorMessage);
+	}
+
+	return status;
+    }
+    
+    /**
+     * Utility methods to verify DocsIf SigQSignal Noise with range
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param device
+     *            The device to be validated.
+     * 
+     * @return true if OID value is greater than or equal to 200 and less than or equal to 500
+     * @author dbada200
+     * @Refactor Athira
+     */
+    public static boolean verifyDocsIfSigQSignalNoiseWithRange(AutomaticsTapApi tapEnv, Dut device) {
+	LOGGER.debug("STARTING METHOD: verifyDocsIfSigQSignalNoiseWithRange");
+	boolean status = false;
+	List<String> match = new ArrayList<String>();
+
+	String snmpCommandOutput = snmpWalkOnEcm(tapEnv, device,
+			BroadBandSnmpMib.ECM_DOCS_IF_SIG_Q_SIGNAL_NOISE.getOid());
+	LOGGER.info("Snmp command output of mib 'SigQSignalNoise': " + snmpCommandOutput);
+	if (CommonMethods.isNotNull(snmpCommandOutput)) {
+	    match = BroadBandCommonUtils.patternFinderForMultipleMatches(snmpCommandOutput,
+		    BroadBandTestConstants.DOCSIF_MIB_VALUE_PATTERN);
+
+	    status = BroadBandCommonUtils.compareListBetweenLimitRange(match,
+		    BroadBandTestConstants.INT_VALUE_TWO_HUNDRED, BroadBandTestConstants.INT_VALUE_FIVE_HUNDRED);
+	}
+	LOGGER.debug("ENDING METHOD: verifyDocsIfSigQSignalNoiseWithRange");
+	return status;
+    }
+    
+    /**
+     * @param settop
+     *            The settop to be validated
+     * @param tapEnv
+     *            EactsTapApi instance
+     * @return true if OID is read-only
+     * @author dbada200
+     */
+    public static boolean verifyReadOnlySignalNoiseStatus(Dut device, AutomaticsTapApi tapEnv) {
+
+	// snmpoutput of set command
+	String snmpOutput = null;
+	// Failure reason from snmp output
+	String failedReason = null;
+	boolean status = false;
+
+	snmpOutput = BroadBandSnmpUtils.retrieveSnmpSetOutputWithDefaultIndexOnRdkDevices(device, tapEnv,
+			BroadBandSnmpMib.ECM_DOCS_IF_SIG_Q_SIGNAL_NOISE.getOid(), SnmpDataType.INTEGER,
+		BroadBandTestConstants.STRING_CONSTANT_290);
+	failedReason = CommonMethods.patternFinder(snmpOutput, BroadBandTestConstants.PATTERN_FINDER_FAILURE_REASON);
+	status = CommonMethods.isNotNull(failedReason)
+		&& failedReason.equalsIgnoreCase(BroadBandTestConstants.NOT_WRITABLE);
+
+	return status;
+    }
+    
+    /**
+     * Utility method to validate CmEthernetOperSetting value retrieved from SNMP
+     * 
+     * @param settop
+     *            The settop to be validated.
+     * @param output
+     *            input
+     * @return status output
+     * @Refactor Alan_Bivera
+     */
+    public static boolean validateCmEthernetOperSettingValueRetrievedFromSnmp(String output) {
+	boolean status = false;
+	try {
+	    // Megabits per second = bps per second ÷ 1,000,000
+	    int result = Integer.parseInt(output);
+	    result = result / (BroadBandTestConstants.CONSTANT_1000000);
+	    status = (result == BroadBandTestConstants.CONSTANT_0) || (result == BroadBandTestConstants.CONSTANT_10)
+		    || (result == BroadBandTestConstants.CONSTANT_100)
+		    || (result == BroadBandTestConstants.CONSTANT_1000);
+
+	} catch (Exception exception) {
+	    LOGGER.error("Unable to parse string to integer value" + exception.getMessage());
+
+	}
+	return status;
+    }
+    
+    /**
+     * Utility method to verify the SNMP output values are greater than expected Range
+     * 
+     * @param snmpOutput
+     * @param expectedValue
+     * @return true if all the values are greater than expected Range
+     * @Refactor Alan_Bivera
+     */
+    public static boolean validateSnmpOutputWithExpectedValue(String snmpOutput, int expectedRange) {
+	boolean result = false;// stores the test status
+	try {
+	    List<String> extractedOutput = new ArrayList<String>();
+	    extractedOutput = CommonUtils.patternFinderForMultipleMatches(snmpOutput,
+		    BroadBandTestConstants.PATTERN_TO_EXTRACT_VALUES_FROM_SNMP_WALK_OUTPUT);
+	    if (extractedOutput.size() > BroadBandTestConstants.CONSTANT_0) {
+		result = true;
+		for (String value : extractedOutput) {
+		    if (!(CommonMethods.isNotNull(value)
+			    && CommonMethods.patternMatcher(value, BroadBandTestConstants.PATTERN_ONLY_DIGITS)
+			    && Integer.parseInt(value) > expectedRange)) {
+			result = false;
+		    }
+		}
+	    }
+	} catch (Exception exception) {
+	    LOGGER.error("Unable to validate values of SNMP walk output" + exception.getMessage());
+	    result = false;
+	}
+	return result;
+    }
+    
+    /**
+     * Utility method to check whether all the OIDs under DOCSIS Signal Quality Tables are READ ONLY
+     * 
+     * @param settop
+     * @param tapEnv
+     * @param snmpOutput
+     * @param childOid
+     * @param dataType
+     * @param setValue
+     * @return true if all the child OID under Docsis signal strength are READ ONLY
+     * @Refactor Alan_Bivera
+     */
+    public static boolean validateReadOnlyAttributeOFDocsisSignalQualityTables(Dut device, AutomaticsTapApi tapEnv,
+	    String snmpOutput, String childOid, SnmpDataType dataType, String setValue) {
+	boolean result = false; // stores the test status
+	try {
+	    List<String> tableIndexList = new ArrayList<String>();
+	    tableIndexList = CommonUtils.patternFinderForMultipleMatches(snmpOutput,
+		    BroadBandTestConstants.PATTERN_TO_EXTRACT_TABLE_INDEX);
+	    if (tableIndexList.size() > BroadBandTestConstants.CONSTANT_0) {
+		result = true;
+		for (String tableIndex : tableIndexList) {
+		    if (executeSnmpSetCommand(tapEnv, device, childOid, dataType, setValue, tableIndex)) {
+			result = false;
+		    }
+		}
+	    }
+	} catch (Exception exeception) {
+	    result = false;
+	    LOGGER.error("Exception occured while checking READ-ONLY attribute for Docsis Signal table"
+		    + exeception.getMessage());
+	}
+	return result;
+    }
+    
+    /**
+     * Utility method to frame SNMP SET command with mentioned table index and execute the same
+     * 
+     * @param tapEnv
+     * @param settop
+     * @param oid
+     * @param dataType
+     * @param value
+     * @param tableIndex
+     * 
+     * @return the SNMP SET response
+     * @Refactor Alan_Bivera
+     */
+    public static boolean executeSnmpSetCommand(AutomaticsTapApi tapEnv, Dut device, String oid, SnmpDataType dataType,
+	    String value, String tableIndex) {
+	String snmpOutput = executeSnmpSetWithTableIndexOnRdkDevices(tapEnv, device, oid, dataType, value, tableIndex);
+	boolean result = CommonMethods.isNotNull(snmpOutput) && snmpOutput.equals(value);
+	return result;
+    }
 }

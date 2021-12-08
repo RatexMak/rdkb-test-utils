@@ -15,11 +15,15 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-package com.automatics.rdkb;
+package com.automatics.rdkb.constants;
 
-public class BroadBandTestGroup extends TestGroup{
-    /**
-     * IP Multi cast Test Group.
-     */
-    public static final String IP_MULTI_CAST = "multicast";
+public class RDKBTraceConstants {
+    /** The constant holding a log for http download completed log. */
+    public static final String HTTP_DOWNLOAD_COMPLETED_LOG = "xconf script  ### httpdownload completed ###";
+
+    /** The constant holding a log for http download successful status. */
+    public static final String HTTP_DOWNLOAD_SUCCESS_LOG = "xconf script : http download successful";
+
+    /** The constant holding a log for maintenance window. */
+    public static final String MAINTENANCE_WINDOW_LOG = "not within current maintenance window for reboot";
 }

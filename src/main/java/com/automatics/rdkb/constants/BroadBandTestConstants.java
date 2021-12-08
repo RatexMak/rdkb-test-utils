@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.automatics.snmp.SnmpDataType;
+import com.automatics.rdkb.utils.DeviceModeHandler;
 import com.automatics.rdkb.utils.snmp.BroadBandSnmpMib;
 
 public class BroadBandTestConstants extends RDKBTestConstants {
@@ -55,6 +56,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Constant for number 4 */
     public static final int CONSTANT_4 = 4;
     
+    /** Constant for number 7 */
+    public static final int CONSTANT_7 = 7;
+    
     /** Constant for number 10 */
     public static final int CONSTANT_10 = 10;
 
@@ -67,11 +71,17 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Constant for number 11 */
     public static final int CONSTANT_11 = 11;
     
+    /** Constant for number 1000 */
+    public static final int CONSTANT_1000 = 1000;
+    
     /** Integer value 5 */
     public static final Integer INTEGER_VALUE_5 = 5;
     
     /** String constant value 1 */
     public static final String STRING_CONSTANT_1 = "1";
+    
+    /** String constant 2 */
+    public static final String STRING_CONSTANT_2 = "2";
     
     /** String value 2 */
     public static final String STRING_VALUE_TWO = "2";
@@ -81,7 +91,29 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     
     /** String value 5 */
     public static final String STRING_VALUE_FIVE = "5";
-
+    
+    /** String value for 10 */
+    public static final String STRING_VALUE_TEN = "10";
+    
+    /** String to store value 11 */
+    public static final String STRING_VALUE_11 = "11";
+    /** String to store value 12 */
+    public static final String STRING_VALUE_12 = "12";
+    /** String to store value 13 */
+    public static final String STRING_VALUE_13 = "13";
+    /** String to store value 14 */
+    public static final String STRING_VALUE_14 = "14";
+    /** String to store value 15 */
+    public static final String STRING_VALUE_15 = "15";
+    /** String to store value 16 */
+    public static final String STRING_VALUE_16 = "16";
+    /** String to store value 17 */
+    public static final String STRING_VALUE_17 = "17";
+    /** String to store value 18 */
+    public static final String STRING_VALUE_18 = "18";
+    /** String to store value 19 */
+    public static final String STRING_VALUE_19 = "19";
+    
     /** Constant to hold 153 */
     public static final String CONSTANT_153 = "153";
 
@@ -97,6 +129,8 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     
     /** Symbol quotes ("). */
     public static final String SYMBOL_QUOTES = "\"";
+    
+    public static final String CHAR_NEW_LINE = "\n";
 
     /** String value Test1 */
     public static final String STRING_TEST_1 = "Test1";
@@ -239,7 +273,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String LAN_MANAGEMENT_MODE_ROUTER = "router";
 
     /** String value for Operating mode b/g/n */
-    public static final String OPERATING_MODE_BGN = "g,n";
+    public static final String OPERATING_MODE_BGN = "b,g,n";
 
     /** String value for 1Mbps WiFi beacon rate */
     public static final String TEXT_ONE_MBPS = "1Mbps";
@@ -366,7 +400,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     
     /** Property key for HTTP server IPv6 Address. */
     public static final String PROP_KEY_HTTP_SERVER_IPV6_ADDRESS = "http.server.ipv6.address";
-    
+        
     /** Identifies the beginning of image name in the telnet out put. */
     public static final String IDENTIFIER_FOR_BEGINNING_OF_IMAGE_NAME = "imagename";
     
@@ -556,6 +590,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** String value 3 */
     public static final String STRING_VALUE_THREE = "3";
     
+    /** String value 3 */
+    public static final String STRING_VALUE_FOUR = "4";
+    
     /** constant for PingInterval */
     public static final String CONSTANT_DEFAULT_PING_INTERVAL = "60";
     
@@ -637,7 +674,11 @@ public class BroadBandTestConstants extends RDKBTestConstants {
    public static final int INTERGER_CONSTANT_60000 = 60000;
    
    public enum syndicationPartnerID {
-	PARTNER_DUMMY("dummy");
+	PARTNER_DUMMY("dummy"),
+	PARTNER_COX("cox"),
+	PARTNER_ROGERS("rogers"),
+	PARTNER_SHAW("shaw"),
+	PARTNER_VIDEOTRON("videotron");
 
 	String paramName;
 
@@ -654,12 +695,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	}
    }
    
-   /** The array list of Partner ID for Devices */
-   public static final List<String> PARTNER_ID_LIST = new ArrayList<String>() {
-	{
 
-	}
-   };
    
    
    /** Number Eight */
@@ -682,7 +718,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
    public static final String STRING_6 = "6";
    
    /** Constant for SSID prefix */
-   public static final String CONSTANT_SSID_NAME_PREFIX = " TBD ";
+   public static final String CONSTANT_SSID_NAME_PREFIX = "XFSETUP";
      
    /** WiFi region code CAO */
    public static final String WIFI_POWER_LEVEL_CAO = "CAO";
@@ -754,21 +790,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	}
    };
    
-   /** The Map with various Partner ID as key and SSID Prefix as values */
-   public static final Map<String, String> PARTNER_SPECIFIC_DEFAULT_SSID_FOR_NON_CISCO_RESIDENTIAL_TYPE = new HashMap<String, String>() {
-	{
-
-	}
-   };
-   
-   /** The Map with various Device Model as key and Partner Specific Map as value */
-   public static final Map<String, Map<String, String>> DEFAULT_SSID_PREFIX_FOR_DEVICE_AND_PARTNER_SPECIFIC = new HashMap<String, Map<String, String>>() {
-	{
-
-	}
-   };
-   
-
    /** Test Constants for Library Security Test */
    /** Telnet Library */
    public static final String LIB_TELNET = "telnet";
@@ -1039,4 +1060,1138 @@ public class BroadBandTestConstants extends RDKBTestConstants {
    /** The constant for test status - XCONF_CDL_TRIGGER_FAILED. */
    public static final String TEST_STATUS_XCONF_CDL_TRIGGER_FAILED = "TR-181/WebPA HTTP, XCONF HTTP & DOCSIS SNMP code download trigger for build '<buildImageName>' failed, "
 	    + "Please check the device whether it accept any code download/expected log messages are fine";
+   
+   /** Allowed number of system descriptor field as per CableLab specification. */
+   public static final int ALLOWED_NUMBER_OF_SYS_DESCRIPTOR_FILED = 5;
+   
+   /** LEFT_SHIFT_OPERATOR **/
+   public static final String LEFT_SHIFT_OPERATOR = "<<";
+   
+   /** RIGHT SHIFT OPERATOR **/
+   public static final String RIGHT_SHIFT_OPERATOR = ">>";
+   
+   /** Key to get software version from system Descriptor. */
+   public static final String KEY_SYS_DESCR_SOFTWARE_VERSION = "SW_REV";
+   
+   /** Constant to hold boolean value FALSE */
+   public static final Boolean BOOLEAN_VALUE_FALSE = false;
+   
+   /** Key to get vendor details from system Descriptor. */
+   public static final String KEY_SYS_DESCR_VENDOR = "VENDOR";
+   
+   /** Key to get device model from system Descriptor. */
+   public static final String KEY_SYS_DESCR_MODEL = "MODEL";
+   
+   /** Key to get device boot loader version from system Descriptor. */
+   public static final String KEY_SYS_DESCR_BOOT_LOADER_VERSION = "BOOTR";
+   
+   /** Key to get Hardware revision from system Descriptor. */
+   public static final String KEY_SYS_DESCR_HARDWARE_VERSION = "HW_REV";
+   
+   /** Constant to hold boolean value true */
+   public static final Boolean BOOLEAN_VALUE_TRUE = true;
+   /** symbol for + */
+   public static final String SYMBOL_PLUS = "+";
+   /** RFC feature name SNMPv3 */
+   public static final String SNMPV3 = "SNMPV3";
+   
+
+   /** Test constant for string configurableSSH */
+   public static final String CONFIGURABLE_SSH = "configurableSSH";
+   
+
+   /** stb properties key for payload data to enable configurable ssh rfc in xconf to enable */
+   public static final String PROP_KEY_PAYLOAD_ENABLE_CONFIGURABLE_SSH = "rfc.configurablessh.enable.payload";
+   
+
+   /** Log string list of ips for configurable SSH in stb.properties file */
+   public static final String PROP_KEY_SSH_WHITELIST_IPS = "rfc.configurablessh.iplist";
+   
+   public static final String PROP_KEY_NON_WHITE_LISTED_JUMP_SERVER_IPV6 = "wl.server.ip.ipv6";
+   
+   /** stb properties key for payload data to disable configurable ssh rfc in xconf to disable */
+   public static final String PROP_KEY_PAYLOAD_DISABLE_CONFIGURABLE_SSH = "rfc.configurablessh.disable.payload";
+   
+   /** RFC feature name IDS */
+   public static final String FEATURE_NAME_IDS = "IDS";
+   
+   /** Pay load data for IDS enable */
+   public static final String PROP_KEY_PAYLOAD_IDS_ENABLE = "rfc.ids.enable";
+   
+
+   /** Pay load data for IDS disable */
+   public static final String PROP_KEY_PAYLOAD_IDS_DISABLE = "rfc.ids.disable";
+   
+   /** Test constant for string FirewallPort */
+   public static final String FIREWALL_PORT = "FirewallPort";
+   
+   /** stb properties key for payload data to enable configurable ssh rfc in xconf to enable */
+   public static final String PROP_KEY_PAYLOAD_ENABLE_FIREWALL_PORT = "rfc.firewall.enable";
+
+   /** stb properties key for payload data to disable configurable ssh rfc in xconf to disable */
+   public static final String PROP_KEY_PAYLOAD_DISABLE_FIREWALL_PORT = "rfc.firewall.disable";
+   
+   /** RFC feature name IDS */
+   public static final String RFC_FEATURE_NAME_IDS1 = "IDS1";
+   
+   /** Pay load data for IDS enable */
+   public static final String PROP_KEY_PAYLOAD_IDS1_ENABLE = "rfc.ids1.enable";
+
+   /** Pay load data for IDS disable */
+   public static final String PROP_KEY_PAYLOAD_IDS1_DISABLE = "rfc.ids1.disable";
+   
+   /** String constant to store configurable telemetry feature name value */
+   public static final String CONFIGURABLE_TELEMETRY = "configurableTelemetry";
+   
+   /** Property key for rfc payload data in stb.props to configure unique telemetry tag */
+   public static final String PROP_KEY_CONFIGURABLE_TELEMETRY_PAYLOAD = "rfc.configurabletelemetrytag.payload";
+   
+   /** Test constant for string configurableSSH */
+   public static final String FINGER_PRINT = "FingerPrint";
+
+   /**
+    * stb properties key for payload data to enable configurable rfc fingerprint to enable
+    **/
+   public static final String PROP_KEY_PAYLOAD_ENABLE_FINGER_PRINT = "rfc.fingerprint.enable";
+
+   /**
+    * stb properties key for payload data to disable configurable rfc fingerprint to disable
+    **/
+   public static final String PROP_KEY_PAYLOAD_DISABLE_FINGER_PRINT = "rfc.fingerprint.disable";
+   
+   /** Test constant for string configurableSSH */
+   public static final String SOFT_FLOWD = "SoftFlowd";
+
+   /**
+    * stb properties key for payload data to enable configurable rfc softflowd too enable
+    **/
+   public static final String PROP_KEY_PAYLOAD_ENABLE_SOFTFLOWD = "rfc.softFlowd.enable";
+
+   /**
+    * stb properties key for payload data to disable configurable rfc softflowd to disable
+    **/
+   public static final String PROP_KEY_PAYLOAD_DISABLE_SOFTFLOWD = "rfc.softFlowd.disable";
+   
+   /** Test constant for string configurableSSH */
+   public static final String CODEBIG_FIRST = "CodebigFirst";
+
+   /**
+    * stb properties key for payload data to enable configurable rfc softflowd too enable
+    **/
+   public static final String PROP_KEY_PAYLOAD_ENABLE_CODEBIG_FIRST = "rfc.CodebigFirst.enable";
+
+   /**
+    * stb properties key for payload data to disable configurable rfc softflowd to disable
+    **/
+   public static final String PROP_KEY_PAYLOAD_DISABLE_CODEBIG_FIRST = "rfc.CodebigFirst.disable";
+   
+   /** String constant to store Secure Upload feature name value */
+   public static final String SECURE_UPLOAD = "SecureUpload";
+   
+   /** Property key to read payload to enable/disable encrypt cloud upload feature */
+   public static final String PROP_KEY_TO_ENABLE_DISABLE_CLOUD_UPLOAD_ENCRYPTION = "rfc.enable.disable.encrypt.cloud.upload";
+
+   /** String to change the status of encrypt cloud upload feature */
+   public static final String STRING_TO_CHANGE_ENCRYPT_CLOUD_UPLOAD_STATUS = "<ENCRYPT_CLOUD_UPLOAD_STATUS>";
+   
+   /** stb property key for SNMPv3 enable */
+   public static final String PROP_KEY_PAYLOAD_SNMPV3_ENABLE = "rfc.payload.snmpv3.enable";
+
+   /** stb property key for SNMPv3 disable */
+   public static final String PROP_KEY_PAYLOAD_SNMPV3_DISABLE = "rfc.payload.snmpv3.disable";
+   
+   /** RFC feature name password failure indication */
+   public static final String PWD_FAILURE = "PWD_FAILURE";
+
+   /** STB property file for pwd_failure enable */
+   public static final String PROP_KEY_PAYLOAD_PWD_FAILURE_ENABLE = "rfc.payload.pwd_failure.enable";
+
+   /** STB property file for pwd_failure disable */
+   public static final String PROP_KEY_PAYLOAD_PWD_FAILURE_DISABLE = "rfc.payload.pwd_failure.disable";
+   
+   /** constant to hold stb prop name for CWMP */
+   public static final String CWMP = "RFC_Versioning_Check";
+   
+   /** String constant to hold prop key value to enable CWMP */
+   public static final String PROP_KEY_PAYLOAD_CWMP_ENABLE = "rfc.cwmp.enable.payload";
+
+   /** String constant to hold prop key value for CWMP disable */
+   public static final String PROP_KEY_PAYLOAD_CWMP_DISABLE = "rfc.cwmp.disable.payload";
+   
+   /** RFC feature name FAN */
+   public static final String FEATURE_NAME_FAN = "FAN";
+
+   /** Pay load data for Fan.Maxoverride enable */
+   public static final String PROP_KEY_PAYLOAD_FAN_MAXOVERRIDE_ENABLE = "rfc.fan.enable";
+
+   /** Pay load data for Fan.Maxoverride disable */
+   public static final String PROP_KEY_PAYLOAD_FAN_MAXOVERRIDE_DISABLE = "rfc.fan.disable";
+   
+   /** Bootstrap config payload for rfc */
+   public static final String PROPERTY_KEY_BOOTSTRAP = "rfc.bootstrap.payload";
+   
+   /** RFC feature name FORWARD SSH */
+   public static final String FEATURE_NAME_FORWARD_SSH = "FORWARD_SSH_TEST";
+   
+   /** Pay load data for ForwardSSH enable */
+   public static final String PROP_KEY_PAYLOAD_FORWARD_SSH_ENABLE = "rfc.forwardssh.enable";
+
+   /** Pay load data for ForwardSSH disable */
+   public static final String PROP_KEY_PAYLOAD_FORWARD_SSH_DISABLE = "rfc.forwardssh.disable";
+  
+   /** Pay load data for CPU memory Fragmentation */
+   public static final String PROP_KEY_PAYLOAD_CPU_MEMORY_FRAGMENTATION = "rfc.payload.CPUMemFrag";
+   
+   /** RFC feature name for Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.PrivacyProtection.Enable */
+   public static final String FEATURE_NAME_PRIVACY_PROTECTION_ENABLE = "PRIVACY_PROTECTION_ENABLE";
+   
+   /** Pay load data for Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.PrivacyProtection.Enable true */
+   public static final String PROP_KEY_PAYLOAD_PRIVACY_PROTECTION_ENABLE = "rfc.privacy.protection.enable";
+
+   /** Pay load data for Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.PrivacyProtection.Enable false */
+   public static final String PROP_KEY_PAYLOAD_PRIVACY_PROTECTION_DISABLE = "rfc.privacy.protection.disable";
+   
+   /** String variable to store snmpv3 dk kick start table rfc feature */
+   public static final String SNMPV3_DH_KICKSTART_TABLE_RFC_FEATURE = "Snmpv3DHKickstartTable";
+   
+   /** Pay load data for security snmpv3 payload enable */
+   public static final String PROP_KEY_PAYLOAD_CM_SNMPV3_PAYLOAD_ENABLE = "rfc.cm.snmpv3.payload.enable";
+
+   /** Pay load data for security snmpv3 payload disable */
+   public static final String PROP_KEY_PAYLOAD_CM_SNMPV3_PAYLOAD_DISABLE = "rfc.cm.snmpv3.payload.disable";
+   
+   /** Feature name for Telemetry mLTS DCMUpload rfc configuration */
+   public static final String FEATURE_NAME_MTLSDCMUPLOAD_CONFIG = "MTLSDCMUPLOAD_CONFIG";
+   
+   /** Pay load data for Telemetry mLTS DCMUpload rfc enable */
+   public static final String PROP_KEY_PAYLOAD_MTLSDCMUPLOAD_ENABLE = "rfc.mtlsdcmupload.enable";
+
+   /** Pay load data for Telemetry mLTS DCMUpload rfc disable */
+   public static final String PROP_KEY_PAYLOAD_MTLSDCMUPLOAD_DISABLE = "rfc.mtlsdcmupload.disable";
+   
+   /** RFC feature name for Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.newNTP.Enable */
+   public static final String FEATURE_NAME_NTP_TIME_SERVER = "NEW_NTP_UPDATE";
+
+   /** Pay load data for Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.newNTP.Enable true */
+   public static final String PROP_KEY_PAYLOAD_NEW_NTP_ENABLE = "rfc.newNTP.enable.payload";
+
+   /** Pay load data for Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.newNTP.Enable false */
+   public static final String PROP_KEY_PAYLOAD_NEW_NTP_DISABLE = "rfc.newNTP.disable.payload";
+   
+   /** Feature Name for WiFi Interworking Enable rfc configuration */
+   public static final String FEATURE_NAME_INTERWORKING_CONFIG = "INTERWORKING_CONFIG";
+
+   /** Pay load data for Telemetry mLTS DCMUpload rfc enable */
+   public static final String PROP_KEY_PAYLOAD_INTERWORKING_ENABLE = "rfc.interworking.enable";
+
+   /** Pay load data for Telemetry mLTS DCMUpload rfc disable */
+   public static final String PROP_KEY_PAYLOAD_INTERWORKING_DISABLE = "rfc.interworking.disable";
+   
+   /** RFC feature name OVS */
+   public static final String FEATURE_NAME_OVS = "OVS";
+
+   /** RFC payload for OVS enable */
+   public static final String PROP_KEY_PAYLOAD_OVS_ENABLE = "rfc.ovs.enable.payload";
+
+   /** RFC payload for OVS disable */
+   public static final String PROP_KEY_PAYLOAD_OVS_DISABLE = "rfc.ovs.disable.payload";
+
+   /** String constant to store configurable telemetry feature name value */
+   public static final String CONFIGURABLE_TELEMETRY_ENDPOINT2 = "TelemetryNewEndpoint2";
+
+   /** RFC payload for Telemetry End Point enable */
+   public static final String PROP_KEY_PAYLOAD_TELEMETRYENDPOINT_ENABLE = "rfc.feature.instance.override.enable";
+
+   /** RFC payload for Telemetry End Point disable */
+   public static final String PROP_KEY_PAYLOAD_TELEMETRYENDPOINT_DISABLE = "rfc.feature.instance.override.disable";
+
+   /** String constant to store configurable non-root support */
+   public static final String CONFIGURABLE_NONROOT_SUPPORT = "nonroot_support";
+
+   /** RFC payload for non-root support enable */
+   public static final String PROP_KEY_PAYLOAD_NONROOT_SUPPORT_ENABLE = "rfc.rdkb.nonroot.support.enable";
+
+   /** RFC payload for non-root support disable */
+   public static final String PROP_KEY_PAYLOAD_NONROOT_SUPPORT_DISABLE = "rfc.rdkb.nonroot.support.disable";
+   
+   /** RFC feature name for auto exclude */
+   public static final String FEATURE_NAME_AUTO_EXCLUDE = "AUTO_EXCLUDE";
+
+   /** RFC payload to enable auto exclude */
+   public static final String PROP_KEY_PAYLOAD_AUTO_EXCLUDE_ENABLE = "rfc.autoexclude.enable.payload";
+
+   /** RFC payload to disable auto exclude */
+   public static final String PROP_KEY_PAYLOAD_AUTO_EXCLUDE_DISABLE = "rfc.autoexclude.disable.payload";
+   /** String constant to store configurable credential download */
+   public static final String CONFIGURABLE_CRED_DWNLD = "cred_download";
+
+   /** String constant to store configurable credential download */
+   public static final String CONFIGURABLE_CRED_DWNLD_2 = "cred_download_2";
+
+   /** RFC payload for enable cred dwnld */
+   public static final String PROP_KEY_PAYLOAD_CRED_DWNLD_ENABLE = "rfc.rdkb.cred.download.enable.true.use.enable";
+
+   /** RFC payload for disable cred dwnld */
+   public static final String PROP_KEY_PAYLOAD_CRED_DWNLD_DISABLE = "rfc.rdkb.cred.download.enable.false.use.disable";
+
+   /** RFC payload for disable cred dwnld */
+   public static final String PROP_KEY_PAYLOAD_CRED_DWNLD_USE_DISABLE = "rfc.rdkb.cred.download.enable.true.use.disable";
+  
+   /** Feature Name for WiFi Wifi blaster Enable rfc configuration */
+   public static final String FEATURE_NAME_WIFIBLASTER_CONFIG = "WIFIBLASTER_CONFIG";
+   
+   /** Pay load data for wifi blaster rfc enable */
+   public static final String PROP_KEY_PAYLOAD_WIFIBLASTER_ENABLE = "rfc.wifiblaster.enable";
+
+   /** Pay load data for wifi balster rfc disable */
+   public static final String PROP_KEY_PAYLOAD_WIFIBLASTER_DISABLE = "rfc.wifiblaster.disable";
+  
+   /** RFC feature name for Aggressive selfheal */
+   public static final String RFC_NAME_AGGRESSIVE_SELFHEAL = "AGGRESSIVE_SELFHEAL";
+   
+   /** Payload data for aggressive selfheal interval enable */
+   public static final String PROP_KEY_PAYLOAD_AGG_SELFHEAL_ENABLE = "rfc.aggressive_selfheal.enable";
+
+   /** Payload data for aggressive selfheal interval disable */
+   public static final String PROP_KEY_PAYLOAD_AGG_SELFHEAL_DISABLE = "rfc.aggressive_selfheal.disable";
+   
+   /** Feature Name for WiFi Wifi blaster Enable rfc configuration */
+   public static final String FEATURE_NAME_WEBCONFIG = "WEBCONFIG";
+   
+   /** Pay load data for wifi blaster rfc enable */
+   public static final String PROP_KEY_PAYLOAD_WEBCONFIG_ENABLE = "rfc.webconfig.enable";
+
+   /** Pay load data for wifi balster rfc disable */
+   public static final String PROP_KEY_PAYLOAD_WEBCONFIG_DISABLE = "rfc.webconfig.disable";
+   
+   /** String constant to store configurable Passpoint feature */
+   public static final String CONFIGURABLE_PASSPOINT = "WiFi-Passpoint";
+   
+   /** RFC payload for Passpoint support enable */
+   public static final String PROP_KEY_PAYLOAD_PASSPOINT_ENABLE = "rfc.rdkb.nonroot.support.enable";
+
+   /** RFC payload for Passpoint disable */
+   public static final String PROP_KEY_PAYLOAD_PASSPOINT_DISABLE = "rfc.rdkb.nonroot.support.disable";
+   
+   /** String constant to store CABUNDLE feature */
+   public static final String CONFIGURABLE_CABUNDLE = "CABUNDLE";
+   
+   /** RFC payload for CABUNDLE enable */
+   public static final String PROP_KEY_PAYLOAD_DLCASTORE_ENABLE = "rfc.cabundle.enable";
+
+   /** RFC payload for CABUNDLE disable */
+   public static final String PROP_KEY_PAYLOAD_DLCASTORE_DISABLE = "rfc.cabundle.disable";
+   
+	/** String constant to store Hardware health test feature */
+   public static final String CONFIGURABLE_HARDWAREHEALTHTEST = "hwHealthTest";
+   
+   /** stb properties key for payload data to enable configurable hwHealthTest rfc in xconf to enable */
+   public static final String PROP_KEY_PAYLOAD_ENABLE_CONFIGURABLE_HHT = "rfc.hht.enable";
+
+   /** stb properties key for payload data to disable configurable hwHealthTest rfc in xconf to disable */
+   public static final String PROP_KEY_PAYLOAD_DISABLE_CONFIGURABLE_HHT = "rfc.hht.disable";
+   
+   /** RFC feature name OVS */
+   public static final String OVS_FEATURE_NAME = "OVS_FEATURE";
+   
+   /** RFC payload for OVS enable */
+   public static final String PROP_KEY_OVS_ENABLE_PAYLOAD = "rfc.ovs.enable";
+
+   /** RFC payload for OVS disable */
+   public static final String PROP_KEY_OVS_DISABLE_PAYLOAD = "rfc.ovs.disable";
+   
+   /** RFC feature name FAN */
+   public static final String FEATURE_NAME_FAN_MULTIPLE = "FAN_MULTIPLE";
+
+   /** Pay load data for Fan.Maxoverride enable */
+   public static final String PROP_KEY_PAYLOAD_FAN_MULTIPLE_MAXOVERRIDE_ENABLE = "rfc.fan.multiple.enable";
+
+   /** Pay load data for Fan.Maxoverride disable */
+   public static final String PROP_KEY_PAYLOAD_FAN_MULTIPLE_MAXOVERRIDE_DISABLE = "rfc.fan.multiple.disable";
+   
+   /** String to replace in LSA pay load data **/
+   public static final String CONSTANT_REPLACE_STBMAC_LSAPAYLOADDATA = "ESTB_MAC_ADDRESS";
+   
+   /** Constant holding the location of dcm.properties file in /nvram folder */
+   public static final String DCM_PROPERTIES_FILE_NVRAM_FOLDER = "/nvram/dcm.properties";
+   
+   /** String to store value of 'arm' */
+   public static final String ARM = "arm";
+
+   /** String value to replace */
+   public static final String STRING_VALUE_TO_REPLACE = "<<VALUE>>";
+   
+   /** String to store Backup */
+   public static final String TAG_BACK_UP_FILE = "automation_Backup";
+   
+   /** String constant to replace BACKUP **/
+   public static final String REPLACE_BACKUP_FILE = "<BACKUP>";
+   
+   /** String variable to atom console */
+   public static final String STRING_ATOM_CONSOLE = "atom";
+   /** Command to copy the dcm.properties file */
+   public static final String CMD_CAT_DCM_PROPERTIES = "cat " + DCM_PROPERTIES_FILE_NVRAM_FOLDER;
+   
+   /** String constant to store tr181 value */
+   public static final String TR181_DOT = "tr181.";
+   
+   /** String constant to store with value text */
+   public static final String WITH_VALUE = ".*value.*";
+   
+   /** String constant to match RFC log message patterns */
+   public static final String RFC_LOG_PATTERN = "RFC:.*";
+   
+   /** The constant holding command for seeing the process status of dnsmasq process. */
+   public static final String STRING_DNSMASQ_PROCESS = "dnsmasq -u";
+   
+   /** String variable to store dnsmasq is not running */
+   public static final String STRING_DNSMASQ_NOT_RUNNING = "dnsmasq is not running";
+   
+   /** String value for dnsmasq */
+   public static final String STRING_DNSMASQ = "dnsmasq";
+   
+   /** Command killall -11 */
+   public static final String CMD_KILLALL_11 = "killall -11";
+   
+   /** Command to read the dnsmasq process status in RDKB devices alone */
+   public static final String COMMAND_TO_GET_DNSMASQ_PROCESS_STATUS = "ps | grep -i \"[d]nsmasq \" | wc -l";
+   
+   /** Command to read the dnsmasq process status in RDKB devices alone */
+   public static final String COMMAND_TO_GET_DNSMASQ_PROCESS = "ps | grep -i \"[d]nsmasq\"";
+
+   /** stb properties key for getting proxy xconf for rfc update settings url **/
+   public static final String PROP_KEY_PROXY_XCONF_RFC_URL = "proxy.xconf.rfc.url";
+   
+   /** Command ARP */
+   public static final String COMMAND_ARP = "/sbin/arp -n";
+   
+   /** interface name to erouter0 */
+   public static final String INTERFACE_NAME_EROUTER0 = "erouter0";
+   
+   /**
+    * The constant holds the command to get CMTS Mac Address from Arp table.
+    */
+   public static final String CMD_ARP_TABLE_FOR_EROUTER0_INTERFACE = "/sbin/arp -n | grep -i \"erouter0\"";
+   
+   /**
+    * The constant holds the regular expression for getting MAC Address with semicolon.
+    */
+   public static final String REG_EXPRESSION_TO_GET_MAC_ADDRESS_SEMICOLON = "(\\w+:\\w+:\\w+:\\w+:\\w+:\\w+)";
+   
+   /** stores the constant value for TXT_COMPARISON */
+   public static final String CONSTANT_TXT_COMPARISON = "TXT_COMPARISON";
+   
+   /** int value -1 */
+   public static final int INT_VALUE_MINUS_ONE = -1;
+   
+   /** Process Name for Parodus */
+   public static final String PROCESS_NAME_PARODUS = "parodus";
+   
+   /** String value to store Parodus grep command */
+   public static final String COMMAND_TO_GET_PARODUS_PROCESS = "ps | grep -i parodus";
+   
+   /** Pattern Matcher Extract Search Response from ATOM Console Execution */
+   public static final String PATTERN_MATCHER_ATOM_CONSOLE_LOG_SEARCH_RESPONSE = "(?s)(\\d{6}.*)"; 
+   /** Property Key for S3 Amazon Signing URL */
+   public static final String PROP_KEY_AMAZON_URL = "S3_AMAZON_SIGNING_URL";
+   
+   /** Property Key for S3 Amazon Signing URL */
+   public static final String PROP_KEY_S3_AMAZON_URL = "amazon.s3.server.url";
+   
+   /** Constant to hold timeout response */
+   public static final String SNMP_TIME_OUT_RESPONSE = "Timeout: No Response from";
+   
+   /** STRING NULL IP(0.0.0.0) */
+   public static final String STRING_NULL_IP = "0.0.0.0";
+   
+   
+   /** Constant to store the telephone line status as down(2) */
+   public static final String SNMP_RESPONSE_FOR_TEL_LINE_STATUS_DOWN = "down";
+   
+   /** String for Rfc properties to post - Replace with data payload */
+   public static final String STRING_RFC_DATA_GENERIC_PAYLOAD = "{\"estbMacAddress\":\"ESTB_MAC_ADDRESS\",\"features\":[{\"name\":\"<PAYLOAD>\",\"effectiveImmediate\":true,\"enable\":true,\"configData\":<REPLACE>}]}\r\n";
+   
+   /**
+    * String for keyword replace for payload
+    */
+   public static final String STRING_PAYLOAD_REPLACE = "<PAYLOAD>";
+   
+   /** Constant to store partial property key for GA image */
+   public static final String PARTIAL_PROPERTY_KEY_FOR_GA_IMAGE = "cdl.ga.image.";
+  
+   /** String value to store unknown value */
+   public static final String UNKNOWN_REBOOT_REASON = "unknown";
+   
+   /** String to store activationInProgress= */
+   public static final String STRING_ACTIVATION_INPROGRESS = "activationInProgress=";
+   
+
+   /** String to store delaydownload reset */
+   public static final String STRING_FOR_DELAY_DOWNLOAD_RESET = "Resetting the download delay to 0 minutes";
+   /** String to store delaydownload wait time */
+   public static final String STRING_FOR_DELAY_DOWNLOAD_SPECIFIED_TIME = "Device configured with download delay of <REPLACE> minutes";
+   /** String to store download trigger from delaydownload */
+   public static final String STRING_XCONF_TRIGGER_IMMEDIATE = "Trigger from delayDownload Timer";
+   
+   /** Constant to store reboot reason rfc_reboot */
+   public static final String REBOOT_REASON_RFC_REBOOT = "rfc_reboot";
+   
+    /** Constant to hold property key for maintenance window pattern */
+    public static final String PROP_KEY_MAINTENANCE_WINDOW_PATTERN = "maintenance.window.pattern";
+    
+    /** Constant to hold property key for maintenance window pattern */
+    public static final String PROP_KEY_DEFAULT_MAINTENANCE_WINDOW_START_TIME = "default.maintenance.window.startTime";
+
+    /** Constant to hold property key for maintenance window pattern */
+    public static final String PROP_KEY_DEFAULT_MAINTENANCE_WINDOW_END_TIME = "default.maintenance.window.endTime";
+
+    /** String value to store device and reboot reason */
+    public static final String DEVICE = "Device";
+    
+    /** Cat Xconf text */
+    public static final String CAT_XCONF_TXT = "cat /rdklogs/logs/xconf.txt.0";
+    
+    /** command to get the memory uasge */
+    public static final String CMD_GET_MEM_USAGE = "top -bn1 | grep -i \"Mem:\" | sed -n \'1p\'";
+
+    /** command to get the CPU uasge */
+    public static final String CMD_GET_CPU_USAGE = "top -bn1 | grep -i \"CPU:\" | sed -n \'1p\'";
+	  
+   /*******************
+    * Test constants to verify self heal scenarios
+    ***************************/
+   /**
+    * String variable to store self heal enabled status string
+    */
+   public static final String STRING_SELF_HEAL_ENABLED_STATUS = "SelfHealenabledStatus";
+   /**
+    * String variable to store number of pings per server for self heal
+    */
+   public static final String STRING_NUMBER_PINGS_PER_SERVER_FOR_SELF_HEAL = "numPingsPerServer";
+   /**
+    * String variable to store minimum number of ping server for self heal
+    */
+   public static final String SELF_HEAL_MINIMUM_NUMBER_OF_PING_SERVER = "minNumPingServer";
+   /**
+    * String variable to store ping interval for self heal
+    */
+   public static final String STRING_PING_INTERVAL_FOR_SELF_HEAL = "pingInterval";
+   /**
+    * String variable to store reset count for self heal
+    */
+   public static final String STRING_RESET_COUNT_FOR_SELF_HEAL = "resetCount";
+   /**
+    * String variable to store resource usage compute window for self heal
+    */
+   public static final String STRING_RESOURCE_USAGE_FOR_SELF_HEAL = "resourceUsageComputeWindow";
+   /**
+    * String variable to store average cpu threshold for self heal
+    */
+   public static final String STRING_AVG_CPU_THRESHOLD_FOR_SELF_HEAL = "avgCPUThreshold";
+   /**
+    * String variable to store average memory threshold for self heal
+    */
+   public static final String STRING_AVG_MEMORY_THRESHOLD_FOR_SELF_HEAL = "avgMemoryThreshold";
+   /**
+    * String variable to store maximum reboot count for self heal
+    */
+   public static final String STRING_MAXIMUM_REBOOT_COUNT_FOR_SELF_HEAL = "maxRebootCount";
+   /**
+    * String variable to store maximum sub system reset count for self heal
+    */
+   public static final String STRING_MAXIMUM_SUB_SYSTEM_RESET_COUNT_FOR_SELF_HEAL = "maxSubsystemResetCount";
+   
+   /** pattern to get self heal param values */
+   public static final String PATTERN_GET_SELF_HEAL_PArAMETER_VALUES = "SNMPv2-SMI::enterprises.17270.44.1.1.";
+   
+   /** String value for 60 */
+   public static final String SELF_HEAL_PING_INTERVAL = "60";
+   
+
+   
+   /** Constant to hold SET */
+   public static final String SET = "SET";
+
+   /** Constant to hold Get */
+   public static final String GET = "GET";
+   
+   /** String to store value 5 */
+   public static final String STRING_VALUE_5 = "5";
+   /** String to store value 6 */
+   public static final String STRING_VALUE_6 = "6";
+   /** String to store value 7 */
+   public static final String STRING_VALUE_7 = "7";
+   /** String to store value 8 */
+   public static final String STRING_VALUE_8 = "8";
+   /** String to store value 9 */
+   public static final String STRING_VALUE_9 = "9";
+   /** String to store value 10 */
+   public static final String STRING_VALUE_10 = "10";
+   /** String to store value 20 */
+   public static final String STRING_VALUE_20 = "20";
+   /** String to store value 30 */
+   public static final String STRING_VALUE_30 = "30";
+   /** String to store value 40 */
+   public static final String STRING_VALUE_40 = "40";
+   /** String to store value 50 */
+   public static final String STRING_VALUE_50 = "50";
+   /** String to store value 60 */
+   public static final String STRING_VALUE_60 = "60";   
+   /** String to store value 70 */
+   public static final String STRING_VALUE_70 = "70";
+   /** String to store value 80 */
+   public static final String STRING_VALUE_80 = "80";
+   /** String to store value 90 */
+   public static final String STRING_VALUE_90 = "90";
+   /** String to store value 100 */
+   public static final String STRING_VALUE_100 = "100";
+   /** String to store value 110 */
+   public static final String STRING_VALUE_110 = "110";
+
+   /** Default time to get the warehouse works. */
+   public static final long FIVE_SECONDS_IN_MILLIS = 5 * ONE_SECOND_IN_MILLIS;
+   
+   /** Process Name -paradus */
+   public static final String PARODUS_PROCESS_NAME = "parodus";
+ 
+   /** Pattern to get transaction ID from Parodus log */
+   public static final String PATTERN_TO_GET_TRANSACTION_ID_FROM_PARODUS_LOG = "transaction_uuid:(.*)";
+  
+   /** Constant to hold SET Request */
+   public static final String SET_REQUEST = "SET Request";
+   
+   /** Open parenthesis */
+   public static final String OPEN_PARENTHESIS = "(";
+   
+   /** REGEX FOR RDKB LOG TIMESTAMP */
+   public static final String REGEX_FOR_RDKB_LOG_TIMESTAMP = "\\d{6}-\\d{2}:\\d{2}:\\d{2}\\.\\d{6}";
+   
+   /** Closed paranthesis ) */
+   public static final String CLOSED_PARANTHESIS = ")";
+
+   /** String wildcard symbol. */
+   public static final String STRING_WILDCARD = ".*";
+ 
+   /** REGEX FOR TIMESTAMP WITH ONLY TIME */
+   public static final String REGEX_FOR_TIMESTAMP_WITH_ONLY_TIME = "\\d{6}-(\\d{2}:\\d{2}:\\d{2}\\.\\d{6})";
+   
+   /** Symbol Forward Slash */
+   public static final String SYMBOL_FORWARD_SLASH = "\\";
+   
+   /**
+    * params for telemetry error verifications
+    */
+   /** Constant for single quote - ' */
+   public static final String SINGLE_QUOTE = "'";
+   
+   /** String to hold double quote and single quote */
+   public static final String DOUBLE_QUOTE_SINGLE_QUOTE = "\"'";
+   
+   /** File path for Parodus log file */
+   public static final String RDKLOGS_LOGS_PARODUS_TXT_0 = "/rdklogs/logs/PARODUSlog.txt.*";
+   
+   /** Pattern for verifying the signed integer. */
+   public static final String PATTERN_FOR_UN_SIGNED_INT = "(\\d+)";
+   
+   /** Pattern to get parodus connect time from PARODUSlog */
+   public static final String PATTERN_PARODUS_CONNECT_TIME = "connect_time-diff-boot_time=(\\d+)";
+   
+   /** Pattern Matcher to retrieve the timestamp from speedtest log message */
+   public static final String PATTERN_MATCHER_TIMESTAMP_SPEEDTEST_LOG_MESSAGE = "(\\d{6}-\\d{2}:\\d{2}:\\d{2})+";
+   
+   /** The constant for UTC TimeZone */
+   public static final String TIMEZONE_UTC = "UTC";
+   
+   /** Simple Data Format - Date/Time in Log Messages */
+   public static final String TIMESTAMP_FORMAT_SPEEDTEST_LOG_MESSAGE = "yyMMdd-HH:mm:ss";
+   
+   /** Pattern Matcher to retrieve the device manufacturer name */
+   public static final String COMMAND_TO_RETRIEVE_MANUFACTURER_NAME = "grep -i \"hw_manufacturer\" /rdklogs/logs/PARODUSlog.txt.0";
+   
+   /**
+    * Pattern Matcher to retrieve the manufacturer name from parodus log message
+    */
+   public static final String PATTERN_MATCHER_MANUFACTURER_NAME = "is (.*)";
+   
+   /** Software Version Pattern */
+   public static final String SOFTWARE_VERSION_PATTERN = "SW_REV:\\s*(.*)";
+   
+   /** Command to removed RFC override */
+   public static final String CMD_REMOVED_RFC_OVERRIDE = "rm -rf /nvram/RFC/ /nvram/rfc.properties /nvram/dcm.properties";
+   
+   /** Operating Standards for 5GHz a/n/ac mode. */
+   public static final String OPERATING_STANDARDS_A_N_AC = "a,n,ac";
+   
+   /** Operating Standards for 2.4GHz b/g/n mode. */
+   public static final String OPERATING_STANDARDS_B_G_N = "b,g,n";
+   
+   /** Value to reset the WIFI settings */
+   public static final String STRING_WIFI_RESET_VALUE = "1,2;1,2";
+   
+   /** constant for first ipv4 pingserver uri */
+   public static final String FIRST_IPV4_PINGSERVER_URI = "1.2.3.4";
+
+   /** constant for first ipv4 pingserver uri */
+   public static final String SECOND_IPV4_PINGSERVER_URI = "2.3.4.5";
+
+   /** constant for first ipv4 pingserver uri */
+   public static final String THIRD_IPV4_PINGSERVER_URI = "3.4.5.6";
+
+   /** constant for first ipv4 pingserver uri */
+   public static final String FIRST_IPV6_PINGSERVER_URI = "2001::2002";
+
+   /** constant for first ipv4 pingserver uri */
+   public static final String SECOND_IPV6_PINGSERVER_URI = "2002::2003";
+
+   /** constant for first ipv4 pingserver uri */
+   public static final String THIRD_IPV6_PINGSERVER_URI = "2003::2004";
+   
+   /** Constant represent log file /rdklogs/logs/dcmscript.log **/
+   public static final String DCMSCRIPT_LOG_FILE = "/rdklogs/logs/dcmscript.log";
+   
+   /** Constant to hold the value 6 */
+   public static final String STRING_VALUE_SIX = "6";
+
+   /** Pattern Matcher to extract the Payload Data from dcmscript log file */
+   public static final String PATTERN_MATCHER_PAYLOAD_DATA = "-X POST -d\\s+'(.*)'";
+   
+   /** JSON Request Data - Header Element */
+   public static final String JSON_ELEMENT_HEADER = "header";
+   /** JSON Request Data - Content Element */
+   public static final String JSON_ELEMENT_CONTENT = "content";
+   /** JSON Request Data - Type Element */
+   public static final String JSON_ELEMENT_TYPE = "type";
+   
+   /** JSON Request Data - Telemetry Profile Name Element */
+   public static final String JSON_ELEMENT_TELEMETRY_PROFILE_NAME = "telemetryProfile:name";
+   /** JSON Request Data - Telemetry Settings Element */
+   public static final String JSON_ELEMENT_TELEMETRY_SETTINGS = "telemetrySettings";
+   
+   /** JSON Request Data - Polling Frequency Element */
+   public static final String JSON_ELEMENT_POLLING_FREQUENCY = "pollingFrequency";
+   /** JSON Request Data - MAC Address Element */
+   public static final String JSON_ELEMENT_ESTB_MAC_ADDRESS = "estbMacAddress";
+   
+   /** constant for profile name for ping servers */
+   public static final String PROFILE_NAME_PING = "PING_SERV_TO_DTCT_NW_CNCTVTY_";
+   
+   /** Command to copy the dcm.properties file */
+   public static final String CMD_CP_DCM_PROPERTIES = "cp /etc/dcm.properties /nvram/";
+   
+   /** Pattern for Ping test failed 4 */
+   public static final String PATTERN_PING_FAILED_FOUR = "\"PING_FAILED\":\"4\"";
+
+   /** Pattern for Ping test failed 2 */
+   public static final String PATTERN_PING_FAILED_TWO = "\"PING_FAILED\":\"2\"";
+   
+   /** String regex to get next line */
+   public static final String STRING_REGEX_MATCH_LINE = "\\r?\\n";
+   
+   /** pattern to find IPV4 valid ping address */
+   public static final String PATTERN_MATCHER_IPV4_VALID_PING_SERVER = "Server:\\s+(.*)";
+
+   /** Default inet6 address log */
+   public static final String INET_V6_ADDRESS = "inet6 addr";
+
+   /** pattern to get the table rows */
+   public static final String PATTERN_MATCHER_TO_GET_TABLE_ROWS = "ServerTable\\.(\\d+)\\.";
+
+   /** pattern to find IPV6 valid ping address */
+   public static final String PATTERN_MATCHER_IPV6_VALID_PING_SERVER = "Address 1:\\s+(\\w+:\\w+:\\w+:\\w+:\\w+:\\w+:\\w+:\\w+)[\n\r]Address 2";
+   
+   /** constant for Data Block Size */
+   public static final String DATA_BLOCK_SIZE = "64";
+   
+
+   /**
+    * Common SSID password for broadband device.
+    */
+   public static final String BROAD_BAND_DEVICE_SSID_PASSWORD = "broadband.device.sssid.password.value";
+   
+   /** Pattern to get IPv4 Address */
+   public static final String PATTERN_TO_GET_IPV4_ADDRESS = "(\\d+\\.\\d+\\.\\d+\\.\\d+)";
+   
+   /** Constant for Primary remote endpoint */
+   public static final String PRIMARY_REMOTE_ENDPOINT = "68.86.15.199";
+
+   /** Constant for Secondary remote endpoint */
+   public static final String SECONDARY_REMOTE_ENDPOINT = "68.86.15.171";
+   
+   /** Constant holds the ARRIS Group, Inc. Device Manufacturer name */
+   public static final String DEVICE_MANUFACTURER_NAME_ARRIS_INC = "ARRIS Group, Inc.";
+   
+   /** Constant holds the Cisco Device Manufacturer name */
+   public static final String DEVICE_MANUFACTURER_NAME_CISCO = "Cisco";
+
+   /** Pattern to get xfinity wifi status from rfc config data */
+   public static final String PATTERN_GET_XFINITY_WIFI_STATUS_FROM_RFC_CONFIG = "tr181.Device.DeviceInfo.X_COMCAST_COM_xfinitywifiEnable\\W+(\\w+)";
+   
+   /**
+    * Default firmware maintenance upgrade window start time.
+    */
+   public static final String DEFAULT_FIRMWARE_UPGRADE_MAINTENANCE_WINDOW_START_TIME = "3600";
+
+   /**
+    * Default firmware maintenance upgrade window end time.
+    */
+   public static final String DEFAULT_FIRMWARE_UPGRADE_MAINTENANCE_WINDOW_END_TIME = "14400";
+   
+   /** Test constant for Global Dns IPv4 default value 75.75.75.75 */
+   public static final String STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE = "75.75.75.75";
+   
+   /** Test constant for Global Dns IPv6 default value 2001:558:feed::1 */
+   public static final String STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE = "2001:558:feed::1";
+   
+   /** Constant for DSCPMarkPolicy */
+   public static final String DSCP_MARK_POLICY = "44";
+   
+   /** Constant for 5GHZ band */
+   public static final String BAND_5GHZ = "5GHZ";
+   
+   /** Constant for private WifiType */
+   public static final String PRIVATE_WIFI_TYPE = "PRIVATE_WIFI";
+   
+   /** Constant for SSID */
+   public static final String SSID_PARAM = "SSID";
+   
+   /** Constant for PUBLIC WifiType */
+   public static final String PUBLIC_WIFI_TYPE = "PUBLIC_WIFI";
+   
+   /** Interface ath0 */
+   public static final String INTERFACE_ATH0 = "ath0";
+   
+   /** Interface ath1 */
+   public static final String INTERFACE_ATH1 = "ath1";
+
+   /** Interface ath2 */
+   public static final String INTERFACE_ATH2 = "ath2";
+
+   /** Interface ath3 */
+   public static final String INTERFACE_ATH3 = "ath3";
+
+   /** Interface ath4 */
+   public static final String INTERFACE_ATH4 = "ath4";
+
+   /** Interface ath5 */
+   public static final String INTERFACE_ATH5 = "ath5";
+   
+   /** Constant for MAC */
+   public static final String MAC_PARAM = "MAC";
+
+   /** Constant for BSSID */
+   public static final String BSSID_PARAM = "BSSID";
+   
+   /** String value for Dual Band */
+   public static final String DUAL_BAND = "Dual band";
+   
+   /** Constatnt for iwconfig */
+   public static final String CMD_IW_CONFIG = "/sbin/iwconfig";
+   
+   /** Constant for NO such devices */
+   public static final String NOSUCHDEVICES = "No such device";
+   
+   /** Path for /usr/sbin */
+   public static final String STRING_PATH_USR_SBIN = "/usr/sbin/";
+   
+   /**
+    * System property which enables Code download along with Factory Reset.
+    */
+   public static final String SYSTEM_PROPERTY_ENABLE_CDL_FACTORY_RESET = "ENABLE_CDL_FACTORY_RESET";
+   
+   /** Sky box */
+   public static final String SKY_STRING = "SKY";
+   
+   /** Constant to store SKYWIFI string */
+   public static final String SKYWIFI_STRING = "SKYWIFI";
+   
+   /**
+    * Download status - waiting for reboot to previos download.ss
+    */
+   public static final String DOWNLOAD_STATUS_WAITING_FOR_REBOOT_PREVIOUS_DOWNLOAD = "waiting reboot after download, so exit";
+   
+   /**
+    * Download status - download is in progress, exit
+    */
+   public static final String DOWNLOAD_IN_PROGRESS_FOR_PREVIOUS_TRIGGER = "download is in progress, exit";
+   
+   /** String to store 2.4Ghz SSID name */
+   public static final String STRING_VALUE_24GHZ_SSID1 = "RDKB-2.4G1";
+   /** String to store 5Ghz SSID name */
+   public static final String STRING_VALUE_5GHZ_SSID1 = "RDKB-5G1";
+   /** String to store 2.4Ghz/5Ghz passkey */
+   public static final String STRING_VALUE_24_5GHZ_KEY1 = "password1";
+   /** String to store 2.4Ghz SSID name */
+   public static final String STRING_VALUE_24GHZ_SSID2 = "RDKB-2.4G2";
+   /** String to store 5Ghz SSID name */
+   public static final String STRING_VALUE_5GHZ_SSID2 = "RDKB-5G2";
+   /** String to store 2.4Ghz/5Ghz passkey */
+   public static final String STRING_VALUE_24_5GHZ_KEY2 = "password2";
+   /** String to store 2.4Ghz SSID name */
+   public static final String STRING_VALUE_24GHZ_SSID3 = "RDKB-2.4G3";
+   /** String to store 5Ghz SSID name */
+   public static final String STRING_VALUE_5GHZ_SSID3 = "RDKB-5G3";
+   /** String to store 2.4Ghz/5Ghz passkey */
+   public static final String STRING_VALUE_24_5GHZ_KEY3 = "password3";
+   /** String to store 2.4Ghz SSID name */
+   public static final String STRING_VALUE_24GHZ_SSID4 = "RDKB-2.4G4";
+   /** String to store 5Ghz SSID name */
+   public static final String STRING_VALUE_5GHZ_SSID4 = "RDKB-5G4";
+   /** String to store 2.4Ghz/5Ghz passkey */
+   public static final String STRING_VALUE_24_5GHZ_KEY4 = "password4";
+   /** String to store 2.4Ghz SSID name */
+   public static final String STRING_VALUE_24GHZ_SSID5 = "RDKB-2.4G5";
+   /** String to store 5Ghz SSID name */
+   public static final String STRING_VALUE_5GHZ_SSID5 = "RDKB-5G5";
+   /** String to store 2.4Ghz/5Ghz passkey */
+   public static final String STRING_VALUE_24_5GHZ_KEY5 = "password5";
+   /** String to store 2.4Ghz SSID name */
+   public static final String STRING_VALUE_24GHZ_SSID6 = "RDKB-2.4G6";
+   /** String to store 5Ghz SSID name */
+   public static final String STRING_VALUE_5GHZ_SSID6 = "RDKB-5G6";
+   /** String to store 2.4Ghz/5Ghz passkey */
+   public static final String STRING_VALUE_24_5GHZ_KEY6 = "password6";
+   /** String to store 2.4Ghz SSID name */
+   public static final String STRING_VALUE_24GHZ_SSID7 = "RDKB-2.4G7";
+   /** String to store 5Ghz SSID name */
+   public static final String STRING_VALUE_5GHZ_SSID7 = "RDKB-5G7";
+   /** String to store 2.4Ghz/5Ghz passkey */
+   public static final String STRING_VALUE_24_5GHZ_KEY7 = "password7";
+   /** String to store 2.4Ghz SSID name */
+   public static final String STRING_VALUE_24GHZ_SSID8 = "RDKB-2.4G8";
+   /** String to store 5Ghz SSID name */
+   public static final String STRING_VALUE_5GHZ_SSID8 = "RDKB-5G8";
+   /** String to store 2.4Ghz/5Ghz passkey */
+   public static final String STRING_VALUE_24_5GHZ_KEY8 = "password8";
+   /** String to store 2.4Ghz SSID name */
+   public static final String STRING_VALUE_24GHZ_SSID9 = "RDKB-2.4G9";
+   /** String to store 5Ghz SSID name */
+   public static final String STRING_VALUE_5GHZ_SSID9 = "RDKB-5G9";
+   /** String to store 2.4Ghz/5Ghz passkey */
+   public static final String STRING_VALUE_24_5GHZ_KEY9 = "password9";
+   /** String to store 2.4Ghz SSID name */
+   public static final String STRING_VALUE_24GHZ_SSID10 = "RDKB-2.4G10";
+   /** String to store 5Ghz SSID name */
+   public static final String STRING_VALUE_5GHZ_SSID10 = "RDKB-5G10";
+   /** String to store 2.4Ghz/5Ghz passkey */
+   public static final String STRING_VALUE_24_5GHZ_KEY10 = "password10";
+   
+   /** String to store 2.4Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_2_4GHZ_WIFI_ACCESSPOINT_ALIAS1 = "AccessPoint-2GHz1";
+
+   /** String to store 2.4Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_2_4GHZ_WIFI_ACCESSPOINT_ALIAS2 = "AccessPoint-2GHz2";
+
+   /** String to store 2.4Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_2_4GHZ_WIFI_ACCESSPOINT_ALIAS3 = "AccessPoint-2GHz3";
+
+   /** String to store 2.4Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_2_4GHZ_WIFI_ACCESSPOINT_ALIAS4 = "AccessPoint-2GHz4";
+
+   /** String to store 2.4Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_2_4GHZ_WIFI_ACCESSPOINT_ALIAS5 = "AccessPoint-2GHz5";
+
+   /** String to store 2.4Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_2_4GHZ_WIFI_ACCESSPOINT_ALIAS6 = "AccessPoint-2GHz6";
+
+   /** String to store 2.4Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_2_4GHZ_WIFI_ACCESSPOINT_ALIAS7 = "AccessPoint-2GHz7";
+
+   /** String to store 2.4Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_2_4GHZ_WIFI_ACCESSPOINT_ALIAS8 = "AccessPoint-2GHz8";
+
+   /** String to store 2.4Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_2_4GHZ_WIFI_ACCESSPOINT_ALIAS9 = "AccessPoint-2GHz9";
+
+   /** String to store 2.4Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_2_4GHZ_WIFI_ACCESSPOINT_ALIAS10 = "AccessPoint-2GHz10";
+
+   /** String to store 5Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_5GHZ_WIFI_ACCESSPOINT_ALIAS1 = "AccessPoint-5GHz1";
+
+   /** String to store 5Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_5GHZ_WIFI_ACCESSPOINT_ALIAS2 = "AccessPoint-5GHz2";
+
+   /** String to store 5Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_5GHZ_WIFI_ACCESSPOINT_ALIAS3 = "AccessPoint-5GHz3";
+
+   /** String to store 5Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_5GHZ_WIFI_ACCESSPOINT_ALIAS4 = "AccessPoint-5GHz4";
+
+   /** String to store 5Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_5GHZ_WIFI_ACCESSPOINT_ALIAS5 = "AccessPoint-5GHz5";
+
+   /** String to store 5Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_5GHZ_WIFI_ACCESSPOINT_ALIAS6 = "AccessPoint-5GHz6";
+
+   /** String to store 5Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_5GHZ_WIFI_ACCESSPOINT_ALIAS7 = "AccessPoint-5GHz7";
+
+   /** String to store 5Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_5GHZ_WIFI_ACCESSPOINT_ALIAS8 = "AccessPoint-5GHz8";
+
+   /** String to store 5Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_5GHZ_WIFI_ACCESSPOINT_ALIAS9 = "AccessPoint-5GHz9";
+
+   /** String to store 5Ghz Wifi Access point Alias */
+   public static final String STRING_VALUE_5GHZ_WIFI_ACCESSPOINT_ALIAS10 = "AccessPoint-5GHz10";
+
+/** Pattern for getting docsis event count. */
+   public static final String DOCSIS_EVENT_COUNT_PATTERN = "SNMPv2-SMI::mib-2.\\d+.\\d+.\\d+.\\d+.\\d+.\\d+.\\d+ = (\\d+)";
+   
+/** Pattern for getting docsis event text. */
+   public static final String DOCSIS_EVENT_TEXT_PATTERN = "SNMPv2-SMI::mib-2.\\d+.\\d+.\\d+.\\d+.\\d+.\\d+.\\d+ = (.*)";
+
+   /** Pattern for getting docsif mib value. */
+   public static final String DOCSIF_MIB_VALUE_PATTERN = "SNMPv2-SMI::\\w+.*= -?(\\d+)";
+   
+   /** TRUE flag for SNMP operations */
+   public static final String TRUE_FLAG = " = 1";
+   
+   /** int value to store two hundred and ninety */
+   public static final String STRING_CONSTANT_290 = "290";
+   
+   /** int value 200 */
+   public static final int INT_VALUE_TWO_HUNDRED = 200;
+   
+   /** int value 500 */
+   public static final int INT_VALUE_FIVE_HUNDRED = 500;
+   
+   /** int value 580 */
+   public static final int INT_VALUE_FIVE_HUNDRED_AND_EIGHTY = 580;
+   
+   /** int value 80 */
+   public static final int INT_VALUE_EIGHTY = 80;
+   
+   /** int value -150 */
+   public static final int INT_VALUE_MINUS_HUNDRED_AND_FIFTY = -150;
+
+   /** int value 150 */
+   public static final int INT_VALUE_HUNDRED_AND_FIFTY = 150;
+   
+   /** int value 120 */
+   public static final int INT_VALUE_HUNDRED_AND_TWENTY = 120;
+   
+   /** Property key which contains payload data to enable/disable Snmpv2 */
+   public static final String PROP_KEY_TO_DISABLE_SNMPV2 = "rfc.payload.disable.snmpv2";
+   
+   /** String which will be replaced by actual enable/disable value in payload data */
+   public static final String ENABLE_DISABLE_VALUE = "ENABLEDISABLEVALUE";
+
+   /** Command tot remove /opt/dcm.properties **/
+   public static final String CMD_REMOVE_NVRAM_DCM_PROPERTIES = "rm -rf " + DCM_PROPERTIES_FILE_NVRAM_FOLDER;
+   
+   /** The constant for the build name for signed image. */
+   public static final String SIGNED_BUILD_IMAGE_EXTENSION = "-signed";
+   
+   /** The property key  for signed extensions. */
+   public static final String PROP_KEY_SIGNED_EXTENSION="build.signed.extension.";
+   
+   /** The property key  for signed extensions. */
+   public static final String PROP_KEY_AVG_RESPONSE_TIME="average.responsetime.";
+   
+   /** The property key  for signed extensions. */
+   public static final String MANUFACTURERNAME_VIAWEBPA="manufacturerName.RetrievedViaWebpa";
+   
+   /** The property key  for 2ghz operating standars */
+   public static final String OPERATING_STANDARDS_2GHZ_ARM="operatingstandards.2ghz.arm.";
+   
+   /** The property key  for 2ghz operating standars */
+   public static final String OPERATING_STANDARDS_2GHZ_ATOM="operatingstandards.2ghz.atom.";
+   
+   /** The property key  for 2ghz operating standars */
+   public static final String LOGFILENAME_ATOM="operatingstandards.2ghz.atom.";
+   
+   /** Pattern to get Uptime from snmp response string */
+   public static final String SYS_UP_TIME_INSTANCE = "DISMAN-EVENT-MIB::sysUpTimeInstance = (\\d+:\\d+:\\d+:\\d+)";
+   
+   /** Pattern to extract failure reason trace from SNMP output */
+   public static final String PATTERN_FINDER_FAILURE_REASON = ".*\n(.*)\\s+\\(";
+   
+   /** Constant to hold the SNMP response as Not Writable */
+   public static final String NOT_WRITABLE = "Reason: notWritable";
+   
+   /** The property key  for wifi interface name. */
+   public static final String PROP_KEY_WIFI_PRIVATE_5GHZ_INTERFACE_NAME_BY_SSID= "wifi.interface.name.private.5ghz.ssid.";
+   public static final String PROP_KEY_WIFI_PRIVATE_2GHZ_INTERFACE_NAME_BY_SSID= "wifi.interface.name.private.2ghz.ssid.";  
+   public static final String PROP_KEY_WIFI_PUBLIC_5GHZ_INTERFACE_NAME_BY_SSID= "wifi.interface.name.public.5ghz.ssid.";
+   public static final String PROP_KEY_WIFI_PUBLIC_2GHZ_INTERFACE_NAME_BY_SSID= "wifi.interface.name.public.2ghz.ssid.";
+   
+   public static final String PROP_KEY_WIFI_PRIVATE_5GHZ_INTERFACE_NAME_BY_BSSID= "wifi.interface.name.private.5ghz.bssid.";
+   public static final String PROP_KEY_WIFI_PRIVATE_2GHZ_INTERFACE_NAME_BY_BSSID= "wifi.interface.name.private.2ghz.bssid.";  
+   public static final String PROP_KEY_WIFI_PUBLIC_5GHZ_INTERFACE_NAME_BY_BSSID= "wifi.interface.name.public.5ghz.bssid.";
+   public static final String PROP_KEY_WIFI_PUBLIC_2GHZ_INTERFACE_NAME_BY_BSSID= "wifi.interface.name.public.2ghz.bssid.";
+   
+   public static final String PROP_KEY_WIFI_PRIVATE_5GHZ_INTERFACE_NAME_BY_MAC= "wifi.interface.name.private.5ghz.mac.";
+   public static final String PROP_KEY_WIFI_PRIVATE_2GHZ_INTERFACE_NAME_BY_MAC= "wifi.interface.name.private.2ghz.mac.";  
+   public static final String PROP_KEY_WIFI_PUBLIC_5GHZ_INTERFACE_NAME_BY_MAC= "wifi.interface.name.public.5ghz.mac.";
+   public static final String PROP_KEY_WIFI_PUBLIC_2GHZ_INTERFACE_NAME_BY_MAC= "wifi.interface.name.public.2ghz.mac.";
+   public static final String PROP_KEY_USER_SBIN_PATH= "path.user.sbin.";
+   
+   /** Constant for no such device */
+   public static final String NOT_ASSOCIATED = "Not-Associated";
+
+   /** Constant for Invalid Mac Address */
+   public static final String INVALID_MAC_ADDRESS = "00:00:00:00:00:00";
+
+   /** Constant for Out Of service */
+   public static final String OUTOFSERVICE = "OutOfService";
+   
+   /** Constant for Public wifi ssid for 5GHZ */
+   public static final String PUBLIC_WIFI_SSID_5 = "xfinitywifi_5";
+   
+   /** Constant for Public wifi ssid for 2GHZ */
+   public static final String PUBLIC_WIFI_SSID_2 = "xfinitywifi_2";
+   
+   /** Command to grep MAC ADDRESS from Atom device */
+   public static final String CMD_TO_GREP_MAC_ADDRESS_ATOM = " Access Point:\\s+(.*)\\s+Bit";
+   
+   /** Command to grep SSID from the Atom device */
+   public static final String CMD_TO_GREP_SSID_ATOM = "[(ESSID|SSID)]:(.*)\\s+Mode";
+   
+   /** Command to grep SSID from the Fibre device */
+   public static final String CMD_TO_GREP_SSID_FIBER = "SSID:\\s+(.*)\\s+Mode";
+   
+   /** Command to grep MAC ADDRESS from the Fibre device */
+   public static final String CMD_TO_GREP_MAC_ADDRESS_FIBER = "BSSID:\\s+(.*)\\s+Capability";
+   
+   /** Regex pattern to validate the Hexa String */
+   public static final String HEXA_STRING_REGEX =  "[[A-Z0-9a-z]{2}\\s].*";
+   
+   /** Constant to hold snmpv3 timeout error */
+   public static final String SNMPV3_TIMEOUT_ERROR = "tsm: needed to free transport data";
+   
+   /** constant for number 1000000 */
+   public static final int CONSTANT_1000000 = 1000000;
+   
+   /** Constant for number 100 */
+   public static final int CONSTANT_100 = 100;
+   
+   /** Pattern to extract the values from SNMP walk Output */
+   public static final String PATTERN_TO_EXTRACT_VALUES_FROM_SNMP_WALK_OUTPUT = "SNMPv2-SMI::\\w+.*=\\s+(.*)";
+   
+   /** String value 380 */
+   public static final String STRING_VALUE_THREE_HUNDRED_AND_EIGHTY = "380";
+   
+   /** Pattern to extract the table index */
+   public static final String PATTERN_TO_EXTRACT_TABLE_INDEX = "SNMPv2-SMI::\\w+.*\\d+\\.(\\d+)\\s+=";
+   
+   /** Pattern to match only digits */
+   public static final String PATTERN_ONLY_DIGITS = "^\\d+$";
+   
+   /** String value 52400 */
+   public static final String STRING_VALUE_FIVE_LAKH_TWENTY_FOUR_THOUSAND = "524000";
+   
+   /** Binary build image extension. */
+   public static final String BINARY_BUILD_IMAGE_EXTENSION = ".bin";
+   
+   /** Thirteen minute in millisecond representation. */
+   public static final long THIRTEEN_MINUTE_IN_MILLIS = 13 * ONE_MINUTE_IN_MILLIS;
+   
+   public static final int INCERMENTAL_ONE = 1;
+   
+   public static final int INCERMENTAL_THREE = 3;
+   
+   /** WebPA Parameter to Enabling Public wifi */
+   public static final String WEBPA_PARAM_ENABLING_PUBLIC_WIFI = "Device.DeviceInfo.X_COMCAST_COM_xfinitywifiEnable";
+
 }

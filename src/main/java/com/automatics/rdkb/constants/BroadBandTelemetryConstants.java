@@ -21,4 +21,7 @@ public class BroadBandTelemetryConstants {
 
     /** Constant for the location of dcm.properties file in /etc folder */
     public static final String DCM_PROPERTIES_FILE_ETC_FOLDER = "/etc/dcm.properties"; 
+    
+    /** Command to list the dcm.properties in etc folder. */
+    public static final String CMD_LIST_DCM_PROPERTIES_ETC_FOLDER = "ls -ltr /etc/ | grep -i  dcm.properties";
 }

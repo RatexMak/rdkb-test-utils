@@ -34,4 +34,10 @@ public class WebPaParamConstants {
     }
     /** WebPa parameter for Factory Reset */
     public static final String WEBPA_PARAM_FACTORY_RESET = "Device.X_CISCO_COM_DeviceControl.FactoryReset";
+    
+    /** TR181 parameter to trigger immidiate RFC check-in for new configuration */
+    public static final String WEBPA_PARAM_IMMEDIATE_RFC_CHECK_IN = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Control.RetrieveNow";
+    
+    /** TR181 parameter to Enable/Disable cloud encryption for crash and log uploads */
+    public static final String WEBPA_PARAM_TO_ENABLE_DISABLE_CLOUD_UPLOAD_ENCRYPTION = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.EncryptCloudUpload.Enable";
 }

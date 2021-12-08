@@ -28,6 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automatics.device.Dut;
+import com.automatics.exceptions.TestException;
+import com.automatics.rdkb.constants.BroadBandCdlConstants;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
@@ -111,4 +113,46 @@ public class BroadBandNetworkConnectivityUtils {
 	return nslookupIPv6Addr;
     }
 
+    /**
+     * Utility method to get valid ping servers.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param type
+     *            Ipv4 or Ipv6 ping servers
+     * @return Returns true if computational window is set successfully
+     * @refactor Govardhan
+     */
+    public static String resolvePingServer(Dut device, AutomaticsTapApi tapEnv, String type) {
+	LOGGER.debug("ENTERING METHOD : validPingServers");
+	String response = null;
+	String pattern = null;
+	try {
+	    LOGGER.info("ENTERING METHOD : validPingServers");
+	    String validPingServerUrl = AutomaticsPropertyUtility.getProperty(BroadBandCdlConstants.VALID_PING_SERVER_URL);
+	    LOGGER.info("validPingServerUrl is-" + validPingServerUrl);
+	    String command = 
+		    BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_NSLOOKUP,
+			    BroadBandTestConstants.SINGLE_SPACE_CHARACTER, validPingServerUrl) ;
+	    String output = tapEnv.executeCommandUsingSsh(device, command);
+	    if (CommonMethods.isNotNull(output)) {
+		if (BroadBandTestConstants.IP_VERSION4.equalsIgnoreCase(type)) {
+		    pattern = BroadBandTestConstants.PATTERN_MATCHER_IPV4_VALID_PING_SERVER;
+		} else if (BroadBandTestConstants.IP_VERSION6.equalsIgnoreCase(type)) {
+		    pattern = BroadBandTestConstants.PATTERN_MATCHER_IPV6_VALID_PING_SERVER;
+		} else {
+		    throw new TestException("Wrong type passed in to the resolve ping servers Api");
+		}
+		response = CommonMethods.patternFinder(output, pattern);
+	    }
+	    LOGGER.info("response is-" + response);
+	} catch (Exception exception) {
+	    LOGGER.error("EXCEPTION OCCURRED WHILE TRYING TO GET THE PING SERVERS: " + exception.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD validPingServers");
+	return response;
+    }
+	
 }

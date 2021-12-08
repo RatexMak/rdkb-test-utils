@@ -122,6 +122,16 @@ public class BroadBandWebPaConstants {
      * WebPA parameter to get the SSID name for 5 GHz Wi-Fi network.
      */
     public static final String WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_NAME = "Device.WiFi.SSID.10101.SSID";
+    
+    /**
+     * WebPA parameter to get the SSID name for 5 GHz Wi-Fi network.
+     */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID_NAME = "Device.WiFi.SSID.10105.SSID";
+    
+    /**
+     * WebPA parameter to get the SSID name for 5 GHz Wi-Fi network.
+     */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PUBLIC_SSID_NAME = "Device.WiFi.SSID.10005.SSID";
 
     /**
      * WebPA parameter to get the SSID enabled status for 2.4 GHz Wi-Fi network.
@@ -193,6 +203,16 @@ public class BroadBandWebPaConstants {
      * WebPA parameter to get the SSID Advertisement enabled status for 5 GHz Wi-Fi network.
      */
     public static final String WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_ADV_ENABLED = "Device.WiFi.AccessPoint.10101.SSIDAdvertisementEnabled";
+    
+    /**
+     * WebPA parameter to get the SSID Advertisement enabled status for 5 GHz Wi-Fi network.
+     */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID_ADV_ENABLED = "Device.WiFi.AccessPoint.10105.SSIDAdvertisementEnabled";
+    
+    /**
+     * WebPA parameter to get the SSID Advertisement enabled status for 5 GHz Wi-Fi network.
+     */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PUBLIC_SSID_ADV_ENABLED = "Device.WiFi.AccessPoint.10005.SSIDAdvertisementEnabled";
 
     /**
      * WebPA Parameter to get/set Security mode Enabled by 2.4G Private network
@@ -314,7 +334,7 @@ public class BroadBandWebPaConstants {
 
     /** WebPA Parameter for Firewall Level */
     public static final String WEBPA_PARAM_FIREWALL_LEVEL = "Device.X_CISCO_COM_Security.Firewall.FirewallLevel";
-    
+
     /** WebPA Parameter for band steering PhyRateThreshold for 2.4GHZ radio */
     public static final String WEBPA_PARAM_BAND_STEERING_PHY_THRESHOLD_2_4GHZ = "Device.WiFi.X_RDKCENTRAL-COM_BandSteering.BandSetting.1.PhyRateThreshold";
 
@@ -336,76 +356,7 @@ public class BroadBandWebPaConstants {
     /** WebPA Parameter for band steering enable */
     public static final String WEBPA_PARAM_BAND_STEERING_APGROUP = "Device.WiFi.X_RDKCENTRAL-COM_BandSteering.APGroup";
 
-    public enum RdkBBandSteeringParameters {
-	DEFAULT_STEERING_ENABLE(WEBPA_PARAM_BAND_STEERING_ENABLE, "false"),
-	DEFAULT_STEERING_IDLE_INACTIVE_TIME_2GHZ(WEBPA_PARAM_BAND_STEERING_IDLE_INACTIVE_TIME_2_4GHZ, "10"),
-	DEFAULT_STEERING_IDLE_INACTIVE_TIME_5GHZ(WEBPA_PARAM_BAND_STEERING_IDLE_INACTIVE_TIME_5GHZ, "10"),
-	DEFAULT_STEERING_OVERLOAD_INACTIVE_TIME_2GHZ(WEBPA_PARAM_BAND_STEERING_OVERLOAD_INACTIVE_TIME_2_4GHZ, "10"),
-	DEFAULT_STEERING_OVERLOAD_INACTIVE_TIME_5GHZ(WEBPA_PARAM_BAND_STEERING_OVERLOAD_INACTIVE_TIME_5GHZ, "10"),
-	DEFAULT_STEERING_IDLE_INACTIVE_TIME_2GHZ_XB6(WEBPA_PARAM_BAND_STEERING_IDLE_INACTIVE_TIME_2_4GHZ, "0"),
-	DEFAULT_STEERING_IDLE_INACTIVE_TIME_5GHZ_XB6(WEBPA_PARAM_BAND_STEERING_IDLE_INACTIVE_TIME_5GHZ, "0"),
-	DEFAULT_STEERING_OVERLOAD_INACTIVE_TIME_2GHZ_XB6(WEBPA_PARAM_BAND_STEERING_OVERLOAD_INACTIVE_TIME_2_4GHZ, "0"),
-	DEFAULT_STEERING_OVERLOAD_INACTIVE_TIME_5GHZ_XB6(WEBPA_PARAM_BAND_STEERING_OVERLOAD_INACTIVE_TIME_5GHZ, "0"),
-	DEFAULT_STEERING_APGROUP(WEBPA_PARAM_BAND_STEERING_APGROUP, "1,2"),
-	DEFAULT_STEERING_IDLE_INACTIVE_TIME_2GHZ_XB7(WEBPA_PARAM_BAND_STEERING_IDLE_INACTIVE_TIME_2_4GHZ, "0"),
-	DEFAULT_STEERING_IDLE_INACTIVE_TIME_5GHZ_XB7(WEBPA_PARAM_BAND_STEERING_IDLE_INACTIVE_TIME_5GHZ, "0"),
-	DEFAULT_STEERING_OVERLOAD_INACTIVE_TIME_2GHZ_XB7(WEBPA_PARAM_BAND_STEERING_OVERLOAD_INACTIVE_TIME_2_4GHZ, "0"),
-	DEFAULT_STEERING_OVERLOAD_INACTIVE_TIME_5GHZ_XB7(WEBPA_PARAM_BAND_STEERING_OVERLOAD_INACTIVE_TIME_5GHZ, "0");
-
-	String param;
-	String defaultValue;
-
-	RdkBBandSteeringParameters(String param, String defaultValue) {
-	    this.param = param;
-	    this.defaultValue = defaultValue;
-	}
-
-	/**
-	 * @return the param
-	 */
-	public String getParam() {
-	    return param;
-	}
-
-	/**
-	 * @param param
-	 *            the param to set
-	 */
-	public void setParam(String param) {
-	    this.param = param;
-	}
-
-	/**
-	 * @return the defaultValue
-	 */
-	public String getDefaultValue() {
-	    return defaultValue;
-	}
-
-	/**
-	 * @param defaultValue
-	 *            the defaultValue to set
-	 */
-	public void setDefaultValue(String defaultValue) {
-	    this.defaultValue = defaultValue;
-	}
-
-	/**
-	 * returns all band steering webpa names
-	 * 
-	 * @return
-	 */
-	public static String[] getAllBandSteeringWebPaConstantNames() {
-	    RdkBBandSteeringParameters[] steeringParams = values();
-	    String[] names = new String[steeringParams.length];
-
-	    for (int i = 0; i < steeringParams.length; i++) {
-		names[i] = steeringParams[i].getParam();
-	    }
-
-	    return names;
-	}
-    }
+   
 
     public enum RdkBSsidParameters {
 	SSID_FOR_2GHZ_PRIVATE_WIFI("Device.WiFi.SSID.10001.SSID", "2.4"),
@@ -608,7 +559,7 @@ public class BroadBandWebPaConstants {
      * WebPA parameter to get the SSID enabled status for 5 GHz Wi-Fi network.
      */
     public static final String WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_ENABLED = "Device.WiFi.SSID.10101.Enable";
-    
+
     /**
      * WebPA Parameter to change/get Security mode in 5G network
      */
@@ -619,4 +570,592 @@ public class BroadBandWebPaConstants {
      */
     public static final String WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_2_4_GHZ_SECURITY_MODEENABLED = "Device.WiFi.AccessPoint.10002.Security.ModeEnabled";
 
+    /** TR-069 Parameter for device software version. */
+    public static final String TR69_PARAM_SOFTWARE_VERSION = "Device.DeviceInfo.SoftwareVersion";
+
+    /** TR-069 Parameter for manufacturer. */
+    public static final String TR69_PARAM_MANUFACTURER = "Device.DeviceInfo.Manufacturer";
+
+    /** WebPA Parameter for device model name */
+    public static final String WEBPA_PARAMETER_FOR_MODELNAME = "Device.DeviceInfo.ModelName";
+
+    /** TR-069 Parameter for Device.DeviceInfo.X_CISCO_COM_BootloaderVersion. */
+    public static final String TR69_PARAM_DEVICE_INFO_BOOT_LOADER_VERSION = "Device.DeviceInfo.X_CISCO_COM_BootloaderVersion";
+
+    /** WebPA Parameter for device hardware version */
+    public static final String WEBPA_PARAMETER_FOR_HARDWARE_VERSION = "Device.DeviceInfo.HardwareVersion";
+
+    /** WebPA parameter for storing CM MAC value */
+    public static final String WEBPA_PARAM_CM_MAC = "Device.X_CISCO_COM_CableModem.MACAddress";
+
+    /** WebPA parameter for DEVICE Boot FILENAME */
+    public static final String WEBPA_PARAM_DEVICE_BOOT_FILENAME = "Device.X_CISCO_COM_CableModem.IPv6BootFileName";
+
+    /** WebPA parameter for DEVICE MTA MAC */
+    public static final String WEBPA_PARAM_DEVICE_MTA_MAC = "Device.X_CISCO_COM_MTA.MACAddress";
+
+    /** MTA to retrieve MTA IP from Device */
+    public static final String WEBPA_COMMAND_MTA_IP_OF_DEVICE = "Device.X_CISCO_COM_MTA.IPAddress";
+
+    /** WebPA parameter for SNMPv3 support */
+    public static final String WEBPA_PARAM_SNMPV3_SUPPORT = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.SNMP.V3Support";
+
+    /** WebPA parameter for Codebig first */
+    public static final String WEBPA_PARAM_CODEBIG_FIRST_ENABLE = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.CodeBigFirst.Enable";
+
+    /**
+     * WebPA Parameter to get Firmware Download URL
+     */
+    public static final String WEBPA_PARAM_Device_DeviceInfo_X_RDKCENTRAL_COM_FirmwareDownloadURL = "Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareDownloadURL";
+
+    /**
+     * WebPA Parameter Firmware To Download
+     */
+    public static final String WEBPA_PARAM_Device_DeviceInfo_X_RDKCENTRAL_COM_FirmwareToDownload = "Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareToDownload";
+
+    /**
+     * WebPA Parameter to Check firmware download status
+     */
+    public static final String WEBPA_PARAM_Device_DeviceInfo_X_RDKCENTRAL_COM_FirmwareDownloadStatus = "Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareDownloadStatus";
+
+    /**
+     * WebPA parameter to get the CMTS MAC Address.
+     */
+    public static final String WEBPA_PARAM_DEVICE_INFO_RDK_CENTRAL_CMTS_MAC = "Device.DeviceInfo.X_RDKCENTRAL-COM_CMTS_MAC";
+
+    /**
+     * WebPA Parameter to enable SSID of 5G Private Network
+     */
+    public static final String WEBPA_PARAM_Device_WiFi_SSID_10101_Enable = "Device.WiFi.SSID.10101.Enable";
+
+    /**
+     * WebPA Parameter to get Firmware download protocol
+     */
+    public static final String WEBPA_PARAM_Device_DeviceInfo_X_RDKCENTRAL_COM_FirmwareDownloadProtocol = "Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareDownloadProtocol";
+
+    /** WebPa Parameter for Maintenance window start time */
+    public static final String WEBPA_COMMAND_MAINTENANCE_WINDOW_START_TIME = "Device.DeviceInfo.X_RDKCENTRAL-COM_MaintenanceWindow.FirmwareUpgradeStartTime";
+
+    /** WebPa Parameter for Maintenance window end time */
+    public static final String WEBPA_COMMAND_MAINTENANCE_WINDOW_END_TIME = "Device.DeviceInfo.X_RDKCENTRAL-COM_MaintenanceWindow.FirmwareUpgradeEndTime";
+
+    /** WebPA Parameter to retrieve the RFC control for telemetry 2.0 */
+    public static final String WEBPA_PARAM_RFC_CONTROL = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Control.RetrieveNow";
+
+    /** Webpa parameter to trigger xconf cdl */
+    public static final String WEBPA_PARAM_FOR_TRIGGERING_XCONF_CDL = "Device.X_COMCAST-COM_Xcalibur.Client.xconfCheckNow";
+
+    /**
+     * WebPa parameter for device reboot. The value should be of string type - "Device"
+     */
+    public static final String WEBPA_PARAM_DEVICE_CONTROL_DEVICE_REBOOT = "Device.X_CISCO_COM_DeviceControl.RebootDevice";
+
+    /**
+     * WebPA Parameter to get maxSubsytemResetCount for self heal
+     */
+    public static final String WEBPA_PARAM_MAX_SUB_SYSTEM_RESET_COUNT_FOR_SELF_HEAL = "Device.SelfHeal.X_RDKCENTRAL-COM_MaxResetCount";
+
+    /** WebPA Parameter for selfheal ping interval */
+    public static final String WEBPA_PARAMETER_FOR_SELFHEAL_PINGINTERVAL = "Device.SelfHeal.ConnectivityTest.X_RDKCENTRAL-COM_PingInterval";
+
+    /** WebPa Parameter for getting device boot time */
+    public static final String WEBPA_PARAM_DEVICE_BOOTTIME = "Device.DeviceInfo.X_RDKCENTRAL-COM_BootTime";
+    
+    /*** WebPA Parameter to Enabling Public wifi */
+    public static final String WEBPA_PARAM_ENABLING_PUBLIC_WIFI = "Device.DeviceInfo.X_COMCAST_COM_xfinitywifiEnable";
+    
+    public static final String[] WEBPA_PARAM_LIST_QT_POSTCONDITION = {
+    	    BroadBandWebPaConstants.WEBPA_PARAM_CAPTIVE_PORTAL_ENABLE,
+    	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_INFO_RDK_CENTRAL_CONFIGURE_WIFI,
+    	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_INFO_RDK_CENTRAL_WIFI_NEEDS_PERSONALIZATION,
+    	    BroadBandWebPaConstants.WEBPA_PARAM_BRIDGE_MODE_STATUS,
+    	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_NAME,
+    	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_NAME,
+    	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_ADV_ENABLED,
+    	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_ADV_ENABLED,
+    	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_ENABLED_STATUS,
+    	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_ENABLED_STATUS,
+    	    BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI};
+		
+		    /** WebPA Parameter for product class */
+    public static final String WEBPA_PARAMETER_FOR_PRODUCTCLASS = "Device.DeviceInfo.ProductClass";
+    
+    /** WebPA Parameter for Device manufacturer */
+    public static final String WEBPA_PARAMETER_FOR_MANUFACTURER_INFO = "Device.DeviceInfo.Manufacturer";
+    
+    /** WebPA Parameter for firmware name */
+    public static final String WEBPA_PARAMETER_FOR_FIRMWARE_NAME = "Device.DeviceInfo.X_CISCO_COM_FirmwareName";
+    
+    /** WebPA Parameter for device CMC */
+    public static final String WEBPA_PARAMETER_FOR_CMC = "Device.DeviceInfo.Webpa.X_COMCAST-COM_CMC";
+    
+    /** WebPA Parameter for device CID */
+    public static final String WEBPA_PARAMETER_FOR_CID = "Device.DeviceInfo.Webpa.X_COMCAST-COM_CID";
+
+    /** WebPA Parameter for DHCPv4 lease time */
+    public static final String WEBPA_PARAMETER_FOR_DHCP_LEASETIME = "Device.DHCPv4.Server.Pool.1.LeaseTime";
+    
+    /** WebPA Parameter for DNS client server enable */
+    public static final String WEBPA_PARAMETER_FOR_DNS_CLIENT_SERVER = "Device.DNS.Client.Server.1.Enable";
+    
+    /** WebPA Parameter for DNS client server type */
+    public static final String WEBPA_PARAMETER_FOR_DNS_CLIENT_SERVER_TYPE = "Device.DNS.Client.Server.1.Type";
+    
+    /** WebPA Parameter for selfheal max reset count */
+    public static final String WEBPA_PARAMETER_FOR_SELFHEAL_MAXRESET_COUNT = "Device.SelfHeal.X_RDKCENTRAL-COM_MaxResetCount";
+    
+    /** WebPA Parameter for Xfinity 2.4Ghz ssid */
+    public static final String WEBPA_PARAMETER_FOR_PRIVATE_24GHZ_SSID = "Device.WiFi.SSID.10001.SSID";
+    /** WebPA Parameter for Xfinity 5Ghz ssid */
+    public static final String WEBPA_PARAMETER_FOR_PRIVATE_5GHZ_SSID = "Device.WiFi.SSID.10101.SSID";
+    /** WebPA Parameter for xfinity 2.4ghz passkey */
+    public static final String WEBPA_PARAMETER_FOR_PRIVATE_24GHZ_PASS = "Device.WiFi.AccessPoint.10001.Security.KeyPassphrase";
+    /** WebPA Parameter for xfinity 5ghz passkey */
+    public static final String WEBPA_PARAMETER_FOR_PRIVATE_5GHZ_PASS = "Device.WiFi.AccessPoint.10101.Security.KeyPassphrase";
+      
+    /** webpa parameter to change the Auto Change enable status in 2.4Ghz band */
+    public static final String WEBPA_PARAM_FOR_WIFI_AUTOCHANNELENABLE_STATUS_2GHZ = "Device.WiFi.Radio.10000.AutoChannelEnable";
+    
+    /** web pa parameter to get guard interval in 2.4Ghz band private wifi */
+    public static final String WEBPA_PARAM_FOR_GUARD_INTERVAL_IN_2GHZ = "Device.WiFi.Radio.10000.GuardInterval";
+    
+    /** WebPA Parameter for ENABLING radio setting for Wifi 2.4 Ghz */
+    public static final String WEBPA_PARAM_WIFI_2_4_RADIO_ENABLE = "Device.WiFi.Radio.10000.Enable";
+    
+    /**
+     * WebPA Parameter get channel radio for 10000
+     */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_RADIO_CHANNEL_IN_2GHZ = "Device.WiFi.Radio.10000.Channel";
+    
+    /** webpa parameter to get guard interval in 2.4Ghz band private wifi */
+    public static final String WEBPA_PARAM_FOR_GUARD_INTERVAL_IN_5GHZ = "Device.WiFi.Radio.10100.GuardInterval";
+    
+    /** WebPA Parameter to get WiFi Radio.10100 Operating standard */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_RADIO_OPERATINGSTANDARDS_IN_5GHZ = "Device.WiFi.Radio.10100.OperatingStandards";
+    
+    /** WebPA Parameter to get WiFi Radio.10100 Operating standard */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_RADIO_OPERATINGSTANDARDS_IN_2GHZ = "Device.WiFi.Radio.10000.OperatingStandards";
+    
+    /** WebPA Parameter for ENABLING radio setting for Wifi 5 Ghz */
+    public static final String WEBPA_PARAM_WIFI_5_RADIO_ENABLE = "Device.WiFi.Radio.10100.Enable";
+    
+    /** web pa parameter to get the encryption method in 2.4ghz for private wifi */
+    public static final String WEBPA_PARAM_FOR_ENCRYPTIONMETHOD_IN_2GHZ_PRIVATE_WIFI = "Device.WiFi.AccessPoint.10001.Security.X_CISCO_COM_EncryptionMethod";
+
+    /** web pa parameter to get the encryption method in 5ghz for private wifi */
+    public static final String WEBPA_PARAM_FOR_ENCRYPTIONMETHOD_IN_5GHZ_PRIVATE_WIFI = "Device.WiFi.AccessPoint.10101.Security.X_CISCO_COM_EncryptionMethod";
+    
+    /** This enum stores diffrent methods available for restting wifi settings */
+    public enum WIFI_RESTORE_METHOD {
+	SNMP,
+	WEBPA,
+	MSO_GUI,
+	ADMIN_GUI;
+    }
+    
+    /** This enum stores the non default values for all 2.4 and 5GHZ wifi parameters */
+    public enum NonDefaultWiFiParametersEnum {
+
+	NONDEFAULT_VALUE_SSID_2_4(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID, "TEST-2.4", 0),
+	NONDEFAULT_VALUE_SECURITY_MODE_2_4(
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_2_4_GHZ_PRIVATE_SECURITY_MODEENABLED,
+		"WPA2-Enterprise",
+		0),
+	NONDEFAULT_VALUE_CHANNEL_MODE_2_4(
+		BroadBandWebPaConstants.WEBPA_PARAM_FOR_WIFI_AUTOCHANNELENABLE_STATUS_2GHZ,
+		"false",
+		3),
+	NONDEFAULT_VALUE_BANDWIDTH_2_4(
+		BroadBandWebPaConstants.WEBPA_PARAM_FOR_OPERATING_BANDWIDTH_IN_2GHZ_BAND,
+		"20MHz",
+		0),
+	NONDEFAULT_VALUE_GUARD_INTERVAL_2_4(
+		BroadBandWebPaConstants.WEBPA_PARAM_FOR_GUARD_INTERVAL_IN_2GHZ,
+		"800nsec",
+		0),
+	NONDEFAULT_VALUE_NETWORK_NAME_ENABLED_2_4(
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_ADV_ENABLED,
+		"false",
+		3),
+	NONDEFAULT_VALUE_NETWORK_ACTIVE_STATUS_2_4(
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_ENABLED_STATUS,
+		"false",
+		3),
+	NONDEFAULT_VALUE_OPERATING_STANDARD_2_4(
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_10000_OPERATINGSTANDARDS,
+		"n",
+		0),
+	NONDEFAULT_VALUE_RADIO_STATUS_2_4(BroadBandWebPaConstants.WEBPA_PARAM_WIFI_2_4_RADIO_ENABLE, "false", 3),
+	NONDEFAULT_VALUE_RADIO_CHANNEL_2_4(
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_CHANNEL_IN_2GHZ,
+		"3",
+		2),
+	NONDEFAULT_VALUE_SSID_5(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID, "TEST-5", 0),
+	NONDEFAULT_VALUE_SECURITY_MODE_5(
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_5_GHZ_PRIVATE_SECURITY_MODEENABLED,
+		"WPA2-Enterprise",
+		0),
+	NONDEFAULT_VALUE_CHANNEL_MODE_5(
+		BroadBandWebPaConstants.WEBPA_PARAM_FOR_WIFI_AUTOCHANNELENABLE_STATUS_5GHZ,
+		"false",
+		3),
+	NONDEFAULT_VALUE_BANDWIDTH_5(
+		BroadBandWebPaConstants.WEBPA_PARAM_FOR_OPERATING_BANDWIDTH_IN_5GHZ_BAND,
+		"40MHz",
+		0),
+	NONDEFAULT_VALUE_GUARD_INTERVAL_5(BroadBandWebPaConstants.WEBPA_PARAM_FOR_GUARD_INTERVAL_IN_5GHZ, "800nsec", 0),
+	NONDEFAULT_VALUE_NETWORK_NAME_ENABLED_5(
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_ADV_ENABLED,
+		"false",
+		3),
+	NONDEFAULT_VALUE_NETWORK_ACTIVE_STATUS_5(
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_ENABLED_STATUS,
+		"false",
+		3),
+	NONDEFAULT_VALUE_OPERATING_STANDARD_5(
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_OPERATINGSTANDARDS_IN_5GHZ,
+		"n",
+		0),
+	NONDEFAULT_VALUE_RADIO_STATUS_5(BroadBandWebPaConstants.WEBPA_PARAM_WIFI_5_RADIO_ENABLE, "false", 3),
+	NONDEFAULT_VALUE_RADIO_CHANNEL_5(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_CHANNEL_IN_5GHZ, "52", 2);
+
+	String webPaParam;
+	String webPaValue;
+	int valueType;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param webPaParam
+	 * @param webPaValue
+	 * @param valueType
+	 */
+	NonDefaultWiFiParametersEnum(String webPaParam, String webPaValue, int valueType) {
+	    this.webPaParam = webPaParam;
+	    this.webPaValue = webPaValue;
+	    this.valueType = valueType;
+	}
+
+	/**
+	 * @return the webPaParam
+	 */
+	public String getWebPaParam() {
+	    return webPaParam;
+	}
+
+	/**
+	 * @param webPaParam
+	 *            the webPaParam to set
+	 */
+	public void setWebPaParam(String webPaParam) {
+	    this.webPaParam = webPaParam;
+	}
+
+	/**
+	 * @return the webPaValue
+	 */
+	public String getWebPaValue() {
+	    return webPaValue;
+	}
+
+	/**
+	 * @param webPaValue
+	 *            the webPaValue to set
+	 */
+	public void setWebPaValue(String webPaValue) {
+	    this.webPaValue = webPaValue;
+	}
+
+	/**
+	 * @return the valueType
+	 */
+	public int getValueType() {
+	    return valueType;
+	}
+
+	/**
+	 * @param valueType
+	 *            the valueType to set
+	 */
+	public void setValueType(int valueType) {
+	    this.valueType = valueType;
+	}
+    }
+
+    /**
+     * WebPA parameters array for 2.4GHz band
+     */
+    public static final String[] PARAMETERS_FOR_2_4_GHZ_BAND = new String[] {
+	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_2_4_GHZ_PRIVATE_SECURITY_MODEENABLED,
+	    BroadBandWebPaConstants.WEBPA_PARAM_FOR_ENCRYPTIONMETHOD_IN_2GHZ_PRIVATE_WIFI,
+	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_SSID_STATUS_FOR_2_4GHZ_PRIVATE_SSID,
+	    BroadBandWebPaConstants.WEBPA_PARAM_FOR_WIFI_AUTOCHANNELENABLE_STATUS_2GHZ,
+	    BroadBandWebPaConstants.WEBPA_PARAM_FOR_OPERATING_BANDWIDTH_IN_2GHZ_BAND,
+	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_ADV_ENABLED,
+	    BroadBandWebPaConstants.WEBPA_PARAM_FOR_GUARD_INTERVAL_IN_2GHZ,
+	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_ENABLED_STATUS,
+	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_10000_OPERATINGSTANDARDS,
+	    BroadBandWebPaConstants.WEBPA_PARAM_WIFI_2_4_RADIO_ENABLE,
+	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_CHANNEL_IN_2GHZ };
+
+    /**
+     * WebPA parameters array for 5GHz band
+     */
+    public static final String[] PARAMETERS_FOR_5GHZ_BAND = new String[] {
+	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_5_GHZ_PRIVATE_SECURITY_MODEENABLED,
+	    BroadBandWebPaConstants.WEBPA_PARAM_FOR_ENCRYPTIONMETHOD_IN_5GHZ_PRIVATE_WIFI,
+	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_SSID_STATUS_FOR_5GHZ_PRIVATE_SSID,
+	    BroadBandWebPaConstants.WEBPA_PARAM_FOR_WIFI_AUTOCHANNELENABLE_STATUS_5GHZ,
+	    BroadBandWebPaConstants.WEBPA_PARAM_FOR_OPERATING_BANDWIDTH_IN_5GHZ_BAND,
+	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_ADV_ENABLED,
+	    BroadBandWebPaConstants.WEBPA_PARAM_FOR_GUARD_INTERVAL_IN_5GHZ,
+	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_ENABLED_STATUS,
+	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_OPERATINGSTANDARDS_IN_5GHZ,
+	    BroadBandWebPaConstants.WEBPA_PARAM_WIFI_5_RADIO_ENABLE,
+	    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_CHANNEL_IN_5GHZ };
+    
+    /** webpa parameter to factory reset the box */
+    public static final String WEBPA_PARAM_FOR_WIFI_RESET = "Device.WiFi.X_CISCO_COM_FactoryResetRadioAndAp";
+    
+    /** enum variable to store default values of wifi parameters in 2.4Ghz after factory reset */
+
+    public enum RdkBWifiParameters {
+	SECURITY_MODE_2GHZ_PRIVATE_WIFI("Device.WiFi.AccessPoint.10001.Security.ModeEnabled", "WPA2-Personal"),
+	SECURITY_MODE_5GHZ_PRIVATE_WIFI("Device.WiFi.AccessPoint.10101.Security.ModeEnabled", "WPA2-Personal"),
+	ENCRYPTION_MODE_2GHZ_PRIVATE_WIFI("Device.WiFi.AccessPoint.10001.Security.X_CISCO_COM_EncryptionMethod", "AES"),
+	ENCRYPTION_MODE_5GHZ_PRIVATE_WIFI("Device.WiFi.AccessPoint.10101.Security.X_CISCO_COM_EncryptionMethod", "AES"),
+	SSID_STATUS_2GHZ_PRIVATE_WIFI("Device.WiFi.SSID.10001.Status", "Up"),
+	SSID_STATUS_5GHZ_PRIVATE_WIFI("Device.WiFi.SSID.10101.Status", "Up"),
+	AUTOCHANNEL_ENABLE_STATUS_2GHZ("Device.WiFi.Radio.10000.AutoChannelEnable", "true"),
+	AUTOCHANNEL_ENABLE_STATUS_5GHZ("Device.WiFi.Radio.10100.AutoChannelEnable", "true"),
+	AUTOCHANNEL_ENABLE_STATUS_5GHZ_SKYH4("Device.WiFi.Radio.10100.AutoChannelEnable", "false"),
+	// Modified as per RDKB-14302
+	OPERATING_CHANNEL_BANDWIDTH_2GHZ("Device.WiFi.Radio.10000.OperatingChannelBandwidth", "20MHz"),
+	OPERATING_CHANNEL_BANDWIDTH_2GHZ_FOR_PACE_DEVICES(
+		"Device.WiFi.Radio.10000.OperatingChannelBandwidth",
+		"40MHz"),
+	OPERATING_CHANNEL_BANDWIDTH_5GHZ("Device.WiFi.Radio.10100.OperatingChannelBandwidth", "80MHz"),
+	OPERATING_CHANNEL_BANDWIDTH_5GHZ_FOR_CISCO_3939_DEVICES(
+		"Device.WiFi.Radio.10100.OperatingChannelBandwidth",
+		"40MHz"),
+	SSID_ADVERTISEMENT_ENABLE_2GHZ_PRIVATE_WIFI("Device.WiFi.AccessPoint.10001.SSIDAdvertisementEnabled", "true"),
+	SSID_ADVERTISEMENT_ENABLE_5GHZ_PRIVATE_WIFI("Device.WiFi.AccessPoint.10101.SSIDAdvertisementEnabled", "true"),
+	GUARD_INTERVAL_2GHZ("Device.WiFi.Radio.10000.GuardInterval", "Auto"),
+	GUARD_INTERVAL_5GHZ("Device.WiFi.Radio.10100.GuardInterval", "Auto"),
+	SSID_ENABLE_STATUS_2GHZ_PRIVATE_WIFI("Device.WiFi.SSID.10001.Enable", "true"),
+	SSID_ENABLE_STATUS_5GHZ_PRIVATE_WIFI("Device.WiFi.SSID.10101.Enable", "true"),
+	OPERATING_STANDARDS_2GHZ("Device.WiFi.Radio.10000.OperatingStandards", "g,n"),
+	OPERATING_STANDARDS_5GHZ("Device.WiFi.Radio.10100.OperatingStandards", "a,n,ac"),
+	OPERATING_STANDARDS_2GHZ_XB7("Device.WiFi.Radio.10000.OperatingStandards", "g,n,ax"),
+	OPERATING_STANDARDS_5GHZ_XB7("Device.WiFi.Radio.10100.OperatingStandards", "a,n,ac,ax"),
+	OPERATING_STANDARDS_5GHZ_CISCO_3939("Device.WiFi.Radio.10100.OperatingStandards", "a,n"),
+	OPERATING_STANDARDS_2GHZ_SKYH4("Device.WiFi.Radio.10000.OperatingStandards", "b,g,n"),
+	OPERATING_STANDARDS_5GHZ_SKYH4("Device.WiFi.Radio.10100.OperatingStandards", "a,n,ac"),
+	RADIO_STATUS_2GHZ("Device.WiFi.Radio.10000.Enable", "true"),
+	RADIO_STATUS_5GHZ("Device.WiFi.Radio.10100.Enable", "true"),
+	RADIO_CHANNEL_2GHZ("Device.WiFi.Radio.10000.Channel", "1"),
+	RADIO_CHANNEL_5GHZ("Device.WiFi.Radio.10100.Channel", "157");
+
+	private String defaultValue;
+	private String parameterName;
+
+	RdkBWifiParameters(String parameterName, String value) {
+	    this.defaultValue = value;
+	    this.parameterName = parameterName;
+	}
+
+	public String getDefaultValue() {
+	    return defaultValue;
+	}
+
+	public void setDefaultValue(String defaultValue) {
+	    this.defaultValue = defaultValue;
+	}
+
+	public String getParameterName() {
+	    return parameterName;
+	}
+
+	public void setParameterName(String parameterName) {
+	    this.parameterName = parameterName;
+	}
+    }
+    
+    /** Weba parameter to enable/disable telemetry 2 */
+    public static final String WEBPA_PARAM_FOR_TELEMETRY_2_0_ENABLE = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.Telemetry.Enable";
+    
+    /**
+     * WebPA Parameter for data Block Size
+     */
+    public static final String WEBPA_DATABLOCKSIZE = "Device.IP.Diagnostics.IPPing.DataBlockSize";
+    
+    /** WebPA Parameter for aker Parental Control Scheduler */
+    public static final String WEBPA_PARAM_DEVICE_RDKCENTRAL_AKER_ENABLE = "Device.DeviceInfo.X_RDKCENTRAL-COM_AkerEnable";
+    
+    /** Webpa parameter for 5GHz XH SSID status */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_SSID_10102_STATUS = "Device.WiFi.SSID.10102.Status";
+
+    /** Webpa parameter for 2.4GHz XH SSID status */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_SSID_10002_STATUS = "Device.WiFi.SSID.10002.Status";
+
+    /** webpa Parameter for MoCA interface enable . */
+    public static final String WEBPA_PARAM_FOR_MOCA_INTERFACE_ENABLE = "Device.MoCA.Interface.1.Enable";
+
+    /** WebPa Parameter for getting Moca Status */
+    public static final String WEBPA_PARAM_GET_MOCA_STATUS = "Device.MoCA.Interface.1.Status";
+
+    /** WebPA Parameter to enable/disable XDNS Feature */
+    public static final String WEBPA_PARAM_TO_GET_XDNS_FEATURE_STATUS = "Device.DeviceInfo.X_RDKCENTRAL-COM_EnableXDNS";
+
+    /** Webpa Param for Device Cloud UI enable */
+    public static final String WEBPA_PARAM_DEVICE_CLOUD_UI = "Device.DeviceInfo.X_RDKCENTRAL-COM_CloudUIEnable";
+
+    /** webpa parameter to validate 2g channel */
+    public static final String WEBPA_WAREHOUSE_WIFI_2G_CHANNEL = "Device.WiFi.Radio.10000.Channel";
+
+    /** webpa parameter to validate 5g channel */
+    public static final String WEBPA_WAREHOUSE_WIFI_5G_CHANNEL = "Device.WiFi.Radio.10100.Channel";
+    
+    /** webpa parameter to get the channel selection mode for 2.4 GHz Radio */
+    public static final String WEBPA_PARAM_2_4_GHZ_CHANNEL_SELECTION_MODE = "Device.WiFi.Radio.10000.AutoChannelEnable";
+
+    /** webpa parameter to get the channel selection mode for 5 GHz Radio */
+    public static final String WEBPA_PARAM_5_GHZ_CHANNEL_SELECTION_MODE = "Device.WiFi.Radio.10100.AutoChannelEnable";
+    
+    /** webpa parameter to validate 2g wireless channel */
+    public static final String WEBPA_WAREHOUSE_WIFI_2G_WIRELESS_CHANNEL = "Device.WiFi.Radio.10000.AutoChannelEnable";
+
+    /** webpa parameter to validate 5g wireless channel */
+    public static final String WEBPA_WAREHOUSE_WIFI_5G_WIRELESS_CHANNEL = "Device.WiFi.Radio.10100.AutoChannelEnable";
+    
+    /**
+     * WebPA Parameter to get status of WPS for 2.4GHZ Private Network
+     */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_WPS_STATUS_2_4 = "Device.WiFi.AccessPoint.10001.WPS.Enable";
+
+    /**
+     * WebPA Parameter to get status of WPS for 5GHZ Private Network
+     */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_WPS_STATUS_5 = "Device.WiFi.AccessPoint.10101.WPS.Enable";
+    
+    /** WebPa Parameter to defer firmware download reboot */
+    public static final String WEBPA_PARAM_DEFER_FIRMWARE_DOWNLOAD_REBOOT = "Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.RPC.DeferFWDownloadReboot";
+ 
+    /**
+     * WebPA Parameter to represent Number of allowed clients for 5 GHz Secure SSID
+     */
+    public static final String WEBPA_PARAM_ALLOWED_CLIENT_LIMIT_SECURE_SSID_5 = "Device.WiFi.AccessPoint.10105.X_CISCO_COM_BssMaxNumSta";
+    
+    /**
+     * WebPA Parameter to change/get Advertisement in 5G Public network
+     */
+    public static final String WEBPA_PARAM_Device_WiFi_AccessPoint_10103_SSIDAdvertisementEnabled = "Device.WiFi.AccessPoint.10103.SSIDAdvertisementEnabled";
+    
+    /**
+     * WebPA Parameter to change/get Advertisement in 2.4G public network
+     */
+    public static final String WEBPA_PARAM_Device_WiFi_AccessPoint_10003_SSIDAdvertisementEnabled = "Device.WiFi.AccessPoint.10003.SSIDAdvertisementEnabled";
+    
+    /**
+     * WebPa Parameter to retrieve Device Manufacturer name
+     */
+    public static final String WEBPA_DEVICE_MANUFACTURER_NAME = "Device.DeviceInfo.Manufacturer";
+
+    /** WebPA parameter for secured xfinity wifi 5GHz SSID name */
+    public static final String WEBPA_PARAM_5GHZ_SECURED_XFINITY_WIFI_SSID = "Device.WiFi.SSID.10105.SSID";
+    
+    /** WebPA parameter to get the secured xfinity 2.4GHz wifi SSID enabled status */
+    public static final String WEBPA_PARAM_2GHZ_SECURED_XFINITY_WIFI_SSID_ENABLED = "Device.WiFi.SSID.10005.Enable";
+
+    /** WebPA parameter to get the secured xfinity 5GHz wifi SSID enabled status */
+    public static final String WEBPA_PARAM_5GHZ_SECURED_XFINITY_WIFI_SSID_ENABLED = "Device.WiFi.SSID.10105.Enable";
+    
+    /** webpa parameter to get the value of Device.WiFi.AccessPoint.10105.Security.ModeEnabled */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_5GHZ_SECURED_XFINITY = "Device.WiFi.AccessPoint.10105.Security.ModeEnabled";
+    
+    /** WebPA Parameter to update the Global DNS IPv4 value */
+    public static final String WEBPA_PARAM_TO_UPDATE_GLOBAL_XDNS_IPV4 = "Device.X_RDKCENTRAL-COM_XDNS.DefaultDeviceDnsIPv4";
+    
+    /** WebPA Parameter to update the Global DNS IPv6 value */
+    public static final String WEBPA_PARAM_TO_UPDATE_GLOBAL_XDNS_IPV6 = "Device.X_RDKCENTRAL-COM_XDNS.DefaultDeviceDnsIPv6";
+    
+    /**
+     * WebPA Parameter to get MAC Address of 2.4G XH Network
+     */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_MAC_ADDRESS = "Device.WiFi.SSID.10001.MACAddress";
+    
+    /**
+     * WebPA Parameter to change the DSCPMarkPolicy
+     */
+    public static final String WEBPA_PARAM_DSCP_MARK_POLICY = "Device.X_COMCAST-COM_GRE.Tunnel.1.DSCPMarkPolicy";
+    
+    /**
+     * WebPA Parameter to change the PrimaryRemoteEndpoint
+     */
+    public static final String WEBPA_PARAM_PRIMARY_REMOTE_ENDPOINT = "Device.X_COMCAST-COM_GRE.Tunnel.1.PrimaryRemoteEndpoint";
+
+    /**
+     * WebPA Parameter to change the SecondaryRemoteEndpoint
+     */
+    public static final String WEBPA_PARAM_SECONDARY_REMOTE_ENDPOINT = "Device.X_COMCAST-COM_GRE.Tunnel.1.SecondaryRemoteEndpoint";
+   //TODO check if below params usable 
+    public static final String WEBPA_PARAMETER_FOR_BEACON_INTERVAL = "Device.WiFi.Radio.10100.X_COMCAST-COM_BeaconInterval";
+    /** WebPA Parameter for selfheal max reboot */
+    public static final String WEBPA_PARAMETER_FOR_SELFHEAL_MAXREBOOT = "Device.SelfHeal.X_RDKCENTRAL-COM_MaxRebootCount";
+    /** WebPA Parameter for selfheal ping wait time */
+    public static final String WEBPA_PARAMETER_FOR_SELFHEAL_PING_WAITTIME = "Device.SelfHeal.ConnectivityTest.X_RDKCENTRAL-COM_PingRespWaitTime";
+    /** WebPA Parameter for 2.4Ghz rekey interval */
+    public static final String WEBPA_PARAMETER_FOR_2GHZ_REKEY_INTERVAL = "Device.WiFi.AccessPoint.10001.Security.RekeyingInterval";
+    /** WebPA Parameter for 5Ghz rekey interval */
+    public static final String WEBPA_PARAMETER_FOR_5GHZ_REKEY_INTERVAL = "Device.WiFi.AccessPoint.10101.Security.RekeyingInterval";
+    /** WebPA Parameter for 5Ghz radius reauthentication interval */
+    public static final String WEBPA_PARAMETER_FOR_5GHZ_RADIUS_REAUTH_INTERVAL = "Device.WiFi.AccessPoint.10101.Security.X_CISCO_COM_RadiusReAuthInterval";
+    /** WebPA Parameter for XHS 2.4Ghz ssid */
+    public static final String WEBPA_PARAMETER_FOR_XHS_24GHZ_SSID = "Device.WiFi.SSID.10002.SSID";
+    /** WebPA Parameter for XHS 5Ghz ssid */
+    public static final String WEBPA_PARAMETER_FOR_XHS_5GHZ_SSID = "Device.WiFi.SSID.10102.SSID";
+    /** WebPA Parameter for XHS 2.4Ghz pass key */
+    public static final String WEBPA_PARAMETER_FOR_XHS_24GHZ_KEY = "Device.WiFi.AccessPoint.10002.Security.KeyPassphrase";
+    /** WebPA Parameter for XHS 5Ghz pass key */
+    public static final String WEBPA_PARAMETER_FOR_XHS_5GHZ_KEY = "Device.WiFi.AccessPoint.10102.Security.KeyPassphrase";
+
+    /** WebPA parameter for 2.4 Ghz Wifi access point alias **/
+    public static final String WEBPA_PARAM_2_4GHZ_WIFI_ACCESSPOINT_ALIAS = "Device.WiFi.AccessPoint.10001.Alias";
+
+    /** WebPA parameter for 5 Ghz Wifi access point alias **/
+    public static final String WEBPA_PARAM_5GHZ_WIFI_ACCESSPOINT_ALIAS = "Device.WiFi.AccessPoint.10101.Alias";
+
+    /** WebPA parameter for 2.4 Ghz Wifi access point retry limit **/
+    public static final String WEBPA_PARAM_2_4GHZ_WIFI_ACCESSPOINT_RETRY_LIMIT = "Device.WiFi.AccessPoint.10001.RetryLimit";
+
+    /** WebPA parameter for 5 Ghz Wifi access point retry limit **/
+    public static final String WEBPA_PARAM_5GHZ_WIFI_ACCESSPOINT_RETRY_LIMIT = "Device.WiFi.AccessPoint.10101.RetryLimit";
+    
+    /** WebPA parameter to enable selfheal in the device */
+    public static final String WEBPA_PARAM_DEVICE_SELFHEAL_PROCESS_ENABLE_STATUS = "Device.SelfHeal.X_RDKCENTRAL-COM_Enable";
+
+    /** webpa parameter for get default PASSWORD for 2.4 GHz after factory reset */
+    public static final String WEBPA_PARAM_DEVICE_PASSWORD_DEFAULT_SSID_2_4 = "Device.WiFi.AccessPoint.10001.Security.X_COMCAST-COM_DefaultKeyPassphrase";
+
+    /** webpa parameter for get default PASSWORD for 5 GHz after factory reset */
+    public static final String WEBPA_PARAM_DEVICE_PASSWORD_DEFAULT_SSID_5 = "Device.WiFi.AccessPoint.10101.Security.X_COMCAST-COM_DefaultKeyPassphrase";
+
+    /** webpa parameter to enable/disable snmpv2 support */
+    public static final String WEBPA_PARAM_TO_DISABLE_SNMPV2 = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.SNMP.V2Support";
+    
+ 
+    /** WebPA Parameter to check MAC Address of 5G Public Network */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID_MAC_ADDRESS = "Device.WiFi.SSID.10103.MACAddress";
+    
+    /** WebPA Parameter to get MAC Address of 2.4G Public Network */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PUBLIC_SSID_MAC_ADDRESS = "Device.WiFi.SSID.10003.MACAddress";
+    
+    /** WebPA parameter to get the SSID enabled status for 2.4 GHz Wi-Fi network. */
+    public static final String WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_ENABLED = "Device.WiFi.SSID.10001.Enable";
+    
+    /** WebPA parameter to get max CPE value */
+    public static final String WEBPA_PARAM_TO_CHECK_CPE_VALUE = "Device.X_CISCO_COM_CableModem.MaxCpeAllowed";
+    
+    /** WebPA parameter to get the delegated IPv6 prefix */
+    public static final String WEBPA_PARAM_DELEGATED_IPV6_PREFIX = "Device.IP.Interface.1.IPv6Prefix.1.Prefix";
 }

@@ -17,9 +17,12 @@
  */
 package com.automatics.rdkb.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,26 +31,40 @@ import com.automatics.constants.AutomaticsConstants;
 import com.automatics.core.SupportedModelHandler;
 import com.automatics.device.Device;
 import com.automatics.device.Dut;
+import com.automatics.enums.ExecutionMode;
 import com.automatics.enums.ExecutionStatus;
+import com.automatics.exceptions.TestException;
+import com.automatics.http.ServerCommunicator;
+import com.automatics.http.ServerResponse;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.RDKBTestConstants;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.CommonMethods;
+import com.automatics.utils.AutomaticsPropertyUtility;
 
 public class CommonUtils {
 
-    public static final String CMD_TEST_CONNECTION = "echo test_connection";
-
     /** SLF4J logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(CommonUtils.class);
+
+    public static final String CMD_TEST_CONNECTION = "echo test_connection";
+
+    /** DeviceConfig IP Address Type - ECM. */
+    public static final String DEVICE_IP_ADDRESS_TYPE_ECM = "ECM";
+
+    /** DeviceConfig IP Address Type - ESTB. */
+    public static final String DEVICE_IP_ADDRESS_TYPE_ESTB = "ESTB";
+
+    /** Variable to hold the property name of Box Health Checker Server IP and port */
+    public static final String BOX_HEALTH_CHECKER_URL_PROPERTY = "box.health.check.url";
 
     /**
      * Method to check pattern string in target String
      * 
      * @param targetString
-     *            
+     * 
      * @param patterToSearch
-     *          
+     * 
      * @return boolean true, if pattern found in target string else false
      * 
      * @author Govardhan
@@ -191,7 +208,7 @@ public class CommonUtils {
 	LOGGER.debug("ENTERING METHOD validateTraceLog");
 	LOGGER.info("TRACE MESSAGE TO BE VALIDATED: " + message);
 	String[] arrMessage = message.split(AutomaticsConstants.DELIMITER_HASH);
-	LOGGER.info("arrMessage = " + arrMessage);	
+	LOGGER.info("arrMessage = " + arrMessage);
 	for (int iCounter = 0; iCounter < arrMessage.length; iCounter++) {
 	    LOGGER.info("TRACE MESSAGE TO BE VALIDATED: " + arrMessage[iCounter]);
 	    String response = tapEnv.searchAndGetTraceLineWithMatchingString(device, arrMessage[iCounter].trim(),
@@ -354,7 +371,7 @@ public class CommonUtils {
 
 	return boxUptime;
     }
-    
+
     /**
      * Utility to validate the string is neither null nor blank.
      * 
@@ -370,5 +387,475 @@ public class CommonUtils {
 	    result = true;
 	}
 	return result;
+    }
+
+    /**
+     * Utility to method to search for the given text in the given log file based on Poll Interval & Poll Duration;
+     * returns String representing the search response.
+     * 
+     * @param tapEnv
+     *            {@link ECatsTapApi}
+     * @param settop
+     *            {@link Settop}
+     * @param searchText
+     *            String representing the Search Text. It needs to be passed with the required escape character.
+     * @param logFile
+     *            String representing the log file.
+     * @param pollDuration
+     *            Long representing the duration for which polling needs to be performed.
+     * @param pollInterval
+     *            Long representing the polling interval.
+     * 
+     * @return String representing the search response.
+     * @Refactor Athira
+     */
+    public static String searchLogFilesWithPollingInterval(AutomaticsTapApi tapEnv, Dut device, String searchText,
+	    String logFile, long pollDuration, long pollInterval) {
+	LOGGER.debug("STARTING METHOD searchLogFilesWithPollingInterval");
+	StringBuffer sbCommand = new StringBuffer(RDKBTestConstants.GREP_COMMAND);
+
+	if (CommonMethods.isNull(searchText)) {
+	    return null;
+	}
+
+	// In case the search text contains space and not wrapped with double quotes.
+	if (searchText.contains(RDKBTestConstants.SINGLE_SPACE_CHARACTER)
+		&& !searchText.contains(AutomaticsConstants.DOUBLE_QUOTE)) {
+	    sbCommand.append(AutomaticsConstants.DOUBLE_QUOTE);
+	    sbCommand.append(searchText);
+	    sbCommand.append(AutomaticsConstants.DOUBLE_QUOTE);
+	} else {
+	    sbCommand.append(searchText);
+	}
+	sbCommand.append(RDKBTestConstants.SINGLE_SPACE_CHARACTER);
+	sbCommand.append(logFile);
+	LOGGER.info("COMMAND TO BE EXECUTED: " + sbCommand.toString());
+	long startTime = System.currentTimeMillis();
+	String searchResponse = null;
+	do {
+	    tapEnv.waitTill(pollInterval);
+	    searchResponse = tapEnv.executeCommandUsingSsh(device, sbCommand.toString());
+	    searchResponse = CommonMethods.isNotNull(searchResponse)
+		    && !searchResponse.contains(AutomaticsConstants.NO_SUCH_FILE_OR_DIRECTORY) ? searchResponse.trim()
+			    : null;
+	} while ((System.currentTimeMillis() - startTime) < pollDuration && CommonMethods.isNull(searchResponse));
+	LOGGER.info(
+		"SEARCH RESPONSE FOR - " + searchText + " IN THE LOG FILE - " + logFile + " IS : " + searchResponse);
+	LOGGER.debug("ENDING METHOD searchLogFilesWithPollingInterval");
+	return searchResponse;
+    }
+
+    /**
+     * Method to retrieve device IP address from BHC
+     * 
+     * @param device
+     *            The device to be used.
+     * @param type
+     *            The type of IP address, ECM or ESTB.
+     * @return The requested IP address.
+     */
+    public static String getDeviceIpAddressFromBhc(Dut device, String type) {
+
+	LOGGER.debug("Entering into getDeviceIpAddressFromBhc() : Type = " + type);
+
+	String deviceIpAddress = null;
+	String macAddress = null;
+	StringBuffer targetURL = null;
+	ServerCommunicator serverCommunicator = new ServerCommunicator(LOGGER);
+	ServerResponse serverResponse = null;
+	String healthCheckerURL = null;
+	try {
+	    healthCheckerURL = AutomaticsPropertyUtility.getProperty(BOX_HEALTH_CHECKER_URL_PROPERTY);
+	    targetURL = new StringBuffer();
+	    targetURL.append(healthCheckerURL);
+	    targetURL.append("/bhc/getSTBIpAddress.htm?mac=");
+	    if (DEVICE_IP_ADDRESS_TYPE_ECM.equalsIgnoreCase(type)) {
+		macAddress = ((Device) device).getEcmMac();
+	    } else if (DEVICE_IP_ADDRESS_TYPE_ESTB.equalsIgnoreCase(type)) {
+		macAddress = device.getHostMacAddress();
+	    } else {
+		LOGGER.error("Invalid DeviceConfig IP Address Type :" + type);
+	    }
+	    targetURL.append(macAddress);
+	    targetURL.append("&macType=" + type);
+
+	    LOGGER.info("Fetch " + type + "IP Address from BHC using the url:" + targetURL);
+
+	    serverResponse = serverCommunicator.postDataToServer(targetURL.toString(), null, "GET", 30000, null);
+
+	    if (serverResponse != null) {
+		if (serverResponse.getResponseCode() == HttpStatus.SC_OK) {
+		    // Set the obtained Ip address.
+		    deviceIpAddress = serverResponse.getResponseStatus();
+		} else {
+		    LOGGER.info("Invalid response from BHC for STB IP Address request -" + serverResponse.toString());
+		}
+	    }
+	} catch (Exception exec) {
+	    LOGGER.info("getDeviceIpAddressFromBhc() : Exception " + exec + "Occurred while trying to get IP Address");
+	}
+
+	LOGGER.info(type + " DeviceConfig IP Address from BHC - " + deviceIpAddress);
+
+	LOGGER.debug("Exiting from getDeviceIpAddressFromBhc");
+	return deviceIpAddress;
+    }
+
+    /**
+     * Helper method to check whether box is rebooted or not via connection to the old ip after reboot
+     * 
+     * @param device
+     *            the Dut instance to be tested
+     * @param tapEnv
+     *            The AutomaticsTapApi instance
+     * 
+     * @return true in the connection is not accessible
+     */
+
+    public static boolean verifyStbRebooted(Dut device, AutomaticsTapApi tapEnv) {
+	boolean status = true;
+	// String for status verification
+	String successString = "CONNECTION-ESTABLISHED";
+
+	LOGGER.info("About to execute command echo CONNECTION-ESTABLISHED");
+	String response = tapEnv.executeCommandUsingSsh(device, "echo " + successString);
+	LOGGER.info(" : Server response during device reboot - " + response);
+	if (response != null) {
+	    status = response.contains(successString);
+	}
+
+	return (!status);
+    }
+
+    /**
+     * Helper method to check wait for device to reboot
+     * 
+     * @param device
+     *            the Dut instance to be tested
+     * @param tapEnv
+     *            The AutomaticsTapApi instance
+     * 
+     * @return true in the connection is not accessible
+     * @refactor Govardhan
+     */
+    public static boolean waitForDeviceToReboot(AutomaticsTapApi tapEnv, Dut device, long timeInMilli) {
+	LOGGER.info("STARTING METHOD: waitForDeviceToReboot");
+
+	boolean deviceRebootNotification = false;
+	long startTime = System.currentTimeMillis();
+
+	while ((!(deviceRebootNotification)) && (System.currentTimeMillis() - startTime < timeInMilli)) {
+	    deviceRebootNotification = !(CommonMethods.isSTBAccessible(device));
+	    if (deviceRebootNotification) {
+		LOGGER.info("Device rebooted automatically");
+		break;
+	    }
+	    tapEnv.waitTill(30000L);
+	    LOGGER.info("Tring to validate reboot one more time");
+	}
+	LOGGER.info(new StringBuilder().append("Device reboot validated within ").append(timeInMilli).append(" millis")
+		.toString());
+	LOGGER.info("ENDING METHOD: waitForDeviceToReboot");
+	return deviceRebootNotification;
+    }
+
+    /**
+     * Utility method to search the String in the log files.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param searchCommand
+     *            Command to be executed for search.
+     * 
+     * @return Boolean representing the result of search operation.
+     * @refactor Govardhan
+     */
+    public static boolean searchLogFiles(AutomaticsTapApi tapEnv, Dut device, String searchCommand) {
+	LOGGER.info("ENTERING METHOD searchLogFiles");
+	String response = tapEnv.executeCommandUsingSsh(device, searchCommand);
+	LOGGER.info("LOG SEARCH RESPONSE = " + response);
+	boolean result = CommonMethods.isNotNull(response)
+		&& !response.contains(RDKBTestConstants.NO_SUCH_FILE_OR_DIRECTORY);
+	LOGGER.info("LOG SEARCH RESULT = " + result);
+	LOGGER.info("ENDING METHOD searchLogFiles");
+	return result;
+    }
+
+    /**
+     * Helper method to get the PID of a process and kill the same
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param processName
+     *            Process anme which is to be killed
+     * @return status killed status
+     * @refactor Govardhan
+     */
+    public static boolean getProcessIdAndKill(Dut device, AutomaticsTapApi tapEnv, String processName) {
+
+	LOGGER.info("STARTING METHOD: getProcessIdAndKill()");
+	boolean status = true;
+	String KILL_CMD = "kill -9 ";
+
+	String processId = CommonUtils.getPidOfProcess(device, tapEnv, processName);
+	if (CommonMethods.isNull(processId)) {
+	    // retry to fetch pid
+	    processId = CommonUtils.getPidOfProcess(device, tapEnv, processName);
+	    LOGGER.info("Obtained process ID : " + processId);
+	}
+
+	if (CommonMethods.isNotNull(processId)) {
+	    LOGGER.info("Killing process ID : " + processId + " using command : " + KILL_CMD + processId);
+	    // kill the process
+	    tapEnv.executeCommandUsingSsh(device, KILL_CMD + processId);
+
+	    // waiting for five seconds to see if process has restarted
+	    tapEnv.waitTill(RDKBTestConstants.FIFTEEN_SECONDS_IN_MILLIS);
+
+	    LOGGER.info(" Reverifying whether process got killed or not : ");
+	    // reverify the process is not running
+	    String newProcessId = CommonUtils.getPidOfProcess(device, tapEnv, processName);
+
+	    LOGGER.info(" Obtained process ID after executing KILL Command : " + newProcessId);
+	    if (CommonMethods.isNull(newProcessId)) {
+		status = true;
+		LOGGER.info(" Successfully killed process : " + processId);
+	    } else {
+		status = false;
+		if (newProcessId.equals(processId)) {
+		    LOGGER.info(" Failed to kill process : " + processId);
+		} else {
+		    status = true;
+		    LOGGER.info("Process gor restarted with new Pid " + newProcessId);
+		}
+	    }
+	}
+	LOGGER.info("ENDING METHOD: getProcessIdAndKill()");
+	return status;
+    }
+
+    /**
+     * Retrieves the process id of the process given as parameter.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param process
+     *            The process name of which pid is to be found
+     * 
+     * @return Process Id of the process,null if not found
+     * @refactor Govardhan
+     */
+    public static String getPidOfProcess(Dut device, AutomaticsTapApi tapEnv, String process) {
+	return CommonMethods.getPidOfProcess(device, tapEnv, process);
+    }
+
+    /**
+     * Method to build command using string buffer.
+     * 
+     * @param values
+     *            , N number of arguments
+     * 
+     * @author ArunKumar Jayachandran
+     * @refactor Govardhan
+     */
+    public static String concatStringUsingStringBuffer(String... values) {
+	LOGGER.info("Entering into concatStringUsingStringBuffer");
+	StringBuffer command = new StringBuffer();
+	for (String cmd : values) {
+	    command.append(cmd);
+	}
+	LOGGER.info("Exiting into concatStringUsingStringBuffer");
+	return command.toString();
+    }
+
+    /**
+     * Method to remove file/folder
+     * 
+     * @param tapEnv
+     *            The AutomaticsTapApi.
+     * @param device
+     *            The {@link Dut} object.
+     * @param completeFilePath
+     *            The Complete file path
+     * @return The validation result
+     * @author Govardhan
+     */
+    public static boolean removeFileandVerifyFileRemoval(AutomaticsTapApi tapEnv, Dut device, String completeFilePath) {
+	boolean result = false;
+	String commandToRemoveFile = RDKBTestConstants.CMD_REMOVE_DIR_FORCEFULLY
+		+ RDKBTestConstants.SINGLE_SPACE_CHARACTER + completeFilePath;
+
+	String response = tapEnv.executeCommandUsingSsh(device, commandToRemoveFile);
+	LOGGER.info("Repsonse on executing the command to remove file/folder: " + response);
+
+	result = !(CommonUtils.isFileExists(device, tapEnv, completeFilePath));
+	LOGGER.info("Status of removing " + completeFilePath + "is : " + result);
+
+	return result;
+    }
+
+    /**
+     * Method to verify whether file exists
+     * 
+     * @author Govardhan
+     */
+    public static boolean isFileExists(Dut device, AutomaticsTapApi tapEnv, String completeFilePath) {
+	LOGGER.info("STARTING METHOD: isFileExists()");
+	boolean status = false;
+
+	String response = tapEnv.executeCommandUsingSsh(device, new StringBuilder().append("if [ -f ")
+		.append(completeFilePath).append(" ] ; then echo \"true\" ; else echo \"false\" ; fi").toString());
+
+	if (CommonMethods.isNotNull(response)) {
+	    if (response.trim().equals("true")) {
+		status = true;
+	    } else if (response.trim().equals("false")) {
+		status = false;
+	    } else {
+		throw new TestException("Obtained response other than 'true' or 'false'");
+	    }
+	} else {
+	    throw new TestException("Obtained null response");
+	}
+	LOGGER.info("ENDING METHOD: isFileExists()");
+	return status;
+    }
+
+    /**
+     * Method to verify whether file deleted
+     * 
+     * @author Govardhan
+     */
+    public static boolean deleteFile(Dut device, AutomaticsTapApi tapEnv, String completeFilePath) {
+	LOGGER.info("STARTING METHOD: deleteFile()");
+	boolean status = false;
+
+	tapEnv.executeCommandUsingSsh(device,
+		new StringBuilder().append("rm -rf ").append(completeFilePath).toString());
+	status = isFileExists(device, tapEnv, completeFilePath);
+	if (status) {
+	    tapEnv.executeCommandUsingSsh(device,
+		    new StringBuilder().append("rm -rf ").append(completeFilePath).toString());
+	}
+	LOGGER.info("ENDING METHOD: deleteFile()");
+	return (!(isFileExists(device, tapEnv, completeFilePath)));
+    }
+
+    /**
+     * Method to get Device MacAddress With Colon Replaced
+     * 
+     * @author Govardhan
+     */
+    public static String getDeviceMacAddressWithColonReplaced(Dut device, String stringToReplaceColon) {
+	return ((device != null) ? device.getHostMacAddress().replace(":", stringToReplaceColon) : null);
+    }
+
+    /**
+     * Method to get Device MacAddress With Colon Replaced
+     * 
+     * @author Govardhan
+     */
+    public static String getDeviceId(Dut device) {
+	String macWithColunReplaced = getDeviceMacAddressWithColonReplaced(device, "");
+
+	return ((null != macWithColunReplaced) ? macWithColunReplaced.toUpperCase() : null);
+    }
+    /**
+     * This utility method will perform the COPY, REMOVE & UPDATE values in a file operations.
+     * 
+     * @param tapEnv
+     *            {@link ECatsTapApi}
+     * @param settop
+     *            {@link Settop}
+     * @param command
+     *            Command to be executed
+     * 
+     * @return Result of operation execution.
+     */
+    public static boolean performCreateRemoveUpdateFileOperations(AutomaticsTapApi tapEnv, Dut settop, String command) {
+	boolean result = false;
+	String executionResult = tapEnv.executeCommandUsingSsh(settop, command);
+	executionResult = executionResult.trim();
+	if (executionResult.isEmpty()) {
+	    result = true;
+	} else {
+	    LOGGER.error(executionResult);
+	}
+	return result;
+    }
+    
+    /**
+     * Method to get the uptime of an Stb using "cat /proc/uptime" command
+     * 
+     * @param tapApi
+     *            Instance of ECatsTapApi
+     * @param settop
+     *            Instance of Settop
+     * @return uptime uptime in seconds
+     */
+    public static String getUptimeFromProc(AutomaticsTapApi tapEnv, Dut device) {
+
+	String uptime = tapEnv.executeCommandUsingSsh(device, RDKBTestConstants.PROC_CMD_UPTIME);
+	
+	if (CommonUtils.isNotEmptyOrNull(uptime)) {
+
+	    if (uptime.indexOf(".") != -1) {
+		uptime = uptime.split("\\.")[0];
+	    } else {
+		uptime = uptime.split(" ")[0];
+	    }
+
+	    if (CommonUtils.isNotEmptyOrNull(uptime)) {
+
+		LOGGER.info("Uptime from /proc/uptime = " + uptime);
+
+	    } else {
+		LOGGER.debug("Failed to retrieve uptime from uptime command output");
+	    }
+	} else {
+	    LOGGER.debug("Failed to retrieve uptime from Stb using uptime command");
+	    LOGGER.debug("Response = " + uptime);
+	}
+	LOGGER.debug("uptime = " + uptime);
+
+	return uptime;
+    }
+    
+    public static List<String> patternFinderForMultipleMatches(String response, String patternToMatch)
+    {
+      LOGGER.debug("STARTING METHOD: patternFinder()");
+
+      String matchedString = "";
+
+      Pattern pattern = null;
+
+      Matcher matcher = null;
+      List matchedStringList = new ArrayList();
+      try
+      {
+        if ((CommonMethods.isNotNull(response)) && (CommonMethods.isNotNull(patternToMatch))) {
+          pattern = Pattern.compile(patternToMatch);
+          matcher = pattern.matcher(response);
+          while (matcher.find()) {
+            matchedString = matcher.group(1);
+            LOGGER.info(new StringBuilder().append("Matching string : ").append(matchedString).toString());
+            matchedStringList.add(matchedString.trim());
+          }
+        }
+      } catch (Exception exception) {
+        LOGGER.error("Exception occured in patternFinder()", exception);
+      }
+
+      LOGGER.info(new StringBuilder().append("No of matched strings -").append(matchedStringList.size()).toString());
+
+      LOGGER.debug("ENDING METHOD: patternFinder()");
+
+      return matchedStringList;
     }
 }

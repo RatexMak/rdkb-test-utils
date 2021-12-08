@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.automatics.device.Dut;
 import com.automatics.exceptions.TestException;
+import com.automatics.rdkb.WiFiSsidConfigStatus;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandTraceConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
@@ -726,6 +727,117 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 	    }
 	}
 	return diff;
+    }
+    
+    /**
+     * Utility method to get the Wi-Fi SSID configuration status via WebPA or Dmcli.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param parameters
+     *            The list of parameters to be queried.
+     * @return {@link WiFiSsidConfigStatus}
+     * @refactor Govardhan
+     */
+    public static WiFiSsidConfigStatus getWiFiSsidConfigurationStatusViaWebPaOrDmcli(AutomaticsTapApi tapEnv, Dut device,
+	    List<String> parameters) {
+
+	String[] parametersArray = new String[parameters.size()];
+	parametersArray = parameters.toArray(parametersArray);
+
+	Map<String, String> wifiSsidConfigStatus = BroadBandWebPaUtils
+		.getMultipleParameterValuesUsingWebPaOrDmcli(device, tapEnv, parametersArray);
+	WiFiSsidConfigStatus ssidConfigStatus = new WiFiSsidConfigStatus();
+
+	for (String webPaParam : wifiSsidConfigStatus.keySet()) {
+	    String paramValue = wifiSsidConfigStatus.get(webPaParam);
+
+	    LOGGER.debug("Parameter name :  " + webPaParam + " , value : " + paramValue);
+	    boolean isEnabled = false;
+	    switch (webPaParam) {
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_NAME:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_NAME:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PUBLIC_SSID:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4GHZ_LNF_SSID:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_LNF_SSID:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_5GHZ_SECURED_XFINITY_WIFI_SSID:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_SSID_10004_SSID:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_SSID_10104_SSID:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5GHZ_EXTENDER_SSID:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4GHZ_EXTENDER_SSID:
+		ssidConfigStatus.setName(paramValue);
+		break;
+
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_ENABLED_STATUS:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_ENABLED_STATUS:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PUBLIC_SSID_ENABLE_STATUS:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID_ENABLE_STATUS:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_LNF_SSID_ENABLED:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_LNF_SSID_ENABLED:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_5GHZ_SECURED_XFINITY_WIFI_SSID_ENABLED:
+	    case BroadBandWebPaConstants.WEBPA_WAREHOUSE_WIRELESS_SSID1_ENABLE_LNF_2_4:
+	    case BroadBandWebPaConstants.WEBPA_WAREHOUSE_WIRELESS_SSID_ENABLE_LNF_5G:
+	    case "Device.WiFi.SSID.10007.Enable":
+	    case "Device.WiFi.SSID.10107.Enable":
+		if (CommonMethods.isNotNull(paramValue)) {
+		    isEnabled = Boolean.parseBoolean(paramValue.trim());
+		}
+		ssidConfigStatus.setEnable(isEnabled);
+		break;
+
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_SSID_STATUS_FOR_2_4GHZ_PRIVATE_SSID:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_SSID_STATUS_FOR_5GHZ_PRIVATE_SSID:
+	    case "Device.WiFi.SSID.10003.Status":
+	    case "Device.WiFi.SSID.10103.Status":
+	    case "Device.WiFi.SSID.10105.Status":
+	    case "Device.WiFi.SSID.10006.Status":
+	    case "Device.WiFi.SSID.10106.Status":
+	    case "Device.WiFi.SSID.10004.Status":
+	    case "Device.WiFi.SSID.10104.Status":
+	    case "Device.WiFi.SSID.10107.Status":
+	    case "Device.WiFi.SSID.10007.Status":
+		ssidConfigStatus.setStatus(paramValue);
+		break;
+
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_2_4_GHZ_PRIVATE_SECURITY_MODEENABLED:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_5_GHZ_PRIVATE_SECURITY_MODEENABLED:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_2_4_GHZ_PUBLIC_SECURITY_MODEENABLED:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_5_GHZ_PUBLIC_SECURITY_MODEENABLED:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_2_GHZ_LNF_SECURITY_MODEENABLED:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_5_GHZ_LNF_SECURITY_MODEENABLED:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_5GHZ_SECURED_XFINITY:
+	    case "Device.WiFi.AccessPoint.10004.Security.ModeEnabled":
+	    case "Device.WiFi.AccessPoint.10104.Security.ModeEnabled":
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4GHZ_EXTENDER_SECURITY_MODE:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5GHZ_EXTENDER_SECURITY_MODE:
+		ssidConfigStatus.setSecurityMode(paramValue);
+		break;
+
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_2GHZ_SECURITY_KEYPASSPHRASE:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_5GHZ_SECURITY_KEYPASSPHRASE:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_10003_SECURITY_KEYPASSPHRASE:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_10103_SECURITY_KEYPASSPHRASE:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_10006_SECURITY_KEYPASSPHRASE:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_10106_SECURITY_KEYPASSPHRASE:
+	    case "Device.WiFi.AccessPoint.10105.Security.KeyPassphrase":
+	    case "Device.WiFi.AccessPoint.10004.Security.KeyPassphrase":
+	    case "Device.WiFi.AccessPoint.10104.Security.KeyPassphrase":
+	    case "Device.WiFi.AccessPoint.10007.Security.KeyPassphrase":
+	    case "Device.WiFi.AccessPoint.10107.Security.KeyPassphrase":
+		ssidConfigStatus.setPswd(paramValue);
+		break;
+
+	    default:
+		break;
+
+	    }
+	}
+	LOGGER.info(" WiFiSsidConfigStatus :  " + ssidConfigStatus.toString());
+
+	return ssidConfigStatus;
     }
 
 }

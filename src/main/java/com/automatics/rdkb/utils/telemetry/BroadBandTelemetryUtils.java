@@ -1,0 +1,405 @@
+/*
+ * Copyright 2021 Comcast Cable Communications Management, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+package com.automatics.rdkb.utils.telemetry;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.automatics.device.Dut;
+import com.automatics.rdkb.constants.BroadBandCommandConstants;
+import com.automatics.rdkb.constants.BroadBandTelemetryConstants;
+import com.automatics.rdkb.constants.BroadBandTestConstants;
+import com.automatics.rdkb.constants.BroadBandTraceConstants;
+import com.automatics.rdkb.constants.RDKBTestConstants;
+import com.automatics.rdkb.utils.BroadBandCommonUtils;
+import com.automatics.rdkb.utils.CommonUtils;
+import com.automatics.tap.AutomaticsTapApi;
+import com.automatics.utils.AutomaticsPropertyUtility;
+import com.automatics.utils.CommonMethods;
+
+/**
+ * Utility class that handles all methods related to Telemetry services
+ * 
+ * @author susheela
+ * @author divya
+ * @refactor Govardhan
+ */
+public class BroadBandTelemetryUtils {
+	/** SLF4J logger. */
+	private static final Logger LOGGER = LoggerFactory.getLogger(BroadBandTelemetryUtils.class);
+	
+    /** http protocol **/
+    private static final String HTTP_PROTOCOL = "http";
+    
+    /**
+     * keyword to be appended for completing the proxy xconf url for updating dcm settinsg
+     **/
+    private static String PROXY_DCM_XCONF_UPDATE_SETTINGS_KEYWORD = "updateSettings";
+    
+    /**as per RDKB-13866,Cron interval should be 15 minutes**/
+    public static String SCHEDULE_CRON_JOB_TIME_FOR_TELEMETRY = "*/15 * * * *";
+    
+    /** Telemetry upload URL**/
+    private static String TELEMTRY_UPLOAD_URL = " ";
+    
+    /**
+     * keyword to be appended for completing the proxy xconf url for retireving dcm settinsg
+     **/
+    private static String PROXY_DCM_XCONF_GET_SETTINGS_KEYWORD = "getSettings";
+
+	/**
+	 * Utility Method to remove the Telemetry Configuration Files.
+	 * 
+	 * @param tapEnv {@link AutomaticsTapApi}
+	 * @param device {@link Dut}
+	 * @return Boolean representing the result of the clearing telemetry
+	 *         configuration files.
+	 * @refactor Govardhan
+	 */
+	public static boolean clearTelemetryConfiguration(AutomaticsTapApi tapEnv, Dut device) {
+		LOGGER.debug("STARTING METHOD clearTelemetryConfiguration");
+		boolean removeNvramDcmSettings = CommonUtils.deleteFile(device, tapEnv,
+				BroadBandCommandConstants.FILE_NVRAM_DCMSETTINGS_CONF);
+		LOGGER.info("NVRAM DCM SETTINGS REMOVED: " + removeNvramDcmSettings);
+		boolean removeTmpDcmSettings = CommonUtils.deleteFile(device, tapEnv,
+				BroadBandCommandConstants.FILE_TMP_DCMSETTINGS_CONF);
+		LOGGER.info("TMP DCM SETTINGS REMOVED: " + removeTmpDcmSettings);
+		boolean removeDcmProperties = CommonUtils.deleteFile(device, tapEnv,
+				BroadBandTestConstants.DCM_PROPERTIES_FILE_NVRAM_FOLDER);
+		LOGGER.info("NVRAM DCM PROPERTIES REMOVED: " + removeDcmProperties);
+		boolean result = removeNvramDcmSettings && removeTmpDcmSettings && removeDcmProperties;
+		LOGGER.info("TELEMETRY CONFIGURATIONS CLEARED: " + result);
+		LOGGER.debug("ENDING METHOD clearTelemetryConfiguration");
+		return result;
+	}
+
+	/**
+	 * 
+	 * Helper method to copy and to update the dcm.properties with the XCONF update
+	 * url
+	 * 
+	 * @param tapEnv {@link AutomaticsTapApi}
+	 * @param device {@link Dut}
+	 * @return status 0 box doesn't contain /etc/dcm.properties file 1 XCONF URL
+	 *         Updated Successfully 3 Failed to update the LOG UPLOAD XCONF URL
+	 * @refactor Govardhan
+	 */
+	public static int copyAndUpdateDcmProperties(Dut device, AutomaticsTapApi tapEnv) {
+
+		LOGGER.info("STARTING METHOD: TelemetryUtils.copyAndUpdateDcmProperties");
+
+		int status = 0;
+		// Creating the proxy xconf getSettings url by appending the two strings
+		String proxyDcmGetSettingsUrl = AutomaticsPropertyUtility
+				.getProperty(RDKBTestConstants.PROP_KEY_PROXY_XCONF_URL) + PROXY_DCM_XCONF_GET_SETTINGS_KEYWORD;
+
+		// checking the contents of /nvram and verifying whether dcm.properties
+		// folder is present
+		String command = BroadBandTelemetryConstants.CMD_LIST_DCM_PROPERTIES_ETC_FOLDER;
+		String response = null;
+		response = tapEnv.executeCommandUsingSsh(device, command);
+
+		if (CommonMethods.isNotNull(response) && response.contains("dcm.properties")) {
+
+			LOGGER.info("The box contains dcm.properties!!!!!");
+			// copying the dcm.properties file from /etc/ to /nvram
+			command = BroadBandTestConstants.CMD_CP_DCM_PROPERTIES;
+			response = tapEnv.executeCommandUsingSsh(device, command);
+
+			// Replacing the 'DCM_LOG_SERVER_URL' in the dcm.properties with
+			// XCONF url
+			command = BroadBandTestConstants.CMD_CAT_DCM_PROPERTIES;
+			response = tapEnv.executeCommandUsingSsh(device, command);
+			String logUploadUrl = CommonMethods.patternFinder(response, RDKBTestConstants.PATTERN_FOR_LOG_UPLOAD_URL);
+
+			LOGGER.info("Replacing the url using 'sed' command..........");
+			// replacing using 'sed' command
+			String cmdForReplaceUrl = "sed -i 's#" + logUploadUrl.trim() + "#" + proxyDcmGetSettingsUrl + "#g' "
+					+ BroadBandTestConstants.DCM_PROPERTIES_FILE_NVRAM_FOLDER;
+
+			response = tapEnv.executeCommandUsingSsh(device, cmdForReplaceUrl);
+
+			// Checking whether LOG_UPLOAD_URL is replaced with sed
+			LOGGER.info("Checking whether LOG_UPLOAD_URL is replaced with sed...........");
+			command = BroadBandTestConstants.CMD_CAT_DCM_PROPERTIES;
+			response = tapEnv.executeCommandUsingSsh(device, command);
+
+			// to alert the execution regarding various outcomes of this test
+			if (CommonMethods.isNotNull(response) && response.contains(proxyDcmGetSettingsUrl)) {
+				LOGGER.info("********Succesfully updated the url********");
+				status = 1;
+			} else {
+				LOGGER.error("Failed to update the LOG UPLOAD url!!!!");
+				status = 2;
+			}
+		} else {
+			LOGGER.error("The box doesn't contain /etc/dcm.properties file!!!! Exiting Test........");
+		}
+		LOGGER.info("ENDING METHOD: TelemetryUtils.copyAndUpdateDcmProperties");
+		return status;
+	}
+	
+    /**
+     * Helper Method to create the basic telemetry settings JSON Object.
+     * 
+     * @return JSONObject representing the Basic Telemetry Settings.
+     * @refactor Govardhan
+     */
+    private static JSONObject createBasicTelemetrySettingsJson() {
+	LOGGER.debug("STARTING METHOD: TelemetryUtils.createBasicTelemetrySettingsJson");
+	JSONObject telemetrySettings = null;
+	try {
+	    // Create Telemetry Setting JSON Object.
+	    telemetrySettings = new JSONObject();
+	    telemetrySettings.put("scheduleCron", SCHEDULE_CRON_JOB_TIME_FOR_TELEMETRY);
+	    telemetrySettings.put("uploadUrl", TELEMTRY_UPLOAD_URL);
+	    telemetrySettings.put("uploadProtocol", HTTP_PROTOCOL.toUpperCase());
+	} catch (JSONException jsonException) {
+	    // Log & Suppress the Exception.
+	    LOGGER.error(
+		    "EXCEPTION OCCURRED WHILE CREATING BASIC TELEMETRY SETTINGS JSON: " + jsonException.toString());
+	}
+	LOGGER.debug("ENDING METHOD: TelemetryUtils.createBasicTelemetrySettingsJson");
+	return telemetrySettings;
+    }
+	
+	   /**
+     * Helper Method to create the JSON Parameter to be posted to the Proxy DCM Server for Invalid Ping Server Telemetry
+     * Marker Configuration.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @return String representing the JSON Object to be posted to the Proxy DCM Server.
+     * @refactor Govardhan
+     */
+    public static String getInvalidPingServerConfigJsonToPostToDcmServer(AutomaticsTapApi tapEnv, Dut device) {
+	LOGGER.debug("STARTING METHOD: TelemetryUtils.getGwConfigJsonToPostToDcmServer");
+	String postDataProxyDcmServer = null;
+	JSONObject dcmSettings = null;
+	try {
+	    // Create Telemetry Setting JSON Object.
+	    JSONObject telemetrySettings = createBasicTelemetrySettingsJson();
+	    JSONArray telemetryProfileJson = new JSONArray();
+	    JSONObject tmpJsonObject = new JSONObject();
+	    tmpJsonObject.put(BroadBandTestConstants.JSON_ELEMENT_HEADER,
+		    BroadBandTraceConstants.TELEMETRY_MARKER_FOR_PING_SERVER_FAILURE);
+	    tmpJsonObject.put(BroadBandTestConstants.JSON_ELEMENT_CONTENT,
+		    BroadBandTraceConstants.TELEMETRY_MARKER_FOR_PING_SERVER_FAILURE);
+	    tmpJsonObject.put(BroadBandTestConstants.JSON_ELEMENT_TYPE,
+		    BroadBandCommandConstants.FILE_SELFHEAL_LOG_TXT_0);
+	    tmpJsonObject.put(BroadBandTestConstants.JSON_ELEMENT_POLLING_FREQUENCY, 900);
+	    telemetryProfileJson.put(tmpJsonObject);
+
+	    telemetrySettings.put("telemetryProfile", telemetryProfileJson);
+	    // Create DCM Setting & add Telemetry Setting to the same.
+	    dcmSettings = new JSONObject();
+	    String stbMacAddress = device.getHostMacAddress();
+	    LOGGER.info("ESTB MAC ADDRESS: " + stbMacAddress);
+	    dcmSettings.put(BroadBandTestConstants.JSON_ELEMENT_ESTB_MAC_ADDRESS, stbMacAddress);
+	    String profileName = BroadBandTestConstants.PROFILE_NAME_PING
+		    + CommonUtils.getDeviceMacAddressWithColonReplaced(device, BroadBandTestConstants.EMPTY_STRING);
+	    dcmSettings.put(BroadBandTestConstants.JSON_ELEMENT_TELEMETRY_PROFILE_NAME, profileName);
+	    dcmSettings.put(BroadBandTestConstants.JSON_ELEMENT_TELEMETRY_SETTINGS, telemetrySettings);
+	} catch (JSONException jsonException) {
+	    // Log & Suppress the Exception.
+	    LOGGER.error(
+		    "EXCEPTION OCCURRED WHILE CREATING JSON TO POST TO PROXY DCM SERVER: " + jsonException.toString());
+	}
+	if (null != dcmSettings) {
+	    postDataProxyDcmServer = dcmSettings.toString();
+	}
+	LOGGER.info("DATA TO BE POSTED TO THE PROXY DCM SERVER: " + postDataProxyDcmServer);
+	LOGGER.debug("ENDING METHOD: TelemetryUtils.getGwConfigJsonToPostToDcmServer");
+	return postDataProxyDcmServer;
+    }
+
+
+	/**
+	 * Helper Method to configure the Telemetry Profile for Invalid Ping Servers
+	 * Configuration Telemetry Markers. It clears the existing telemetry
+	 * configuration files on the device. Then copies the dcm.properties from /etc
+	 * to /nvram directory & updates with the appropriate DCM Log Server URL. Then
+	 * configure the XCONF server with required telemetry markers for the device.
+	 * 
+	 * @param tapEnv {@link AutomaticsTapApi}
+	 * @param device {@link Dut}
+	 * @return Boolean representing the result of Invalid Ping Servers Configuration
+	 *         Telemetry Profile Configuration.
+	 * @refactor Govardhan
+	 */
+	public static boolean configureTelemetryProfileNwConnectivty(AutomaticsTapApi tapEnv, Dut device) {
+		LOGGER.debug("STARTING METHOD configureTelemetryProfileNwConnectivty");
+		String proxyXconfDcmUrl = null;
+		boolean result = clearTelemetryConfiguration(tapEnv, device);
+		LOGGER.info("CLEARED EXISTING TELEMETRY/ DCM CONFIGURATION FILES: " + result);
+		if (result) {
+			proxyXconfDcmUrl = AutomaticsPropertyUtility.getProperty(BroadBandTestConstants.PROP_KEY_PROXY_XCONF_URL);
+			LOGGER.info("XCONF DCM URL FROM PROPERTIES: " + proxyXconfDcmUrl);
+			result = CommonMethods.isNotNull(proxyXconfDcmUrl);
+		}
+		LOGGER.info("XCONF DCM URL AVAILABLE: " + result);
+		if (result) {
+			int iResult = copyAndUpdateDcmProperties(device, tapEnv);
+			result = BroadBandTestConstants.CONSTANT_1 == iResult;
+		}
+		LOGGER.info("DCM PROPERTIES COPIED & UPDATED WITH APPROPRIATE URL: " + result);
+		if (result) {
+			String postJsonDataProxyDcmServer = getInvalidPingServerConfigJsonToPostToDcmServer(tapEnv, device);
+			if (CommonMethods.isNotNull(postJsonDataProxyDcmServer)) {
+				proxyXconfDcmUrl = BroadBandCommonUtils.concatStringUsingStringBuffer(proxyXconfDcmUrl,
+						PROXY_DCM_XCONF_UPDATE_SETTINGS_KEYWORD);
+				result = BroadBandCommonUtils.postDataTlsEnabledClient(tapEnv, device, proxyXconfDcmUrl,
+						postJsonDataProxyDcmServer);
+			}
+			LOGGER.info("NETWORK CONNECTIVITY CONFIG TELEMETRY POST TO DCM SERVER: " + result);
+		}
+		LOGGER.info("NETWORK CONNECTIVITY CONFIG TELEMETRY PROFILE: " + result);
+		LOGGER.debug("ENDING METHOD configureTelemetryProfileNwConnectivty");
+		return result;
+	}
+	
+	   /**
+     * Utility Method to get the Payload data from the /rdklogs/logs/dcmscript.log. The required log message is searched
+     * with the passed command. Then the payload data is extracted using the pattern matcher.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param searchText
+     *            String representing the Search Text (Typically a Payload Parameter) to be fired on the dcm script log.
+     * @param pollingFlag
+     *            Boolean representing whether Polling needs to be performed while trying to search the text in dcm
+     *            script log file.
+     * 
+     * @return JSONObject representing the Payload Data.
+     * @refactor Govardhan
+     */
+    public static JSONObject getPayLoadDataAsJson(AutomaticsTapApi tapEnv, Dut device, String searchText,
+	    boolean pollingFlag) {
+	LOGGER.debug("ENTERING METHOD getPayLoadDataAsJson");
+	boolean result = false;
+	JSONObject telemetryPayLoadData = null;
+	String searchResponse = null;
+	long pollDuration = BroadBandTestConstants.SIXTEEN_MINUTES_IN_MILLIS;
+	long startTime = System.currentTimeMillis();
+	do {
+	    LOGGER.info("GOING TO WAIT FOR 1 MINUTE.");
+	    tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+	    searchResponse = BroadBandCommonUtils.searchLogFiles(tapEnv, device, searchText,
+		    BroadBandTestConstants.DCMSCRIPT_LOG_FILE);
+	    result = CommonMethods.isNotNull(searchResponse);
+	} while ((System.currentTimeMillis() - startTime) < pollDuration && !result && pollingFlag);
+	LOGGER.info("SEARCH RESPONSE: " + searchResponse);
+	String strPayLoadData = result
+		? CommonMethods.patternFinder(searchResponse, BroadBandTestConstants.PATTERN_MATCHER_PAYLOAD_DATA)
+		: null;
+	LOGGER.info("PAYLOAD DATA (STRING): " + strPayLoadData);
+	if (CommonMethods.isNotNull(strPayLoadData)) {
+	    try {
+		telemetryPayLoadData = new JSONObject(strPayLoadData);
+	    } catch (JSONException jsonException) {
+		LOGGER.error(jsonException.getMessage());
+	    }
+	}
+	LOGGER.info("PAYLOAD DATA (JSON): " + telemetryPayLoadData);
+	LOGGER.debug("ENDING METHOD getPayLoadDataAsJson");
+	return telemetryPayLoadData;
+    }
+    
+    /**
+     * Utility Method to retrieve the value of the payload parameter given the payload data in JSON Format & parameter
+     * name.
+     * 
+     * @param telemetryPayloadData
+     *            String representing the Telemetry Payload Data
+     * @param parameterName
+     *            String representing the parameter name
+     * 
+     * @return String representing the parameter value.
+     * @refactor Govardhan
+     */
+    public static String getPayloadParameterValue(JSONObject telemetryPayloadData, String parameterName) {
+	LOGGER.debug("ENTERING METHOD getPayloadParameterValue");
+	String parameterValue = null;
+	JSONArray jsonArrSearchResult = null;
+	try {
+	    if (null != telemetryPayloadData) {
+		jsonArrSearchResult = telemetryPayloadData.getJSONArray("searchResult");
+	    }
+	    if (null != jsonArrSearchResult) {
+		LOGGER.info("searchResult JSON ARRAY LENGTH: " + jsonArrSearchResult.length());
+		for (int iCounter = 0; iCounter < jsonArrSearchResult.length(); iCounter++) {
+		    JSONObject tmpJsonObject = jsonArrSearchResult.getJSONObject(iCounter);
+		    boolean isKeyPresent = tmpJsonObject.has(parameterName);
+		    parameterValue = isKeyPresent ? tmpJsonObject.getString(parameterName) : null;
+		    if (isKeyPresent) {
+			LOGGER.info("PARAMETER PRESENT IN THE TELEMETRY PAYLOAD: " + isKeyPresent);
+			break;
+		    }
+		}
+	    }
+	} catch (JSONException jsonException) {
+	    LOGGER.error(jsonException.getMessage());
+	}
+	LOGGER.info("TELEMETRY PAYLOAD PARAMETER: " + parameterName + ", VALUE: " + parameterValue);
+	LOGGER.debug("ENDING METHOD getPayloadParameterValue");
+	return parameterValue;
+    }
+    
+    /**
+     * Utility Method to verify the ping failed 4 and ping failed 2.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param searchText
+     *            String representing the Search Text (Typically a Payload Parameter) to be fired on the dcm script log.
+     * 
+     * @return status .True-Expected log is present.Else-False
+     * @refactor Govardhan
+     */
+    public static boolean verifyPingFailedPayloadParamFromDcmScript(AutomaticsTapApi tapEnv, Dut device,
+	    String searchText) {
+	LOGGER.debug("STARTING METHOD : verifyPingFailedPayloadParamFromDcmScript");
+	boolean status = false;
+	String searchResponse = null;
+	try {
+	    long startTime = System.currentTimeMillis();
+	    do {
+		searchResponse = BroadBandCommonUtils.searchLogFiles(tapEnv, device, searchText,
+			BroadBandTestConstants.DCMSCRIPT_LOG_FILE);
+		status = CommonMethods.isNotNull(searchResponse)
+			&& CommonMethods.patternMatcher(searchResponse, BroadBandTestConstants.PATTERN_PING_FAILED_FOUR)
+			&& CommonMethods.patternMatcher(searchResponse, BroadBandTestConstants.PATTERN_PING_FAILED_TWO);
+	    } while (!status && (System.currentTimeMillis() - startTime) < BroadBandTestConstants.TWO_MINUTE_IN_MILLIS
+		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+	    LOGGER.info("SEARCH RESPONSE STATUS: " + status);
+	} catch (Exception exception) {
+	    LOGGER.error(exception.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD : verifyPingFailedPayloadParamFromDcmScript");
+	return status;
+    }
+}

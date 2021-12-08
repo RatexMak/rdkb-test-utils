@@ -206,5 +206,28 @@ public class RDKBTestConstants {
     /** The constant holding a command to ifconfig erouter. */
     public static final String IFCONFIG_EROUTER = "/sbin/ifconfig erouter0";
 
+    /** Commandd to get the uptime from /proc/uptime **/
+    public static final String PROC_CMD_UPTIME = "cat /proc/uptime";    
 
+    /** Three minutes in seconds. */
+    public static final long TWO_MINUTES_IN_SECONDS = 2 * 60;
+
+    /** Prop key xconf url. */
+    public static final String PROP_KEY_PROXY_XCONF_URL = "proxy.xconf.logupload.url";
+    
+    /** Pattern log url. */
+    public static final String PATTERN_FOR_LOG_UPLOAD_URL = "DCM_LOG_SERVER_URL=(\\S+)";
+    
+    /** 30 minutes in milliseconds. */
+    public static final long THIRTY_MINUTES_IN_MILLIS = 30 * ONE_MINUTE_IN_MILLIS;
+    
+    /** Delimeter Hash. */
+    public static final String DELIMITER_HASH = "#";
+    
+    /** Linux command to remove any folder. */
+    public static final String CMD_REMOVE_DIR_FORCEFULLY = "rm -rf";
+    
+    /** To Replace */
+    public static final String[] REPLACE = { "", "", "", "", "", "", "", "", "", "", "" };
+    
 }

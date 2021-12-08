@@ -32,6 +32,7 @@ import com.automatics.exceptions.TestException;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
+import com.automatics.rdkb.constants.WebPaParamConstants.WebPaDataTypes;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.CommonMethods;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
@@ -124,6 +125,49 @@ public class BroadBandPreConditionUtils {
 	} else {
 	    LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL : " + errorMessage);
 	    throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION " + preConStepNumber
+		    + " FAILED : " + errorMessage);
+	}
+
+    }
+    /**
+     * Pre-Condition method to disable code big first enable.
+     * 
+     * @param device
+     *            {@link Dut}
+     */
+    public static void executePreConditionToDisableCodeBigFirst(Dut device, AutomaticsTapApi tapEnv, int preConStepNumber)
+	    throws TestException {
+	String errorMessage = null;
+	boolean status = false;
+	LOGGER.info("#######################################################################################");
+	LOGGER.info("PRE-CONDITION " + preConStepNumber + " : DESCRIPTION : Disable Codebig first by using webpa");
+	LOGGER.info("PRE-CONDITION " + preConStepNumber
+		+ " : ACTION : Set Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.CodeBigFirst.Enable as false.");
+	LOGGER.info("PRE-CONDITION " + preConStepNumber
+		+ " : EXPTECTED : Codebig first Enable should be disabled using webpa.");
+	LOGGER.info("#######################################################################################");
+	errorMessage = "Failed to enable Codebig first.";
+	try {
+	    status = BroadBandCommonUtils.getWebPaValueAndVerify(device, tapEnv,
+		    BroadBandWebPaConstants.WEBPA_PARAM_CODEBIG_FIRST_ENABLE, BroadBandTestConstants.FALSE);
+	} catch (Exception exception) {
+	    LOGGER.error(errorMessage + " : " + exception.getMessage());
+	}
+	try {
+	    if (!status) {
+		status = BroadBandWebPaUtils.setVerifyWebPAInPolledDuration(device, tapEnv,
+			BroadBandWebPaConstants.WEBPA_PARAM_CODEBIG_FIRST_ENABLE, WebPaDataTypes.BOOLEAN.getValue(),
+			BroadBandTestConstants.FALSE, BroadBandTestConstants.TWO_MINUTE_IN_MILLIS,
+			BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+	    }
+	} catch (Exception exception) {
+	    LOGGER.error(errorMessage + " : " + exception.getMessage());
+	}
+	if (status) {
+	    LOGGER.info("PRE-CONDITION " + preConStepNumber + " : ACTUAL : Codebig first disabled using webpa.");
+	} else {
+	    LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL : " + errorMessage);
+	    throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION : " + preConStepNumber
 		    + " FAILED : " + errorMessage);
 	}
 

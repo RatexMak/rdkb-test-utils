@@ -1812,10 +1812,10 @@ public class BroadBandTestConstants extends RDKBTestConstants {
    public static final String PATTERN_TO_GET_IPV4_ADDRESS = "(\\d+\\.\\d+\\.\\d+\\.\\d+)";
    
    /** Constant for Primary remote endpoint */
-   public static final String PRIMARY_REMOTE_ENDPOINT = "68.86.15.199";
+   public static final String PRIMARY_REMOTE_ENDPOINT = "";
 
    /** Constant for Secondary remote endpoint */
-   public static final String SECONDARY_REMOTE_ENDPOINT = "68.86.15.171";
+   public static final String SECONDARY_REMOTE_ENDPOINT = "";
    
    /** Constant holds the ARRIS Group, Inc. Device Manufacturer name */
    public static final String DEVICE_MANUFACTURER_NAME_ARRIS_INC = "ARRIS Group, Inc.";

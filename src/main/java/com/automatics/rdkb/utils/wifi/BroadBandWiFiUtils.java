@@ -536,7 +536,7 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 		    }
 		}
 	    } else {
-		failureReason = "WEBPA RESPONDSE OBTAINED FROM 'ECatsTapApi.executeMultipleWebPaCommands' API IS EMPTY.";
+		failureReason = "WEBPA RESPONDSE OBTAINED FROM 'AutomaticsTapApi.executeMultipleWebPaCommands' API IS EMPTY.";
 		status = false;
 	    }
 	} catch (Exception e) {

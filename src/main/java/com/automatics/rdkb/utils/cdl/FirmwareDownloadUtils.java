@@ -477,7 +477,7 @@ public class FirmwareDownloadUtils {
 	/**
 	 * Method to verify last reboot reason via Webpa
 	 * 
-	 * @param tapEnv       ECatsTapApi instance
+	 * @param tapEnv       AutomaticsTapApi instance
 	 * @param settop       Settop instance
 	 * @param rebootReason Reboot reason to be verified
 	 * @return true if reboot reason is verified successfully
@@ -487,7 +487,7 @@ public class FirmwareDownloadUtils {
 	/**
 	 * Method to retrieve last reboot reason from RDKB device
 	 * 
-	 * @param tapEnv instance of {@link ECatsTapApi}
+	 * @param tapEnv instance of {@link AutomaticsTapApi}
 	 * @param settop instance of {@link Settop}
 	 * @return last reboot reason
 	 */
@@ -622,7 +622,7 @@ public class FirmwareDownloadUtils {
 	 * reboots; once the device the image flashing is verified and result is
 	 * returned.
 	 * 
-	 * @param tapEnv                      {@link ECatsTapApi}
+	 * @param tapEnv                      {@link AutomaticsTapApi}
 	 * @param settop                      {@link Settop}
 	 * @param cdlImageWithoutBinExtension String representing the CDL Image Name
 	 *                                    without .bin extension
@@ -762,7 +762,6 @@ public class FirmwareDownloadUtils {
 
 		boolean snmpDownloadCompletedStatus = false;
 
-		/* triggerTftpCodeDownloadUsingSnmp(settop, eCatsTapApi, buildName); */
 		/** Added new boolean argument to refer the build name from System Property */
 		triggerTftpCodeDownloadUsingSnmp(device, tapEnv, buildName, useImageFrmSystemProperty);
 
@@ -954,7 +953,7 @@ public class FirmwareDownloadUtils {
 	/**
 	 * Method to clear the xconf url configuration in /nvram/XconfUrlOverride
 	 * 
-	 * @param tapEnv instance of {@link ECatsTapApi}
+	 * @param tapEnv instance of {@link AutomaticsTapApi}
 	 * @param settop instance of {@link Settop}
 	 */
 	public static void deleteXconfUlrOverrideConfigurationFile(AutomaticsTapApi tapEnv, Dut device) {
@@ -1279,5 +1278,56 @@ public class FirmwareDownloadUtils {
 		}
 		return status;
 	}
+	 /**
+	     * Method to retrieve and validate the XCONF configuration details from RDK Logs
+	     * 
+	     * @param rdkLogContents
+	     *            logs
+	     * @param imageName
+	     *            image name
+	     * @param rebootImmediately
+	     *            reboot immediately status
+	     * @param downloadProtocol
+	     *            CDL Download protocol
+	     */
+	    public static void retrieveAndValidateXconfConfiguration(String rdkLogContents, String imageName,
+		    String rebootImmediately, String downloadProtocol) {
+		// validation status
+		boolean status = false;
+		// XCONF Configuration from log file
+		String xconfConfiguration = null;
+		// error message
+		String errorMessage = null;
+
+		if (CommonMethods.isNotNull(rdkLogContents)) {
+
+		    // verifying the presents of HTTP RESPONSE CODE is 200 is log file
+		    status = rdkLogContents.contains(BroadBandCdlConstants.HTTP_SUCCESS_RESPONSE_FOR_XCONF_CDL);
+
+		    if (status) {
+			// retrieve XCONF Configuration from log file
+			xconfConfiguration = CommonMethods.patternFinder(rdkLogContents,
+				BroadBandCdlConstants.PATTERN_TO_RETRIEVE_XCONF_CONFIGURATION);
+			if (CommonMethods.isNotNull(xconfConfiguration)) {
+			    status = FirmwareDownloadUtils.validateXconfConfiguration(xconfConfiguration, downloadProtocol,
+				    imageName, rebootImmediately);
+			    errorMessage = "XCONF configuration comparison failed. ie, actual: " + xconfConfiguration;
+			} else {
+			    errorMessage = "Unable to retrieve XCONF Configuration from "
+				    + BroadBandTestConstants.RDKLOGS_LOGS_XCONF_TXT_0;
+			}
+		    } else {
+			errorMessage = "Unable to find " + BroadBandCdlConstants.HTTP_SUCCESS_RESPONSE_FOR_XCONF_CDL
+				+ " message after initiating XCONF CDL in " + BroadBandTestConstants.RDKLOGS_LOGS_XCONF_TXT_0;
+		    }
+
+		} else {
+		    errorMessage = "Skipping the XCONF configuration validation since the given log snippet is empty/null";
+		}
+
+		if (!status) {
+		    throw new TestException(errorMessage);
+		}
+	    }
 
 }

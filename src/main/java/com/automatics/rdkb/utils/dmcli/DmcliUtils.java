@@ -293,5 +293,44 @@ public class DmcliUtils {
 		}
 		return dmcliDatatype;
 	}
-    
+
+    /**
+     * Method to do get of TR181 parameter, check if value is same as to be set else set using dmcli command
+     * 
+     * @param device
+     *            The device to be used.
+     * @param tapEnv
+     *            The {@link AutomaticsTapApi} instance.
+     * @param parameter
+     *            The TR181 parameter that has to be set.
+     * @param dataType
+     *            Data type of the value.
+     * @param valueToBeSet
+     *            Value that has to be set.
+     * 
+     * @return result Boolean value representing the result of set and get actions.
+     * 
+     * @author asanka200
+     */
+    public static boolean verifyElseSetParameterUsingDmcli(Dut device, AutomaticsTapApi tapEnv, String parameter,
+	    String dataType, String valueToBeSet) {
+	LOGGER.debug("STARTING METHOD: verifyElseSetParameterUsingDmcli");
+	boolean result = false;
+	String response = null;
+	response = getParameterValueUsingDmcliCommand(device, tapEnv, parameter);
+	// not using equals as sometimes need to set null value
+	if (valueToBeSet == response) {
+	    LOGGER.info("Parameter already has expected value: '" + response + "' skipping set operation");
+	    result = true;
+	} else if (valueToBeSet == BroadBandTestConstants.EMPTY_STRING) {
+	    result = setParameterValueUsingDmcliCommand(device, tapEnv, parameter, dataType,
+		    BroadBandTestConstants.DMCLI_NULL_VALUE);
+	} else {
+	    result = setParameterValueUsingDmcliCommand(device, tapEnv, parameter, dataType, valueToBeSet);
+	}
+
+	LOGGER.debug("EXITING METHOD: verifyElseSetParameterUsingDmcli");
+	return result;
+    }
+
 }

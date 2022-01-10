@@ -82,6 +82,7 @@ public enum BroadBandSnmpMib {
     ESTB_SYS_UP_TIME("sysUpTime", ".1.3.6.1.2.1.1.3"),
 	
     /** OIDs for geting device serial number. */
+    EMTA_TELEPHONE_LINE_RESET_NEGATIVE_SCENARIO("mtaReset", "1.3.6.1.2.1.2.2.1.7.9", "0"),
     ECM_DOCS_CABLE_DEVICE_MIB_DOCS_DEV_SERIAL_NUMBER("docsDevSerialNumber", "1.3.6.1.2.1.69.1.1.4.0"),
     ECM_RESET_MIB("docsdevresetnow", ".1.3.6.1.2.1.69.1.1.3"),
     EMTA_TELEPHONE_LINE_RESET_POSITIVE_SCENARIO("mtaReset", "1.3.6.1.2.1.2.2.1.7", "9"),
@@ -116,7 +117,24 @@ public enum BroadBandSnmpMib {
     ECM_STATIC_WAN_IPV6("rdkbRgDeviceConfigStaticIpv6",".1.3.6.1.4.1.17270.50.2.1.4.7","0"),
     ECM_DOCSIS_SIGNAL_QUALITY_EXTENDED_RX_MER_SAMPLES_TABLE(
 	    "docsIf3SignalQualityExtRxMerSamples",
-	    ".1.3.6.1.4.1.4491.2.1.20.1.24.1.2");
+	    ".1.3.6.1.4.1.4491.2.1.20.1.24.1.2"),
+    ECM_IPV4_PING_SERVER_TABLE_ONE("ipv4pingservertableone", ".1.3.6.1.4.1.17270.44.1.1.6.1.1.2", "1"),
+    ECM_IPV4_PING_SERVER_TABLE_ONE_ADD("ipv4pingservertableoneadd", ".1.3.6.1.4.1.17270.44.1.1.6.1.1.3", "1"),
+    ECM_IPV4_PING_SERVER_TABLE_TWO_ADD("ipv4pingservertabletwoadd", ".1.3.6.1.4.1.17270.44.1.1.6.1.1.3", "2"),
+    ECM_IPV4_PING_SERVER_TABLE_TWO("ipv4pingservertabletwo", ".1.3.6.1.4.1.17270.44.1.1.6.1.1.2", "2"),
+    ECM_IPV4_PING_SERVER_TABLE_THREE_ADD("ipv4pingservertablethreeadd", ".1.3.6.1.4.1.17270.44.1.1.6.1.1.3", "3"),
+    ECM_IPV4_PING_SERVER_TABLE_THREE("ipv4pingservertablethree", ".1.3.6.1.4.1.17270.44.1.1.6.1.1.2", "3"),
+    ECM_IPV6_PING_SERVER_TABLE_ONE_ADD("ipv6pingservertableoneadd", ".1.3.6.1.4.1.17270.44.1.1.6.2.1.3", "1"),
+    ECM_IPV6_PING_SERVER_TABLE_ONE("ipv6pingservertableone", ".1.3.6.1.4.1.17270.44.1.1.6.2.1.2", "1"),
+    ECM_IPV6_PING_SERVER_TABLE_TWO("ipv6pingservertabletwo", ".1.3.6.1.4.1.17270.44.1.1.6.2.1.2", "2"),
+    ECM_IPV6_PING_SERVER_TABLE_TWO_ADD("ipv6pingservertabletwoadd", ".1.3.6.1.4.1.17270.44.1.1.6.2.1.3", "2"),
+    ECM_IPV6_PING_SERVER_TABLE_THREE_ADD("ipv6pingservertablethreeadd", ".1.3.6.1.4.1.17270.44.1.1.6.2.1.3", "3"),
+    ECM_IPV6_PING_SERVER_TABLE_THREE("ipv6pingservertablethree", ".1.3.6.1.4.1.17270.44.1.1.6.2.1.2", "3"),
+    ECM_WIFI_RADIO_MODE_2_4("radiowifisecuritymode2.4", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.4", "10001"),
+    ECM_WIFI_RADIO_MODE_5("radiowifisecuritymode5", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.4", "10101"),
+    ESTB_VERIFY_MOCA_INTERFACE_STATUS("verifyMocaInterfaceStatus", " .1.3.6.1.4.1.31621.1.1.1.1.1.1"),
+    FACTORY_RESET_DEVICE("FactoryReset","1.3.6.1.4.1.17270.50.2.1.1.1002"),
+    ECM_DOCS_DEV_SW_IPV4_SERVER_ADDRESS("docsDevSwipv4ServerAddres", "1.3.6.1.2.1.69.1.3.1");
     
     private String mibName;
 

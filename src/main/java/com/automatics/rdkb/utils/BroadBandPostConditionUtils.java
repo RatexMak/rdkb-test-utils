@@ -23,10 +23,14 @@ import org.slf4j.LoggerFactory;
 import com.automatics.device.Dut;
 import com.automatics.exceptions.TestException;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
+import com.automatics.rdkb.constants.BroadBandWebPaConstants;
 import com.automatics.rdkb.utils.cdl.BroadBandCodeDownloadUtils;
 import com.automatics.rdkb.utils.cdl.BroadBandXconfCdlUtils;
+import com.automatics.rdkb.utils.telemetry.BroadBandTelemetry2Utils;
+import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
 import com.automatics.rdkb.utils.wifi.BroadBandWiFiUtils;
 import com.automatics.tap.AutomaticsTapApi;
+import com.automatics.utils.CommonMethods;
 
 /**
  * Utility class which handles the Post condition related functionality and verification.
@@ -156,7 +160,7 @@ public class BroadBandPostConditionUtils {
      * @param settop
      *            instance of{@link Settop}
      * @param tapEnv
-     *            instance of {@link ECatsTapApi}
+     *            instance of {@link AutomaticsTapApi}
      * @param postConditionNumber
      *            String to hold post condition number.
      */
@@ -180,4 +184,249 @@ public class BroadBandPostConditionUtils {
 	    LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
 	}
     }
+    
+    
+    /**
+     * Post-Condition method to remove backup file
+     * 
+     * @param device
+     *            {@link Dut}
+     * 
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * 
+     * @param postConditionNumber
+     *            int to hold post condition number.
+     * 
+     * @param String
+     *            File to be removed.
+     */
+    public static void executePostConditionToRemoveBackUpFile(Dut device, AutomaticsTapApi tapEnv, int postConStepNumber,
+	    String fileToBeRemoved) throws TestException {
+	String errorMessage = null;
+	boolean status = false;
+	LOGGER.info("#######################################################################################");
+	LOGGER.info("POST-CONDITION " + postConStepNumber + " : DESCRIPTION : Remove File and verify File removal");
+	LOGGER.info("POST-CONDITION " + postConStepNumber
+		+ " : ACTION : Execute command to Remove File and verify File removal.");
+	LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPTECTED : File must be removed successfully");
+	LOGGER.info("#######################################################################################");
+	errorMessage = "Failed to remove the file from the directory";
+	try {
+	    if (CommonUtils.isFileExists(device, tapEnv, fileToBeRemoved)) {
+		status = CommonUtils.removeFileandVerifyFileRemoval(tapEnv, device, fileToBeRemoved);
+	    } else {
+		errorMessage = "File not available";
+	    }
+	} catch (Exception e) {
+	    errorMessage += e.getMessage();
+	    LOGGER.error(errorMessage);
+	}
+	if (status) {
+	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTUAL : File removed successfully ");
+
+	} else {
+	    LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
+	}
+    }
+    
+    /**
+     * Method to perform steps to enable Telemetry 2 configs via RFC
+     * 
+     * @param device
+     *            {@link Instanceof Dut}
+     * @param stepNumber
+     *            step number to start with
+     * @param testCaseId
+     *            test case ID to update
+     */
+    public static void PostConditionToUpdateTelemetryVer1SettingsViaRFC(Dut device, int stepNumber,
+	    AutomaticsTapApi tapEnv) {
+	try {
+
+	    boolean status = false;
+	    String errorMessage = null;
+
+	    errorMessage = "Failed to configure RFC payload for telemetry 2 configurations";
+	    status = false;
+
+	    LOGGER.info("##################################################################################");
+	    LOGGER.info("POST-CONDITION " + stepNumber
+		    + ": DESCRIPTION : Configure RFC payload to set telemetry 1 configurations");
+	    LOGGER.info("POST-CONDITION " + stepNumber
+		    + ": ACTION : 1. Copy and update /nvram/rfc.properties with mock RFC config server URL2. "
+		    + "Post payload after replacing ESTB mac and enable/disable value to RFC URL");
+	    LOGGER.info("POST-CONDITION " + stepNumber
+		    + ": EXPECTED : Successfully rebooted or triggered check-in after configuring RFC payload");
+	    LOGGER.info("##################################################################################");
+
+	    if (BroadBandRfcFeatureControlUtils.executePreconditionForRfcTests(device, tapEnv,
+		    AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_TELEMETRY_VER_2_CONFIG)
+			    .replaceAll(BroadBandTestConstants.TELEMETRY_ENABLE_VAUE, BroadBandTestConstants.FALSE)
+			    .replaceAll(BroadBandTestConstants.TELEMETRY_VERSION_VALUE,
+				    BroadBandTestConstants.STRING_VALUE_ONE)
+			    .replaceAll(BroadBandTestConstants.TELEMETRY_CONFIG_URL_VALUE, " "))) {
+		errorMessage = "Unable to reboot device successfully";
+		status = CommonMethods.rebootAndWaitForIpAccusition(device, tapEnv);
+	    }
+
+	    if (status) {
+		LOGGER.info("POST-CONDITION " + stepNumber
+			+ ": ACTUAL : Successfully rebooted or triggered check-in after configuring RFC payload");
+	    } else {
+		LOGGER.error("POST-CONDITION " + stepNumber + ": ACTUAL : " + errorMessage);
+	    }
+	    LOGGER.info("##################################################################################");
+	    if (status) {
+		++stepNumber;
+		status = false;
+		errorMessage = "Setting the telemetry version 1 configurations via RFC has failed";
+
+		LOGGER.info("##################################################################################");
+		LOGGER.info("POST-CONDITION " + stepNumber
+			+ ": DESCRIPTION : Verify if telemetry version 1 params are updated by RFC");
+		LOGGER.info("POST-CONDITION " + stepNumber
+			+ ": ACTION : 1. Verify /tmp/rfc_configdata.txt contains posted parameter value2."
+			+ " Verify log message for updation in /rdklogs/logs/dcmrfc.log3. Verify parameter value is changed");
+		LOGGER.info(
+			"POST-CONDITION " + stepNumber + ": EXPECTED : Successfully set parameter value through RFC");
+		LOGGER.info("##################################################################################");
+
+		status = BroadBandRfcFeatureControlUtils
+			.verifyParameterUpdatedByRfc(device, tapEnv,
+				BroadBandTestConstants.TELEMETRY_2_WEBPA_SETTINGS.FEATURE_ENABLE.getParam(),
+				BroadBandTestConstants.TELEMETRY_2_WEBPA_SETTINGS.FEATURE_ENABLE.getFactoryDefault())
+			.isStatus()
+			&& BroadBandRfcFeatureControlUtils.verifyParameterUpdatedByRfc(device, tapEnv,
+				BroadBandTestConstants.TELEMETRY_2_WEBPA_SETTINGS.CONFIG_URL.getParam(),
+				BroadBandTestConstants.TELEMETRY_2_WEBPA_SETTINGS.CONFIG_URL.getFactoryDefault())
+				.isStatus()
+			&& BroadBandRfcFeatureControlUtils
+				.verifyParameterUpdatedByRfc(device, tapEnv,
+					BroadBandTestConstants.TELEMETRY_2_WEBPA_SETTINGS.VERSION.getParam(),
+					BroadBandTestConstants.TELEMETRY_2_WEBPA_SETTINGS.VERSION.getFactoryDefault())
+				.isStatus();
+
+		if (status) {
+		    LOGGER.info(
+			    "POST-CONDITION " + stepNumber + ": ACTUAL : Successfully set parameter value through RFC");
+		} else {
+		    LOGGER.error("POST-CONDITION " + stepNumber + ": ACTUAL : " + errorMessage);
+		}
+		LOGGER.info("##################################################################################");
+
+		++stepNumber;
+		errorMessage = "The configuration set via RFC for telemetry 1 configurations has not taken effect";
+		status = false;
+
+		LOGGER.info("##################################################################################");
+		LOGGER.info("POST-CONDITION " + stepNumber
+			+ ": DESCRIPTION : Validate from webpa that configuration of telemetry 1 configurations via RFC is reflecting");
+		LOGGER.info("POST-CONDITION " + stepNumber
+			+ ": ACTION : Execute WebPa GET command on the telemetry 1 webpa paramas");
+		LOGGER.info(
+			"POST-CONDITION " + stepNumber + ": EXPECTED : The set values should be returned via webpa");
+		LOGGER.info("##################################################################################");
+
+		status = BroadBandTelemetry2Utils.validateFactoryDefaultsForTelemetryParams(device, tapEnv);
+
+		if (status) {
+		    LOGGER.info("POST-CONDITION " + stepNumber
+			    + ": ACTUAL : The configuration set via RFC for telemetry 1 is successful");
+		} else {
+		    LOGGER.error("POST-CONDITION " + stepNumber + ": ACTUAL : " + errorMessage);
+		}
+		LOGGER.info("##################################################################################");
+	    }
+	} catch (TestException e) {
+	    LOGGER.error("Exception occured while configuring telemetry 2 settings via RFC", e);
+	}
+
+    }
+    
+    /**
+     * Post-Condition method to enable/disable the Moca status
+     * 
+     * @param device
+     *            instance of{@link Dut}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param isEnabled
+     *            True - To be Enabled,False- To be Disabled
+     * @param postConditionNumber
+     *            Parameter to hold post condition number.
+     * 
+     */
+    public static void executePostConditionRevertDefaultMocaStatus(Dut device, AutomaticsTapApi tapEnv, boolean isEnabled,
+	    int postConStepNumber) throws TestException {
+	String errorMessage = null;
+	boolean status = false;
+	/**
+	 * POST CONDITION : ENABLE/DISABLE THE MoCA STATUS
+	 */
+	LOGGER.info("#######################################################################################");
+	LOGGER.info("POST-CONDITION " + postConStepNumber + " : DESCRIPTION : " + (isEnabled ? "ENABLE" : "DISABLE")
+		+ " THE MoCA STATUS");
+	LOGGER.info("POST-CONDITION " + postConStepNumber + ": ACTION : " + (isEnabled ? "ENABLE" : "DISABLE")
+		+ " THE MoCA STATUS " + BroadBandWebPaConstants.WEBPA_PARAM_FOR_MOCA_INTERFACE_ENABLE + " STATUS AS "
+		+ (isEnabled ? "TRUE" : "FALSE") + " USING WEBPA");
+	LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : MoCA STATUS MUST BE "
+		+ (isEnabled ? "ENABLED" : "DISABLED"));
+	LOGGER.info("#######################################################################################");
+	errorMessage = "UNABLE TO " + (isEnabled ? "ENABLE" : "DISABLE") + " THE MoCA STATUS";
+	try {
+	    status = BroadBandWebPaUtils.setVerifyWebPAInPolledDuration(device, tapEnv,
+		    BroadBandWebPaConstants.WEBPA_PARAM_FOR_MOCA_INTERFACE_ENABLE, BroadBandTestConstants.CONSTANT_3,
+		    isEnabled ? BroadBandTestConstants.TRUE : BroadBandTestConstants.FALSE,
+		    BroadBandTestConstants.THREE_MINUTES, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+	    if (status) {
+		LOGGER.info("POST-CONDITION " + postConStepNumber + ": ACTUAL : SUCCESSFULLY "
+			+ (isEnabled ? "ENABLED" : "DISABLED") + " THE  MoCA STATUS");
+	    } else {
+		LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
+	    }
+	} catch (Exception exception) {
+	    LOGGER.error("Execution error occured while switching the MoCA status  --> " + exception.getMessage());
+	}
+    }
+    
+    /**
+     * Post-Condition method to disable the xifnity wifi
+     * 
+     * @param device
+     *            instance of{@link Dut}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param postConditionNumber
+     *            String to hold post condition number.
+     */
+    public static void executePostConditionToDisableXfinityWifi(Dut device, AutomaticsTapApi tapEnv,
+	    int postConStepNumber) {
+	boolean status = false;
+	String errorMessage = null;
+	try {
+	    LOGGER.info("#######################################################################################");
+	    LOGGER.info("POST-CONDITION " + postConStepNumber
+		    + " : DESCRIPTION : VERIFY THE XFINITYWIFI STATUS IS DISABLED");
+	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : EXECUTE WEBPA COMMAND:"
+		    + BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI);
+	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : XFINITY WIFI MUST BE DISABLED");
+	    LOGGER.info("#######################################################################################");
+	    errorMessage = "UNABLE TO DISABLE THE XFINITY WIFI ON GATEWAY DEVICE";
+	    status = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv,
+		    BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI, BroadBandTestConstants.CONSTANT_3,
+		    BroadBandTestConstants.FALSE);
+	    if (status) {
+		LOGGER.info("POST-CONDITION " + postConStepNumber
+			+ " : ACTUAL : SUCCESSFULLY DISABLED THE XFINITY WIFI ON GATEWAY DEVICE");
+	    } else {
+		LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
+	    }
+
+	} catch (Exception e) {
+	    LOGGER.info(e.getMessage());
+	    LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + e.getMessage());
+	}
+    }
+    
 }

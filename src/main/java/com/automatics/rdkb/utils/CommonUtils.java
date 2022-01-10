@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpStatus;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +37,7 @@ import com.automatics.exceptions.TestException;
 import com.automatics.http.ServerCommunicator;
 import com.automatics.http.ServerResponse;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
+import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.RDKBTestConstants;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.CommonMethods;
@@ -55,7 +56,9 @@ public class CommonUtils {
     /** DeviceConfig IP Address Type - ESTB. */
     public static final String DEVICE_IP_ADDRESS_TYPE_ESTB = "ESTB";
 
-    /** Variable to hold the property name of Box Health Checker Server IP and port */
+    /**
+     * Variable to hold the property name of Box Health Checker Server IP and port
+     */
     public static final String BOX_HEALTH_CHECKER_URL_PROPERTY = "box.health.check.url";
 
     /**
@@ -394,7 +397,7 @@ public class CommonUtils {
      * returns String representing the search response.
      * 
      * @param tapEnv
-     *            {@link ECatsTapApi}
+     *            {@link AutomaticsTapApi}
      * @param settop
      *            {@link Settop}
      * @param searchText
@@ -766,11 +769,12 @@ public class CommonUtils {
 
 	return ((null != macWithColunReplaced) ? macWithColunReplaced.toUpperCase() : null);
     }
+
     /**
      * This utility method will perform the COPY, REMOVE & UPDATE values in a file operations.
      * 
      * @param tapEnv
-     *            {@link ECatsTapApi}
+     *            {@link AutomaticsTapApi}
      * @param settop
      *            {@link Settop}
      * @param command
@@ -789,12 +793,12 @@ public class CommonUtils {
 	}
 	return result;
     }
-    
+
     /**
      * Method to get the uptime of an Stb using "cat /proc/uptime" command
      * 
      * @param tapApi
-     *            Instance of ECatsTapApi
+     *            Instance of AutomaticsTapApi
      * @param settop
      *            Instance of Settop
      * @return uptime uptime in seconds
@@ -802,7 +806,7 @@ public class CommonUtils {
     public static String getUptimeFromProc(AutomaticsTapApi tapEnv, Dut device) {
 
 	String uptime = tapEnv.executeCommandUsingSsh(device, RDKBTestConstants.PROC_CMD_UPTIME);
-	
+
 	if (CommonUtils.isNotEmptyOrNull(uptime)) {
 
 	    if (uptime.indexOf(".") != -1) {
@@ -826,36 +830,163 @@ public class CommonUtils {
 
 	return uptime;
     }
-    
-    public static List<String> patternFinderForMultipleMatches(String response, String patternToMatch)
-    {
-      LOGGER.debug("STARTING METHOD: patternFinder()");
 
-      String matchedString = "";
+    public static List<String> patternFinderForMultipleMatches(String response, String patternToMatch) {
+	LOGGER.debug("STARTING METHOD: patternFinder()");
 
-      Pattern pattern = null;
+	String matchedString = "";
 
-      Matcher matcher = null;
-      List matchedStringList = new ArrayList();
-      try
-      {
-        if ((CommonMethods.isNotNull(response)) && (CommonMethods.isNotNull(patternToMatch))) {
-          pattern = Pattern.compile(patternToMatch);
-          matcher = pattern.matcher(response);
-          while (matcher.find()) {
-            matchedString = matcher.group(1);
-            LOGGER.info(new StringBuilder().append("Matching string : ").append(matchedString).toString());
-            matchedStringList.add(matchedString.trim());
-          }
-        }
-      } catch (Exception exception) {
-        LOGGER.error("Exception occured in patternFinder()", exception);
-      }
+	Pattern pattern = null;
 
-      LOGGER.info(new StringBuilder().append("No of matched strings -").append(matchedStringList.size()).toString());
+	Matcher matcher = null;
+	List matchedStringList = new ArrayList();
+	try {
+	    if ((CommonMethods.isNotNull(response)) && (CommonMethods.isNotNull(patternToMatch))) {
+		pattern = Pattern.compile(patternToMatch);
+		matcher = pattern.matcher(response);
+		while (matcher.find()) {
+		    matchedString = matcher.group(1);
+		    LOGGER.info(new StringBuilder().append("Matching string : ").append(matchedString).toString());
+		    matchedStringList.add(matchedString.trim());
+		}
+	    }
+	} catch (Exception exception) {
+	    LOGGER.error("Exception occured in patternFinder()", exception);
+	}
 
-      LOGGER.debug("ENDING METHOD: patternFinder()");
+	LOGGER.info(new StringBuilder().append("No of matched strings -").append(matchedStringList.size()).toString());
 
-      return matchedStringList;
+	LOGGER.debug("ENDING METHOD: patternFinder()");
+
+	return matchedStringList;
     }
+
+    /**
+     * Utility method to clear the log file give the absolute path of the file.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param fileName
+     *            String representing the absolute path of the file.
+     * 
+     * @return Boolean representing the result of the operation.
+     * @refactor Govardhan
+     */
+    public static boolean clearLogFile(AutomaticsTapApi tapEnv, Dut device, String fileName) {
+	LOGGER.debug("STARTING METHOD clearLogFile");
+	String response = tapEnv.executeCommandUsingSsh(device, RDKBTestConstants.CMD_ECHO_CLEAR + fileName);
+	boolean result = CommonMethods.isNull(response);
+	LOGGER.info(fileName + " CLEARED: " + result);
+	LOGGER.debug("ENDING METHOD clearLogFile");
+	return result;
+    }
+
+    /**
+     * Helper method to kill the process with pid given as parameter.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param pid
+     *            The pid of process which is to be killed
+     * @refactor Govardhan
+     * 
+     */
+    public static void killTheProcessWithPid(Dut device, AutomaticsTapApi tapEnv, String pid) {
+
+	LOGGER.info("STARTING METHOD: CommonUtils.killTheProcessWithPid()");
+	String shellCommand = RDKBTestConstants.KILL_9 + pid;
+
+	LOGGER.info("Executing command: " + shellCommand);
+
+	String response = tapEnv.executeCommandUsingSsh(device, shellCommand);
+
+	LOGGER.info("Response Obtained on killing process: " + response);
+	LOGGER.info("ENDING METHOD: CommonUtils.killTheProcessWithPid()");
+    }
+    
+    /**
+     * Helper method to clear the contents of a log. This method is useful in case you have to verify same logs in a
+     * single scenario more than once
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param filePath
+     *            path of the file whose contents are to be cleared
+     * @return true if the contents are cleared, else false
+     * @refactor Govardhan
+     */
+    public static boolean clearLogContents(Dut device, AutomaticsTapApi tapEnv, String filePath) {
+
+	LOGGER.debug("STARTING METHOD CommonUtils.clearLogContents");
+	boolean status = false;
+
+	// clear the contents of the file and verify whether the contents have been cleared
+	tapEnv.executeCommandUsingSsh(device, "echo > " + filePath);
+	String response = tapEnv.executeCommandUsingSsh(device, "cat " + filePath);
+	LOGGER.debug("Clear Log Contents Response is : " + response);
+	if (CommonMethods.isNull(response)) {
+	    status = true;
+	}
+	LOGGER.debug("ENDING METHOD CommonUtils.clearLogContents");
+	return status;
+    }
+    
+    /**
+     * Method to verify given directory exists or not
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param completeFolderPath
+     *            complete folder path
+     * @return true if file present else false
+     * @refactor Govardhan
+     */
+    public static boolean doesDirectoryExist(Dut device, AutomaticsTapApi tapEnv, String completeFolderPath) {
+	LOGGER.info("STARTING METHOD: doesDirectoryExist()");
+	boolean status = false;
+	String response = tapEnv.executeCommandUsingSsh(device,
+		"if [ -d " + completeFolderPath + " ] ; then echo \"true\" ; else echo \"false\" ; fi");
+	LOGGER.info("Response is : " + response);
+	if (CommonMethods.isNotNull(response)) {
+	    status = response.trim().equals("true");
+	}
+	LOGGER.info("ENDING METHOD: doesDirectoryExist()");
+	return status;
+    }
+    
+    /**
+     * Helper method to kill the process given as parameter.
+     * 
+     * @param AutomaticsTapApi
+     *            The {@link AutomaticsTapApi} reference.
+     * @param settop
+     *            The settop to be used.
+     * @param process
+     *            The process name which is to be killed
+     * @refactor Alan_Bivera
+     * 
+     */
+    public static void killTheProcess(Dut device, AutomaticsTapApi tapEnv, String process) {
+
+	LOGGER.info("STARTING METHOD: CommonUtils.killTheProcess()");
+	String shellCommand = BroadBandTestConstants.CMD_KILLALL_11 + " " + process;
+
+	LOGGER.info("Executing command: " + shellCommand);
+
+	String response = tapEnv.executeCommandUsingSsh(device, shellCommand);
+
+	LOGGER.info("Response Obtained on killing process: " + response);
+	LOGGER.info("ENDING METHOD: CommonUtils.killTheProcess()");
+
+    }
+    
+    
 }

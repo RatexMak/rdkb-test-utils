@@ -36,6 +36,7 @@ import com.automatics.rdkb.constants.WebPaParamConstants.WebPaDataTypes;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.CommonMethods;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
+import com.automatics.rdkb.utils.wifi.BroadBandWiFiUtils;
 
 public class BroadBandPreConditionUtils {
     
@@ -172,4 +173,77 @@ public class BroadBandPreConditionUtils {
 	}
 
     }
+    
+	/**
+	 * Pre-Condition method to perform Factory reset the device .
+	 * 
+	 * @param device {@link Dut}
+	 * @param tapEnv {@link AutomaticsTapApi}
+	 * @Refactor Athira
+	 */
+	public static boolean executePreConditionToFactoryResetDevice(Dut device, AutomaticsTapApi tapEnv,
+			int preConStepNumber) throws TestException {
+		String errorMessage = null;
+		boolean status = false;
+		boolean isFactoryReset = false;
+		/**
+		 * PRE-CONDITION :Factory Reset
+		 */
+		LOGGER.info("#######################################################################################");
+		LOGGER.info("PRE-CONDITION " + preConStepNumber + " : DESCRIPTION : PERFORM FACTORY RESET ON THE DEVICE.");
+		LOGGER.info("PRE-CONDITION " + preConStepNumber + " : ACTION : PERFORM FACTORY RESET USING WEBPA.");
+		LOGGER.info("PRE-CONDITION " + preConStepNumber + " : EXPTECTED : DEVICE MUST UNDERGO FACTORY RESET.");
+		LOGGER.info("#######################################################################################");
+		errorMessage = "UNABLE TO PERFORM WIFI FACTORY RESET OPERATION ON THE DEVICE. HENCE BLOCKING THE EXECUTION.";
+
+		status = BroadBandCommonUtils.performFactoryResetWebPa(tapEnv, device);
+		if (status) {
+			isFactoryReset = status;
+			LOGGER.info("PRE-CONDITION " + preConStepNumber + " : ACTUAL : FACTORY RESET SUCCESSFULLY PERFORMED.");
+		} else {
+			LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL : " + errorMessage);
+			throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION : " + preConStepNumber
+					+ " FAILED : " + errorMessage);
+		}
+
+		return isFactoryReset;
+	}
+	
+	/**
+	 * Pre-Condition method to perform reactivate the device .
+	 * 
+	 * @param device {@link Dut}
+	 */
+	public static boolean executePreConditionToReacitivateDevice(Dut device, AutomaticsTapApi tapEnv,
+			int preConStepNumber) throws TestException {
+		String errorMessage = null;
+		boolean status = false;
+		boolean isReactivated = false;
+		errorMessage = null;
+		status = false;
+		LOGGER.info("#######################################################################################");
+		LOGGER.info("PRE-CONDITION " + preConStepNumber + " : DESCRIPTION : REACTIVATE THE ROUTER DEVICE");
+		LOGGER.info("PRE-CONDITION " + preConStepNumber
+				+ " : ACTION : SET VALUES TO 2.4GHz AND 5GHz - PRIVATE SSID AND PASSWORD");
+		LOGGER.info("PRE-CONDITION " + preConStepNumber
+				+ " : EXPECTED : THE ROUTER DEVICE SHOULD BE REACTIVATED SUCCESSFULLY");
+		LOGGER.info("#######################################################################################");
+		errorMessage = "FAILED TO REACTIVATE THE ROUTER DEVICE";
+		status = false;
+		try {
+			BroadBandWiFiUtils.reactivateDeviceUsingWebpaOrSnmp(tapEnv, device);
+			status = true;
+			isReactivated = status;
+		} catch (TestException e) {
+			errorMessage = e.getMessage();
+		}
+		if (status) {
+			LOGGER.info("PRE-CONDITION " + preConStepNumber + " : ACTUAL: THE ROUTER DEVICE REACTIVATED SUCCESSFULLY.");
+		} else {
+			LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL: " + errorMessage);
+			throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION : " + preConStepNumber
+					+ " FAILED : " + errorMessage);
+		}
+		return isReactivated;
+	}
 }

@@ -98,7 +98,7 @@ public class CodeDownloadUtils {
      * @param settop
      *            Device under test
      * @param tapEnv
-     *            {@code ECatsTapApi} instance
+     *            {@code AutomaticsTapApi} instance
      * @return Current running image version
      */
     public static String getCurrentRunningImageNameFromVersionTxtFile(Dut device, AutomaticsTapApi tapEnv) {

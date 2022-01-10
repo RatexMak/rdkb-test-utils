@@ -166,4 +166,179 @@ public class BroadBandTraceConstants extends RDKBTraceConstants{
     
     /** The constant holding a log during maintenance window. */
     public static final String LOG_XCONF_DURING_MAINTENANCE_WINDOW = "still within current maintenance window for reboot";
+    
+    /** Log message for Parodus serial number log message in Arm/Consolelog */
+    public static final String LOG_MESSAGE_PARODUS_SER_NUM = "serialNumber returned from hal";
+    
+    /** Log message for Parodus mac log message in Arm/Consolelog */
+    public static final String LOG_MESSAGE_PARODUS_MAC = "deviceMac";
+    
+    /** Log message for Parodus http_code: 200 log message in Arm/Consolelog */
+    public static final String LOG_MESSAGE_PARODUS_HTTP_200 = "PARODUS: themis curl response 0 http_code 200";
+    
+    /** Log message for parodus curl failure in PARODUSlog */
+    public static final String LOG_MESSAGE_TO_CHECK_PARODUS_CURL_RETRY_FAILURE = "PARODUS: Curl retry is reached to max 3 attempts, proceeding without token";
+    
+    /** Log message for parodus curl success in PARODUSlog */
+    public static final String LOG_MESSAGE_PARODUS_CURL_SUCCESS = "Parodus: cURL success";
+    
+    /** Log message for parodus client_cert_path in PARODUSlog */
+    public static final String LOG_MESSAGE_CLIENT_CERT_PATH = "client_cert_path";
+    
+    /** Log message for parodus token_server_url in PARODUSlog */
+    public static final String LOG_MESSAGE_TOKEN_SERVER_URL = "token_server_url";
+    
+    /** Log message for Parodus command token-acquisition-script arguement */
+    public static final String LOG_MESSAGE_PARODUS_CMD_CREATE_FILE_ARGUEMENT = "\"\\\\--token-acquisition-script=/usr/ccsp/parodus/parodus_create_file.sh\"";
+    
+    /** Log message for Parodus command token-read-script arguement */
+    public static final String LOG_MESSAGE_PARODUS_CMD_READ_FILE_ARGUEMENT = "\"\\\\--token-read-script=/usr/ccsp/parodus/parodus_read_file.sh\"";
+    
+    /** Log message for wbepa ready */
+    public static final String LOG_MESSAGE_WEBPA_READY = "\"WEBPA_READY\"";
+    
+    /** String to store the Log message for CR system ready signal */
+    public static final String LOG_MESSAGE_CR_SYSTEM_READY = "From CR: System is ready";
+    
+    /** String to store the Log message for Received system ready signal */
+    public static final String LOG_MESSAGE_RECIEVED = "Received system ready signal";
+    
+    /** String to store the Log message for checked CR-System is ready */
+    public static final String LOG_MESSAGE_CHECKED = "Checked CR - System is ready, proceed with component caching";
+    
+    /** Log message for component caching is completed */
+    public static final String LOG_MESSAGE_COMP_CACHING = "\"Component caching is completed\"";
+    
+    /** Log message for received reboot reason */
+    public static final String LOG_MESSAGE_REBOOT_REASON = "\"Received reboot_reason as:\"";
+    
+    /** Log message for failed to */
+    public static final String LOG_MESSAGE_FAILED_TO = "\"Failed to\"";
+
+    /** Log message for webpa agent */
+    public static final String LOG_MESSAGE_WEBPA_AGENT = "\"webpaagent\"";
+    
+    /** Log message for minidump upload is successful */
+    public static final String LOG_MESSAGE_UPLOAD_SUCCESS = "minidump Upload is successful";
+    
+    /** Log message for full url in parodus log */
+    public static final String LOG_MESSAGE_FULL_URL = "full url";
+    
+    /**
+     * Log message for Received temporary redirection response message in parodus log
+     */
+    public static final String LOG_MESSAGE_RECEIVED_TEMP_REDIRECT = "Received temporary redirection response message";
+    
+    /** Log message for startParodus is enabled in parodus log */
+    public static final String LOG_MESSAGE_START_PARODUS = "startParodus is enabled";
+    
+    /** Log message for CPU Memory Fragmentation */
+    public static final String LOG_MESSAGE_CPU_MEMORY_FRAGMENTATION = "CPU_MEMORY_FRAGMENTATION";
+    
+    /** Log Message for LMLite Integration */
+    public static final String LOG_MESSAGE_LMLITE_INTEGRATION = "\"LMLite: Init for parodus Success\"";
+    
+    /** Log message for harvester initialization */
+    public static final String LOG_MESSAGE_HARVESTER_INITIALIZATION = "\"HARV : /tmp/harvester_initialized created\"";
+    
+    /** Log message for Device finger printing enabled in Console log */
+    public static final String WEBPA_GET_NOTIFICATION = "\"WDMP-C: Request\"";
+
+    /** Log message for Device finger printing enabled in Console log */
+    public static final String WEBPA_SET_NOTIFICATION = "\"WDMP-C: SET Request\"";
+
+    /** Log message for Device finger printing enabled in Console log */
+    public static final String WEBPA_POST_NOTIFICATION = "\"WDMP-C: ADD_ROW Request\"";
+
+    /** Log message for Device finger printing enabled in Console log */
+    public static final String WEBPA_PUT_NOTIFICATION = "\"WDMP-C: REPLACE_ROWS Request\"";
+
+    /** Log message for Device finger printing enabled in Console log */
+    public static final String WEBPA_DELETE_NOTIFICATION = "\"WDMP-C: DELETE_ROW Request\"";
+    
+    /** Log message for successful message sent to parodus */
+    public static final String LOG_MESSAGE_SUCCCESS_TO_PARADOUS = "\" Sent message successfully to parodus\"";
+
+  /** Log message for firmware udate url */
+    public static final String LOG_MESSAGE_FW_UPDATE_FROM_URL = "Device retrieves firmware update from url";
+
+    /** Log message for HTTP response code 404 */
+    public static final String LOG_MESSAGE_HTTP_RESPONSE_CODE_404 = "HTTP RESPONSE CODE is 404";
+
+    /** Log message for FW upgrade Excluded */
+    public static final String LOG_MESSAGE_EXCLUDED_FROM_FW_UPGRADE = "\"Device excluded from FW Upgrade!! Exiting\"";
+
+    /** Log message for SNMPv3 support enable in dcmscript.log file */
+    public static final String LOG_MESSAGE_SNMPV3_SUPPORT = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.SNMP.V3Support value=true";
+    
+    /** Log message for Init for parodus success */
+    public static final String LOG_MESSAGE_INIT_PARODUS = "\"Init for parodus Success\"";
+    
+    /** Log message for get attributes */
+    public static final String LOG_MESSAGE_GET_ATTRIBUTES = "\"GET_ATTRIBUTES\"";
+    
+    /** Log message for get */
+    public static final String LOG_MESSAGE_GET = "\"GET\"";
+    
+    /** Log message for set attributes */
+    public static final String LOG_MESSAGE_SET_ATTRIBUTES = "\"SET ATTRIBUTES\"";
+    
+    /** Log message for test and set request */
+    public static final String LOG_MESSAGE_TEST_SET = "\"Test and Set Request\"";
+    
+    /** Log message for add_row request */
+    public static final String LOG_MESSAGE_ADD_ROW_REQ = "\"ADD_ROW Request\"";
+    
+    /** Log message for replace_rows */
+    public static final String LOG_MESSAGE_REPLACE_ROWS = "\"REPLACE_ROWS\"";
+
+    /** Log message for delete_row */
+    public static final String LOG_MESSAGE_DELETE_ROWS = "\"DELETE_ROW\"";
+    
+    /** Log message for Notification event from stack */
+    public static final String LOG_MESSAGE_NOTIFY_STACK = "\"Notification Event from stack\"";
+    
+    /** Log message for cloud status set offline in PARODUSlog */
+    public static final String LOG_MESSAGE_CLOUD_STATUS_SET_OFFLINE = "PARODUS: cloud_status set as offline after connection close";
+    
+    /** Log message for custom parodus close reason in /tmp */
+    public static final String LOG_MESSAGE_CLOSING_FROM_FILE = "Closing from file";
+    
+    /** Log message for parodus close reason file path */
+    public static final String LOG_MESSAGE_PARODUS_CLOSE_REASON_FILE = "PARODUS: sigterm_close_reason_file is /tmp/parodus_close_reason.txt";
+    
+    /** Log Message for Parodus Integration with Seshat Completion */
+    public static final String LOG_MESSAGE_SESHAT_INTEGRATION_COMPLETE = "\"PARODUS: Ping received with payload\"";
+    
+    /** Log message for complete parodus custom close reason in PARODUSlog.txt.0 */
+    public static final String LOG_MESSAGE_PARODUS_CUSTOM_CLOSE_REASON = "PARODUS: Closed by SIGTERM, reason: "
+	    + LOG_MESSAGE_CLOSING_FROM_FILE;
+    
+    /** Log message for shutdown reason in PARODUSlog */
+    public static final String LOG_MESSAGE_PARODUS_CUSTOM_SHUTDOWN_REASON = "PARODUS: shutdown reason at close "
+	    + LOG_MESSAGE_CLOSING_FROM_FILE;
+    
+    /** Log message for shutdown parodus signal received in PARODUSlog */
+    public static final String LOG_MESSAGE_PARODUS_SIGTERM_RECEIVED = "PARODUS: SIGTERM received";
+    
+    /** Log Message for Mesh Enable Error when bridge enabled */
+    public static final String LOG_MESSAGE_MESH_ERROR_BRIDGE_ENABLED = "MESH_ERROR:Fail to enable Mesh when Bridge mode is on";
+    
+    /** Telemetry marker for DOSCIS SNMP device reboot.*/
+    public static final String TELEMETRY_MARKER_DOCSIS_SNMP_REBOOT = "RDKB_REBOOT: Reboot triggered by SNMP";
+    
+    /** Log message for component caching is completed in settop trace */
+    public static final String WEBPA_LOG_MESSAGE_COMP_CACHING_TRACE = "WEBPA: Component caching is completed";
+    
+    /** Log message for harvester log INIT parodus Check */
+    public static final String LOG_MESSAGE_PARODUS_INIT = "Init for parodus Success";
+    
+    /** Log message for successful message sent to parodus For LmLite */
+    public static final String LOG_MESSAGE_SUCCCESS_TO_PARADOUS_LMLITE = "Sent message successfully to parodus";
+    
+    /** Log Message for Parodus process */
+    public static final String LOG_MESSAGE_PARODUS_PROCESS = "\"Started parodusStart in background\"";
+    
+    
+
 }

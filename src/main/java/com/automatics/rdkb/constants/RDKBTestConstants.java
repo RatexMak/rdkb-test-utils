@@ -230,4 +230,19 @@ public class RDKBTestConstants {
     /** To Replace */
     public static final String[] REPLACE = { "", "", "", "", "", "", "", "", "", "", "" };
     
+    /** Command Constant for clearing file using echo **/
+    public static final String CMD_ECHO_CLEAR = "echo > ";
+    
+    /** Dot operator **/
+    public static final String DOT_OPERATOR = ".";
+    
+    /** Constant for storing STRING Zero */
+    public static final String STRING_ZERO = "0";
+    
+    /** String to command 'kill -9' */
+    public static final String KILL_9 = "kill -9 ";
+    
+    /** DeviceConfig IP Address Type - ESTB. */
+    public static final String DEVICE_IP_ADDRESS_TYPE_ESTB = "ESTB";
+    
 }

@@ -214,7 +214,7 @@ public class BroadBandCodeDownloadUtils {
      * @param settop
      *            settop to be verified
      * @param tapApi
-     *            ECatsTapApi instance
+     *            AutomaticsTapApi instance
      * @param initialFirmwareVersion
      *            initialFirmwareVersion .
      * 

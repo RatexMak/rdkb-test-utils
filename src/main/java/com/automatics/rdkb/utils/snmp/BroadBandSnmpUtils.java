@@ -26,14 +26,18 @@ import org.slf4j.LoggerFactory;
 
 import com.automatics.constants.SnmpConstants;
 import com.automatics.device.Dut;
+import com.automatics.enums.ExecutionStatus;
 import com.automatics.exceptions.TestException;
 import com.automatics.providers.snmp.SnmpProvider;
 import com.automatics.providers.snmp.SnmpProviderFactory;
+import com.automatics.rdkb.BroadBandResultObject;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
+import com.automatics.rdkb.constants.BroadBandSnmpConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandTraceConstants;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
 import com.automatics.rdkb.utils.CommonUtils;
+import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
 import com.automatics.snmp.SnmpCommand;
 import com.automatics.snmp.SnmpDataType;
 import com.automatics.snmp.SnmpParams;
@@ -490,11 +494,6 @@ public class BroadBandSnmpUtils {
     /**
      * Helper method to parse the system descriptor properties from SNMP command and store it in HashMap for further
      * processing.
-     * 
-     * sample systemdescriptor output to understand logic SNMPv2-MIB::sysDescr.0 = ARRIS DOCSIS 3.1 / PacketCable 2.0
-     * Touchstone Residential Gateway <<HW_REV: 7; VENDOR: ARRIS Group, Inc.; BOOTR: 0.1.9.430478; SW_REV:
-     * TG3482_VBN_stable2_20170409005444sdy_NG; MODEL: TG3482G>> Obtained system descriptor is split according to
-     * symbols present in output and the result is stored in a hash map.
      * 
      * @param sysDescrSnmpOutput
      *            The SNMP command output.
@@ -1223,4 +1222,226 @@ public class BroadBandSnmpUtils {
 	boolean result = CommonMethods.isNotNull(snmpOutput) && snmpOutput.equals(value);
 	return result;
     }
+    
+    /**
+     * Utility method to check snmp Response and compare snmp and webpa response
+     * 
+     * @param tapEnv
+     *            The {@link AutomaticsTapApi} instance
+     * @param device
+     *            The device to be validated.
+     * @param snmpResponse
+     *            Snmp Response
+     * @param WebPaResponse
+     *            Webpa Response
+     * @return boolean by validating the condition
+     */
+    public static boolean validateSNMPResponse(AutomaticsTapApi tapEnv, Dut device, String snmpResponse,
+	    String WebPaResponse) {
+	LOGGER.debug("STARTING METHOD : validateSNMPResponse()");
+	boolean result = false;
+	try {
+	    result = hasNoSNMPErrorOnResponse(tapEnv, device, snmpResponse)
+		    && CommonUtils.patternSearchFromTargetString(snmpResponse.trim(), String.valueOf(WebPaResponse));
+	} catch (Exception e) {
+	    LOGGER.error("Exception Occured in validateSNMPResponse():" + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD : validateSNMPResponse()");
+	return result;
+    }
+    
+    /**
+     * Utility method to check snmp Response for snmp errors
+     * 
+     * @param tapEnv
+     *            The {@link AutomaticsTapApi} instance
+     * @param device
+     *            The device to be validated.
+     * @param snmpResponse
+     *            Snmp Response
+     * @return boolean by validating the condition
+     */
+    public static boolean hasNoSNMPErrorOnResponse(AutomaticsTapApi tapEnv, Dut device, String snmpResponse) {
+	LOGGER.debug("STARTING METHOD : hasNoSNMPErrorOnResponse()");
+	boolean result = false;
+	try {
+	    result = CommonMethods.isNotNull(snmpResponse)
+		    && !BroadBandCommonUtils.patternSearchFromTargetString(snmpResponse,
+			    BroadBandSnmpConstants.SNMP_ERROR_RESPONSE_NO_OBJECT)
+		    && !BroadBandCommonUtils.patternSearchFromTargetString(snmpResponse,
+			    BroadBandSnmpConstants.SNMP_ERROR_RESPONSE_NO_OID)
+		    && !BroadBandCommonUtils.patternSearchFromTargetString(snmpResponse,
+			    BroadBandTestConstants.SNMP_TIME_OUT_RESPONSE)
+		    && !BroadBandCommonUtils.patternSearchFromTargetString(snmpResponse,
+			    BroadBandSnmpConstants.SNMP_ERROR_UNKNOWN_OBJECT)
+		    && !BroadBandCommonUtils.patternSearchFromTargetString(snmpResponse,
+			    BroadBandTestConstants.SNMPV3_TIMEOUT_ERROR);
+	} catch (Exception e) {
+	    LOGGER.error("Exception Occured in hasNoSNMPErrorOnResponse():" + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD : hasNoSNMPErrorOnResponse()");
+	return result;
+    }
+    
+    /**
+     * Utility method to retrieve SNMP output and verify the same with system command output
+     * 
+     * @param tapEnv
+     * @param device
+     * @param ssid
+     * @param tableIndex
+     * @param systemCommand
+     * @param testParameter
+     * @return ResultValues with test result & error message
+     */
+    public static BroadBandResultObject retrieveSnmpOutputAndVerifyWithSystemCommandOutput(AutomaticsTapApi tapEnv,
+	    Dut device, String oid, String tableIndex, String systemCommand, String testParameter) {
+	BroadBandResultObject result = new BroadBandResultObject();
+	try {
+	    boolean status = false; // stores the test status
+	    String errorMessage = null; // stores the error message
+	    String snmpOutput = null; // stores SNMP output
+	    String ssidRetrievedFromSystemCommand = null; // stores ssid retrieved from system command
+
+	    snmpOutput = executeSnmpGetWithTableIndexOnRdkDevices(tapEnv, device, oid, tableIndex);
+	    status = CommonMethods.isNotNull(snmpOutput);
+	    errorMessage = "Unable to retrieve " + testParameter + " Radio using SNMP";
+	    result.setExecutionStatus(status ? ExecutionStatus.PASSED : ExecutionStatus.FAILED);
+	    if (status) {
+		ssidRetrievedFromSystemCommand = BroadBandWebPaUtils.getSsidNameRetrievedUsingDeviceCommand(device,
+			tapEnv, systemCommand);
+		status = CommonMethods.isNotNull(ssidRetrievedFromSystemCommand);
+		errorMessage = "Using system command unable to retrieve " + testParameter + " Radio";
+		result.setExecutionStatus(ExecutionStatus.NOT_TESTED);
+	    }
+	    if (status) {
+		status = CommonUtils.patternSearchFromTargetString(ssidRetrievedFromSystemCommand, snmpOutput);
+		errorMessage = testParameter + " Radio retrieved from SNMP & system command do not match";
+		result.setExecutionStatus(status ? ExecutionStatus.PASSED : ExecutionStatus.FAILED);
+	    }
+
+	    result.setErrorMessage(errorMessage);
+	    result.setStatus(status);
+
+	} catch (Exception exception) {
+	    LOGGER.error(
+		    "Exception occurred while trying to retrieve and verify SNMP output with system command output: "
+			    + exception.getMessage());
+	}
+
+	return result;
+    }
+
+    /**
+     * Utility method to retrieve SNMP output and verify the same with WebPA output
+     * 
+     * @param tapEnv
+     * @param device
+     * @param ssid
+     * @param tableIndex
+     * @param webPaParameter
+     * @param testParameter
+     * @return ResultValues with test result & error message
+     */
+    public static BroadBandResultObject retrieveSnmpOutputAndVerifyWithWebPaOutput(AutomaticsTapApi tapEnv, Dut device,
+	    String oid, String tableIndex, String webPaParameter, String testParameter) {
+	BroadBandResultObject result = new BroadBandResultObject();
+	try {
+	    boolean status = false; // stores the test status
+	    String errorMessage = null; // stores the error message
+	    String snmpOutput = null; // stores SNMP output
+	    String webPaOutput = null; // stores webPa output
+
+	    snmpOutput = executeSnmpGetWithTableIndexOnRdkDevices(tapEnv, device, oid, tableIndex);
+	    status = CommonMethods.isNotNull(snmpOutput);
+	    errorMessage = "Unable to retrieve " + testParameter + " Radio using SNMP";
+	    result.setExecutionStatus(status ? ExecutionStatus.PASSED : ExecutionStatus.FAILED);
+	    if (status) {
+		webPaOutput = tapEnv.executeWebPaCommand(device, webPaParameter);
+		status = CommonMethods.isNotNull(webPaOutput);
+		errorMessage = "Using WebPA unable to retrieve " + testParameter + " Radio";
+		result.setExecutionStatus(ExecutionStatus.NOT_TESTED);
+	    }
+	    if (status) {
+		status = snmpOutput.equalsIgnoreCase(webPaOutput);
+		errorMessage = testParameter + " Radio retrieved from SNMP & WebPA do not match";
+		result.setExecutionStatus(status ? ExecutionStatus.PASSED : ExecutionStatus.FAILED);
+	    }
+
+	    result.setErrorMessage(errorMessage);
+	    result.setStatus(status);
+
+	} catch (Exception exception) {
+	    LOGGER.error("Exception occurred while trying to retrieve and verify SNMP output with WebPA output: "
+		    + exception.getMessage());
+	}
+
+	return result;
+    }
+    
+    /**
+     * Utility method to execute SNMP get with table index on ECM side for negative scenario.
+     * 
+     * @param tapEnv
+     *            The {@link AutomaticsTapApi} instance.
+     * @param device
+     *            {@link Dut}The device to be queried.
+     * @param mibOrOid
+     *            The MIB or OID need to be queried.
+     * @param tableIndex
+     *            The table index.
+     * @return Command output.
+     */
+    public static String snmpGetOnEmtaForInvalidCommunityString(AutomaticsTapApi tapEnv, Dut device, String mibOrOid,  String tableIndex, String mtaAddress) {
+
+	String result = null;
+	SnmpParams snmpParam = new SnmpParams();
+	mibOrOid = mibOrOid + "." + tableIndex;
+	LOGGER.info("mibOrOid to execute: " + mibOrOid);
+
+	snmpParam.setSnmpCommand(SnmpCommand.GET);
+	snmpParam.setSnmpCommunity(SnmpConstants.INVALID_COMMUNITY_STRING);
+	snmpParam.setMibOid(mibOrOid);
+	snmpParam.setIpAddress(mtaAddress);
+	result = tapEnv.executeSnmpCommand(device, snmpParam);
+	return result;
+	
+    }
+    
+    /**
+     * Utility method to execute SNMP set with invalid community string
+     * 
+     * @param tapEnv
+     *            The {@link AutomaticsTapApi} instance.
+     * @param device
+     *            The device to be queried.
+     * @param mibOrOid
+     *            The MIB that needs to be queried
+     * @param dataType
+     *            {@link SnmpDataType}
+     * @param value
+     *            value to set
+     * @param tableIndex
+     *            The table index of the MIB to be queried
+     * 
+     * @return Command output
+     */
+    public static String snmpSetOnEmtaForInvalidCommunityString(AutomaticsTapApi tapEnv, Dut device, String mibOrOid, SnmpDataType dataType, String value,  String tableIndex ,String mtaAddress) {
+
+	String result = null;
+	SnmpParams snmpParam = new SnmpParams();
+	mibOrOid = mibOrOid + "." + tableIndex;
+	LOGGER.info("mibOrOid to execute: " + mibOrOid);
+
+	snmpParam.setSnmpCommand(SnmpCommand.SET);
+	snmpParam.setSnmpCommunity(SnmpConstants.INVALID_COMMUNITY_STRING);
+	snmpParam.setMibOid(mibOrOid);
+	snmpParam.setValue(value);
+	snmpParam.setDataType(dataType);
+	snmpParam.setIpAddress(mtaAddress);
+	result = tapEnv.executeSnmpCommand(device, snmpParam);
+	return result;
+	
+    }
+    
 }

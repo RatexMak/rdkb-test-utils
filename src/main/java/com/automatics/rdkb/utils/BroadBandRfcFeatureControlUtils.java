@@ -92,6 +92,9 @@ public class BroadBandRfcFeatureControlUtils {
 
 	/** Command to remove dcmrfc.log **/
 	public static String CMD_REMOVE_OPT_LOGS_RFCSCRIPT_LOG = "rm -rf /rdklogs/logs/dcmrfc.log";
+	
+    /** Error Message text */
+    private static String errorMessage = null;
 
 	/**
 	 * Method to verify parameter is set to corresponding value through RFC
@@ -333,7 +336,7 @@ public class BroadBandRfcFeatureControlUtils {
 	 * RFC settings to proxy server
 	 * 
 	 * @param settop      {@link Settop}
-	 * @param tapApi      {@link ECatsTapApi}
+	 * @param tapApi      {@link AutomaticsTapApi}
 	 * @param rfcSettings RFC settings which are to be posted to the proxy server
 	 * 
 	 * @return true if post request is successful else false
@@ -377,5 +380,459 @@ public class BroadBandRfcFeatureControlUtils {
 			throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + e.getMessage());
 		}
 	}
+	
+    /**
+     * Method to enable or disable feature in proxy/mock xconf
+     * 
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param device
+     *            The {@link Dut} object.
+     * @param featureName
+     *            Name of the feature that has to be enabling/disabling
+     * @param enableOrDisableFlag
+     *            Flag to set feature enable or disable
+     * @return status Enabling/disabling feature in proxy/mock xconfstatus
+     * @throws JSONException
+     * 
+     * @author Susheela C
+     * @Refactor Athira
+     */
+    public static boolean enableOrDisableFeatureInProxyXconf(AutomaticsTapApi tapEnv, Dut device, String featureName,
+	    boolean enableOrDisableFlag) throws JSONException {
+	LOGGER.debug("STARTING METHOD: BroadBandRfcFeatureControlUtils.enableOrDisableFeatureInProxyXconf");
+	boolean result = false;
+	String rfcPayLoadData = null;
+	int responseCode = 0;
 
+	switch (featureName) {
+	case BroadBandTestConstants.CONFIGURABLE_SSH: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsPropertyUtility
+			.getProperty(BroadBandTestConstants.PROP_KEY_PAYLOAD_ENABLE_CONFIGURABLE_SSH)
+			+ AutomaticsPropertyUtility.getProperty(BroadBandTestConstants.PROP_KEY_SSH_WHITELIST_IPS)
+			+ AutomaticsConstants.COMMA + BroadBandTestConstants.SYMBOL_QUOTES
+			+ AutomaticsPropertyUtility
+				.getProperty(BroadBandTestConstants.PROP_KEY_NON_WHITE_LISTED_JUMP_SERVER_IPV6)
+			+ BroadBandTestConstants.SYMBOL_QUOTES + "]}]}";
+	    } else {
+		rfcPayLoadData = AutomaticsPropertyUtility
+			.getProperty(BroadBandTestConstants.PROP_KEY_PAYLOAD_DISABLE_CONFIGURABLE_SSH)
+			+ AutomaticsPropertyUtility.getProperty(BroadBandTestConstants.PROP_KEY_SSH_WHITELIST_IPS)
+			+ "]}]}";
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.FEATURE_NAME_IDS: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_IDS_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_IDS_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.FIREWALL_PORT: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_ENABLE_FIREWALL_PORT);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_DISABLE_FIREWALL_PORT);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.RFC_FEATURE_NAME_IDS1: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_IDS1_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_IDS1_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.CONFIGURABLE_TELEMETRY: {
+	    rfcPayLoadData = AutomaticsTapApi
+		    .getSTBPropsValue(BroadBandTestConstants.PROP_KEY_CONFIGURABLE_TELEMETRY_PAYLOAD);
+	    break;
+	}
+	case BroadBandTestConstants.FINGER_PRINT: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_ENABLE_FINGER_PRINT);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_DISABLE_FINGER_PRINT);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.SOFT_FLOWD: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_ENABLE_SOFTFLOWD);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_DISABLE_SOFTFLOWD);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.CODEBIG_FIRST: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_ENABLE_CODEBIG_FIRST);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_DISABLE_CODEBIG_FIRST);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.SECURE_UPLOAD: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_TO_ENABLE_DISABLE_CLOUD_UPLOAD_ENCRYPTION)
+			.replace(BroadBandTestConstants.STRING_TO_CHANGE_ENCRYPT_CLOUD_UPLOAD_STATUS,
+				BroadBandTestConstants.TRUE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_TO_ENABLE_DISABLE_CLOUD_UPLOAD_ENCRYPTION)
+			.replace(BroadBandTestConstants.STRING_TO_CHANGE_ENCRYPT_CLOUD_UPLOAD_STATUS,
+				BroadBandTestConstants.FALSE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.SNMPV3: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_SNMPV3_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_SNMPV3_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.PWD_FAILURE: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_PWD_FAILURE_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_PWD_FAILURE_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.CWMP: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_CWMP_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_CWMP_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.FEATURE_NAME_FAN: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_FAN_MAXOVERRIDE_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_FAN_MAXOVERRIDE_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTraceConstants.LOG_MESSAGE_BOOTSTRAP_CONFIG: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROPERTY_KEY_BOOTSTRAP);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROPERTY_KEY_BOOTSTRAP);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.FEATURE_NAME_FORWARD_SSH: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_FORWARD_SSH_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_FORWARD_SSH_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTraceConstants.LOG_MESSAGE_CPU_MEMORY_FRAGMENTATION: {
+	    rfcPayLoadData = AutomaticsTapApi
+		    .getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_CPU_MEMORY_FRAGMENTATION);
+	    break;
+	}
+	case BroadBandTestConstants.FEATURE_NAME_PRIVACY_PROTECTION_ENABLE: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_PRIVACY_PROTECTION_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_PRIVACY_PROTECTION_DISABLE);
+	    }
+	    break;
+	}
+
+	case BroadBandTestConstants.SNMPV3_DH_KICKSTART_TABLE_RFC_FEATURE: {
+
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_CM_SNMPV3_PAYLOAD_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_CM_SNMPV3_PAYLOAD_DISABLE);
+	    }
+	    break;
+	}
+
+	case BroadBandTestConstants.FEATURE_NAME_MTLSDCMUPLOAD_CONFIG: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_MTLSDCMUPLOAD_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_MTLSDCMUPLOAD_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.FEATURE_NAME_NTP_TIME_SERVER: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_NEW_NTP_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_NEW_NTP_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.FEATURE_NAME_INTERWORKING_CONFIG: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_INTERWORKING_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_INTERWORKING_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.FEATURE_NAME_OVS: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_OVS_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_OVS_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.CONFIGURABLE_TELEMETRY_ENDPOINT2: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_TELEMETRYENDPOINT_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_TELEMETRYENDPOINT_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.CONFIGURABLE_CRED_DWNLD: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_CRED_DWNLD_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_CRED_DWNLD_DISABLE);
+	    }
+	    break;
+	}
+
+	case BroadBandTestConstants.CONFIGURABLE_CRED_DWNLD_2: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_CRED_DWNLD_USE_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.CONFIGURABLE_NONROOT_SUPPORT: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_NONROOT_SUPPORT_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_NONROOT_SUPPORT_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.FEATURE_NAME_AUTO_EXCLUDE: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_AUTO_EXCLUDE_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_AUTO_EXCLUDE_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.FEATURE_NAME_WIFIBLASTER_CONFIG: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_WIFIBLASTER_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_WIFIBLASTER_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.RFC_NAME_AGGRESSIVE_SELFHEAL: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_AGG_SELFHEAL_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_AGG_SELFHEAL_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.FEATURE_NAME_WEBCONFIG: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_WEBCONFIG_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_WEBCONFIG_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.CONFIGURABLE_PASSPOINT: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_PASSPOINT_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_PASSPOINT_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.CONFIGURABLE_CABUNDLE: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_DLCASTORE_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_DLCASTORE_DISABLE);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.CONFIGURABLE_HARDWAREHEALTHTEST: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_ENABLE_CONFIGURABLE_HHT);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_DISABLE_CONFIGURABLE_HHT);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.OVS_FEATURE_NAME: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_OVS_ENABLE_PAYLOAD);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_OVS_DISABLE_PAYLOAD);
+	    }
+	    break;
+	}
+	case BroadBandTestConstants.FEATURE_NAME_FAN_MULTIPLE: {
+	    if (enableOrDisableFlag) {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_FAN_MULTIPLE_MAXOVERRIDE_ENABLE);
+	    } else {
+		rfcPayLoadData = AutomaticsTapApi
+			.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_FAN_MULTIPLE_MAXOVERRIDE_DISABLE);
+	    }
+	    break;
+	}
+	}
+
+	LOGGER.info("PAY LOAD DATA: " + rfcPayLoadData);
+	JSONObject jsonObj = new JSONObject(rfcPayLoadData);
+	String stbMacAddress = device.getHostMacAddress();
+	LOGGER.info("XB Mac address: " + stbMacAddress);
+
+	if (null != jsonObj && CommonMethods.isNotNull(stbMacAddress)) {
+	    rfcPayLoadData = jsonObj.toString();
+	    rfcPayLoadData = rfcPayLoadData.replace(BroadBandTestConstants.CONSTANT_REPLACE_STBMAC_LSAPAYLOADDATA,
+		    stbMacAddress);
+	    LOGGER.info("PAY LOAD DATA: " + rfcPayLoadData);
+	    responseCode = BroadBandRfcFeatureControlUtils.postDataToProxyXconfDcmServer(device, tapEnv,
+		    rfcPayLoadData);
+	    LOGGER.info("RESPONSE CODE: " + responseCode);
+	    if (responseCode == AutomaticsConstants.CONSTANT_200) {
+		result = true;
+	    }
+	} else {
+	    LOGGER.error("XB Mac address is not obtained");
+	}
+	LOGGER.info("Status of " + featureName + " enable " + enableOrDisableFlag + " in xconf: " + result);
+	LOGGER.debug("ENDING METHOD: BroadBandRfcFeatureControlUtils.enableOrDisableFeatureInProxyXconf");
+	return result;
+    }
+
+
+	/**
+	 * Method to Enabling/disabling Feature By RFC
+	 * 
+	 * @param tapEnv              instance of {@link AutomaticsTapApi}
+	 * @param device              The {@link Dut} object.
+	 * @param featureName         Name of the feature that has to be
+	 *                            enabling/disabling
+	 * @param enableOrDisableFlag Flag to set Feature enable or disable
+	 * @return status enabling/disabling status
+	 * @throws JSONException
+	 * 
+	 * 
+	 * @author Susheela C
+	 * @Refactor Athira
+	 */
+	public static boolean enableOrDisableFeatureByRFC(AutomaticsTapApi tapEnv, Dut device, String featureName,
+			boolean enableOrDisableFlag) throws JSONException {
+
+		LOGGER.debug("STARTING METHOD: BroadBandRfcFeatureControlUtils.enableOrDisableFeatureByRFC");
+		String proxyXconfUrl = AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PROXY_XCONF_RFC_URL);
+		LOGGER.info("proxyXconfUrl is " + proxyXconfUrl);// ADDED
+		boolean status = false;
+		String response = null;
+		try {
+			if (BroadBandRfcFeatureControlUtils.enableOrDisableFeatureInProxyXconf(tapEnv, device, featureName,
+					enableOrDisableFlag)) {
+				LOGGER.info("in (BroadBandRfcFeatureControlUtils.enableOrDisableFeatureInProxyXconf ");// ADDED
+				if (BroadBandRfcFeatureControlUtils.copyRfcPropertiesFromEtcToNVRAM(device, tapEnv)) {
+					LOGGER.info("in (copyRfcPropertiesFromEtcToNVRAM ");// ADDED
+					status = CommonMethods.copyAndUpdateRfcPropertiesNewXconfUrl(device, tapEnv, proxyXconfUrl);
+					LOGGER.info("status in copyRfcPropertiesFromEtcToNVRAM " + status);// ADDED
+					tapEnv.executeCommandUsingSsh(device, CMD_CLEAR_HASH_VALUE);
+					status = CommonUtils.rebootAndWaitForIpAcquisition(tapEnv, device);
+					LOGGER.info("status CommonUtils.rebootAndWaitForIpAcquisition " + status);// ADDED
+				} else {
+					throw new TestException("Error faced while copying dcm properties file from etc to nvram folder");
+				}
+			} else {
+				throw new TestException(featureName + " not enabled/disbaled in XCONF");
+			}
+			response = CommonUtils.searchLogFilesWithPollingInterval(tapEnv, device,
+					BroadBandTraceConstants.LOG_MESSAGE_COMPLETED_RFC_PASS, BroadBandCommandConstants.FILE_DCMRFC_LOG,
+					BroadBandTestConstants.TEN_MINUTE_IN_MILLIS, BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+			if (CommonMethods.isNotNull(response)) {
+				LOGGER.info("Response from dcmrfc log file is " + response);
+				CommonUtils.patternSearchFromTargetString(response,
+						BroadBandTraceConstants.LOG_MESSAGE_COMPLETED_RFC_PASS);
+			}
+
+			status = CommonUtils.rebootAndWaitForIpAcquisition(tapEnv, device); // Reboot a second time, as per
+
+		} catch (Exception exception) {
+			errorMessage = exception.getMessage();
+			LOGGER.error(errorMessage);
+			throw new TestException(errorMessage);
+		}
+
+		LOGGER.debug("ENDING METHOD: BroadBandRfcFeatureControlUtils.enableOrDisableFeatureByRFC");
+		return status;
+	}
 }

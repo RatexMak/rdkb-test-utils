@@ -34,6 +34,7 @@ import com.automatics.rdkb.utils.BroadBandCommonUtils;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.CommonMethods;
+import com.automatics.utils.xconf.FirmwareConfigurations;
 import com.automatics.utils.xconf.XConfUtils;
 import com.automatics.webpa.WebPaParameter;
 
@@ -147,7 +148,63 @@ public class BroadBandXconfCdlUtils {
 	}
     }
 
-  
+   /* *//**
+     * Utility method to trigger the XCONF download using shell script and verify whether code download is started from
+     * log message.
+     * 
+     * @param device
+     *            The device to be validated.
+     * @param downloadStatusCommand
+     *            The command to get the download status.
+     * @return boolean if XCONF code download is triggered successfully.
+     *//*
+    public static boolean triggerXconfDownloadAndVerifyWhetherDownloadStartedUsingLogs(AutomaticsTapApi AutomaticsTapApi,
+	    Dut device, String buildImageName) {
+
+	boolean requestAccepted = false;
+	boolean requestRejectedForSameVersion = false;
+
+	configureRdkbDeviceForXconfCdl(AutomaticsTapApi, device, buildImageName, false,
+		XreTestConstants.FIRMWARE_DOWNLOAD_PROTOCOL_HTTP);
+
+	CommonMethods.rebootAndWaitForIpAccusition(device, AutomaticsTapApi);
+
+	// AutomaticsTapApi.executeCommandIndeviceBox(device, "tail -f " + BroadBandTestConstants.RDKLOGS_LOGS_XCONF_TXT_0 +
+	// " >> /rdklogs/logs/xconf.txt");
+
+	for (int cdlCheckCount = 0; cdlCheckCount < 40; cdlCheckCount++) {
+
+	    String response = AutomaticsTapApi.executeCommandUsingSsh(device, BroadBandTestConstants.CAT_XCONF_TXT)
+		    .toLowerCase();
+
+	    requestAccepted = verifyWhetherDownloadRequestAcceptedUsingLogMessage(response);
+
+	    if (!requestAccepted) {
+		requestRejectedForSameVersion = verifyCdlRequestRejectedWithSameVersionUsingLogMessage(response);
+	    }
+	    if (!requestAccepted && !requestRejectedForSameVersion) {
+		response = AutomaticsTapApi
+			.executeCommandUsingSsh(device, BroadBandTestConstants.CMD_GREP_CDL_DOWNLOAD_STATUS)
+			.toLowerCase();
+		requestAccepted = verifyWhetherDownloadRequestAcceptedUsingLogMessage(response);
+		if (!requestAccepted) {
+		    requestRejectedForSameVersion = verifyCdlRequestRejectedWithSameVersionUsingLogMessage(response);
+		}
+	    }
+
+	    if (requestRejectedForSameVersion) {
+		requestAccepted = false;
+		break;
+	    } else if (requestAccepted) {
+		break;
+	    }
+
+	    AutomaticsTapApi.waitTill(BroadBandTestConstants.FIFTEEN_SECONDS_IN_MILLIS);
+	}
+
+	// Verifying CDL status
+	return requestAccepted;
+    }*/
 
     /**
      * Configure RDKB device for XCONF Code download
@@ -176,6 +233,158 @@ public class BroadBandXconfCdlUtils {
     }
 
     /**
+     * Utility method to validate whether http code download is started using different log messages.
+     * 
+     * @param commandoutput
+     *            The command output.
+     * @return True if required logs are available in command response.
+     *//*
+    public static boolean verifyWhetherDownloadStartedUsingLogMessage(String commandoutput) {
+	boolean downloadStarted = CommonUtils.isGivenStringAvailableInCommandOutput(commandoutput,
+		BroadBandTraceConstants.HTTP_DOWNLOAD_STARTED_LOG);
+	if (!downloadStarted) {
+	    downloadStarted = CommonUtils.isGivenStringAvailableInCommandOutput(commandoutput,
+		    BroadBandTraceConstants.LOG_MESSAGE_HTTP_DOWNLOAD_STARTED);
+	}
+	return downloadStarted;
+    }
+
+    *//**
+     * Utility method to validate whether http code download is completed using different log messages.
+     * 
+     * @param commandoutput
+     *            The command output.
+     * @return True if required logs are available in command response.
+     *//*
+    public static boolean verifyWhetherDownloadCompletedUsingLogMessage(String commandoutput) {
+
+	boolean downloadCompleted = CommonUtils.isGivenStringAvailableInCommandOutput(commandoutput,
+		BroadBandTraceConstants.HTTP_DOWNLOAD_COMPLETED_LOG);
+	if (!downloadCompleted) {
+	    downloadCompleted = CommonUtils.isGivenStringAvailableInCommandOutput(commandoutput,
+		    BroadBandTraceConstants.LOG_MESSAGE_HTTP_DOWNLOAD_COMPLETED);
+	}
+	return downloadCompleted;
+    }
+
+    *//**
+     * Utility method to validate whether http code download request is accepted using log messages.
+     * 
+     * @param commandoutput
+     *            The command output.
+     * @return True if required logs are available in command response.
+     *//*
+    public static boolean verifyWhetherDownloadRequestAcceptedUsingLogMessage(String response) {
+
+	return CommonUtils.isGivenStringAvailableInCommandOutput(response,
+		BroadBandTraceConstants.LOG_MESSAGE_HTTP_DOWNLOAD_REQUEST_ACCEPTED);
+    }
+
+    *//**
+     * Utility method to verify whether code download is successfully completed using log message.
+     * 
+     * @param response
+     *            The command output.
+     * @return True if required logs are available in command response.
+     *//*
+    public static boolean verifyWhetherCodeDownlaodCompletedSuccessfullyUsingLogMessage(String response) {
+
+	return CommonUtils.isGivenStringAvailableInCommandOutput(response,
+		BroadBandTraceConstants.HTTP_DOWNLOAD_SUCCESS_LOG);
+    }
+
+    *//**
+     * Utility method to verify whether code download completed and waiting for reboot window using log message.
+     * 
+     * @param response
+     * @return True if required logs are available in command response.
+     *//*
+    public static boolean verifyWhetherCdlCompletedAndWaitingForMaintenanceWindowUsingLogMessage(String response) {
+
+	LOGGER.info("cdl logs : " + BroadBandTraceConstants.MAINTENANCE_WINDOW_LOG);
+	return CommonUtils.isGivenStringAvailableInCommandOutput(response,
+		BroadBandTraceConstants.MAINTENANCE_WINDOW_LOG);
+    }
+
+    *//**
+     * Utility method to verify whether code download is failed using log message.
+     * 
+     * @param response
+     *            The command output.
+     * @return True if required logs are available in command response.
+     *//*
+    public static boolean verifyWhetherCdlUpgradeFailedUsingLogMessage(String response) {
+
+	return CommonUtils.isGivenStringAvailableInCommandOutput(response,
+		BroadBandTraceConstants.LOG_MESSAGE_HTTP_DOWNLOAD_NOT_SUCCESSFUL);
+    }
+
+    *//**
+     * Utility method to verify whether code download request rejected with same version using log message.
+     * 
+     * @param response
+     *            The command output.
+     * @return True if required logs are available in command response.
+     *//*
+    public static boolean verifyCdlRequestRejectedWithSameVersionUsingLogMessage(String response) {
+
+	return CommonUtils.isGivenStringAvailableInCommandOutput(response,
+		BroadBandTraceConstants.LOG_MESSAGE_HTTP_DOWNLOAD_REQUEST_REJECTED_WITH_SAME_VERSION);
+    }
+
+    *//**
+     * Method to return cdl initialization log
+     * 
+     * @param device
+     *            instance of {@link device}
+     * @return cdl Initialization Log
+     *//*
+    public static String getCdlInitializationLog(Dut device) {
+	// Log for cdl initialization
+	String cdlInitializationLog = "XCONF SCRIPT : Download image from HTTP server";
+	return cdlInitializationLog;
+    }
+
+    *//**
+     * Method to return cdl download started logs
+     * 
+     * @param device
+     *            instance of {@link device}
+     * @return cdl Download Started Log
+     *//*
+    public static String getCdlDownloadStartedLog(Dut device) {
+	// Log for firmware download started
+	String cdlDownloadStartedLog = "### httpdownload started ###";
+	return cdlDownloadStartedLog;
+    }
+
+    *//**
+     * Method to return cdl download completed log
+     * 
+     * @param device
+     *            instance of {@link device}
+     * @return cdl Download Completed Log
+     *//*
+    public static String getCdlDownloadCompletedLog(Dut device) {
+	// Log for firmware download completed
+	String cdlDownloadCompletedLog = "### httpdownload completed ###";
+	return cdlDownloadCompletedLog;
+    }
+
+    *//**
+     * Method to return cdl download success log
+     * 
+     * @param device
+     *            instance of {@link device}
+     * @return cdl Download Success log
+     *//*
+    public static String getCdlDownloadSuccessLog(Dut device) {
+	// Log for firmware download started
+	String cdlDownloadSuccess = "XCONF SCRIPT : HTTP download Successful";
+	return cdlDownloadSuccess;
+    }
+
+    *//**
      * Method to get CDL Logs for validation
      * 
      * @param device
@@ -379,5 +588,157 @@ public class BroadBandXconfCdlUtils {
 	}
 	LOGGER.debug("ENDING METHOD : ToClearCdlInfoInXconf()");
 	return status;
+    }
+    /**
+     * Configure RDKB device for XCONF Code download
+     * 
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param settop
+     *            instance of {@link Settop}
+     * @param imageName
+     *            image name for cdl
+     * @param rebootImmediately
+     *            true or false
+     * @param protocol
+     *            protocol for CDL download
+     */
+    public static void configureRdkbDeviceForXconfCdlWithSwupdate(AutomaticsTapApi tapEnv, Dut device, String imageName,
+	    boolean rebootImmediately, String protocol, boolean isSwupdateRequired) {
+
+	LOGGER.info("Going to initiate the XCONF " + protocol.toUpperCase() + "(rebootImmediately:" + rebootImmediately
+		+ ") CDL with version " + imageName);
+
+	if (isSwupdateRequired) {
+	    // Create /nvram/swupdate.conf file and add the software update url.
+	    updateSoftwareUpdateConfigurationOnClient(tapEnv, device);
+	}
+	XConfUtils.configureXconfDownloadFirmwareDetails(device, imageName, rebootImmediately, protocol);
+    }
+    
+    /**
+     * Method used to preform XCONF CDL and retrieving the XCONF code download logs
+     * 
+     * @param settop
+     *            instance of{@link Settop}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param firmwareVersionToUpgrade
+     *            Firmware Version To Upgrade
+     * 
+     * @return Code downloaded log file from /rdklogs/logs/xconf.txt.0
+     */
+    public static String triggerXconfCodeDownloadWithSwupdateOption(Dut device, AutomaticsTapApi tapEnv,
+	    String firmwareVersionToUpgrade, boolean isSwupdateRequired) {
+	LOGGER.debug("STARTING METHOD : triggerXconfCodeDownloadWithSwupdateOption()");
+	String cdlLogsForValidation = null;
+	String errorMessage = null;
+	boolean status = false;
+	try {
+	    // Configure RDKB device for XCONF Code download
+	    try {
+		configureRdkbDeviceForXconfCdlWithSwupdate(tapEnv, device, firmwareVersionToUpgrade, false,
+			BroadBandTestConstants.FIRMWARE_DOWNLOAD_PROTOCOL_HTTP, isSwupdateRequired);
+		status = true;
+		LOGGER.info("SUCCESSFULLY CONFIGURED XCONF CODE DOWNLOAD");
+	    } catch (Exception exception) {
+		errorMessage = "Exception occured while configuring xconf code download " + exception.getMessage();
+		LOGGER.error(errorMessage);
+	    }
+	    if (status) {
+		tapEnv.executeCommandUsingSsh(device, BroadBandCommandConstants.FILE_FIRMWARE_SCHED_SH);
+		// wait for 2 minutes to get the code download logs
+		LOGGER.info("WAITING FOR TWO MINUTES TO GET THE CODE DOWNLOAD LOGS");
+		tapEnv.waitTill(BroadBandTestConstants.TWO_MINUTES);
+		try {
+		    cdlLogsForValidation = getCdlLogsForValidation(tapEnv, device);
+		} catch (Exception exception) {
+		    errorMessage = "Exception occured while validating cdl logs " + exception.getMessage();
+		    LOGGER.error(errorMessage);
+		}
+	    } else {
+		errorMessage = "FAILED TO INITIATE XCONF CDL THROUGH firmwareSched.sh";
+		LOGGER.error(errorMessage);
+	    }
+	} catch (Exception exception) {
+	    errorMessage = "Exception occured while performing xconf upgrade " + exception.getMessage();
+	    LOGGER.error(errorMessage);
+	}
+	LOGGER.debug("ENDING METHOD : triggerXconfCodeDownloadWithSwupdateOption()");
+	return cdlLogsForValidation;
+    }
+    
+    /**
+     * Perform Reboot and verify Xconf CDL
+     * 
+     * @param settop
+     *            instance of{@link Settop}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param firmwareVersionToUpgrade
+     *            Firmware Version To Upgrade.
+     * @param cdlLogsForValidation
+     *            Cdl Logs For Validation.
+     * 
+     * @return true if device is loaded with upgraded build
+     */
+    public static boolean verifyCdlandReboot(Dut device, AutomaticsTapApi tapEnv, String firmwareVersionToUpgrade,
+	    String cdlLogsForValidation) {
+	boolean isTrigggered = false;
+	String cdlSuccessLogs = null;
+	String errorMessage = null;
+	boolean status = false;
+	LOGGER.debug("STARTING METHOD : verifyCdlandReboot()");
+	// Validate XCONF configuration details from RDK Logs
+	try {
+	    FirmwareDownloadUtils.retrieveAndValidateXconfConfiguration(cdlLogsForValidation, firmwareVersionToUpgrade,
+		    BroadBandTestConstants.FALSE, BroadBandTestConstants.FIRMWARE_DOWNLOAD_PROTOCOL_HTTP);
+	} catch (Exception exception) {
+	    errorMessage = "Exception occured while Validating XCONF configuration details from RDK Logs"
+		    + exception.getMessage();
+	    LOGGER.error(errorMessage);
+	}
+	// Verify code download status
+	cdlSuccessLogs = FirmwareDownloadUtils.getCdlDownloadSuccessLog(device);
+	status = cdlLogsForValidation.toLowerCase().contains(cdlSuccessLogs.toLowerCase());
+	LOGGER.info("CODE DOWNLOAD STATUS : " + status);
+	if (status) {
+	    status = BroadBandCommonUtils.rebootAndWaitForStbAccessible(device, tapEnv);
+	    if (status) {
+		isTrigggered = firmwareVersionToUpgrade.contains(FirmwareDownloadUtils.getCurrentFirmwareFileNameForCdl(tapEnv, device));
+		LOGGER.info("SUCCESSFULLY VERIFIED THE LATEST IMAGE " + isTrigggered);
+	    }
+	} else {
+	    errorMessage = "FAILED TO VERIFY CODE DOWNLOAD SUCCESS MESSAGE IN CDL LOGS ";
+	    LOGGER.error(errorMessage);
+	}
+	LOGGER.debug("ENDING METHOD : verifyCdlandReboot()");
+	return isTrigggered;
+    }
+    /**
+     * Helper method to configure the XCONF firmware configuration details with Invalid url.
+     * 
+     *
+     * @param AutomaticsTapApi
+     *            The {@link AutomaticsTapApi} instance.
+     * @param settop
+     *            The settop to be used.
+     * @param imageVersion
+     *            The name of image version.
+     * @param rebootImmediately
+     *            The reboot immediately flag.
+     * @param protocol
+     *            The transport protocol used.
+     * 
+     * @return FirmwareConfiguration The object which holds Xconf configurations
+     * 
+     * @author sgunas200
+     */
+    public static FirmwareConfigurations configureXconfDownloadFirmwareDetailsWithInvalidURL(final AutomaticsTapApi tapEnv ,
+	    final Dut device, String imageVersion, final boolean rebootImmediately, final String protocol,
+	    int upgradeDelay) {
+
+	return XConfUtils.configureXconfDownloadFirmwareDetails(device, imageVersion, rebootImmediately, protocol, null,
+		XConfUtils.getFirmwareLocation( protocol, device, imageVersion), upgradeDelay);
     }
 }

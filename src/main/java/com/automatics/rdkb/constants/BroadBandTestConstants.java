@@ -18,12 +18,14 @@
 package com.automatics.rdkb.constants;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.automatics.snmp.SnmpDataType;
+import com.automatics.utils.AutomaticsPropertyUtility;
 import com.automatics.rdkb.utils.DeviceModeHandler;
 import com.automatics.rdkb.utils.snmp.BroadBandSnmpMib;
 
@@ -58,6 +60,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     
     /** Constant for number 7 */
     public static final int CONSTANT_7 = 7;
+   
+    /** Constant for number 8 */
+    public static final int CONSTANT_8 = 8;
     
     /** Constant for number 10 */
     public static final int CONSTANT_10 = 10;
@@ -70,6 +75,12 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     
     /** Constant for number 11 */
     public static final int CONSTANT_11 = 11;
+    
+    /** Constant for number 13 */
+    public static final int CONSTANT_13 = 13;
+    
+    /** Constant for number 16 */
+    public static final int CONSTANT_16 = 16;
     
     /** Constant for number 1000 */
     public static final int CONSTANT_1000 = 1000;
@@ -618,9 +629,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     
     /** constant for avgMemoryThreshold */
     public static final String CONSTANT_AVG_MEMORY_THRESHOLD = "100";
-    
-    /** String parameter for factory resetting the box for Sky Hub Device */
-    public static final String STRING_FACTORY_RESET_PARAMETER_FOR_SKYHUB = "Router,Wifi,VoIP,Firewall";
     
     /** String value for factory resetting the box */
     public static final String STRING_FOR_FACTORY_RESET_OF_THE_DEVICE = "Router,Wifi,VoIP,Dect,MoCA";
@@ -1817,12 +1825,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
    /** Constant for Secondary remote endpoint */
    public static final String SECONDARY_REMOTE_ENDPOINT = "";
    
-   /** Constant holds the ARRIS Group, Inc. Device Manufacturer name */
-   public static final String DEVICE_MANUFACTURER_NAME_ARRIS_INC = "ARRIS Group, Inc.";
-   
-   /** Constant holds the Cisco Device Manufacturer name */
-   public static final String DEVICE_MANUFACTURER_NAME_CISCO = "Cisco";
-
    /** Pattern to get xfinity wifi status from rfc config data */
    public static final String PATTERN_GET_XFINITY_WIFI_STATUS_FROM_RFC_CONFIG = "tr181.Device.DeviceInfo.X_COMCAST_COM_xfinitywifiEnable\\W+(\\w+)";
    
@@ -1897,12 +1899,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     * System property which enables Code download along with Factory Reset.
     */
    public static final String SYSTEM_PROPERTY_ENABLE_CDL_FACTORY_RESET = "ENABLE_CDL_FACTORY_RESET";
-   
-   /** Sky box */
-   public static final String SKY_STRING = "SKY";
-   
-   /** Constant to store SKYWIFI string */
-   public static final String SKYWIFI_STRING = "SKYWIFI";
    
    /**
     * Download status - waiting for reboot to previos download.ss
@@ -2090,7 +2086,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
    public static final String PROP_KEY_AVG_RESPONSE_TIME="average.responsetime.";
    
    /** The property key  for signed extensions. */
-   public static final String MANUFACTURERNAME_VIAWEBPA="manufacturerName.RetrievedViaWebpa";
+   public static final String MANUFACTURERNAME_VIAWEBPA="manufacturerName.RetrievedViaWebpa.";
    
    /** The property key  for 2ghz operating standars */
    public static final String OPERATING_STANDARDS_2GHZ_ARM="operatingstandards.2ghz.arm.";
@@ -2193,5 +2189,626 @@ public class BroadBandTestConstants extends RDKBTestConstants {
    
    /** WebPA Parameter to Enabling Public wifi */
    public static final String WEBPA_PARAM_ENABLING_PUBLIC_WIFI = "Device.DeviceInfo.X_COMCAST_COM_xfinitywifiEnable";
+   
+   /** Pattern to obtain serial number displayed by Parodus in log message */
+   public static final String PATTERN_MATCHER_PARODUS_SERIAL_NUMBER = "serialNumber returned from hal:(.*)\\s+";
+   
+   /** String constant to hold parodus token server url */
+   public static final String PROP_PARODUS_TOKEN_SERVER_URL = "parodus.token.server.url";
+   
+   /** Pattern to match letters and digits */
+   public static final String PATTERN_TO_MATCH_LETTERS_AND_DIGITS = "^[A-Za-z0-9]+";
+     
+   /** File path for ArmConsolelog.txt */
+   public static final String RDKLOGS_LOGS_ARM_CONSOLE_0 = "/rdklogs/logs/ArmConsolelog.txt.0";
+   
+   /** File path for /rdklogs/logs/Consolelog.txt.0 */
+   public static final String RDKLOGS_LOGS_CONSOLE_TXT_0 = "/rdklogs/logs/Consolelog.txt.0";
+   
+   /** Pattern to obtain mac displayed by Parodus in log message */
+   public static final String PATTERN_MATCHER_PARODUS_MAC = "deviceMac is (.*)\\s+";
+   
+   /** String value Authentication failed */
+   public static final String AUTHENTICATION_FAILED = "Authentication failed";
+   
+   /** String for Connection refused */
+   public static final String STRING_CONNECTION_REFUSED = "Connection refused";
+   
+   /** Log File for RDKB Crashes */
+   public static final String LOG_FILE_FOR_CRASHES_RDKB = "/rdklogs/logs/core_log.txt";
+   
+   /** Constant to hold Not applicable message since the system is ready and caching is completed */
+   public static final String NA_MSG_FOR_SYSTEM_READY_SIGNAL = "Test Step Not Applicable since System is ready and caching is completed.";
+   
+   /** Pattern for time stamp in console log */
+   public static final String PATTERN_TIME_FORMAT_IN_LOG_FILE = "(\\d+\\-\\d+:\\d+:\\d+)";
+   
+   /** pattern for IP address from netstat */
+   public static final String PATTERN_IP_NESTAT = "tcp\\s+\\d+\\s+\\d+\\s+?\\S+?\\s+(\\S+)\\:8080\\s+ESTABLISHED";
+   
+   /** String value No Route to host */
+   public static final String NO_ROUTE_TO_HOST = "No route to host";
+   
+   /** Command to remove rfc override */
+   public static final String CMD_REMOVE_RFC_OVERRIDE = "rm -rf /nvram/rfc.properties";
 
+   /** snmp version */
+   public static final String SYSTEM_PARAM_SNMP_VERSION = "snmpVersion";
+   
+   /** snmpv3 dk kickstart security number 1 */
+   public static final String SNMPV3_DH_KICK_START_SECURITY_NUMBER_1 = "";
+   /** snmpv3 dk kickstart security number 2 */
+   public static final String SNMPV3_DH_KICK_START_SECURITY_NUMBER_2 = "";
+   /** snmpv3 dk kickstart security number 3 */
+   public static final String SNMPV3_DH_KICK_START_SECURITY_NUMBER_3 = "";
+   /** snmpv3 dk kickstart security number 4 */
+   public static final String SNMPV3_DH_KICK_START_SECURITY_NUMBER_4 = "";
+   
+   /** snmpv3 dk kickstart security Name 1 */
+   public static final String SNMPV3_DH_KICK_START_SECURITY_NAME_1 = "docsismanager";
+
+   /** snmpv3 dk kickstart security Name 2 */
+   public static final String SNMPV3_DH_KICK_START_SECURITY_NAME_2 = "docsismonitor";
+
+   /** snmpv3 dk kickstart security Name 3 */
+   public static final String SNMPV3_DH_KICK_START_SECURITY_NAME_3 = "docsisoperator";
+
+   /** snmpv3 dk kickstart security Name 4 */
+   public static final String SNMPV3_DH_KICK_START_SECURITY_NAME_4 = "docsisuser";
+   
+   /** constant for ADDING TABLE */
+   public static final String CONSTANT_PING_SERVER_ADDTABLE = "5";
+   
+   /** The constant holding login name for ATOM Console */
+   public static final String TELNET_ATOM_LOGIN = "root";
+   
+   /** Symbol @ */
+   public static final String SYMBOL_AT = "@";
+   
+   /** text refused */
+   public static final String TEXT_REFUSED = "refused";
+
+   /** Text No auth method */
+   public static final String TEXT_NO_AUTH_METHODS = "No auth methods";
+   
+   /** Response for telnet command not found */
+   public static final String TELNET_CMD_NOT_FOUND = "telnet: command not found";
+
+   /** String telnet not found */
+   public static final String TELNET_NOT_FOUND = "telnet: not found";
+   
+   /** interface name to wan0 */
+   public static final String INTERFACE_NAME_WAN0 = "wan0";
+   
+   /** interface name to mta0 */
+   public static final String INTERFACE_NAME_MTA0 = "mta0";
+   
+   /** Command to get the ip configuration details. */
+   public static final String COMMAND_TO_GET_IP_CONFIGURATION_DETAILS = "/sbin/ifconfig";
+   
+   /** Constant to hold Parodus Process Output */
+   public static final String PARODUS_PROCESS_OUTPUT = "/usr/bin/parodus";
+
+   /** Constant to hold process name LMLite */
+   public static final String CONSTANT_LMLITE = "CcspLMLite";
+
+   /** String value for harvester */
+   public static final String STRING_HARVESTER = "harvester";
+   
+   /** constant to store Webpa POST */
+   public static final String STRING_POST = "POST";
+
+   /** constant to store Webpa PUT */
+   public static final String STRING_PUT = "PUT";
+   
+   /** File path for WEBPAlog.txt */
+   public static final String RDKLOGS_LOGS_WEBPA_TXT_0 = "/rdklogs/logs/WEBPAlog.txt.0";
+   
+   /** string for holding dummy first mac address for XDNS */
+   public static final String VALUE_MACADDRESS_FIRST_XDNS = "";
+
+   /** string for holding dummy second mac address for XDNS */
+   public static final String VALUE_MACADDRESS_SECOND_XDNS = "";
+   
+   /**
+    * Test constant for applying Dns ovverride at client MAC level IPv4 level three primaryvalue
+    */
+   public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = "";
+   
+   /**
+    * Test constant for applying Dns ovverride at client MAC level IPv6 level three primary value
+    */
+   public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = "";
+   
+   /** Test constant for string value MacAddress */
+   public static final String STRING_DNS_MAC_ADDRESS = "MacAddress";
+   
+   /** Test constant for string value DnsIPv4 */
+   public static final String STRING_DNS_IPV4 = "DnsIPv4";
+
+   /** Test constant for string value DnsIPv6 */
+   public static final String STRING_DNS_IPV6 = "DnsIPv6";
+
+   /** Test constant for string value Tag */
+   public static final String STRING_DNS_TAG = "Tag";
+   
+   /** Constant to hold primary */
+   public static final String PRIMARY = "primary";
+
+   /** Constant to hold nonprimary */
+   public static final String NON_PRIMARY = "nonprimary";
+   
+   /**
+    * enum variable to store the band setting options
+    */
+   public enum TELEMETRY_2_WEBPA_SETTINGS {
+	FEATURE_ENABLE(BroadBandWebPaConstants.WEBPA_PARAM_FOR_TELEMETRY_2_0_ENABLE, "false", "true"),
+	VERSION(BroadBandWebPaConstants.WEBPA_PARAM_FOR_TELEMETRY_2_0_VERSION, "1", "2"),
+	CONFIG_URL(
+		BroadBandWebPaConstants.WEBPA_PARAM_FOR_TELEMETRY_2_0_CONFIG_URL,
+		"",
+		AutomaticsPropertyUtility.getProperty(BroadBandTestConstants.PROP_KEY_PROD_XCONF_TELEMETRY_VER2));
+
+	String webpaParam;
+	String factoryDefault;
+	String defaultT2Config;
+
+	public String getParam() {
+	    return webpaParam;
+	}
+
+	public void setParam(String webpaParam) {
+	    this.webpaParam = webpaParam;
+	}
+
+	private TELEMETRY_2_WEBPA_SETTINGS(String webpaParam, String factoryDefault, String defaultT2Config) {
+	    this.setParam(webpaParam);
+	    this.setFactoryDefault(factoryDefault);
+	    this.setDefaultT2Config(defaultT2Config);
+	}
+
+	public String getDefaultT2Config() {
+	    return defaultT2Config;
+	}
+
+	public void setDefaultT2Config(String defaultT2Config) {
+	    this.defaultT2Config = defaultT2Config;
+	}
+
+	public String getFactoryDefault() {
+	    return factoryDefault;
+	}
+
+	public void setFactoryDefault(String factoryDefault) {
+	    this.factoryDefault = factoryDefault;
+	}
+
+   }
+
+   /** Property key to retrieve prod xconf URL from stb.properties */
+   public static final String PROP_KEY_PROD_XCONF_TELEMETRY_VER2 = "default.xconf.telemetry2.url";
+   
+   
+   /** Constant represent log file /rdklogs/logs/dcmscript.log **/
+   public static final String DCMRFC_LOG_FILE = "/rdklogs/logs/dcmrfc.log";
+   
+   /** Command cat /rdklogs/logs/dcmrfc.log **/
+   public static final String CMD_CAT_DCMRFC_LOG = "cat " + DCMRFC_LOG_FILE;
+   
+   /** Process name telemetry 2 */
+   public static final String PROCESS_NAME_TELEMETRY_2_0 = "telemetry2_0";
+   
+   /** Weba parameter to hold configuration URL for telemetry 2 */
+   public static final String WEBPA_PARAM_FOR_TELEMETRY_2_0_CONFIG_URL = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.Telemetry.ConfigURL";
+
+   /** Pay load data for telemetry 2 configurations */
+   public static final String PROP_KEY_TELEMETRY_VER_2_CONFIG = "rfc.payload.enable.telemetryVer2Config";
+   
+   /** String which will be replaced by actual enable/disable value in payload data */
+   public static final String TELEMETRY_ENABLE_VAUE = "<TELEMETRY_ENABLE>";
+
+   /** String which will be replaced by actual enable/disable value in payload data */
+   public static final String TELEMETRY_VERSION_VALUE = "<TELEMETRY_VERSION>";
+
+   /** String which will be replaced by actual enable/disable value in payload data */
+   public static final String TELEMETRY_CONFIG_URL_VALUE = "<CONFIG_URL>";
+   
+   /** Path to the telemetry 2.0 file */
+   public static final String FILE_PATH_TELEMETRY_2_0 = "/rdklogs/logs/telemetry2_0.txt.0";
+   
+   /** Constant to store logs for invalid telemetry version 2 URL */
+   public static final String LOGS_INDICATE_INVALID_TELEMETRY2_URL = "URL doesn't start with https or is invalid";
+   
+   /** String to store Backup */
+   public static final String STRING_AUTOMATION_BACK_UP = "automation_BackUp";
+   
+   /** Constant to hold command to get /rdklogs/logs/telemetry2_0.txt.0 logs */
+   public static final String CMD_GET_TELEMETRY_VER_TWO_LOGS = "cat " + FILE_PATH_TELEMETRY_2_0;
+   
+   /** Constant to store logs for XCONF re-try telemetry version 2 URL */
+   public static final String LOGS_INDICATE_XCONF_RE_TRY_MSG = "Waiting for 180 sec before trying fetchRemoteConfiguration, No.of tries : 3";  
+   
+   /** Constant to store logs for XCONF re-try telemetry version 2 URL */
+   public static final String LOGS_INDICATE_XCONF_RE_TRY_MSG_2 = "Waiting for 180 sec before trying fetchRemoteConfiguration, No.of tries : 2";
+   
+   /** Constant to store logs for XCONF fail telemetry version 2 URL */
+   public static final String LOGS_INDICATE_XCONF_GET_INVALID = "T2:Curl GET of XCONF data failed";
+   
+   /** Time formart pattern finder for dd:mm:ss */
+   public static final String TIME_FORMAT = "dd:mm:ss";
+   
+   /** Time formart pattern finder for dd:mm:ss */
+   public static final String PATTERN_TIME_FORMAT = "(\\d\\d:\\d\\d:\\d\\d)\\."; 
+   
+   /** Command cat /rdklogs/logs/dcmscript.log **/
+   public static final String CMD_CAT_RDKLOGS_DCMSCRIPT_LOG = "cat " + DCMSCRIPT_LOG_FILE;
+
+   /** Regex to hold pattern matcher for T2 implementation */
+   public static final String PATTERN_MATCHER_T2_IMPLEMENTATION = ".*parse will be handled by T2 implementation.*";
+   
+   /** Command to check self heal logs for telemetry process crash */
+   public static final String CMD_CHECK_SELF_HEAL_LOGS_FOR_TELEMETRY2_CRASH = "grep -i \"RDKB_PROCESS_CRASHED : telemetry2_0 is not running, need restart\" /rdklogs/logs/SelfHeal.txt.0";
+   
+   /** Constant to hold logs for telemetry process restart */
+   public static final String STRING_NEED_RESTART = "telemetry2_0 is not running, need restart";
+   
+   /** Command to get report sent success message from /rdklogs/logs/telemetry2_0.txt.0 */
+   public static final String CMD_GET_REPORT_SENT_SUCCESS_MESSAGE_FROM_LOGS = "cat " + FILE_PATH_TELEMETRY_2_0
+	    + "|grep -i \"Report Sent Successfully\"|tail -1";
+   
+   /** Constant to hold the string for checking report sent string */
+   public static final String STRING_REPORT_SENT = "Report Sent Successfully";
+   
+   /** List of Pattern to be verified in telemtry log upload */
+   public static final ArrayList<String> PATTERN_TELEMETRY_LOG_UPLOAD = new ArrayList<String>(
+	    Arrays.asList("\"Profile\"", "\"Time\"", "\"mac\"", "\"erouterIpv4\"", "\"erouterIpv6\"", "\"PartnerId\"",
+		    "\"Version\""));
+   
+   /** Pattern matcher to match the telemetry 2 */
+   public static final String PATTERN_MATCHER_TELEMETRY_VERSION_2 = ".*\"T2\".*";
+   
+   /** String to store pattern */
+   public static final String PATTERN_FOR_PROCESSID = "\\d+";
+   
+   /** Constant to hold command to check INFO/ERROR/WARN messages under /rdklogs/logs/telemetry2_0.txt.0 */
+   public static final String STRING_FOR_INFO_WARN_ERROR_MESSAGE = "lvl=WARN|lvl=INFO|lvl=ERROR";
+   
+   /** Constant to store the file name dca_utility.sh */
+   public static final String FILE_NAME_DCA_UTILITY = "dca_utility.sh";
+   
+   /** Constant to store regex to find the time reported in telemetry */
+   public static final String REGEX_TIME_REPORTED_IN_TELEMETRY = "\"Time\":\"(.*)\"";
+   
+   /** Constant to hold build type sprint */
+   public static final String BUILD_TYPE_SPRINT = "sprint";
+	
+   /** Constant to hold build type stable */
+   public static final String BUILD_TYPE_STABLE = "stable";
+	
+   /** Constant to hold build type release */
+   public static final String BUILD_TYPE_RELEASE = "release";
+   
+   /** STB Property key to store TELEMETRY VERSION When Enabled  */
+   public static final String PROP_KEY_T2_ENABLED_VERSION = "current.t2enabled.version";
+   
+   /** STB Property key to store TELEMETRY VERSION */
+   public static final String PROP_KEY_T2_VERSION = "t2.version";
+   
+   /** String variable to hold the DEFAULT constant value */
+   public static final String DEFAULT = "DEFAULT";
+   
+   /** Command to give the version of OPenSSl used */
+   public static final String COMMAND_FOR_OPENSSL_VERSION = "openssl version";
+   
+   /** Command to get the libssl.so file present in the build */
+   public static final String COMMAND_TO_FETCH_LIBSSL_FILE = "ls /usr/lib/ | grep -i \"libssl.so\" |awk ' {printf \"/usr/lib/\"\\$NF}'";
+
+   /** prefix Command to read OpenSSL version in ssl library */
+   public static final String PREFIX_COMMAND_TO_READ_OPENSSL_OF_SSL_LIBRARY = "strings";
+
+   /** postfix command to read OpenSSL version in ssl library */
+   public static final String POSTFIX_COMMAND_TO_READ_OPENSSL_OF_SSL_LIBRARY = "| grep \"^OpenSSL.*[0-9][0-9][0-9]\"";
+   
+   /** Command to get the libcrypto.so file present in the build */
+   public static final String COMMAND_TO_FETCH_LIBCRYPTO_FILE = "ls /usr/lib/ | grep -i \"libcrypto.so\" |awk ' {printf \"/usr/lib/\"\\$NF}'";
+
+   /** Command to get libssl used by all running processes */
+   public static final String COMMAND_TO_GET_LIBSSL_USED_IN_ALL_PROCESSES = "cat /proc/\\*/maps | grep -i \"libssl.so\" |awk ' {print \\$NF}' | uniq ";
+
+   /** pattern to get libssl location from COMMAND_TO_GET__LIBSSL_USED_IN_ALL_PROCESSES response */
+   public static final String PATTERN_TO_GET_LIBSSL = "(\\S+libssl\\S+)";
+   
+   /** Command to get libcrypto used by all running processes */
+   public static final String COMMAND_TO_GET_LIBCRYPTO_USED_IN_ALL_PROCESSES = "cat /proc/\\*/maps | grep -i \"libcrypto.so\" |awk ' {print \\$NF}' | uniq ";
+
+   /** pattern to get libssl location from COMMAND_TO_GET__LIBCRYPTO_USED_IN_ALL_PROCESSES response */
+   public static final String PATTERN_TO_GET_LIBCRYPTO = "(\\S+libcrypto\\S+)";
+   
+   /** String for AdTrackerBlockingRFCEnable */
+   public static final String ADTRACKER_BLOCKING_RFC_ENABLE = "AdTrackerBlockingRFCEnable";
+   
+   /*** File path for ADVSEClog.txt.0 ***/
+   public static final String FILE_ADVSEC_0 = "/rdklogs/logs/ADVSEClog.txt.0";
+
+ /** String variable to store emta detection * */
+   public static final String STRING_EMTA_DETECTION = "emta detection";
+   /** constant to pass as key value to validate emta detection */
+   public static final String WAREHOUSE_GENERAL_EMTA_DETECTION = "WAREHOUSE_GENERAL_EMTA_DETECTION";
+
+   /** constant to pass as key value to validate wireless ssid enable status for Xfinity Home 2.4GHz */
+   public static final String WAREHOUSE_WIRELESS_SSID_ENABLE_XHS_2_4 = "WAREHOUSE_WIRELESS_SSID_ENABLE1";
+
+   /** constant to pass as key value to validate wireless ssid1 enable status for Lost and Found 2.4GHz */
+   public static final String WAREHOUSE_WIRELESS_SSID1_ENABLE_LNF_2_4 = "WAREHOUSE_WIRELESS_SSID_ENABLE2";
+
+   /** constant to pass as key value to validate wireless ssid enable status for Lost and Found 2.4GHz */
+   public static final String WAREHOUSE_WIRELESS_SSID2_ENABLE_LNF_2_4 = "WAREHOUSE_WIRELESS_SSID_ENABLE3";
+
+   /** constant to pass as key value to validate wireless ssid enable status for Lost and Found 5GHz */
+   public static final String WAREHOUSE_WIRELESS_SSID_ENABLE_LNF_5G = "WAREHOUSE_WIRELESS_SSID_ENABLE1_5G";
+   
+   /** webpa Parameter for 2.4GHz guest SSID name */
+   public static final String WAREHOUSE_PARAM_DEVICE_WIFI_SSID_10002_SSID = "WAREHOUSE_WIRELESS_SSID_ENABLE1";
+
+   /** Webpa param for 5GHz guest SSID name */
+   public static final String WAREHOUSE_PARAM_DEVICE_WIFI_SSID_10102_SSID = "WAREHOUSE_WIRELESS_SSID_ENABLE_5G";
+
+   
+   /** constant to pass as key value to validate wireless ssid password for private 2.4GHz */
+   public static final String WAREHOUSE_WIRELESS_SSID_PASSWORD_PRIVATE_2G = "WAREHOUSE_WIRELESS_SSID_PASSWORD_2G";
+
+   /** constant to pass as key value to validate wireless ssid password for private 5GHz */
+   public static final String WAREHOUSE_WIRELESS_SSID_PASSWORD_PRIVATE_5G = "WAREHOUSE_WIRELESS_SSID_PASSWORD_5G";
+
+   /** constant to pass as key value to validate 2g channel */
+   public static final String WAREHOUSE_WIFI_2G_CHANNEL = "WAREHOUSE_WIFI_2_4_OID";
+
+   /** constant to pass as key value to validate 5g channel */
+   public static final String WAREHOUSE_WIFI_5G_CHANNEL = "WAREHOUSE_WIFI_5_0_OID";
+
+   /** constant to pass as key value to validate 2g wireless channel */
+   public static final String WAREHOUSE_WIFI_2G_WIRELESS_CHANNEL = "WAREHOUSE_WIFI_2_4_OID_1";
+
+   /** constant to pass as key value to validate 5g wireless channel */
+   public static final String WAREHOUSE_WIFI_5G_WIRELESS_CHANNEL = "WAREHOUSE_WIFI_5_0_OID_1";
+
+   /** constant to pass as key value to validate upgrade server */
+   public static final String WAREHOUSE_UPGRADE_WITH_RESET = "WAREHOUSE_UPGRADE_WITH_RESET";
+   
+   /** String value to store CI Xconf url */
+   public static final String PROP_KEY_XCONF_CI_SERVER_SOFTWARE_UPDATE_URL_IPV6 = "xconf.ci.server.sw.update.url.ipv6";
+
+   /** Constant for setting null value using Dmcli */
+   public static final String DMCLI_NULL_VALUE = "\"\"";
+   
+   /**
+    * Map with security mode value and corresponding key to retrieve the security mode value
+    */
+   public static HashMap<String, Integer> MAP_SECURITY_MODE_AND_KEY_TO_GET_POSSIBLE_SECURITY_MODE_VALUES = new HashMap<String, Integer>() {
+	{
+	    put(BroadBandTestConstants.SECURITY_MODE_NONE, BroadBandTestConstants.CONSTANT_0);
+	    put(BroadBandTestConstants.SECURITY_MODE_WEP_64, BroadBandTestConstants.CONSTANT_1);
+	    put(BroadBandTestConstants.SECURITY_MODE_WEP_128, BroadBandTestConstants.CONSTANT_2);
+	    put(BroadBandTestConstants.SECURITY_MODE_WPA2_PERSONAL, BroadBandTestConstants.CONSTANT_3);
+	    put(BroadBandTestConstants.SECURITY_MODE_WPA_WPA2_PERSONAL, BroadBandTestConstants.CONSTANT_7);
+	    put(BroadBandTestConstants.SECURITY_MODE_WPA2_ENTERPRISE, BroadBandTestConstants.CONSTANT_5);
+	    put(BroadBandTestConstants.SECURITY_MODE_WPA_WPA2_ENTERPRISE, BroadBandTestConstants.CONSTANT_8);
+	}
+   };
+   
+   /** Constant for Security mode WEP-64 */
+   public static final String SECURITY_MODE_WEP_64 = "WEP-64";
+
+   /** Constant for Security mode WEP-128 */
+   public static final String SECURITY_MODE_WEP_128 = "WEP-128";
+   
+   /** Constant for Security mode WPA-WPA2-Enterprise */
+   public static final String SECURITY_MODE_WPA_WPA2_ENTERPRISE = "WPA-WPA2-Enterprise";
+   
+   /** Constant to Hold the XHS Security mode */
+   public static final String SECURITY_MODE_WPA_WPA2_PERSONAL = "WPA-WPA2-Personal";
+   
+   /** The constant for checking bridge-static mode. */
+   public static final String LAN_MANAGEMENT_MODE_BRIDGE_STATIC = "bridge-static";
+   
+   /** Test Constants for Parodus Integration with Seshat */
+   /** Seshat - Process Name */
+   public static final String PROCESS_NAME_SESHAT = "seshat";
+   
+   /** Constant to hold the SNMP response as Wrong Value */
+   public static final String WRONG_VALUE = "Reason: wrongValue";
+   
+   /** Variable to hold string notify */
+   public static final String NOTIFY = "notify";
+   
+   /** Variable to hold string data type */
+   public static final String ATTRIBUTES = "attributes";
+   
+   /** Variable to hold String block */
+   public static final String BLOCK = "Block";
+
+   /** Variable to hold String mac address */
+   public static final String MACADDRESS = "MACAddress";
+
+   /** Variable to hold String type */
+   public static final String TYPE = "Type";
+
+   /** Variable to hold string Description */
+   public static final String DESCRIPTION = "Description";
+
+   /** Variable to hold Dummy Mac */
+   public static final String DUMMY_MAC = "01:01:01:01:01:01";
+   
+   /** Log message for add_row request */
+   public static final String LOG_MESSAGE_ADD_ROW_REQ = "\"ADD_ROW Request\"";
+   
+   /** Variable to hold string Yiaddr */
+   public static final String IPADDRESS = "Yiaddr";
+   
+   /** Test SSID Name 5 GHz */
+   public static final String TEST_SSID_5 = "test-ssid-5";
+   
+   /** Pattern to retrieve first 3 digits of IPv4 address */
+   public static final String PATTERN_TO_RETRIEVE_FIRST_3_DIGITS_OF_IPv4_ADDRESS = "((\\d+\\.){3})\\d+";
+
+   /** Pattern to retrieve first 3 digits of IPv4 address */
+   public static final String PATTERN_TO_RETRIEVE_LAST_DIGIT_OF_IPv4_ADDRESS = "\\d+\\.\\d+\\.\\d+\\.(\\d+)";
+   
+   /** String Constant for Slash Symbol */
+   public static final String SLASH_SYMBOL = "/";
+   
+   /** Text Hello World */
+   public static final String TEXT_HELLO_WORLD = "Hello World";
+
+   /** Error Message Permission Denied */
+   public static final String ERROR_PERMISSION_DENIED = "Permission denied";
+   
+   /** Test Shell Script File Name */
+   public static final String FILE_TEST_SHELL_SCRIPT_CONTENT = "\"#!/bin/bash\n echo \"Hello World\"\"";
+   
+   /** String Constant redirect operator */
+   public static String REDIRECT_OPERATOR = " > ";
+   
+   /**
+    * system-local.conf file location. This file is removed now and had authentication detail for DBus messaging
+    */
+   public static final String FILE_SYSTEM_LOCAL_CONF = "/etc/dbus-1/system-local.conf";
+   
+   /** NVRAM partition file name **/
+   public static final String NVRAM_PARTITION = "\"nvram\"";
+   
+   /** String variable to store nvram partition * */
+   public static final String STRING_PARTITION_NVRAM = "/nvram";
+   
+   /** pattern to get read write permission for nvram* */
+   public static final String PATTERN_GET_READ_WRITE_PERMISSION_NVRAM_PARTITION = "\\/nvram.*[(](rw)[)]?";
+   
+   /** String variable to read write permission for partition* */
+   public static final String STRING_READ_WRITE_PARTITION = "rw";
+   
+   /** NVRAM Dummytest file **/
+   public static final String NVRAM_DUMMY_TEST = "/nvram/dummytest.sh";
+   
+   /** NVRAM2 partition file name **/
+   public static final String NVRAM2_PARTITION = "\"nvram2\"";
+   
+   /** String variable to store nvram2 partition* */
+   public static final String STRING_PARTITION_NVRAM2 = "/nvram2";
+   
+   /** pattern to get read write permission for nvram2* */
+   public static final String PATTERN_GET_READ_WRITE_PERMISSION_NVRAM2_PARTITION = "\\/nvram2.*[(](rw)[)]?";
+   
+   /** NVRAM2 Dummytest file **/
+   public static final String NVRAM2_DUMMY_TEST = "/nvram2/dummytest.sh";
+   
+   /** tmp partition file name **/
+   public static final String TMP_PARTITION = "\"tmp\"";
+   
+   /** String variable to store tmp partition * */
+   public static final String STRING_PARTITION_TMP = "/tmp";
+   
+   /** pattern to get read write permission for tmp* */
+   public static final String PATTERN_GET_READ_WRITE_PERMISSION_TMP_PARTITION = "\\/tmp.*[(](rw)[)]?";
+   
+   /** regex to find temporary mount point */
+   public static final String REGEX_TO_GET_TEMPORARY_MOUNT_POINT = "type\\s+tmpfs\\W";
+   
+   /** tmp dummytest file **/
+   public static final String TMP_DUMMY_TEST = "/tmp/dummytest.sh";
+   
+   /** Minidumps partition file name **/
+   public static final String MINIDUMPS_PARTITION = "\"minidumps\"";
+   
+   /** String variable to store MINIDUMPS partition * */
+   public static final String STRING_PARTITION_MINIDUMPS = "/minidumps";
+   
+   /** pattern to get read write permission for minidumps* */
+   public static final String PATTERN_GET_READ_WRITE_PERMISSION_MINIDUMPS_PARTITION = "\\/minidumps.*[(](rw)[)]?";
+   
+   /** minidumps dummytest file **/
+   public static final String MINIDUMPS_DUMMY_TEST = "/minidumps/dummytest.txt";
+   
+   /** rdklogs partition file name **/
+   public static final String RDKLOGS_PARTITION = "\"rdklogs\"";
+   
+   /** p String variable to store rdklogs partition* */
+   public static final String STRING_PARTITION_RDKLOGS = "/rdklogs";
+   
+   /** pattern to get read write permission for rdklogs* */
+   public static final String PATTERN_GET_READ_WRITE_PERMISSION_RDKLOGS_PARTITION = "\\/rdklogs.*[(](rw)[)]?";
+   
+   /** rdklogs dummytest file **/
+   public static final String RDKLOGS_DUMMY_TEST = "/rdklogs/dummytest.sh";
+   
+   /** cron partition file name **/
+   public static final String CRON_PARTITION = "\"cron\"";
+   
+   /** pattern to get read write permission for cron* */
+   public static final String PATTERN_GET_READ_WRITE_PERMISSION_CRON_PARTITION = "\\/cron.*[(](rw)[)]?";
+   
+   /** String variable to store cron partition * */
+   public static final String STRING_PARTITION_CRON = "/cron";
+   
+   /** etc dummytest file **/
+   public static final String ETC_DUMMY_TEST = "/etc/dummytest.sh";
+   
+   /** dhcp_static_hosts partition file name **/
+   public static final String DHCP_STATIC_HOSTS_PARTITION = "\"dhcp_static_hosts\"";
+   
+   /** String variable to store dhcp_static_hosts partition * */
+   public static final String STRING_PARTITION_DHCP_STATIC_HOSTS = "/dhcp_static_hosts";
+   
+   /** pattern to get read write permission for dhcp_static_hosts* */
+   public static final String PATTERN_GET_READ_WRITE_PERMISSION_DHCP_STATIC_HOSTS_PARTITION = "\\/dhcp_static_hosts.*[(](rw)[)]?";
+   
+   /** xupnp partition file name **/
+   public static final String XUPNP_PARTITION = "\"xupnp\"";
+   
+   /** String variable to store xupnp partition * */
+   public static final String STRING_PARTITION_XUPNP = "/xupnp";
+   
+   /** pattern to get read write permission for xupnp* */
+   public static final String PATTERN_GET_READ_WRITE_PERMISSION_XUPNP_PARTITION = "\\/xupnp.*[(](rw)[)]?";
+   
+   /** dibbler partition file name **/
+   public static final String DIBBLER_PARTITION = "\"dibbler\"";
+   
+   /** String variable to store dibbler partition * */
+   public static final String STRING_PARTITION_DIBBLER = "/dibbler";
+   
+   /** pattern to get read write permission for xupnp* */
+   public static final String PATTERN_GET_READ_WRITE_PERMISSION_DIBBLER_PARTITION = "\\/dibbler.*[(](rw)[)]?";
+   
+   /** command to list the contents of given folder in long listing format */
+   public static final String CMD_TO_LONGLIST_FOLDER_FILES = "ls -la";
+   
+   /** Constant for Radius Server IPAddr */
+   public static final String RADIUS_SERVER_IPADDR = "";
+   
+   /** String for 'Requested' */
+   public static final String STRING_REQUESTED = "Requested";
+   
+   /** String for 'Completed' */
+   public static final String STRING_COMPLETE = "Complete";
+   
+   /** String for 'null' */
+   public static final String STRING_NULL = "null";
+   
+   /** SSID name starting with XH */
+   public static final String SSID_NAME_WITH_WHITSPACE_ONLY = "  ";
+   
+   /** Pattern to retrieve ipv6 address */
+   public static final String PATTERN_TO_RETRIVE_IPV6_ADDRESS_FROM_NSLOOKUP_FACEBOOK = ".*facebook.com\\s*has AAAA address(.*)\\s*Authoritative.*";
+  
+   /** String constant 3600 */
+   public static final String STRING_CONSTANT_3600 = "3600";
+   
+   /** Harvester Process Name */
+   public static final String PROCESS_NAME_HARVESTER = "harvester";
+   
+   /** Constant to hold Lmlite Process Output */
+   public static final String LMLITE_PROCESS_OUTPUT = "usr/bin/lmlite";
+   
+   
+   
 }

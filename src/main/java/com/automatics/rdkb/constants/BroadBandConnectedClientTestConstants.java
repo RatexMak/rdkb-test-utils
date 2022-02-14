@@ -152,4 +152,26 @@ public class BroadBandConnectedClientTestConstants {
     
     /** Ping Command Packet Size Option */
     public static final String CMD_PING_PACKET_SIZE_OPTION = "-l 100 ";
+    
+    /** External Router OS Type */
+    public static final String OS_TYPE_EXTERNAL_ROUTER = "External Router";
+    
+    /** Constant for holding the radio status up */
+    public static final String RADIO_STATUS_UP = "Up";
+    
+    /** Constant for holding the radio status down */
+    public static final String RADIO_STATUS_DOWN = "Down";
+    
+    /** curl command in linux  to check connectivity using IPV4 address */
+    public static final String COMMAND_CURL_LINUX_IPV4_ADDRESS = "curl -4 -v --interface wlan0 'www.google.com' | grep '200 OK'";
+
+    /** curl command  in linux  to check connectivity using IPV4 address */
+    public static final String COMMAND_CURL_LINUX_IPV6_ADDRESS = "curl -6 -v --interface wlan0 'www.google.com' | grep '200 OK'";
+    
+    /** curl command in windows  to check connectivity using IPV4 address */
+    public static final String COMMAND_CURL_WINDOWS_IPV4_ADDRESS = "curl -4 -v 'www.google.com' | grep '200 OK'";
+
+    /** curl command in windows  to check connectivity using IPV4 address */
+    public static final String COMMAND_CURL_WINDOWS_IPV6_ADDRESS = "curl -6 -v 'www.google.com' | grep '200 OK'";
+
 }

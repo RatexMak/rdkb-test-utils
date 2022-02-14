@@ -211,9 +211,9 @@ public class BroadBandCodeDownloadUtils {
     /**
      * Perform HTTP,TFTP and SNMP CDL using webpa parameters
      * 
-     * @param settop
-     *            settop to be verified
-     * @param tapApi
+     * @param device
+     *            Dut to be verified
+     * @param tapEnv
      *            AutomaticsTapApi instance
      * @param initialFirmwareVersion
      *            initialFirmwareVersion .

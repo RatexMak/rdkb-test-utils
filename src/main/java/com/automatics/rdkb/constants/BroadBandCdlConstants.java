@@ -123,4 +123,39 @@ public class BroadBandCdlConstants {
     /** CDL Status - Failed **/
     public static final String CDL_STATUS_FAILED = "Failed";
     
+    /** success message after triggering XCONF CDL **/
+    public static final String SUCCES_MESSAGE_FOR_XCONF_CDL_TRIGGERED_SUCCESSFULLY = "SUCCESSFULLY TRIGGERED XCONF DOWNLOAD";
+   
+    /** HTTP XCONF Rejection message for same image **/
+    public static final String REJECTION_MESSAGE_FOR_XCONF_HTTP_DOWNLOAD_WITH_SAME_IMAGE_IN_RDKB = "XCONF SCRIPT : Current image ("
+	    + CONFIGURATION_CURRENT_IMAGE_NAME + ") and Requested image (" + CONFIGURATION_CURRENT_IMAGE_NAME
+	    + ") are same. No upgrade/downgrade required";
+    
+    /**
+     * Log file to verify telemetry marker
+     */
+    public static final String CONSOLE_LOG_FILE_TO_VERIFY_TELEMETRY_MARKER = "/rdklogs/logs/Consolelog.txt.0";
+    
+    /** Log message for factory reset immediately true in xconf log file */
+    public static final String LOG_MESSAGE_FACTORY_RESET_IMMEDIATELY_TRUE = "factoryResetImmediately : TRUE";
+    
+    /** EPONAGENT log file */
+    public static final String EPONAGENT_LOG = "/rdklogs/logs/EPONAGENTlog.txt.0";
+    
+    /** Log message factory reset image in CM/EPONAgent log file */
+    public static final String LOG_MESSAGE_FACTORY_RESET_IMAGE = "Factory reset image :";
+    
+    
+    /** Webpa parameter for firmware download and factory reset */
+    public static final String WEBPA_PARAM_CDL_AND_FACTORYRESET = "Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareDownloadAndFactoryReset";
+    
+    /** Log message for firmware download and factory reset in PAM log file */
+    public static final String LOG_MESSAGE_CDL_AND_FACTORY_RESET = "FirmwareDownloadAndFactoryReset";
+    
+    /** last reboot reason after ethwan mode enable  */
+    public static final String EXPECTED_LAST_REBOOT_REASON_STATUS_ETHWAN_MODE_CHANGE = "WAN_Mode_Change";
+    
+    /** TFTP XOCNF Rejection message */
+    public static final String REJECTION_MESSAGE_FOR_XCONF_TFTP_DOWNLOAD_IN_RDKB = "Download from TFTP server not supported, check XCONF server configurations";
+
 }

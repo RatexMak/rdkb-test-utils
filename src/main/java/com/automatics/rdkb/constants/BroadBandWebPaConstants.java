@@ -19,6 +19,8 @@ package com.automatics.rdkb.constants;
 
 import java.util.HashMap;
 
+import com.automatics.rdkb.constants.BroadBandWebPaConstants.RdkBBandSteeringParameters;
+
 public class BroadBandWebPaConstants {
 
     /** WebPA Parameter to get Default SSID for 2.4 Ghz */
@@ -1317,6 +1319,433 @@ public class BroadBandWebPaConstants {
    /** WebPA Parameter reporting period of neighboringAP */
    public static final String WEBPA_PARAM_NEIGHBORINGAP_REPORTING_PERIOD = "Device.X_RDKCENTRAL-COM_Report.NeighboringAP.ReportingPeriod";
    
+   /** WebPA parameter to get the Possible Channels */
+   public static final String WEBPA_PARAM_DEVICE_WIFI_RADIO_POSSIBLECHANNELS = "Device.WiFi.Radio.{i}.PossibleChannels";
+   
+   /** WebPA Parameter for UpdateNvram */
+   public static final String WEBPA_PARAM_SYSCFG_UPDATE_NVRAM = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.SysCfg.UpdateNvram";
+   
+   /** WebPA parameter to get the Aggressive selfheal interval */
+   public static final String WEBPA_PARAM_AGGRESSIVE_SELFHEAL_INTERVAL = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.SoftwareProcessManager.SelfHeal.AggressiveInterval";
+   
+   /** tr181 parameter to check non-root support status */
+   public static final String TR181_PARAM_NONROOT_SUPPORT = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.NonRootSupport.Enable";
+   
+   /**
+    * WebPA Parameter for Adding IPV4 Ping Server 1
+    */
+   public static final String WEBPA_IPV4_PING_SERVER1 = "Device.SelfHeal.ConnectivityTest.PingServerList.IPv4PingServerTable.1.X_RDKCENTRAL-COM_Ipv4PingServerURI";
 
+   /** WebPA Parameter for Adding IPV4 Ping Server 21 */
+   public static final String WEBPA_IPV4_PING_SERVER21 = "Device.SelfHeal.ConnectivityTest.PingServerList.IPv4PingServerTable.21.X_RDKCENTRAL-COM_Ipv4PingServerURI";
+   
+   /** WebPA parameter for enabling Manageable notification feature */
+   public static final String WEBPA_PARAMETER_MANAGEABLE_NOTIFICATION_ENABLE = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.ManageableNotification.Enable";
 
+   /** WebPA parameter to get time offset value */
+   public static final String WEBPA_PARAM_TIME_OFFSET = "Device.Time.TimeOffset";
+   
+   /** WebPA parameter for Downstream channel value */
+   public static final String WEBPA_PARAM_DOWNSTREAM_CHANNEL = "Device.X_CISCO_COM_CableModem.DownstreamChannel.";
+   
+   /** WebPA parameter Downstream channel frequency value */
+   public static final String WEBPA_PARAM_DOWNSTREAM_CHANNEL_FREQUENCY = "Device.X_CISCO_COM_CableModem.DownstreamChannel.{i}.Frequency";
+   
+   /** WebPA parameter Downstream channel SNRLevel value */
+   public static final String WEBPA_PARAM_DOWNSTREAM_CHANNEL_SNRLEVEL = "Device.X_CISCO_COM_CableModem.DownstreamChannel.{i}.SNRLevel";
+   
+   /** WebPA parameter Upstream channel PowerLevel value */
+   public static final String WEBPA_PARAM_UPSTREAM_CHANNEL_POWERLEVEL = "Device.X_CISCO_COM_CableModem.UpstreamChannel.{i}.PowerLevel";
+   
+   /** Webpa param for boot file */
+   public static final String WEBPA_PARAM_BOOT_FILE = "Device.X_CISCO_COM_CableModem.DOCSISConfigFileName";
+   
+   /** WebPA parameter Downstream channel Modulation value */
+   public static final String WEBPA_PARAM_DOWNSTREAM_CHANNEL_MODULATION = "Device.X_CISCO_COM_CableModem.DownstreamChannel.{i}.Modulation";
+   
+   /** WebPA Parameter for diagnostic mode */
+   public static final String WEBPA_PARAM_DIAGNOSTIC_MODE = "Device.SelfHeal.X_RDKCENTRAL-COM_DiagnosticMode";
+   
+   /** WebPA Parameter for diagnostic mode logupload frequency */
+   public static final String WEBPA_PARAM_DIAG_MODE_LOG_UPLOAD_FREQUENCY = "Device.SelfHeal.X_RDKCENTRAL-COM_DiagMode_LogUploadFrequency";
+   
+   /** WebPa Parameter for periodic firmware upgrade check enable */
+   public static final String WEBPA_PARAM_PERIODIC_FW_CHECK_ENABLE = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.PeriodicFWCheck.Enable";
+
+   /** WebPA parameter to get value of firmware download started notification */
+   public static final String WEBPA_PARAMETER_FIRMWARE_DOWNLOAD_STARTED_NOTIFICATION = "Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.RPC.FirmwareDownloadStartedNotification";
+ 
+   /** WebPA parameter to get value of firmware download completed notification */
+   public static final String WEBPA_PARAMETER_FIRMWARE_DOWNLOAD_COMPLETED_NOTIFICATION = "Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.RPC.FirmwareDownloadCompletedNotification";
+   
+   /** webpa parameter to enable/disable CPUPROCANALYZER */
+   public static final String WEBPA_PARAM_FOR_CPU_PROC_ANALYZER = "Device.SelfHeal.X_RDK_CPUProcAnalyzer_Enable";
+   
+   /** Webpa param for DNS strict order enable */
+   public static final String WEBPA_PARAM_ENABLE_DISABLE_STRICT_DNS_ORDER = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.DNSStrictOrder.Enable";
+   /** WebPa Parameter to abort reboot */
+   public static final String WEBPA_PARAM_ABORT_REBOOT = "Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.RPC.AbortReboot";
+   
+   /** WebPa parameter to reboot the device */
+   public static final String WEBPA_PARAM_REBOOT_DEVICE = "Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.RPC.RebootDevice"; 
+   
+   /** Weba parameter to enable rbus */
+   public static final String WEBPA_PARAM_FOR_RBUS_ENABLE = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.RBUS.Enable";
+   
+   /** WebPA parameter for checking service agent */
+   public static final String WEBPA_PARAM_SERVICEAGENT = "Device.X_RDKCENTRAL_COM_ServiceAgent.Services.";
+   
+   /** WebPA parameter to get value of Device manageable notification time */
+   public static final String WEBPA_PARAMETER_DEVICE_MANAGEABLE_NOTIFICATION = "Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.RPC.DeviceManageableNotification";
+
+   /** WebPA parameter to enable/disable Ethwan Mode */
+   public static final String WEBPA_PARAM_DEVICE_ETHWAN_MODE_ENABLE = "Device.Ethernet.X_RDKCENTRAL-COM_WAN.Enabled";
+   
+   /** WebPA parameter for Wan Link Heal Enable */
+   public static final String WEBPA_PARAM_WAN_LINK_HEAL_ENABLE = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WANLinkHeal.Enable";
+   
+   /** WebPA Parameter for WAN IPv4 */
+   public static final String WEBPA_PARAM_WAN_IPV4 = "Device.DeviceInfo.X_COMCAST-COM_WAN_IP";
+   
+   /** WebPA parameter to enable/disable SSIDAdvertisementEnabled of Public Wifi(open) 2.4 GHz Network */
+   public static final String WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID_ADVERTISE_ENABLED = "Device.WiFi.AccessPoint.10103.SSIDAdvertisementEnabled";
+   
+   /** WebPa Parameter for Enabling Moca */
+   public static final String WEBPA_PARAM_ENABLE_MOCA = "Device.MoCA.Interface.1.Enable";
+   
+   /** WebPA parameter to enable Device Management Server */
+   public static final String WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_ENABLECWMP = "Device.ManagementServer.EnableCWMP";
+   
+   /** WebPA Parameter for Wifi 2.4GHz Operating Standard */
+   public static final String WEBPA_PARAM_2_4_OPERATING_STD = "Device.WiFi.Radio.10000.OperatingStandards";
+
+   /** WebPA Parameter for Wifi 2.4GHz Operational Tx Rates */
+   public static final String WEBPA_PARAM_2_4_OPERATIONAL_TX_RATES = "Device.WiFi.Radio.10000.OperationalDataTransmitRates";
+
+   /** WebPA Parameter for Wifi 2.4GHz Supported Tx Rates */
+   public static final String WEBPA_PARAM_2_4_SUPPORTED_DATA_TX_RATES = "Device.WiFi.Radio.10000.SupportedDataTransmitRates";
+
+   /** WebPA Parameter for Wifi 2.4GHz Basic Tx Rates */
+   public static final String WEBPA_PARAM_2_4_BASIC_TX_RATES = "Device.WiFi.Radio.10000.BasicDataTransmitRates";
+
+   /** WebPA Parameter for Wifi 5GHz Operating Standard */
+   public static final String WEBPA_PARAM_5_OPERATING_STD = "Device.WiFi.Radio.10100.OperatingStandards";
+
+   /** WebPA Parameter for Wifi 5GHz Operational Tx Rates */
+   public static final String WEBPA_PARAM_5_OPERATIONAL_TX_RATES = "Device.WiFi.Radio.10100.OperationalDataTransmitRates";
+
+   /** WebPA Parameter for Wifi 5GHz Basic Tx Rates */
+   public static final String WEBPA_PARAM_5_BASIC_TX_RATES = "Device.WiFi.Radio.10100.BasicDataTransmitRates";
+
+   /** WebPA Parameter for Wifi 2.4GHz Beacon Rate */
+   public static final String WEBPA_PARAM_2_4_BEACON_RATE = "Device.WiFi.AccessPoint.10001.X_RDKCENTRAL-COM_BeaconRate";
+
+   /** WebPA Parameter for Wifi 5GHz supported data Tx Rates */
+   public static final String WEBPA_PARAM_5_SUPPORTED_DATA_TRANSMIT_TX_RATES = "Device.WiFi.Radio.10100.SupportedDataTransmitRates";
+
+   /** WebPA Parameter for Wifi 2.4GHZ or 5GHz for BasicDataTransmitRates DSL device */
+   public static final String WEBPA_PARAM_2_OR_5_DSL_DEVICE_BASIC_DATA_TRANSMIT_RATES = "Device.WiFi.Radio.{i}.BasicDataTransmitRates";
+
+   /** DMCLI PARAMTER to fectch wireless mode */
+   public static final String DMCLI_COMMAND_WIRELESS_MODE_5GHZ = "Device.WiFi.Radio.2.OperatingStandards";
+
+   /** WebPA Parameter for Wifi 2.4GHZ BEACON Rate for DSL device */
+   public static final String WEBPA_PARAM_BEACON_DSL_DEVICE_OPERATING_STD = "Device.WiFi.AccessPoint.{i}.X_RDKCENTRAL-COM_BeaconRate";
+   
+   /** WebPA parameter to get the wifi params */
+   public static final String WEBPA_PARAM_DEVICE_WIFI_PARAMS = "Device.WiFi.";   
+
+   /** WebPA parameter to set Device Current Operational Mode */
+   public static final String WEBPA_PARAM_DEVICE_SELECTED_OPERATIONAL_MODE = "Device.X_RDKCENTRAL-COM_EthernetWAN.SelectedOperationalMode";
+   
+   /** WebPA parameter to get Device Operational Mode */
+   public static final String WEBPA_PARAM_DEVICE_OPERATIONAL_MODE = "Device.X_RDKCENTRAL-COM_EthernetWAN.CurrentOperationalMode";
+   
+   /** WebPA parameter to get the static WAN IP of the device */
+   public static final String WEBPA_PARAM_STATIC_WAN_IP = "Device.X_CISCO_COM_TrueStaticIP.IPAddress";
+   
+   /** WebPA Parameter to configure LAN IP Address to DMZ */
+   public static final String WEBPA_PARAM_TO_CONFIGURE_LAN_IP_ADDRESS_TO_DMZ = "Device.NAT.X_CISCO_COM_DMZ.InternalIP";
+
+   /** WebPA Parameter for Device Control Erouter Enable */
+   public static final String WEBPA_PARAMETER_FOR_DEVICE_CONTROL_EROUTER_ENABLE = "Device.X_CISCO_COM_DeviceControl.ErouterEnable";
+
+   /** WebPA Parameter to enable/disable port forwarding */
+   public static final String WEBPA_PARAM_TO_ENABLE_AND_DISABLE_PORT_FORWARDING = "Device.NAT.X_Comcast_com_EnablePortMapping";
+   
+   /**
+    * WebPA Parameters constant to get generic parameters residential device
+    * <ol>
+    * <li>1.Get the value for DMZ LAN IP Address</li>
+    * <li>2.Get the value for Device cloud UI status</li>
+    * <li>3.Get the value for device control router enable status</li>
+    * <li>4.Get the value for port forwarding status</li>
+    * </ol>
+    */
+   public static final String[] WEBPA_PARAMS_FOR_COMMON_RESI_DEVICE = { WEBPA_PARAM_TO_CONFIGURE_LAN_IP_ADDRESS_TO_DMZ,
+	    WEBPA_PARAM_DEVICE_CLOUD_UI, WEBPA_PARAMETER_FOR_DEVICE_CONTROL_EROUTER_ENABLE,
+	    WEBPA_PARAM_TO_ENABLE_AND_DISABLE_PORT_FORWARDING };
+   
+   /** WebPA Parameter for DFS Enable */
+   public static final String WEBPA_PARAM_DFS_ENABLE = "Device.WiFi.Radio.10100.X_COMCAST_COM_DFSEnable";
+   
+   /** WebPA Parameter for 2.4 GHz DFS Enable */
+   public static final String WEBPA_PARAMETER_FOR_2GHZ_RADIO_DFS_ENABLE = "Device.WiFi.Radio.10000.X_COMCAST_COM_DFSEnable";
+   
+   /** Webpa Param for channel extension 2.4Ghz wifi radio */
+   public static final String WEBPA_PARAM_FOR_24GHZ_EXTENSION_CHANNEL = "Device.WiFi.Radio.10000.ExtensionChannel";
+   /** Webpa Param for channel extension 5 GHz wifi radio */
+   public static final String WEBPA_PARAM_FOR_5GHZ_EXTENSION_CHANNEL = "Device.WiFi.Radio.10100.ExtensionChannel";
+
+   /** WebPA Parameter for 2.4 GHz beancon interval */
+   public static final String WEBPA_PARAMETER_FOR_2GHZ_BEACON_INTERVAL = "Device.WiFi.Radio.10000.X_COMCAST-COM_BeaconInterval";
+
+   /** WebPA Parameter for 2.4 GHz radio basic rate */
+   public static final String WEBPA_PARAMETER_FOR_2GHZ_RADIO_BASIC_RATE = "Device.WiFi.Radio.10000.X_CISCO_COM_BasicRate";
+
+   /** WebPA Parameter for 5 GHz radio basic rate */
+   public static final String WEBPA_PARAMETER_FOR_5GHZ_RADIO_BASIC_RATE = "Device.WiFi.Radio.10100.X_CISCO_COM_BasicRate";
+
+   /** WebPA Parameter for 2.4 GHz radio Transmit Power */
+   public static final String WEBPA_PARAMETER_FOR_2GHZ_RADIO_TRANSMIT_POWER = "Device.WiFi.Radio.10000.TransmitPower";
+
+   /** WebPA Parameter for 5 GHz radio TransmitPower */
+   public static final String WEBPA_PARAMETER_FOR_5GHZ_RADIO_TRANSMIT_POWER = "Device.WiFi.Radio.10100.TransmitPower"; 
+
+   /** WebPA Parameter to get WiFi Radio.10100 Operating standard */
+   public static final String WEBPA_PARAM_DEVICE_WIFI_RADIO_5GHZ_OPERATING_STANDARD = "Device.WiFi.Radio.10100.OperatingStandards";
+   
+   /** WebPA Parameter to get WiFi Radio.10000 Operating standard */
+   public static final String WEBPA_PARAM_DEVICE_WIFI_RADIO_2_4_GHZ_OPERATING_STANDARD = "Device.WiFi.Radio.10000.OperatingStandards";
+   
+   /** WebPA parameter to set force wifi radio disable */
+   public static final String WEBPA_PARAM_FORCE_WIFI_DISABLE = "Device.WiFi.X_RDK-CENTRAL_COM_ForceDisable";
+   
+   /** WebPA Parameter for dhcp IPv4 client 1 IP routers */
+   public static final String WEBPA_PARAMETER_FOR_DHCPV4_CLIENT_IP_ROUTERS = "Device.DHCPv4.Client.1.IPRouters";
+   
+   /** WebPA Parameter for rabid dns cache size */
+   public static final String WEBPA_PARAM_RABID_DNS_CACHE_SIZE = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.RabidFramework.DNSCacheSize";
+
+   /** tr181 parameter to enable cred download */
+   public static final String TR181_PARAM_CRED_DWNLD_ENABLE = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.CredDwnld.Enable";
+
+   /** tr181 parameter to enable cred use */
+   public static final String TR181_PARAM_CRED_USE_ENABLE = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.CredDwnld.Use";
+
+   /** webpa parameter to Enable Wifi blaster from RFC */
+   public static final String WEBPA_PARAM_FOR_RFC_WIFI_BLASTER_ENABLE = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WifiClient.ActiveMeasurements.Enable";
+
+   /** webpa parameter to Wifi blaster trigger */
+   public static final String WEBPA_PARAM_FOR_WIFI_BLASTER_TRIGGER = "Device.WiFi.X_RDKCENTRAL-COM_Report.WifiClient.ActiveMeasurements.Enable";
+
+   /** webpa parameter to Enable Wifi blaster packet Size */
+   public static final String WEBPA_PARAM_FOR_BLASTER_PACKETSIZE = "Device.WiFi.X_RDKCENTRAL-COM_Report.WifiClient.ActiveMeasurements.PacketSize";
+
+   /** webpa parameter to Enable Wifi blaster sample duration */
+   public static final String WEBPA_PARAM_FOR_BLASTER_SAMPLEDURATION = "Device.WiFi.X_RDKCENTRAL-COM_Report.WifiClient.ActiveMeasurements.SampleDuration";
+
+   /** webpa parameter to Enable Wifi blaster Number of samples */
+   public static final String WEBPA_PARAM_FOR_BLASTER_NUMOFSAMPLES = "Device.WiFi.X_RDKCENTRAL-COM_Report.WifiClient.ActiveMeasurements.NumberOfSamples";
+
+   /** webpa parameter to Enable Wifi blaster Plan.PlanID */
+   public static final String WEBPA_PARAM_FOR_BLASTER_PLANID = "Device.WiFi.X_RDKCENTRAL-COM_Report.WifiClient.ActiveMeasurements.Plan.PlanID";
+
+   /** webpa parameter to Enable Wifi blaster stepID */
+   public static final String WEBPA_PARAM_FOR_BLASTER_STEPID = "Device.WiFi.X_RDKCENTRAL-COM_Report.WifiClient.ActiveMeasurements.Plan.Step.{i}.StepID";
+
+   /** webpa parameter to Enable Wifi blaster SourceMac */
+   public static final String WEBPA_PARAM_FOR_BLASTER_SOURCEMAC = "Device.WiFi.X_RDKCENTRAL-COM_Report.WifiClient.ActiveMeasurements.Plan.Step.{i}.SourceMac";
+
+   /** webpa parameter to Enable Wifi blaster DestMac */
+   public static final String WEBPA_PARAM_FOR_BLASTER_DESTMAC = "Device.WiFi.X_RDKCENTRAL-COM_Report.WifiClient.ActiveMeasurements.Plan.Step.{i}.DestMac";
+
+   /** webpa parameter to Enable Wifi blaster Number Of Entries */
+   public static final String WEBPA_PARAM_FOR_BLASTER_NUMOFENTRIES = "Device.WiFi.X_RDKCENTRAL-COM_Report.WifiClient.ActiveMeasurements.Plan.StepNumberOfEntries";
+
+   /** webpa parameter to Enable TR181 RDKFirwareupgrader */
+   public static final String WEBPA_PARAM_RDK_FIRMWARE_UPGRADER = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.RDKFirmwareUpgrader.Enable";
+
+   /**
+    * WebPA Parameters constant to get the current value for 2.4 & 5 GHz Radios
+    * 
+    * <ol>
+    * <li>1.Get the value for 2.4 GHz radio extension channel</li>
+    * <li>2.Get the value for 2.4 GHz radio beacon interval</li>
+    * <li>3.Get the value for 2.4 GHz radio basic rate</li>
+    * <li>4.Get the value for 2.4 GHz radio operating standard</li>
+    * <li>5.Get the value for 2.4 GHz radio transmit power</li>
+    * <li>6.Get the value for 2.4 GHz radio status</li>
+    * <li>7.Get the value for 2.4 GHz radio channel</li>
+    * <li>8.Get the value for 2.4 GHz radio wireless channel</li>
+    * <li>9.Get the value for 2.4 GHz radio operating channel bandwidth</li>
+    * <li>10.Get the value for 2.4 GHz radio DFS enable</li>
+    * <li>11.Get the value for 5 GHz radio extension channel</li>
+    * <li>12.Get the value for 5 GHz radio beacon interval</li>
+    * <li>13.Get the value for 5 GHz radio basic rate</li>
+    * <li>14.Get the value for 5 GHz radio operating standard</li>
+    * <li>15.Get the value for 5 GHz radio transmit power</li>
+    * <li>16.Get the value for 5 GHz radio status</li>
+    * <li>17.Get the value for 5 GHz radio channel</li>
+    * <li>18.Get the value for 5 GHz radio wireless channel</li>
+    * <li>19.Get the value for 5 GHz radio operating channel bandwidth</li>
+    * <li>20.Get the value for 5 GHz radio DFS enable</li>
+    * </ol>
+    */
+   public static final String[] WEBPA_PARAMS_FOR_BOTH_RADIOS = { WEBPA_PARAM_FOR_24GHZ_EXTENSION_CHANNEL,
+	    WEBPA_PARAMETER_FOR_2GHZ_BEACON_INTERVAL, WEBPA_PARAMETER_FOR_2GHZ_RADIO_BASIC_RATE,
+	    WEBPA_PARAM_DEVICE_WIFI_RADIO_2_4_GHZ_OPERATING_STANDARD, WEBPA_PARAMETER_FOR_2GHZ_RADIO_TRANSMIT_POWER,
+	    WEBPA_PARAM_WIFI_2_4_RADIO_ENABLE, WEBPA_WAREHOUSE_WIFI_2G_CHANNEL,
+	    WEBPA_WAREHOUSE_WIFI_2G_WIRELESS_CHANNEL, WEBPA_PARAM_FOR_OPERATING_BANDWIDTH_IN_2GHZ_BAND,
+	    WEBPA_PARAMETER_FOR_2GHZ_RADIO_DFS_ENABLE, WEBPA_PARAM_FOR_5GHZ_EXTENSION_CHANNEL,
+	    WEBPA_PARAMETER_FOR_BEACON_INTERVAL, WEBPA_PARAMETER_FOR_5GHZ_RADIO_BASIC_RATE,
+	    WEBPA_PARAM_DEVICE_WIFI_RADIO_5GHZ_OPERATING_STANDARD, WEBPA_PARAMETER_FOR_5GHZ_RADIO_TRANSMIT_POWER,
+	    WEBPA_PARAM_WIFI_5_RADIO_ENABLE, WEBPA_WAREHOUSE_WIFI_5G_CHANNEL, WEBPA_WAREHOUSE_WIFI_5G_WIRELESS_CHANNEL,
+	    WEBPA_PARAM_FOR_OPERATING_BANDWIDTH_IN_5GHZ_BAND, WEBPA_PARAM_DFS_ENABLE };
+   
+   /** WebPA Parameter to get/set the interface enable status */
+   public static final String WEBPA_PARAM_INTERFACE_ENABLE = "Device.IP.Interface.1.Enable";
+   
+   /**
+    * WebPA Parameters constant to get generic parameters business class devices
+    * <ol>
+    * <li>1.Get the value for DMZ LAN IP Address</li>
+    * <li>2.Get the value for device control router enable status</li>
+    * <li>3.Get the value for port forwarding status</li>
+    * </ol>
+    */
+   public static final String[] WEBPA_PARAMS_FOR_COMMON_BUSI_DEVICE = { WEBPA_PARAM_TO_CONFIGURE_LAN_IP_ADDRESS_TO_DMZ,
+	    WEBPA_PARAMETER_FOR_DEVICE_CONTROL_EROUTER_ENABLE, WEBPA_PARAM_TO_ENABLE_AND_DISABLE_PORT_FORWARDING };
+   
+   /**
+    * WebPA Parameters constant to get WAN IP Address and Client IP Routers
+    * <ol>
+    * <li>1.Get the value for WAN IPv4 Address</li>
+    * <li>2.Get the value for DHCP v4 client IP routers</li>
+    * </ol>
+    */
+   public static final String[] WEB_PARAM_FOR_WAN_CLIENT_IP = { WEBPA_PARAM_WAN_IPV4,
+	    WEBPA_PARAMETER_FOR_DHCPV4_CLIENT_IP_ROUTERS };
+   
+   /** WebPA Parameter for erouter reset */
+   public static final String WEBPA_PARAM_DEVICE_EROUTER_RESET = "Device.X_CISCO_COM_DeviceControl.RebootDevice";
+   
+   /** WebPA Parameter for DNS ping test enable */
+   public static final String WEBPA_PARAM_DNS_PING_TEST_ENABLE = "Device.SelfHeal.X_RDKCENTRAL-COM_DNS_PINGTEST_Enable";
+   
+   /** WebPA Parameter for DNS ping test enable */
+   public static final String WEBPA_PARAM_DNS_PING_TEST_URL = "Device.SelfHeal.X_RDKCENTRAL-COM_DNS_URL";
+   
+   /** WebPA Parameter to block ICMP IPV4 Traffic */
+   public static final String WEBPA_PARAM_TO_BLOCK_ICMP_FOR_IPV4_TRAFFIC_UNDER_CUSTOM_FIREWALL = "Device.X_CISCO_COM_Security.Firewall.FilterAnonymousInternetRequests";
+
+   /** Webpa parameter for telemetryEndpoint Enable */
+   public static final String WEBPA_PARAM_WIFI_TELEMETRY_ENDPOINT_ENABLE = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.TelemetryEndpoint.Enable";
+
+   /** WebPa parameter for Device.DeviceInfo.X_RDKCENTRAL-COM_xBlueTooth.LimitBeaconDetection */
+   public static final String WEBPA_PARAM_LIMIT_BEACON_DETECTION = "Device.DeviceInfo.X_RDKCENTRAL-COM_xBlueTooth.LimitBeaconDetection";
+   
+   /** WebPA Parameter for Rabid framework memory limit */
+   public static final String WEBPA_PARAM_RABID_FW_MEMORY_LIMIT = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.RabidFramework.MemoryLimit";
+
+   /** WebPA parameter to enable selfheal in the device */
+   public static final String WEBPA_PARAM_DEFAULT_LANIP_FOR_SYNDICATION = "Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.DefaultAdminIP";
+
+   /** WebPa Parameter for admin page url */
+   public static final String WEBPA_PARAM_LAN_IP_ADDRESS = "Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanIPAddress";
+
+   /** WebPA parameter for controlling TR69 process running */
+   public static final String WEBPA_PARAM_TR69_SUPPORT_ENABLE = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.TR069support.Enable";
+
+   /** WebPA Parameter for TR-181 parameter for Firewall hole access */
+   public static final String WEBPA_PARAM_ALLOW_FIREWALL_HOLE_ALLOW_PORTS = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.AllowOpenPorts.Enable";
+
+   /** WebPA parameter for Device ManagementServer Password */
+   public static final String WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_PASSWORD = "Device.ManagementServer.Password";
+
+   /** Webpa Param for Device cert location */
+   public static final String WEBPA_PARAM_DEVICE_PARTNER_CERT_LOCATION = "Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.TR69CertLocation";
+
+   /** WebPA parameter for Device ManagementServer URL */
+   public static final String WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_URL = "Device.ManagementServer.URL";
+   
+   /** WebPA Parameter for Enabling WiFiClient */
+   public static final String WEBPA_PARAM_WIFICLIENT_ENABLE = "Device.WiFi.X_RDKCENTRAL-COM_Report.WifiClient.Enabled";
+   
+   /** WebPA Parameter for WiFiClient Reporting Period */
+   public static final String WEBPA_PARAM_WIFICLIENT_REPORTING_PERIOD = "Device.WiFi.X_RDKCENTRAL-COM_Report.WifiClient.ReportingPeriod";
+
+   /** WebPA Parameter for WiFiClient MAC Address */
+   public static final String WEBPA_PARAM_WIFICLIENT_MAC_ADDRESS = "Device.WiFi.X_RDKCENTRAL-COM_Report.WifiClient.MacAddress";
+
+   /** WebPA Parameter for WiFiClient Default Reporting Period */
+   public static final String WEBPA_PARAM_WIFICLIENT_DEFAULT_REPORTING_PERIOD = "Device.WiFi.X_RDKCENTRAL-COM_Report.WifiClient.Default.ReportingPeriod";
+   
+   /** WebPA Parameter for WiFiClient Schema */
+   public static final String WEBPA_PARAM_WIFICLIENT_SCHEMA = "Device.WiFi.X_RDKCENTRAL-COM_Report.WifiClient.Schema";
+   
+   
+   public enum RdkBBandSteeringParameters {
+	DEFAULT_STEERING_ENABLE(WEBPA_PARAM_BAND_STEERING_ENABLE, "false"),
+	DEFAULT_STEERING_IDLE_INACTIVE_TIME_2GHZ(WEBPA_PARAM_BAND_STEERING_IDLE_INACTIVE_TIME_2_4GHZ, "10"),
+	DEFAULT_STEERING_IDLE_INACTIVE_TIME_5GHZ(WEBPA_PARAM_BAND_STEERING_IDLE_INACTIVE_TIME_5GHZ, "10"),
+	DEFAULT_STEERING_OVERLOAD_INACTIVE_TIME_2GHZ(WEBPA_PARAM_BAND_STEERING_OVERLOAD_INACTIVE_TIME_2_4GHZ, "10"),
+	DEFAULT_STEERING_OVERLOAD_INACTIVE_TIME_5GHZ(WEBPA_PARAM_BAND_STEERING_OVERLOAD_INACTIVE_TIME_5GHZ, "10"),
+	DEFAULT_STEERING_APGROUP(WEBPA_PARAM_BAND_STEERING_APGROUP, "1,2");
+
+	String param;
+	String defaultValue;
+
+	RdkBBandSteeringParameters(String param, String defaultValue) {
+	    this.param = param;
+	    this.defaultValue = defaultValue;
+	}
+
+	/**
+	 * @return the param
+	 */
+	public String getParam() {
+	    return param;
+	}
+
+	/**
+	 * @param param
+	 *            the param to set
+	 */
+	public void setParam(String param) {
+	    this.param = param;
+	}
+
+	/**
+	 * @return the defaultValue
+	 */
+	public String getDefaultValue() {
+	    return defaultValue;
+	}
+
+	/**
+	 * @param defaultValue
+	 *            the defaultValue to set
+	 */
+	public void setDefaultValue(String defaultValue) {
+	    this.defaultValue = defaultValue;
+	}
+
+	/**
+	 * returns all band steering webpa names
+	 * 
+	 * @return
+	 */
+	public static String[] getAllBandSteeringWebPaConstantNames() {
+	    RdkBBandSteeringParameters[] steeringParams = values();
+	    String[] names = new String[steeringParams.length];
+
+	    for (int i = 0; i < steeringParams.length; i++) {
+		names[i] = steeringParams[i].getParam();
+	    }
+
+	    return names;
+	}
+   }
+   
 }

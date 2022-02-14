@@ -40,12 +40,14 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automatics.constants.AutomaticsConstants;
+import com.automatics.constants.LinuxCommandConstants;
 import com.automatics.device.Device;
 import com.automatics.device.Dut;
 import com.automatics.exceptions.TestException;
@@ -64,10 +66,13 @@ import com.automatics.rdkb.constants.RDKBTestConstants.WiFiFrequencyBand;
 import com.automatics.rdkb.constants.WebPaParamConstants;
 import com.automatics.rdkb.constants.WebPaParamConstants.WebPaDataTypes;
 import com.automatics.rdkb.server.WhiteListServer;
+import com.automatics.rdkb.utils.cdl.FirmwareDownloadUtils;
+import com.automatics.rdkb.utils.dmcli.DmcliUtils;
 import com.automatics.rdkb.utils.snmp.BroadBandSnmpMib;
 import com.automatics.rdkb.utils.snmp.BroadBandSnmpUtils;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
 import com.automatics.rdkb.utils.wifi.BroadBandWiFiUtils;
+import com.automatics.snmp.SnmpDataType;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.AutomaticsPropertyUtility;
 import com.automatics.utils.CommonMethods;
@@ -82,6 +87,8 @@ import com.automatics.webpa.WebPaServerResponse;
  * 
  */
 public class BroadBandCommonUtils {
+	
+	 private static String ifConfigErouter0Response = null;
 
     /**
      * Logger instance for {@link BroadBandCommonUtils}
@@ -842,7 +849,7 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("ENDING METHOD: isRdkbDeviceAccessible");
 	return result;
     }
-    
+
     /**
      * This method will wait the boot up time of the device is as given in the parameter
      * 
@@ -1417,8 +1424,6 @@ public class BroadBandCommonUtils {
     public static String getIndexForWanMac(AutomaticsTapApi tapEnv, Dut device) {
 	LOGGER.debug("STARTING METHOD:getIndexForWanMac");
 	String index = null;
-	String response = null;
-	String errorMessage = null;
 	index = BroadBandTestConstants.STRING_VALUE_ONE;
 	LOGGER.info("Index to be used to get device mac is-" + index);
 	LOGGER.debug("ENDING METHOD:getIndexForWanMac");
@@ -2047,7 +2052,6 @@ public class BroadBandCommonUtils {
 	boolean result = false;
 	String rfcPayLoadData = null;
 	String stbMacAddress = device.getHostMacAddress();
-	LOGGER.info("XB Mac address: " + stbMacAddress);
 	String payload = BroadBandTestConstants.STRING_RFC_DATA_GENERIC_PAYLOAD;
 	JSONObject jsonObj = null;
 	try {
@@ -2070,7 +2074,7 @@ public class BroadBandCommonUtils {
 		    result = true;
 		}
 	    } else {
-		LOGGER.error("XB Mac address is not obtained");
+		LOGGER.error("Device Mac address is not obtained");
 	    }
 	} catch (JSONException e) {
 	    LOGGER.error("Exception while Posting RFC configuration");
@@ -3405,7 +3409,7 @@ public class BroadBandCommonUtils {
 	}
 	return status;
     }
-    
+
     /**
      * Utility method to verify process running status
      * 
@@ -3442,7 +3446,7 @@ public class BroadBandCommonUtils {
 	}
 
     }
-    
+
     /**
      * Utility Method to perform the check on whether file exists. The file check operation is being performed by
      * polling for the existence of file for 10 minutes.
@@ -3471,7 +3475,7 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("ENDING METHOD doesFileExistWithinGivenTimeFrameInArm");
 	return result;
     }
-    
+
     /**
      * Helper method to kill and verify the given process
      * 
@@ -3499,484 +3503,2389 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("Ending Method : killAndVerifyTcpDumpProcess()");
 	return status;
     }
-    
+
     /**
      * Helper method to verify mount staus for partitions
+     * 
      * @param response
      * @param partition
      * @param pattern
      * @param permission
      * @return
      */
-     public static BroadBandResultObject verifyMountStatusAndReadWritePermission(Dut device, AutomaticsTapApi tapEnv,
- 	    String response, String partition, String pattern, String permission) {
+    public static BroadBandResultObject verifyMountStatusAndReadWritePermission(Dut device, AutomaticsTapApi tapEnv,
+	    String response, String partition, String pattern, String permission) {
 
- 	boolean status = false;
+	boolean status = false;
 
- 	String errorMessage = BroadBandTestConstants.EMPTY_STRING;
- 	BroadBandResultObject broadBandResultObject = new BroadBandResultObject();
+	String errorMessage = BroadBandTestConstants.EMPTY_STRING;
+	BroadBandResultObject broadBandResultObject = new BroadBandResultObject();
 
- 	if (CommonMethods.isNotNull(response)) {
+	if (CommonMethods.isNotNull(response)) {
 
- 	    response = CommonMethods.patternFinder(response, pattern);
- 	    LOGGER.info("Obtained response for " + partition + " partition is : " + response);
+	    response = CommonMethods.patternFinder(response, pattern);
+	    LOGGER.info("Obtained response for " + partition + " partition is : " + response);
 
- 	    if (CommonMethods.isNotNull(response)) {
- 		LOGGER.info(partition + " is properly mounted and obtained read-write permission is  : " + response);
- 		status = response.equalsIgnoreCase(permission);
- 	    }
+	    if (CommonMethods.isNotNull(response)) {
+		LOGGER.info(partition + " is properly mounted and obtained read-write permission is  : " + response);
+		status = response.equalsIgnoreCase(permission);
+	    }
 
- 	    if (!status) {
- 		errorMessage = partition + " is not properly mounted. Obtained response for mount check is : "
- 			+ response;
- 		LOGGER.error(errorMessage);
- 	    }
+	    if (!status) {
+		errorMessage = partition + " is not properly mounted. Obtained response for mount check is : "
+			+ response;
+		LOGGER.error(errorMessage);
+	    }
 
- 	} else {
- 	    errorMessage = "Failed to get the mount status for " + partition + " using mount | grep " + partition
- 		    + " command";
+	} else {
+	    errorMessage = "Failed to get the mount status for " + partition + " using mount | grep " + partition
+		    + " command";
 
- 	}
+	}
 
- 	broadBandResultObject.setStatus(status);
- 	broadBandResultObject.setErrorMessage(errorMessage);
- 	return broadBandResultObject;
-     }
-     
-     /**
-      * Utility method to create and verify owner read write permission
-      * 
-      * @param tapEnv
-      *            AutomaticsTapApi instance
-      * @param settop
-      *            instance of settop
-      * @param dummyTest
-      *            Test file path
-      * 
-      * @return true if the file is created with the read write permission
-      * 
-      * @author Karthick Pandiyan
-      */
+	broadBandResultObject.setStatus(status);
+	broadBandResultObject.setErrorMessage(errorMessage);
+	return broadBandResultObject;
+    }
 
-     public static boolean createAndVerifyOwnerReadWritePermission(AutomaticsTapApi tapEnv, Dut device, String dummyTest) {
- 	LOGGER.debug("STARTING METHOD: createAndVerifyOwnerReadWritePermission()");
- 	boolean status = false;
- 	String response = null;
- 	try {
- 	    tapEnv.executeCommandUsingSsh(device,
- 		    BroadBandCommandConstants.CMD_TOUCH + BroadBandTestConstants.SINGLE_SPACE_CHARACTER + dummyTest);
+    /**
+     * Utility method to create and verify owner read write permission
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param settop
+     *            instance of settop
+     * @param dummyTest
+     *            Test file path
+     * 
+     * @return true if the file is created with the read write permission
+     * 
+     * @author Karthick Pandiyan
+     */
 
- 	    if (CommonUtils.isFileExists(device, tapEnv, dummyTest)) {
+    public static boolean createAndVerifyOwnerReadWritePermission(AutomaticsTapApi tapEnv, Dut device,
+	    String dummyTest) {
+	LOGGER.debug("STARTING METHOD: createAndVerifyOwnerReadWritePermission()");
+	boolean status = false;
+	String response = null;
+	try {
+	    tapEnv.executeCommandUsingSsh(device,
+		    BroadBandCommandConstants.CMD_TOUCH + BroadBandTestConstants.SINGLE_SPACE_CHARACTER + dummyTest);
 
- 		response = tapEnv.executeCommandUsingSsh(device,
- 			BroadBandCommonUtils.concatStringUsingStringBuffer(
- 				BroadBandTestConstants.CMD_TO_LONGLIST_FOLDER_FILES, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
- 				dummyTest));
+	    if (CommonUtils.isFileExists(device, tapEnv, dummyTest)) {
 
- 		status = CommonMethods.isNotNull(response)
- 			? response.trim().substring(1, 3).equals(BroadBandTestConstants.STRING_READ_WRITE_PARTITION)
- 			: false;
- 	    }
- 	} catch (Exception e) {
- 	    LOGGER.error("Caught exception while creating and verifying owner read write permission " + e.getMessage());
- 	}
- 	LOGGER.debug("ENDING METHOD: createAndVerifyOwnerReadWritePermission()");
- 	return status;
-     }
-     
-     /**
-      * Utility method to remove file and verify status
-      * 
-      * @param tapEnv
-      *            AutomaticsTapApi instance
-      * @param settop
-      *            instance of settop
-      * @param createFile
-      *            Test file path
-      * 
-      * @return true if the file is removed successfully
-      * 
-      * @author Karthick Pandiyan
-      */
+		response = tapEnv.executeCommandUsingSsh(device,
+			BroadBandCommonUtils.concatStringUsingStringBuffer(
+				BroadBandTestConstants.CMD_TO_LONGLIST_FOLDER_FILES,
+				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, dummyTest));
 
-     public static boolean removeFileAndVerifyStatus(AutomaticsTapApi tapEnv, Dut device, String createFile) {
- 	LOGGER.debug("STARTING METHOD: removeFileAndVerifyStatus()");
- 	boolean status = false;
- 	try {
- 	    String commandToRemoveFile = BroadBandCommonUtils.concatStringUsingStringBuffer(
- 		    BroadBandTestConstants.CMD_REMOVE_DIR_FORCEFULLY, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
- 		    createFile);
- 	    tapEnv.executeCommandUsingSsh(device, commandToRemoveFile);
- 	    status = !CommonUtils.isFileExists(device, tapEnv, createFile);
- 	} catch (Exception e) {
- 	    LOGGER.error("Caught exception while removing file and verifying the status " + e.getMessage());
- 	}
- 	LOGGER.debug("ENDING METHOD: removeFileAndVerifyStatus()");
- 	return status;
-     }
-     
-     /**
-      * Method to to verify the device is rebooted and it is accessible.
-      * 
-      * @param device
-      *            Dut Instance
-      * @param tapEnv
-      *            AutomaticsTapApi Instance
-      * @return true if device is up after webpa reboot
-      * @Refactor Athira
-      */
-     public static boolean verifySTBRebootAndStbAccessible(Dut device, AutomaticsTapApi tapEnv) {
- 	LOGGER.info("STARTING METHOD: verifySTBRebootAndStbAccessible()");
- 	boolean isRebooted = false;
- 	boolean isStbAccessible = false;
- 	long startTime = System.currentTimeMillis();
- 	String errorMessage = "Failed to perform reboot via WEBPA.";
- 	startTime = System.currentTimeMillis();
- 	try {
- 	    do {
- 		isRebooted = CommonUtils.verifyStbRebooted(device, tapEnv);
- 	    } while (!isRebooted
- 		    && ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS)
- 		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
- 	    startTime = System.currentTimeMillis();
- 	    do {
- 		isStbAccessible = CommonMethods.isSTBAccessible(device);
- 	    } while (!isStbAccessible
- 		    && ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS)
- 		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
- 	    errorMessage = "Failed to verify StbAccessible";
- 	} catch (Exception exception) {
- 	    errorMessage = "Exception occured while performing reboot " + exception.getMessage();
- 	    LOGGER.error(errorMessage);
- 	}
- 	LOGGER.info("ENDING METHOD: verifySTBRebootAndStbAccessible()");
- 	return isRebooted && isStbAccessible;
-     }
+		status = CommonMethods.isNotNull(response)
+			? response.trim().substring(1, 3).equals(BroadBandTestConstants.STRING_READ_WRITE_PARTITION)
+			: false;
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Caught exception while creating and verifying owner read write permission " + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: createAndVerifyOwnerReadWritePermission()");
+	return status;
+    }
 
-     /**
-      * Method to check whether Log file is available in rdklogs/logs and tail them to Backup<Filename> in nvram in given
-      * console type
-      * 
-      * @param Dut
-      *            device instance
-      * @param tapEnv
-      *            AutomaticsTapApi instance
-      * @param mustHaveLogFileList
-      *            List<String> logfiles
-      * @param tailValue
-      *            value to grep line
-      * @param polledTime
-      *            long polled time
-      * @param maxDuration
-      *            long maxtime
-      * @param consoleType
-      *            String consoletype
-      * @param backUpPath
-      *            String path for backup
-      * @return Map<String, String> log file and path
-      * @Refactor Athira
-      */
-     public static Map<String, String> verifyRdkLogAlbltyAndTailLogToGivenPathAndConsole(Dut device,
- 	    AutomaticsTapApi tapEnv, List<String> mustHaveLogFileList, String tailValue, long polledTime,
- 	    long maxDuration, String consoleType, String backUpPath) {
- 	LOGGER.debug("STARTING METHOD : verifyRdkLogAlbltyAndTailLogToGivenPathAndConsole()");
- 	long startTime = System.currentTimeMillis();
- 	boolean result = false;
- 	String errorMessage = "";
+    /**
+     * Utility method to remove file and verify status
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param settop
+     *            instance of settop
+     * @param createFile
+     *            Test file path
+     * 
+     * @return true if the file is removed successfully
+     * 
+     * @author Karthick Pandiyan
+     */
 
- 	Map<String, String> mapForLogFileWithPath = new HashMap<>();
- 	String pathForBackupFile;
- 	try {
- 	    String command = BroadBandCommandConstants.TAIL_GIVEN_LOG_FILE_WITH_PATH
- 		    .replace(BroadBandTestConstants.STRING_VALUE_TO_REPLACE, tailValue);
- 	    String commandToExecute;
- 	    Map<String, Boolean> logFilesUpdate = new HashMap<>();
- 	    for (String logFile : mustHaveLogFileList) {
- 		logFilesUpdate.put(logFile, false);
- 	    }
- 	    List<String> missingLogFiles = mustHaveLogFileList;
- 	    boolean isAtomSyncAvailable = CommonMethods.isAtomSyncAvailable(device, tapEnv);
- 	    do {
- 		// Identifying whether log files available or not
- 		if (consoleType.equals(BroadBandTestConstants.ARM)) {
- 		    missingLogFiles = BroadBandCommonUtils.verifyMustHaveLogFilesAvailabilityinAtomOrArm(device, tapEnv,
- 			    mustHaveLogFileList, false);
- 		} else {
- 		    missingLogFiles = BroadBandCommonUtils.verifyMustHaveLogFilesAvailabilityinAtomOrArm(device, tapEnv,
- 			    mustHaveLogFileList, isAtomSyncAvailable);
- 		}
- 		result = missingLogFiles.isEmpty();
- 		mustHaveLogFileList.removeAll(missingLogFiles);
- 		if (!mustHaveLogFileList.isEmpty()) {
- 		    for (String logFile : mustHaveLogFileList) {
- 			pathForBackupFile = BroadBandCommonUtils.concatStringUsingStringBuffer(backUpPath,
- 				BroadBandTestConstants.TAG_BACK_UP_FILE, logFile);
- 			commandToExecute = command.replace(BroadBandTestConstants.STRING_REPLACE, logFile)
- 				.replace(BroadBandTestConstants.REPLACE_BACKUP_FILE, pathForBackupFile);
- 			if (!logFilesUpdate.get(logFile)) {
- 			    if (consoleType.equals(BroadBandTestConstants.STRING_ATOM_CONSOLE)) {
- 				tapEnv.executeCommandOnAtom(device, commandToExecute);
- 			    } else if (consoleType.equals(BroadBandTestConstants.ARM)) {
- 				tapEnv.executeCommandUsingSsh(device, commandToExecute);
- 			    } else {
- 				if (isAtomSyncAvailable) {
- 				    tapEnv.executeCommandOnAtom(device, commandToExecute);
- 				} else {
- 				    tapEnv.executeCommandUsingSsh(device, commandToExecute);
- 				}
- 			    }
- 			    logFilesUpdate.put(logFile, true);
- 			    mapForLogFileWithPath.put(logFile, pathForBackupFile);
- 			}
- 		    }
- 		}
- 		mustHaveLogFileList = new ArrayList<String>(missingLogFiles);
- 		LOGGER.info("Successfully verified all the must have log files are present : " + result);
- 	    } while (!result && ((System.currentTimeMillis() - startTime) < maxDuration)
- 		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, polledTime));
+    public static boolean removeFileAndVerifyStatus(AutomaticsTapApi tapEnv, Dut device, String createFile) {
+	LOGGER.debug("STARTING METHOD: removeFileAndVerifyStatus()");
+	boolean status = false;
+	try {
+	    String commandToRemoveFile = BroadBandCommonUtils.concatStringUsingStringBuffer(
+		    BroadBandTestConstants.CMD_REMOVE_DIR_FORCEFULLY, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+		    createFile);
+	    tapEnv.executeCommandUsingSsh(device, commandToRemoveFile);
+	    status = !CommonUtils.isFileExists(device, tapEnv, createFile);
+	} catch (Exception e) {
+	    LOGGER.error("Caught exception while removing file and verifying the status " + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: removeFileAndVerifyStatus()");
+	return status;
+    }
 
- 	    errorMessage = result ? "Successfully verified all the must have log files are present"
- 		    : "Some files are missing -> " + missingLogFiles;
+    /**
+     * Method to to verify the device is rebooted and it is accessible.
+     * 
+     * @param device
+     *            Dut Instance
+     * @param tapEnv
+     *            AutomaticsTapApi Instance
+     * @return true if device is up after webpa reboot
+     * @Refactor Athira
+     */
+    public static boolean verifySTBRebootAndStbAccessible(Dut device, AutomaticsTapApi tapEnv) {
+	LOGGER.info("STARTING METHOD: verifySTBRebootAndStbAccessible()");
+	boolean isRebooted = false;
+	boolean isStbAccessible = false;
+	long startTime = System.currentTimeMillis();
+	String errorMessage = "Failed to perform reboot via WEBPA.";
+	startTime = System.currentTimeMillis();
+	try {
+	    do {
+		isRebooted = CommonUtils.verifyStbRebooted(device, tapEnv);
+	    } while (!isRebooted
+		    && ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS)
+		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+	    startTime = System.currentTimeMillis();
+	    do {
+		isStbAccessible = CommonMethods.isSTBAccessible(device);
+	    } while (!isStbAccessible
+		    && ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS)
+		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+	    errorMessage = "Failed to verify StbAccessible";
+	} catch (Exception exception) {
+	    errorMessage = "Exception occured while performing reboot " + exception.getMessage();
+	    LOGGER.error(errorMessage);
+	}
+	LOGGER.info("ENDING METHOD: verifySTBRebootAndStbAccessible()");
+	return isRebooted && isStbAccessible;
+    }
 
- 	} catch (Exception exception) {
- 	    errorMessage = "Exception occured while verifying logavailability  " + exception.getMessage();
- 	    LOGGER.error(errorMessage);
- 	}
- 	LOGGER.info("ENDING METHOD:  verifyRdkLogAlbltyAndTailLogToGivenPathAndConsole()");
- 	return mapForLogFileWithPath;
-     }
-     
-     /**
-      * Method to verify must have device logs availability status
-      * 
-      * @param device
-      *            Dut
-      * @param tapEnv
-      *            instance of {@link AutomaticsTapApi}
-      * @param mustHaveLogFileList
-      *            Must have log file list
-      * @param isAtomSyncAvailable
-      * 
-      * @return List with files and its size details
-      * @Refactor Athira
-      */
-     public static ArrayList<String> verifyMustHaveLogFilesAvailabilityinAtomOrArm(Dut device, AutomaticsTapApi tapEnv,
- 	    List<String> mustHaveLogFileList, boolean isAtomSyncAvailable) {
- 	String errorMessage = null;
- 	List<String> availableLogFiles = new ArrayList<String>();
- 	ArrayList<String> missingLogFiles = null;
- 	String response = null;
- 	String command = CommonMethods.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_LS,
- 		BroadBandCommandConstants.DIRECTORY_LOGS);
- 	if (isAtomSyncAvailable) {
- 	    response = CommonMethods.executeCommandInAtomConsole(device, tapEnv, command);
- 	} else {
- 	    response = tapEnv.executeCommandUsingSsh(device, command);
- 	}
- 	LOGGER.info("COMMAND EXECUTION RESPONSE: " + response);
- 	if (CommonMethods.isNotNull(response)
- 		&& !response.equalsIgnoreCase(AutomaticsConstants.NO_SUCH_FILE_OR_DIRECTORY)) {
- 	    availableLogFiles = Arrays
- 		    .asList(response.split(BroadBandTestConstants.PATTERN_MATCHER_FOR_MULTIPLE_SPACES));
- 	    missingLogFiles = BroadBandCommonUtils.verifyLogFileIsAvailable(availableLogFiles, mustHaveLogFileList);
- 	} else {
- 	    errorMessage = "Unable to retrieve the details of device logs under /rdklogs/logs/ folder using command";
- 	    throw new TestException(errorMessage);
- 	}
+    /**
+     * Method to check whether Log file is available in rdklogs/logs and tail them to Backup<Filename> in nvram in given
+     * console type
+     * 
+     * @param Dut
+     *            device instance
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param mustHaveLogFileList
+     *            List<String> logfiles
+     * @param tailValue
+     *            value to grep line
+     * @param polledTime
+     *            long polled time
+     * @param maxDuration
+     *            long maxtime
+     * @param consoleType
+     *            String consoletype
+     * @param backUpPath
+     *            String path for backup
+     * @return Map<String, String> log file and path
+     * @Refactor Athira
+     */
+    public static Map<String, String> verifyRdkLogAlbltyAndTailLogToGivenPathAndConsole(Dut device,
+	    AutomaticsTapApi tapEnv, List<String> mustHaveLogFileList, String tailValue, long polledTime,
+	    long maxDuration, String consoleType, String backUpPath) {
+	LOGGER.debug("STARTING METHOD : verifyRdkLogAlbltyAndTailLogToGivenPathAndConsole()");
+	long startTime = System.currentTimeMillis();
+	boolean result = false;
+	String errorMessage = "";
 
- 	return missingLogFiles;
-     }
-     
-     /**
-      * Method to validate log file availability status
-      * 
-      * @param hmap
-      *            Hash map to hold files and its size
-      * @param logFileList
-      *            List to hold all the required log files
-      * 
-      * @return files availability status
-      */
+	Map<String, String> mapForLogFileWithPath = new HashMap<>();
+	String pathForBackupFile;
+	try {
+	    String command = BroadBandCommandConstants.TAIL_GIVEN_LOG_FILE_WITH_PATH
+		    .replace(BroadBandTestConstants.STRING_VALUE_TO_REPLACE, tailValue);
+	    String commandToExecute;
+	    Map<String, Boolean> logFilesUpdate = new HashMap<>();
+	    for (String logFile : mustHaveLogFileList) {
+		logFilesUpdate.put(logFile, false);
+	    }
+	    List<String> missingLogFiles = mustHaveLogFileList;
+	    boolean isAtomSyncAvailable = CommonMethods.isAtomSyncAvailable(device, tapEnv);
+	    do {
+		// Identifying whether log files available or not
+		if (consoleType.equals(BroadBandTestConstants.ARM)) {
+		    missingLogFiles = BroadBandCommonUtils.verifyMustHaveLogFilesAvailabilityinAtomOrArm(device, tapEnv,
+			    mustHaveLogFileList, false);
+		} else {
+		    missingLogFiles = BroadBandCommonUtils.verifyMustHaveLogFilesAvailabilityinAtomOrArm(device, tapEnv,
+			    mustHaveLogFileList, isAtomSyncAvailable);
+		}
+		result = missingLogFiles.isEmpty();
+		mustHaveLogFileList.removeAll(missingLogFiles);
+		if (!mustHaveLogFileList.isEmpty()) {
+		    for (String logFile : mustHaveLogFileList) {
+			pathForBackupFile = BroadBandCommonUtils.concatStringUsingStringBuffer(backUpPath,
+				BroadBandTestConstants.TAG_BACK_UP_FILE, logFile);
+			commandToExecute = command.replace(BroadBandTestConstants.STRING_REPLACE, logFile)
+				.replace(BroadBandTestConstants.REPLACE_BACKUP_FILE, pathForBackupFile);
+			if (!logFilesUpdate.get(logFile)) {
+			    if (consoleType.equals(BroadBandTestConstants.STRING_ATOM_CONSOLE)) {
+				tapEnv.executeCommandOnAtom(device, commandToExecute);
+			    } else if (consoleType.equals(BroadBandTestConstants.ARM)) {
+				tapEnv.executeCommandUsingSsh(device, commandToExecute);
+			    } else {
+				if (isAtomSyncAvailable) {
+				    tapEnv.executeCommandOnAtom(device, commandToExecute);
+				} else {
+				    tapEnv.executeCommandUsingSsh(device, commandToExecute);
+				}
+			    }
+			    logFilesUpdate.put(logFile, true);
+			    mapForLogFileWithPath.put(logFile, pathForBackupFile);
+			}
+		    }
+		}
+		mustHaveLogFileList = new ArrayList<String>(missingLogFiles);
+		LOGGER.info("Successfully verified all the must have log files are present : " + result);
+	    } while (!result && ((System.currentTimeMillis() - startTime) < maxDuration)
+		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, polledTime));
 
-     public static ArrayList<String> verifyLogFileIsAvailable(List<String> availableLogFiles, List<String> logFileList) {
+	    errorMessage = result ? "Successfully verified all the must have log files are present"
+		    : "Some files are missing -> " + missingLogFiles;
 
- 	LOGGER.debug("STARTING METHOD : verifyLogFileIsAvailable");
- 	boolean status = false;
- 	ArrayList<String> missingFileList = new ArrayList<>();
- 	for (String file : logFileList) {
- 	    status = availableLogFiles.contains(file);
- 	    LOGGER.info(">>>>>>> " + file + " availability status : " + status);
- 	    if (!status) {
- 		missingFileList.add(file);
- 		LOGGER.error(">>>>>>> " + file + " is missing ");
- 	    }
- 	}
- 	LOGGER.debug("ENDING METHOD : verifyLogFileIsAvailable");
- 	return missingFileList;
-     }
-     
-     /**
-      * Method to execute command on jump server and return IP address
-      * 
-      * @param tapEnv
-      * @param command
-      * @param isIpv6Addr
-      * @param patternSearch
-      * @param patternMatcherGroup
-      * @return IP Address
-      */
-     public static String executeCommandOnJumpServerAndRetrievIPAddressWithPatternSearch(AutomaticsTapApi tapEnv,
- 	    String command, boolean isIpv6Addr, String patternSearch, int patternMatcherGroup) {
- 	LOGGER.debug("STARTING METHOD :executeCommandOnJumpServerAndRetrievIPAddressWithPatternSearch");
- 	String response = BroadBandCommonUtils.executeCommandInNonWhiteListedJumpServer(tapEnv, command);
- 	List<String> responseList = new ArrayList<>();
- 	String ipAddressRetrieved = null;
- 	if (CommonMethods.isNotNull(response)) {
- 	    responseList = BroadBandCommonUtils.patternFinderForMultipleMatches(response, patternSearch,
- 		    patternMatcherGroup);
- 	    if (!responseList.isEmpty()) {
- 		ipAddressRetrieved = responseList.get(0);
- 		// if isIpv6Addr is true then validation for IPv6
- 		if (isIpv6Addr && CommonMethods.isIpv6Address(ipAddressRetrieved)) {
- 		    return ipAddressRetrieved;
- 		} else if (!isIpv6Addr && CommonMethods.isIpv4Address(ipAddressRetrieved)) {
- 		    return ipAddressRetrieved;
- 		}
- 	    }
- 	}
- 	LOGGER.debug("ENDING METHOD :executeCommandOnJumpServerAndRetrievIPAddressWithPatternSearch");
- 	return ipAddressRetrieved;
-     }
-     
-     
-     /**
-      * Helper method to execute command in Non White listed jump server
-      * 
-      * @param tapEnv
-      *            AutomaticsTapApi instance
-      * @param command
-      *            command to be executed
-      * @return string , response of the command executed.
-      * 
-      */
-     public static String executeCommandInNonWhiteListedJumpServer(AutomaticsTapApi tapEnv, String command) {
- 	LOGGER.debug("STARTING METHOD: executeCommandInNonWhiteListedJumpServer");
- 	String jumpServer = null;
- 	String response = null;
- 	try {
- 	    // Executing the command directly in jump server.
- 	    jumpServer = BroadbandPropertyFileHandler.getNonWhiteListedJumpserverIP();
+	} catch (Exception exception) {
+	    errorMessage = "Exception occured while verifying logavailability  " + exception.getMessage();
+	    LOGGER.error(errorMessage);
+	}
+	LOGGER.info("ENDING METHOD:  verifyRdkLogAlbltyAndTailLogToGivenPathAndConsole()");
+	return mapForLogFileWithPath;
+    }
 
- 	    LOGGER.info("Jump Server detail is - " + jumpServer);
- 	    // SSH connection util
- 	    SshConnection sshConnection = ServerUtils.getSshConnection(jumpServer);
- 	    // Obtaining the command response
- 	    response = tapEnv.executeCommandUsingSshConnection(WhiteListServer.getInstance(tapEnv, jumpServer), command);
- 	} catch (Exception exception) {
- 	    LOGGER.error(
- 		    "Failed to execute command in jump server " + jumpServer + ". Error - " + exception.getMessage());
- 	}
- 	LOGGER.debug("ENDING METHOD: executeCommandInNonWhiteListedJumpServer");
- 	return response;
-     }
-     
-     /**
-      * Method to verify the snmp reboot reason
-      * 
-      * @param device
-      *            Dut instance
-      * @param tapEnv
-      *            AutomaticsTapApi instance
-      * @return True-if expected reboot reason is obtained
-      * @throws JSONException
-      * 
-      */
-     public static boolean verifySnmpRebootReason(Dut device, AutomaticsTapApi tapEnv) throws JSONException {
- 	LOGGER.debug("STARTING METHOD: verifySnmpRebootReason()");
- 	boolean isSnmpRebootReasonValid = false;
- 	String rebootReason = null;
- 	try {
- 	    rebootReason = BroadbandPropertyFileHandler.getSnmpRebootReasonList();
- 	    JSONObject jsonObj = new JSONObject(rebootReason);
- 	    if (jsonObj != null) {
- 		isSnmpRebootReasonValid = BroadBandWebPaUtils.getAndVerifyWebpaValueInPolledDuration(
- 			device,
- 			tapEnv,
- 			BroadBandWebPaConstants.WEBPA_COMMAND_LAST_REBOOT_REASON,
- 			jsonObj.has(device.getModel()) ? jsonObj.getString(device.getModel()) : jsonObj
- 				.getString(BroadBandTestConstants.DEFAULT),
- 			BroadBandTestConstants.ONE_MINUTE_IN_MILLIS, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
- 	    }
- 	} catch (Exception e) {
- 	    LOGGER.error("Exception occured while verifying SNMP reboot reason:" + e.getMessage());
- 	}
- 	LOGGER.debug("ENDING METHOD: verifySnmpRebootReason()");
- 	return isSnmpRebootReasonValid;
-     }
-     
-     /**
-      * Method to execute grep command to grep telemetry marker for SNMP reboot based on the device vendor
-      * 
-      * @param tapEnv
-      *            AutomaticsTapApi instance
-      * @param settop
-      *            The settop to be validated
-      * @return - true if grep command retrieves the expected value else false
-      */
-     public static boolean verifyTelemetryMarkerForDeviceRebootInitiatedBySnmpDocDevMib(Dut device,
- 	    AutomaticsTapApi tapEnv) {
- 	LOGGER.debug("STARTING METHOD: verifyTelemetryMarkerForDeviceRebootInitiatedBySnmpDocDevMib()");
- 	// Variable declaration starts
- 	boolean status = false;
- 	String grepCommandOutput = null;
- 	String response = null;
- 	String errorMessage = "";
- 	String expectedOutput = null;
- 	// Variable declaration ends
- 	try {
- 		grepCommandOutput = BroadBandCommandConstants.COMMAND_TO_GREP_REBOOT_TELEMETRY_MARKER;
- 		expectedOutput = BroadBandTraceConstants.TELEMETRY_MARKER_DOCSIS_SNMP_REBOOT;
- 	    response = tapEnv.executeCommandUsingSsh(device, grepCommandOutput);
- 	    status = CommonMethods.isNotNull(response)
- 		    && (CommonUtils.patternSearchFromTargetString(response, expectedOutput));
- 	} catch (Exception exception) {
- 	    errorMessage = "Exception occure while verifying yelemetry marker for device reboot initiated by SnmpDocDevMib."
- 		    + exception.getMessage();
- 	    LOGGER.error(errorMessage);
- 	}
- 	LOGGER.debug("ENDING METHOD: verifyTelemetryMarkerForDeviceRebootInitiatedBySnmpDocDevMib()");
- 	return status;
-     }
-     
-     /**
-      * Method to get PID of process based on architecture
-      * 
-      * @param tapEnv
-      *            {@link AutomaticsTapApi}
-      * @param device
-      *            {@link Dut}
-      * @param processName
-      *            String representing the process name
-      * 
-      * @return PID of given process
-      * @author Alan_Bivera
-      */
-     public static String getPidOfProcessResolvingArch(Dut device, AutomaticsTapApi tapEnv, String processName) {
- 	LOGGER.debug("ENTERING METHOD getPidOfProcessResolvingArch");
- 	String processId = null;
- 	try {
- 	    if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
- 		processId = getPidOfProcessFromAtomConsole(device, tapEnv, processName);
- 	    } else {
- 		processId = CommonMethods.getPidOfProcess(device, tapEnv, processName);
- 	    }
- 	} catch (Exception exception) {
- 	    LOGGER.error("EXCEPTION OCCURRED WHILE TRYING TO GET THE PROCESS ID: " + exception.getMessage());
- 	}
- 	LOGGER.info("PROCESS ID: " + processId);
- 	LOGGER.debug("ENDING METHOD getPidOfProcessResolvingArch");
- 	return processId;
-     }
-     
+    /**
+     * Method to verify must have device logs availability status
+     * 
+     * @param device
+     *            Dut
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param mustHaveLogFileList
+     *            Must have log file list
+     * @param isAtomSyncAvailable
+     * 
+     * @return List with files and its size details
+     * @Refactor Athira
+     */
+    public static ArrayList<String> verifyMustHaveLogFilesAvailabilityinAtomOrArm(Dut device, AutomaticsTapApi tapEnv,
+	    List<String> mustHaveLogFileList, boolean isAtomSyncAvailable) {
+	String errorMessage = null;
+	List<String> availableLogFiles = new ArrayList<String>();
+	ArrayList<String> missingLogFiles = null;
+	String response = null;
+	String command = CommonMethods.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_LS,
+		BroadBandCommandConstants.DIRECTORY_LOGS);
+	if (isAtomSyncAvailable) {
+	    response = CommonMethods.executeCommandInAtomConsole(device, tapEnv, command);
+	} else {
+	    response = tapEnv.executeCommandUsingSsh(device, command);
+	}
+	LOGGER.info("COMMAND EXECUTION RESPONSE: " + response);
+	if (CommonMethods.isNotNull(response)
+		&& !response.equalsIgnoreCase(AutomaticsConstants.NO_SUCH_FILE_OR_DIRECTORY)) {
+	    availableLogFiles = Arrays
+		    .asList(response.split(BroadBandTestConstants.PATTERN_MATCHER_FOR_MULTIPLE_SPACES));
+	    missingLogFiles = BroadBandCommonUtils.verifyLogFileIsAvailable(availableLogFiles, mustHaveLogFileList);
+	} else {
+	    errorMessage = "Unable to retrieve the details of device logs under /rdklogs/logs/ folder using command";
+	    throw new TestException(errorMessage);
+	}
 
+	return missingLogFiles;
+    }
+
+    /**
+     * Method to validate log file availability status
+     * 
+     * @param hmap
+     *            Hash map to hold files and its size
+     * @param logFileList
+     *            List to hold all the required log files
+     * 
+     * @return files availability status
+     */
+
+    public static ArrayList<String> verifyLogFileIsAvailable(List<String> availableLogFiles, List<String> logFileList) {
+
+	LOGGER.debug("STARTING METHOD : verifyLogFileIsAvailable");
+	boolean status = false;
+	ArrayList<String> missingFileList = new ArrayList<>();
+	for (String file : logFileList) {
+	    status = availableLogFiles.contains(file);
+	    LOGGER.info(">>>>>>> " + file + " availability status : " + status);
+	    if (!status) {
+		missingFileList.add(file);
+		LOGGER.error(">>>>>>> " + file + " is missing ");
+	    }
+	}
+	LOGGER.debug("ENDING METHOD : verifyLogFileIsAvailable");
+	return missingFileList;
+    }
+
+    /**
+     * Method to execute command on jump server and return IP address
+     * 
+     * @param tapEnv
+     * @param command
+     * @param isIpv6Addr
+     * @param patternSearch
+     * @param patternMatcherGroup
+     * @return IP Address
+     */
+    public static String executeCommandOnJumpServerAndRetrievIPAddressWithPatternSearch(AutomaticsTapApi tapEnv,
+	    String command, boolean isIpv6Addr, String patternSearch, int patternMatcherGroup) {
+	LOGGER.debug("STARTING METHOD :executeCommandOnJumpServerAndRetrievIPAddressWithPatternSearch");
+	String response = BroadBandCommonUtils.executeCommandInNonWhiteListedJumpServer(tapEnv, command);
+	List<String> responseList = new ArrayList<>();
+	String ipAddressRetrieved = null;
+	if (CommonMethods.isNotNull(response)) {
+	    responseList = BroadBandCommonUtils.patternFinderForMultipleMatches(response, patternSearch,
+		    patternMatcherGroup);
+	    if (!responseList.isEmpty()) {
+		ipAddressRetrieved = responseList.get(0);
+		// if isIpv6Addr is true then validation for IPv6
+		if (isIpv6Addr && CommonMethods.isIpv6Address(ipAddressRetrieved)) {
+		    return ipAddressRetrieved;
+		} else if (!isIpv6Addr && CommonMethods.isIpv4Address(ipAddressRetrieved)) {
+		    return ipAddressRetrieved;
+		}
+	    }
+	}
+	LOGGER.debug("ENDING METHOD :executeCommandOnJumpServerAndRetrievIPAddressWithPatternSearch");
+	return ipAddressRetrieved;
+    }
+
+    /**
+     * Helper method to execute command in Non White listed jump server
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param command
+     *            command to be executed
+     * @return string , response of the command executed.
+     * 
+     */
+    public static String executeCommandInNonWhiteListedJumpServer(AutomaticsTapApi tapEnv, String command) {
+	LOGGER.debug("STARTING METHOD: executeCommandInNonWhiteListedJumpServer");
+	String jumpServer = null;
+	String response = null;
+	try {
+	    // Executing the command directly in jump server.
+	    jumpServer = BroadbandPropertyFileHandler.getNonWhiteListedJumpserverIP();
+
+	    LOGGER.info("Jump Server detail is - " + jumpServer);
+	    // Obtaining the command response
+	    response = tapEnv.executeCommandUsingSshConnection(WhiteListServer.getInstance(tapEnv, jumpServer),
+		    command);
+	} catch (Exception exception) {
+	    LOGGER.error(
+		    "Failed to execute command in jump server " + jumpServer + ". Error - " + exception.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: executeCommandInNonWhiteListedJumpServer");
+	return response;
+    }
+
+    /**
+     * Method to verify the snmp reboot reason
+     * 
+     * @param device
+     *            Dut instance
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @return True-if expected reboot reason is obtained
+     * @throws JSONException
+     * 
+     */
+    public static boolean verifySnmpRebootReason(Dut device, AutomaticsTapApi tapEnv) throws JSONException {
+	LOGGER.debug("STARTING METHOD: verifySnmpRebootReason()");
+	boolean isSnmpRebootReasonValid = false;
+	String rebootReason = null;
+	try {
+	    rebootReason = BroadbandPropertyFileHandler.getSnmpRebootReasonList();
+	    JSONObject jsonObj = new JSONObject(rebootReason);
+	    if (jsonObj != null) {
+		isSnmpRebootReasonValid = BroadBandWebPaUtils.getAndVerifyWebpaValueInPolledDuration(device, tapEnv,
+			BroadBandWebPaConstants.WEBPA_COMMAND_LAST_REBOOT_REASON,
+			jsonObj.has(device.getModel()) ? jsonObj.getString(device.getModel())
+				: jsonObj.getString(BroadBandTestConstants.DEFAULT),
+			BroadBandTestConstants.ONE_MINUTE_IN_MILLIS, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while verifying SNMP reboot reason:" + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: verifySnmpRebootReason()");
+	return isSnmpRebootReasonValid;
+    }
+
+    /**
+     * Method to execute grep command to grep telemetry marker for SNMP reboot based on the device vendor
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param settop
+     *            The settop to be validated
+     * @return - true if grep command retrieves the expected value else false
+     */
+    public static boolean verifyTelemetryMarkerForDeviceRebootInitiatedBySnmpDocDevMib(Dut device,
+	    AutomaticsTapApi tapEnv) {
+	LOGGER.debug("STARTING METHOD: verifyTelemetryMarkerForDeviceRebootInitiatedBySnmpDocDevMib()");
+	// Variable declaration starts
+	boolean status = false;
+	String grepCommandOutput = null;
+	String response = null;
+	String errorMessage = "";
+	String expectedOutput = null;
+	// Variable declaration ends
+	try {
+	    grepCommandOutput = BroadBandCommandConstants.COMMAND_TO_GREP_REBOOT_TELEMETRY_MARKER;
+	    expectedOutput = BroadBandTraceConstants.TELEMETRY_MARKER_DOCSIS_SNMP_REBOOT;
+	    response = tapEnv.executeCommandUsingSsh(device, grepCommandOutput);
+	    status = CommonMethods.isNotNull(response)
+		    && (CommonUtils.patternSearchFromTargetString(response, expectedOutput));
+	} catch (Exception exception) {
+	    errorMessage = "Exception occure while verifying yelemetry marker for device reboot initiated by SnmpDocDevMib."
+		    + exception.getMessage();
+	    LOGGER.error(errorMessage);
+	}
+	LOGGER.debug("ENDING METHOD: verifyTelemetryMarkerForDeviceRebootInitiatedBySnmpDocDevMib()");
+	return status;
+    }
+
+    /**
+     * Method to get PID of process based on architecture
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param processName
+     *            String representing the process name
+     * 
+     * @return PID of given process
+     * @author Alan_Bivera
+     */
+    public static String getPidOfProcessResolvingArch(Dut device, AutomaticsTapApi tapEnv, String processName) {
+	LOGGER.debug("ENTERING METHOD getPidOfProcessResolvingArch");
+	String processId = null;
+	try {
+	    if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
+		processId = getPidOfProcessFromAtomConsole(device, tapEnv, processName);
+	    } else {
+		processId = CommonMethods.getPidOfProcess(device, tapEnv, processName);
+	    }
+	} catch (Exception exception) {
+	    LOGGER.error("EXCEPTION OCCURRED WHILE TRYING TO GET THE PROCESS ID: " + exception.getMessage());
+	}
+	LOGGER.info("PROCESS ID: " + processId);
+	LOGGER.debug("ENDING METHOD getPidOfProcessResolvingArch");
+	return processId;
+    }
+
+    /**
+     * Method to get device file space
+     * 
+     * @param device
+     *            {@link Dut}
+     * @refactor Govardhan
+     */
+    public static boolean isModelWithFileSpaceGreaterThan90(Dut device) {
+	boolean result = false;
+	if (BroadbandPropertyFileHandler
+		.getFileSystemSpaceBasedOnDevice(device) == BroadBandTestConstants.STRING_VALUE_90) {
+	    result = true;
+	}
+	return result;
+    }
+
+    /**
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param versionNumber
+     * @return true if lighttpd version upgraded or matches to the stbprops
+     * @refactor Leela Krishnama Naidu Andela
+     * @refactor Govardhan
+     */
+    public static boolean verifyLighttpdVersion(Dut device, AutomaticsTapApi tapEnv, String versionNumber) {
+	LOGGER.debug("Starting Method : verifyLighttpdVersion()");
+	String response = null;
+	String majorVersion = null;
+	String majorIndex = null;
+	boolean status = false;
+	// execute command and get lighttpd version
+	response = tapEnv.executeCommandUsingSsh(device, RDKBTestConstants.CMD_GET_LIGHTTPD_VERSION);
+	if (CommonMethods.isNotNull(response)) {
+
+	    LOGGER.info("Obtained lighttpd version from server response : " + response);
+	    // grep only version from server response using pattern finder
+	    // method
+	    response = CommonMethods.patternFinder(response, RDKBTestConstants.PATTERN_GET_LIGHTTPD_VERSION);
+	    LOGGER.info("Obtained lighttpd version fom server response: " + response);
+	    LOGGER.info("Obtained lighttpd version from stbprops : " + versionNumber);
+	    versionNumber = versionNumber.trim();
+	    majorVersion = CommonMethods.patternFinder(response,
+		    BroadBandTestConstants.PATTERN_TO_RETRIEVE_LIGHTTPD_MAJOR_VERSION);
+
+	    majorIndex = CommonMethods.patternFinder(versionNumber,
+		    BroadBandTestConstants.PATTERN_TO_RETRIEVE_LIGHTTPD_MAJOR_VERSION);
+
+	    int minorVersion = Integer.parseInt(CommonMethods.patternFinder(response,
+		    BroadBandTestConstants.PATTERN_TO_RETRIEVE_LIGHTTPD_MINOR_VERSION));
+
+	    int minorIndex = Integer.parseInt(CommonMethods.patternFinder(versionNumber,
+		    BroadBandTestConstants.PATTERN_TO_RETRIEVE_LIGHTTPD_MINOR_VERSION));
+
+	    if (majorVersion.equals(majorIndex)) {
+		LOGGER.info("Lighttpd major version obtained from device and stbprops matched");
+
+		if (minorVersion >= minorIndex) {
+		    status = true;
+		    LOGGER.info("Lighttpd version updated :" + response);
+
+		} else {
+		    LOGGER.error("Unable to get the updated lighttpd version :" + response);
+		}
+
+	    } else {
+		LOGGER.error("Lighttp major version obtained from device and stbprops are different");
+	    }
+	} else {
+	    LOGGER.error(
+		    "Obtained NULL response!!..Not able to get lighttpd version from box using \"lighttpd -version\" command");
+	}
+	LOGGER.debug("Ending Method : verifyLighttpdVersion()");
+	return status;
+    }
+
+    /**
+     * Method to perform webpa reboot and verify the device is accessible.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut} AutomaticsTapApi Instance
+     * @return true if device is up after webpa reboot
+     * @refactor Govardhan
+     */
+    public static boolean rebootViaWebpaAndWaitForStbAccessible(Dut device, AutomaticsTapApi tapEnv) {
+	LOGGER.info("STARTING METHOD: rebootViaWebpaAndWaitForStbAccessible()");
+	boolean isRebootedAndStbAccessible = false;
+	boolean webpaSetSuccessful = false;
+	long startTime = System.currentTimeMillis();
+	do {
+	    webpaSetSuccessful = BroadBandWiFiUtils.setWebPaParams(device,
+		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_CONTROL_DEVICE_REBOOT, BroadBandTestConstants.DEVICE,
+		    BroadBandTestConstants.CONSTANT_0);
+	} while (!webpaSetSuccessful
+		&& ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.THREE_MINUTE_IN_MILLIS)
+		&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+	if (webpaSetSuccessful) {
+	    isRebootedAndStbAccessible = verifySTBRebootAndStbAccessible(device, tapEnv);
+	}
+	LOGGER.info("ENDING METHOD: rebootViaWebpaAndWaitForStbAccessible()");
+	return webpaSetSuccessful && isRebootedAndStbAccessible;
+    }
+
+    /**
+     * Helper method to kill and verify the given process
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param processName
+     *            Name of the Process
+     * @return status . If Its True,If process killed, Else False
+     * @refactor Govardhan
+     */
+    public static boolean killAndCheckProcess(Dut device, AutomaticsTapApi tapEnv, String processName) {
+	LOGGER.debug("Starting Method : killAndVerifyProcess()");
+	boolean status = false;
+	String cmdToKill = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.CMD_KILLALL_11,
+		BroadBandTestConstants.SINGLE_SPACE_CHARACTER, processName);
+	String processId = CommonMethods.getPidOfProcess(device, tapEnv, processName);
+	LOGGER.info(" Process Id : " + processId);
+	if (CommonMethods.isNotNull(processId)) {
+	    tapEnv.executeCommandUsingSsh(device, cmdToKill);
+	    processId = CommonMethods.getPidOfProcess(device, tapEnv, cmdToKill);
+	    status = CommonMethods.isNull(processId);
+	}
+	LOGGER.debug("Ending Method : killAndVerifyProcess()");
+	return status;
+    }
+
+    /**
+     * Method to set Maintenance Window without offset time
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param maintenanceWindowIterval
+     *            Maintenance Window to be set
+     * @return true if given Maintenance Window is set successfully
+     * @refactor Govardhan
+     */
+    public static BroadBandResultObject setCustomMaintenanceWindow(Dut device, AutomaticsTapApi tapEnv,
+	    String maintenanceWindowIterval) {
+	LOGGER.debug("STARTING METHOD : setMaintenanceWindow");
+	// Variable declaration starts
+	BroadBandResultObject result = new BroadBandResultObject();
+	boolean status = false;
+	String errorMessage = "Obtained null response for time of the day in seconds using date command";
+	String windowStartTime = null;
+	String windowEndTime = null;
+	String response = "";
+	// Variable declaration ends
+	try {
+	    response = BroadBandCommonUtils.getTimeOfDayInSeconds(device, tapEnv);
+	    LOGGER.info("Time of the day in seconds: " + response);
+	    if (CommonMethods.isNotNull(response)) {
+		windowStartTime = Long.toString(Long.parseLong(response) + BroadBandTestConstants.CONSTANT_60);
+		LOGGER.info("windowStartTime to be set: " + windowStartTime);
+		windowEndTime = Long
+			.toString(Long.parseLong(windowStartTime) + Long.parseLong(maintenanceWindowIterval));
+		LOGGER.info("windowEndTime to be set: " + windowEndTime);
+		errorMessage = "Failed to set maintenance window start time as " + windowStartTime;
+		if (BroadBandWebPaUtils.setAndVerifyParameterValuesUsingWebPaorDmcli(device, tapEnv,
+			BroadBandWebPaConstants.WEBPA_COMMAND_MAINTENANCE_WINDOW_START_TIME,
+			BroadBandTestConstants.CONSTANT_0, windowStartTime)) {
+		    errorMessage = "Failed to set maintenance window end time as " + windowEndTime;
+		    status = BroadBandWebPaUtils.setAndVerifyParameterValuesUsingWebPaorDmcli(device, tapEnv,
+			    BroadBandWebPaConstants.WEBPA_COMMAND_MAINTENANCE_WINDOW_END_TIME,
+			    BroadBandTestConstants.CONSTANT_0, windowEndTime);
+		}
+	    }
+	} catch (Exception exception) {
+	    errorMessage = errorMessage
+		    + "Exception occurred while setting maintenace window through DMCLI/Webpa. Error is -"
+		    + exception.getMessage();
+	    LOGGER.error(errorMessage);
+	}
+	LOGGER.info("Is Maintenance window set successfully " + status);
+	result.setStatus(status);
+	result.setErrorMessage(errorMessage);
+	LOGGER.debug("ENDING METHOD : setMaintenanceWindow");
+	return result;
+    }
+
+    /**
+     * Helper method to get current time of the day in seconds
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @return String containing seconds of time of the day
+     * 
+     * @author Ashwin sankara
+     * @refactor Govardhan
+     */
+    public static String getTimeOfDayInSeconds(Dut device, AutomaticsTapApi tapEnv) {
+	LOGGER.debug("Entering method: getTimeOfDayInSeconds");
+	String timeDifference = null;
+	String currentTime = null;
+	String midnightTime = null;
+	midnightTime = tapEnv.executeCommandUsingSsh(device, BroadBandCommandConstants.CMD_MIDNIGHT_EPOCH_TIME);
+	if (CommonMethods.isNotNull(midnightTime)) {
+	    currentTime = tapEnv.executeCommandUsingSsh(device, BroadBandCommandConstants.CMD_CURRENT_EPOCH_TIME);
+	    if (CommonMethods.isNotNull(currentTime)) {
+		// Subtracting midnight time from current time to get time of day in seconds
+		timeDifference = Long
+			.toString(Long.parseLong(currentTime.trim()) - Long.parseLong(midnightTime.trim()));
+		LOGGER.info("Time of day in seconds: " + timeDifference);
+	    }
+	}
+	LOGGER.debug("Exiting method: getTimeOfDayInSeconds");
+	return timeDifference;
+    }
+
+    /**
+     * Helper method to get Epoch Time in Second
+     * 
+     * @refactor Govardhan
+     */
+    public static Long getEpochTimeInSecond(AutomaticsTapApi tapEnv, Dut device) {
+	String consoleOutput = tapEnv.executeCommandUsingSsh(device, "date +%s");
+	LOGGER.debug("Epoch time console output: " + consoleOutput);
+
+	String epochInSec = parseCommandOutputForOneLinerResult(consoleOutput, "date +%s");
+
+	return Long.valueOf(Long.parseLong(epochInSec));
+    }
+
+    /**
+     * Helper method to get parse Command Output
+     * 
+     * @refactor Govardhan
+     */
+
+    public static String parseCommandOutputForOneLinerResult(String commandOutput, String executedCommand) {
+	String[] splitCommandOutputs = commandOutput.trim().split("\n");
+	String trimmedCommandOutputLine = null;
+
+	String commandResult = null;
+
+	for (String commandOutputLine : splitCommandOutputs) {
+	    trimmedCommandOutputLine = commandOutputLine.trim();
+
+	    if ((trimmedCommandOutputLine.isEmpty()) || (trimmedCommandOutputLine.contains("#"))
+		    || (trimmedCommandOutputLine.contains(executedCommand)))
+		continue;
+	    LOGGER.debug("Found a line satisfying the conditions........ : " + trimmedCommandOutputLine);
+	    commandResult = trimmedCommandOutputLine.replaceAll("#", "");
+	}
+
+	LOGGER.info(String.format("Parsed command result : %s.", new Object[] { commandResult }));
+
+	return commandResult;
+    }
+
+    /**
+     * Helper method to set Maintenance Window for given time offset, from current time, and time interval
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param offset
+     *            Time offset from current time in min
+     * @param maintenanceWindowIterval
+     *            time interval between start and end of maintenance window time. time interval should be greater than
+     *            15
+     * 
+     * @return {@link BroadBandResultObject} with status true if value is set, false if value is not set
+     * @author Praveenkumar Paneerselvam
+     * @refactor Govardhan
+     */
+    public static BroadBandResultObject setMaintenanceWindowWithGivenDetail(Dut device, AutomaticsTapApi tapEnv,
+	    long offsetInterval, long maintenanceWindowIterval) {
+	BroadBandResultObject result = new BroadBandResultObject();
+	LOGGER.debug("STARTING METHOD : setMaintenanceWindowWithGivenDetail");
+	boolean status = false;
+	String errorMessage = null;
+	try {
+
+	    String offset = DmcliUtils.getParameterValueUsingDmcliCommand(device, tapEnv,
+		    BroadBandWebPaConstants.WEBPA_PARAM_TIME_OFFSET);
+	    long currentTime = getEpochTimeInSecond(tapEnv, device);
+	    errorMessage = "Failed to get offset time from parameter "
+		    + BroadBandWebPaConstants.WEBPA_PARAM_TIME_OFFSET;
+	    Long dayStartTime = getEpochDateStartTime(device, tapEnv);
+	    if (CommonMethods.isNotNull(offset)) {
+		Long offsetTime = Long.parseLong(offset.trim());
+		Long startTime = currentTime - dayStartTime + offsetInterval * 60 + offsetTime;
+		errorMessage = "Failed to set Maintenace window start time using tr-181 paramter "
+			+ BroadBandWebPaConstants.WEBPA_COMMAND_MAINTENANCE_WINDOW_START_TIME;
+
+		if (DmcliUtils.setParameterValueUsingDmcliCommand(device, tapEnv,
+			BroadBandWebPaConstants.WEBPA_COMMAND_MAINTENANCE_WINDOW_START_TIME,
+			BroadBandTestConstants.DMCLI_SUFFIX_TO_SET_STRING_PARAMETER, startTime.toString())) {
+		    errorMessage = "Failed to set Maintenace window end time using tr-181 paramter "
+			    + BroadBandWebPaConstants.WEBPA_COMMAND_MAINTENANCE_WINDOW_END_TIME;
+		    Long endTime = startTime + maintenanceWindowIterval * 60;
+		    status = DmcliUtils.setParameterValueUsingDmcliCommand(device, tapEnv,
+			    BroadBandWebPaConstants.WEBPA_COMMAND_MAINTENANCE_WINDOW_END_TIME,
+			    BroadBandTestConstants.DMCLI_SUFFIX_TO_SET_STRING_PARAMETER, endTime.toString());
+		    LOGGER.info("Value to be set for start time and end time are " + startTime + " and " + endTime);
+		}
+	    }
+	} catch (Exception exception) {
+	    errorMessage = "Exception occurred while setting maintenace window through DMCLI/Webpa. Error is -"
+		    + exception.getMessage();
+	    LOGGER.error(errorMessage);
+	}
+	LOGGER.info("Is Maintenance window set successfully " + status);
+	result.setStatus(status);
+	result.setErrorMessage(errorMessage);
+	LOGGER.debug("ENDING METHOD : setMaintenanceWindowWithGivenDetail");
+	return result;
+    }
+
+    /**
+     * Helper method to get epoch date start time
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @return epoch date start time
+     * @author Praveenkumar Paneerselvam
+     * @refactor Govardhan
+     */
+    public static Long getEpochDateStartTime(Dut device, AutomaticsTapApi tapEnv) {
+	String consoleOutput = tapEnv.executeCommandUsingSsh(device, "date -d '00:00:00' '+%s'");
+	LOGGER.debug("Epoch time console output: " + consoleOutput);
+
+	String epochInSec = parseCommandOutputForOneLinerResult(consoleOutput, RDKBTestConstants.CMD_EPOCH_TIME);
+
+	return Long.parseLong(epochInSec);
+    }
+
+    /**
+     * Method to parse Json input array of Webpa name and value
+     * 
+     * @param jsonInput
+     *            String Json Input to parse
+     * @return Map with name and value
+     */
+    public static Map<String, String> getJsonDataFromJsonArrayInMap(String jsonInput) {
+	LOGGER.debug("STARTING  getJsonDataFromJsonArrayInMap()");
+	Map<String, String> jsonMap = null;
+
+	JSONArray jsonArray;
+	JSONObject object;
+	try {
+	    jsonArray = new JSONArray(jsonInput);
+	    jsonMap = new HashMap<String, String>();
+	    for (int count = 0; count < jsonArray.length(); count++) {
+		object = (JSONObject) jsonArray.get(count);
+		jsonMap.put(object.get("name").toString(), object.get("value").toString());
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Unable to parse given Json input array");
+	}
+	LOGGER.debug("ENDING getJsonDataFromJsonArrayInMap()");
+	return jsonMap;
+    }
+
+    /**
+     * Utils method compare SNMP and WebPA output
+     * 
+     * @param tapEnv
+     * @param device
+     * @param oid
+     * @param tableIndex
+     * @param webPaParam
+     * @return
+     */
+    public BroadBandResultObject compareValueFromSnmpAndWebPa(AutomaticsTapApi tapEnv, Dut device, String oid,
+	    String tableIndex, String webPaParam) {
+
+	BroadBandResultObject result = new BroadBandResultObject();
+	String errorMessage = "";
+	String snmpOutput = "";
+	String webPaOutput = "";
+	boolean status = false;
+
+	try {
+	    snmpOutput = BroadBandSnmpUtils.snmpGetOnEcm(tapEnv, device, oid, tableIndex);
+	    LOGGER.info("Value retrieved from SNMP : " + snmpOutput);
+	    errorMessage = "Unable to retrieve value from SNMP using OID : " + oid;
+	    if (CommonMethods.isNotNull(snmpOutput)) {
+		webPaOutput = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv, webPaParam
+			.replace(BroadBandTestConstants.TR181_NODE_REF, BroadBandTestConstants.STRING_CONSTANT_1));
+		snmpOutput = convertOutputCorrespondingToWebPAParam(webPaParam, snmpOutput, webPaOutput);
+		LOGGER.info("Value retrieved from WEBPA/DMCLI : " + webPaOutput);
+		errorMessage = "Unable to retrieve value from WEBPA/DMCLI using param : " + webPaParam;
+		if (CommonMethods.isNotNull(webPaOutput)) {
+		    errorMessage = "Value retrieved from SNMP and WEBPA/DMCLI do not match. Value from SNMP : "
+			    + snmpOutput + "; value from WEBPA/DMCLI : " + webPaOutput;
+		    status = CommonUtils.patternSearchFromTargetString(webPaOutput, snmpOutput);
+		}
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while retrieving and comapring values from SNMP and WEBPA/DMCLI : "
+		    + e.getMessage());
+	}
+
+	result.setStatus(status);
+	result.setOutput(snmpOutput);
+	result.setErrorMessage(errorMessage);
+
+	return result;
+    }
+
+    /**
+     * Utils method to convert output corresponding to WEBPA Param
+     * 
+     * @param webPaParam
+     * @param snmpOutput
+     * @return
+     */
+    public String convertOutputCorrespondingToWebPAParam(String webPaParam, String snmpOutput, String webPaOutput) {
+	String convertedOutput = "";
+	try {
+	    switch (webPaParam) {
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DOWNSTREAM_CHANNEL_FREQUENCY:
+		convertedOutput = CommonUtils.patternSearchFromTargetString(webPaOutput, "MHz")
+			? String.valueOf(new BigInteger(snmpOutput).divide(new BigInteger("1000000")))
+			: snmpOutput;
+		break;
+	    case BroadBandWebPaConstants.WEBPA_PARAM_UPSTREAM_CHANNEL_POWERLEVEL:
+	    case BroadBandWebPaConstants.WEBPA_PARAM_DOWNSTREAM_CHANNEL_SNRLEVEL:
+		convertedOutput = String.valueOf(Integer.parseInt(snmpOutput) / BroadBandTestConstants.CONSTANT_10);
+		break;
+	    default:
+		convertedOutput = snmpOutput;
+		break;
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while converting the output corresponding to WEBPA : " + e.getMessage());
+	}
+	LOGGER.info("Converted Output : " + convertedOutput);
+	return convertedOutput;
+    }
+
+    /**
+     * Helper method to find the feature availability in build
+     * 
+     * @param device
+     * @param BuildFromStbProp
+     * @return status
+     * 
+     * @author ArunKumar Jayachandran
+     */
+    public static boolean verifyFeatureAvailabilityInBuild(AutomaticsTapApi tapEnv, Dut device,
+	    String BuildFromStbProp) {
+	LOGGER.debug("Starting of Method: verifyFeatureAvailabilityInBuild");
+	String imageName = null;
+	boolean status = false;
+	imageName = FirmwareDownloadUtils.getCurrentFirmwareFileNameForCdl(tapEnv, device);
+	if (CommonMethods.isNotNull(imageName)) {
+	    if (BuildFromStbProp.equalsIgnoreCase(BroadBandTestConstants.BUILD_TYPE_SPRINT)) {
+		status = CommonUtils.isGivenStringAvailableInCommandOutput(imageName,
+			BroadBandTestConstants.BUILD_TYPE_SPRINT);
+	    } else if (BuildFromStbProp.equalsIgnoreCase(BroadBandTestConstants.BUILD_TYPE_STABLE)) {
+		status = CommonUtils.isGivenStringAvailableInCommandOutput(imageName,
+			BroadBandTestConstants.BUILD_TYPE_SPRINT)
+			|| CommonUtils.isGivenStringAvailableInCommandOutput(imageName,
+				BroadBandTestConstants.BUILD_TYPE_STABLE);
+	    } else if (BuildFromStbProp.equalsIgnoreCase(BroadBandTestConstants.BUILD_TYPE_RELEASE)) {
+		status = true;
+	    }
+	}
+	LOGGER.debug("Ending of Method: verifyFeatureAvailabilityInBuild");
+	return status;
+    }
+
+    /**
+     * Utility method to verify given directory exists in the ARM Console.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param completeFolderPath
+     *            String representing the complete path of the file.
+     * @param pollDuration
+     *            Maximum poll duration
+     * @param pollInterval
+     *            Polling interval time
+     * @param isAvailable
+     *            True or False value to verify
+     * 
+     * @return Object representing the BroadBandResultObject with status & message.
+     * 
+     * @author Anuvarshini Manickavasagam Arulnambi
+     * @refactor Said Hisham
+     */
+    public static BroadBandResultObject doesDirectoryExistInArmConsole(Dut device, AutomaticsTapApi tapEnv,
+	    String completeFolderPath, long pollDuration, long pollInterval, String isAvailable) {
+	LOGGER.debug("STARTING METHOD doesDirectoryExistInArmConsole");
+	// Variable declaration starts
+	boolean result = false;
+	long startTime = System.currentTimeMillis();
+	String response = null;
+	// Variable declaration ends
+	do {
+	    tapEnv.waitTill(pollInterval);
+
+	    response = tapEnv.executeCommandUsingSsh(device,
+		    "if [ -d " + completeFolderPath + " ] ; then echo \"true\" ; else echo \"false\" ; fi");
+	    LOGGER.info("COMMAND EXECUTION RESPONSE: " + response);
+	    if (CommonMethods.isNotNull(response)
+		    && !response.contains(BroadBandTestConstants.NO_SUCH_FILE_OR_DIRECTORY)) {
+		result = response.trim().equalsIgnoreCase(isAvailable);
+	    }
+	    if (result) {
+		break;
+	    }
+	} while ((System.currentTimeMillis() - startTime) < pollDuration && !result);
+	String errorMessage = result ? BroadBandTestConstants.EMPTY_STRING
+		: "FOLDER " + completeFolderPath + " IS NOT PRESENT IN DEVICE.";
+	LOGGER.info("IS FOLDER " + completeFolderPath + " PRESENT IN DEVICE: " + result);
+	BroadBandResultObject objResult = new BroadBandResultObject();
+	objResult.setStatus(result);
+	objResult.setErrorMessage(errorMessage);
+	LOGGER.debug("ENDING METHOD doesDirectoryExistInArmConsole");
+	return objResult;
+    }
+
+    /**
+     * Utility method to verify given directory exists in the ARM Console.
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param command
+     *            Command to be executed
+     * @param refSize
+     *            Reference size to check greater or less than actual size
+     * 
+     * @return status
+     * 
+     * @author Anuvarshini Manickavasagam Arulnambi
+     * @refactor Said Hisham
+     */
+    public static boolean verifyDirectorySizeInArmConsole(Dut device, AutomaticsTapApi tapEnv, String command,
+	    double refSize) {
+	LOGGER.debug("STARTING METHOD: verifyDirectorySizeInArmConsole()");
+	// Variable declaration starts
+	String response = null;
+	boolean status = false;
+	double sizeInMB = 0;
+	// Variable declaration ends
+	try {
+	    response = tapEnv.executeCommandUsingSsh(device, command);
+	    LOGGER.info("The value is " + response);
+	    if (CommonMethods.isNotNull(response) && CommonUtils.isGivenStringAvailableInCommandOutput(response,
+		    BroadBandTestConstants.VALUE_FOR_KB)) {
+		LOGGER.info("cpuprocanalyzer size is less than " + refSize + "MB");
+		status = true;
+	    } else if (CommonMethods.isNotNull(response) && CommonUtils.isGivenStringAvailableInCommandOutput(response,
+		    BroadBandTestConstants.VALUE_FOR_MB)) {
+		response = response.substring(BroadBandTestConstants.CONSTANT_0,
+			response.length() - BroadBandTestConstants.CONSTANT_1);
+		LOGGER.info("sizeM is-" + response);
+		sizeInMB = Double.parseDouble(response);
+		LOGGER.info("sizeInMB is-" + sizeInMB);
+		if (sizeInMB > refSize) {
+		    status = false;
+		} else {
+		    status = true;
+		}
+	    }
+	    LOGGER.info("sizeInLimit- " + status);
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while getting detail in verifyDirectorySizeInArmConsole()");
+	}
+	LOGGER.debug("ENDING METHOD: verifyDirectorySizeInArmConsole()");
+	return status;
+    }
+
+    /**
+     * Method to check whether list of patterns or messages are present in file
+     * 
+     * @param messageList
+     *            contains pattern or message list to be checked in file
+     * @param fileName
+     *            contains name of file to be checked
+     * @param device
+     *            instance of {@link Dut}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param checkType
+     *            boolean value containing whether to check for presence or absence of messages
+     * 
+     * @author Ashwin Sankarasubramanian
+     * @refactor Said Hisham
+     * 
+     */
+    public static ResultValues checkFileForPatterns(Dut device, AutomaticsTapApi tapApi, List<String> messageList,
+	    String fileName, boolean checkType) {
+	LOGGER.debug("ENTERING METHOD checkFileForPattern");
+	ResultValues result = new ResultValues();
+	result.setResult(false);
+	if (CommonUtils.isFileExists(device, tapApi, fileName)) {
+	    for (String pattern : messageList) {
+		String response = searchLogFiles(tapApi, device, pattern, fileName);
+		result.setResult(CommonMethods.isNotNull(response));
+		LOGGER.info("Search result: " + result.isResult());
+		// Pass case: When pattern is expected and it's present, or when
+		// pattern is not expected and it's absent
+		if (checkType == result.isResult()) {
+		    // Inverting result for pass case when result is false
+		    result.setResult(true);
+		} else {
+		    // Inverting result for fail case when result is true
+		    result.setResult(false);
+		    result.setMessage("Expected pattern match not found: " + pattern);
+		    break;
+		}
+	    }
+	} else {
+	    result.setMessage(AutomaticsConstants.NO_SUCH_FILE_OR_DIRECTORY);
+	}
+	LOGGER.info("Final result: " + result.isResult());
+	LOGGER.debug("EXITING METHOD checkFileForPattern");
+	return result;
+    }
+
+    /**
+     * Method to kill the process and verify using ps | grep command
+     * 
+     * @param device
+     *            {@link device}
+     * @param tapEnv
+     *            {@link tapEnv}
+     * @param processName
+     *            process name to kill
+     * @param patternForPid
+     *            pattern to get the pid from ps command
+     * @author ArunKumar Jayachandran
+     * @refactor Rakesh C N
+     */
+    public static boolean killProcessAndVerify(Dut device, AutomaticsTapApi tapEnv, String processName,
+	    String patternForPid) {
+	LOGGER.debug("STARTING METHOD: killProcessAndVerify()");
+	String response = null;
+	String pid = null;
+	boolean status = false;
+	// execute the command ps | grep <process name>
+	response = tapEnv.executeCommandUsingSsh(device,
+		BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_PS_GREP, processName,
+			BroadBandCommandConstants.CMD_TO_GREP_ONLY_PROCESS));
+	if (CommonMethods.isNotNull(response)) {
+	    // Get the process id using regex pattern (\\d+)
+	    pid = CommonMethods.patternFinder(response, patternForPid);
+	    // Kill the process using kill -9 <pid>
+	    if (CommonMethods.isNotNull(pid)) {
+		LOGGER.info("Process Id for " + processName + " is: " + pid);
+		tapEnv.executeCommandUsingSsh(device,
+			BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.KILL_9, pid));
+	    } else {
+		LOGGER.error("Getting empty process id from ps | grep " + processName + " command");
+	    }
+	} else {
+	    LOGGER.error("There is no process running for " + processName + " & response for \"ps | grep " + processName
+		    + "\" command output:" + response);
+	}
+	// verify the process is killed properly
+	if (CommonMethods.isNotNull(pid)) {
+	    response = tapEnv.executeCommandUsingSsh(device, BroadBandCommonUtils
+		    .concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_PS_GREP, processName));
+	    status = CommonMethods.isNotNull(response)
+		    && !CommonUtils.isGivenStringAvailableInCommandOutput(response, pid);
+	    LOGGER.info((status ? "Successfully killed the process" : "Failed to kill the process"));
+	}
+	LOGGER.debug("ENDING METHOD: killProcessAndVerify()");
+	return status;
+    }
+
+    /**
+     * Helper method to get partner value for web UI validation
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @return the true if AtomSyncUp uptime is greater than 20 mis
+     * @author Govardhan
+     */
+    public static boolean getAtomSyncUptimeStatus(Dut device, AutomaticsTapApi tapEnv) {
+	LOGGER.debug("Starting of Method: getAtomSyncUptimeStatus");
+	String response = null;
+	int uptimeInMin = 0;
+	boolean status = false;
+	long startTime = System.currentTimeMillis();
+	String errorMessage = null;
+	try {
+
+	    do {
+		errorMessage = "Webpa process is not up";
+		response = tapEnv.executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_UPTIME);
+		LOGGER.info("Device uptime " + response);
+		status = CommonMethods.isNotNull(response);
+		if (status) {
+		    errorMessage = "Device uptime is not greater than 20 mins";
+		    status = false;
+		    uptimeInMin = Integer.parseInt(response) / BroadBandTestConstants.CONSTANT_60;
+		    if (!(uptimeInMin >= BroadBandTestConstants.CONSTANT_20)) {
+			BroadBandCommonUtils.hasWaitForDuration(tapEnv,
+				(BroadBandTestConstants.CONSTANT_20 - uptimeInMin) * 60000);
+
+			uptimeInMin = Integer.parseInt(
+				tapEnv.executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_UPTIME))
+				/ BroadBandTestConstants.CONSTANT_60;
+			if (uptimeInMin >= BroadBandTestConstants.CONSTANT_20) {
+			    status = true;
+			    LOGGER.info("Device uptime is greater than 20 mins " + status);
+			}
+		    } else {
+			status = true;
+			LOGGER.info("Device uptime is greater than 20 mins " + status);
+		    }
+		}
+	    } while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS
+		    && !status);
+	    if (!status) {
+		throw new TestException(
+			"Exception occured : Webpa process is not up/ Device uptime is not greater than 20 mins "
+				+ errorMessage);
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while retrieving partner value " + e.getMessage());
+	}
+	LOGGER.debug("Ending of Method: getAtomSyncUptimeStatus");
+	return status;
+    }
+
+    /**
+     * Utility method to validate whether device is in bridge-static mode or not using WebPA command.
+     * 
+     * @param device
+     *            The device to be validated.
+     * @return true if device is in bridge-static mode else false.
+     * @Refactor Sruthi Santhosh
+     */
+    public static boolean verifyDeviceInBridgeStaticModeStatusUsingWebPaCommand(AutomaticsTapApi automaticsTapApi,
+	    Dut device) {
+	LOGGER.debug("STARTING METHOD: verifyDeviceInBridgeStaticModeStatusUsingWebPaCommand()");
+
+	// status
+	boolean isBridgeMode = false;
+
+	String response = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, automaticsTapApi,
+		BroadBandWebPaConstants.WEBPA_PARAM_BRIDGE_MODE_STATUS);
+
+	if (CommonMethods.isNotNull(response)) {
+	    isBridgeMode = response.contains(BroadBandTestConstants.LAN_MANAGEMENT_MODE_BRIDGE_STATIC);
+	} else {
+	    LOGGER.error(
+		    "Null response obtained for web pa get on parameter Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanMode");
+	    throw new TestException(
+		    "Null response obtained for web pa get on parameter Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanMode");
+	}
+	LOGGER.debug("ENDING METHOD: verifyDeviceInBridgeStaticModeStatusUsingWebPaCommand()");
+	return isBridgeMode;
+    }
+
+    /**
+     * Utility method to validate whether device is bridge mode or not using WebPA command.
+     * 
+     * @param device
+     *            The device to be validated.
+     * @return true if device is in router mode, false if device is in bridge mode.
+     * @Refactor Sruthi Santhosh
+     */
+    public static boolean verifyDeviceInRouterModeStatusUsingWebPaCommand(AutomaticsTapApi tapEnv, Dut device) {
+
+	LOGGER.debug("STARTING METHOD: verifyDeviceInRouterModeStatusUsingWebPaCommand()");
+
+	boolean routerMode = false;
+
+	String response = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+		BroadBandWebPaConstants.WEBPA_PARAM_BRIDGE_MODE_STATUS);
+
+	if (CommonMethods.isNotNull(response)) {
+	    routerMode = response.contains(BroadBandTestConstants.LAN_MANAGEMENT_MODE_ROUTER);
+	} else {
+	    LOGGER.error(
+		    "Null response obtained for web pa get on parameter Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanMode");
+	    throw new TestException(
+		    "Null response obtained for web pa get on parameter Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanMode");
+	}
+
+	LOGGER.debug("ENDING METHOD: verifyDeviceInRouterModeStatusUsingWebPaCommand()");
+	return routerMode;
+    }
+
+    /**
+     * Utility Method to compare the Comma separated values; the values are converted to Array & then to ArrayList and
+     * then compared against each other.
+     * 
+     * @param expectedValue
+     *            String representing the Expected Value
+     * @param actualValue
+     *            String representing the Actual Value
+     * 
+     * @return Boolean representing the result of the validation.
+     * @refactor said.h
+     */
+    public static boolean compareCommaSeparateValues(String expectedValue, String actualValue) {
+	LOGGER.debug("ENTERING METHOD compareCommaSeparateValues");
+	boolean result = false;
+	List<String> expectedValues = null;
+	List<String> actualValues = null;
+	// Create the List from the Comma separated String
+	if (CommonMethods.isNotNull(expectedValue) && CommonMethods.isNotNull(actualValue)) {
+	    expectedValues = new ArrayList<String>(Arrays.asList(expectedValue.split(AutomaticsConstants.COMMA)));
+	    actualValues = new ArrayList<String>(Arrays.asList(actualValue.split(AutomaticsConstants.COMMA)));
+	}
+	// Compare the Lists
+	if (null != expectedValues && null != actualValues && expectedValues.size() > 0 && actualValues.size() > 0) {
+	    result = expectedValues.containsAll(actualValues) && actualValues.containsAll(expectedValues);
+	}
+	LOGGER.info("COMPARED THE COMMA SEPARATED VALUES: EXPECTED = " + expectedValue + " | ACTUAL = " + actualValue
+		+ " | RESULT = " + result);
+	LOGGER.debug("ENDING METHOD compareCommaSeparateValues");
+	return result;
+
+    }
+
+    /**
+     * method to check the device type and return the value
+     * 
+     * @param device
+     * @param value1
+     *            expected value for Atom and DSL device
+     * @param value2
+     *            expected value for a specific arm based device
+     * @return expectedValue return expected value based on the device type
+     * @author ArunKumar Jayachandran
+     * @refactor said hisham
+     */
+    public static String getTxRateExpctdValForDeviceType(Dut device, String value1, String value2) {
+	LOGGER.debug("STARTING METHOD : getTxRateExpctdValForDeviceType()");
+	String expectedValue = null;
+	if (CommonMethods.isAtomSyncAvailable(device, AutomaticsTapApi.getInstance())
+		|| DeviceModeHandler.isDSLDevice(device)) {
+	    expectedValue = value1;
+	} else
+	    expectedValue = value2;
+	LOGGER.debug("ENDING METHOD :getTxRateExpctdValForDeviceType()");
+	return expectedValue;
+    }
+
+    /**
+     * Utility method to perform Factory Reset on the device using WebPA by providing max polling duration taken to
+     * trigger factory reset & then wait for the device to come up.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param factoryResetTiggerTime
+     *            max polling duration taken to trigger factory reset
+     * @return Boolean representing the result of the Factory Reset Operation.
+     */
+    public static boolean performFactoryResetWebPaByPassingTriggerTime(AutomaticsTapApi tapEnv, Dut device,
+	    long factoryResetTiggerTime) {
+	LOGGER.debug("ENTERING METHOD : performFactoryResetWebPaByPassingTriggerTime");
+	// boolean variable to store the status
+	boolean result = false;
+	result = BroadBandWiFiUtils.setWebPaParams(device, WebPaParamConstants.WEBPA_PARAM_FACTORY_RESET,
+		BroadBandTestConstants.STRING_FOR_FACTORY_RESET_OF_THE_DEVICE, BroadBandTestConstants.CONSTANT_0);
+	LOGGER.info("result before : Check if the device goes down. ::" + result);
+	long startTime = 0L;
+	// Check if the device goes down.
+	if (result) {
+	    result = isRdkbDeviceAccessible(tapEnv, device, BroadBandTestConstants.ONE_MINUTE_IN_MILLIS,
+		    BroadBandTestConstants.SIX_MINUTE_IN_MILLIS, false);
+	    LOGGER.info("result after : isRdkbDeviceAccessible::" + result);
+	    LOGGER.info("IS DEVICE REBOOTING AFTER TRIGGERING FACTORY RESET : " + result);
+
+	    if (result) {
+		// r
+		CommonMethods.waitForEstbIpAcquisition(tapEnv, device);
+
+		startTime = System.currentTimeMillis();
+		do {
+		    result = CommonMethods.isSTBAccessible(device);
+		    if (result) {
+			break;
+		    }
+		    LOGGER.info("DEVICE IS NOT UP AFTER FACTORY RESET. GOING TO WAIT FOR 1 MINUTE AND CHECK AGAIN.");
+		    tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+		} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIFTEEN_MINUTES_IN_MILLIS
+			&& !result);
+		LOGGER.info("IS DEVICE COMES UP AFTER FACTORY RESET : " + result);
+	    }
+	} else {
+	    LOGGER.info("Webpa execution failed for performing factory reset ");
+	}
+
+	LOGGER.debug("ENDING METHOD : performFactoryResetWebPaByPassingTriggerTime");
+	return result;
+    }
+
+    /**
+     * Helper method to get the process id for dibbler client
+     * 
+     * @param device
+     * @param tapEnv
+     * @return pid
+     * 
+     * @author ArunKumar Jayachandran
+     * @refactor Said Hisham
+     */
+    public static String getProcessIdForDibblerClient(Dut device, AutomaticsTapApi tapEnv) {
+	LOGGER.debug("STARTING METHOD: getProcessIdForDibblerClient");
+	String response = null;
+	String pid = null;
+	tapEnv.executeCommandUsingSsh(device, BroadBandCommonUtils.concatStringUsingStringBuffer(
+		BroadBandCommandConstants.CMD_DIBBLER_CLIENT, BroadBandTestConstants.STRING_START));
+	tapEnv.waitTill(BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+	response = tapEnv.executeCommandUsingSsh(device, BroadBandCommonUtils.concatStringUsingStringBuffer(
+		BroadBandCommandConstants.CMD_DIBBLER_CLIENT, BroadBandTestConstants.STATUS));
+	if (CommonMethods.isNotNull(response)) {
+	    if (!CommonUtils.isGivenStringAvailableInCommandOutput(response,
+		    BroadBandTraceConstants.LOG_MESSAGE_DIBBLER_CLIENT_PID)) {
+		tapEnv.executeCommandUsingSsh(device, BroadBandCommonUtils.concatStringUsingStringBuffer(
+			BroadBandCommandConstants.CMD_DIBBLER_CLIENT, BroadBandTestConstants.STRING_START));
+		tapEnv.waitTill(BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+		response = tapEnv.executeCommandUsingSsh(device, BroadBandCommonUtils.concatStringUsingStringBuffer(
+			BroadBandCommandConstants.CMD_DIBBLER_CLIENT, BroadBandTestConstants.STATUS));
+	    }
+	    pid = CommonMethods.patternFinder(response, BroadBandTestConstants.PATTERN_TO_GET_PID_DIBBLER_CLIENT);
+	}
+	LOGGER.info("Dibbler client process id is: " + pid);
+	LOGGER.debug("ENDING METHOD: getProcessIdForDibblerClient");
+	return pid;
+    }
+
+    /**
+     * Helper method to get the peer interface name for Multi core devices
+     * 
+     * @param device
+     * @param tapEnv
+     * 
+     * @return peerInterface
+     * 
+     * @author ArunKumar Jayachandran
+     * @refactor Said Hisham
+     */
+    public static String getPeerInterfaceNameForMultiCoreDevice(Dut device, AutomaticsTapApi tapEnv) {
+	LOGGER.debug("STARTING METHOD: getPeerInterfaceNameForMultiCoreDevice");
+	String response = null;
+	String peerIp = null;
+	String peerInterface = null;
+	response = BroadBandCommonUtils.searchLogFiles(tapEnv, device, BroadBandTraceConstants.LOG_MESSAGE_PEER_INT_IP,
+		BroadBandCommandConstants.FILE_DEVICE_PROPERTIES);
+	if (CommonMethods.isNotNull(response)) {
+	    peerIp = CommonMethods.patternFinder(response, BroadBandTestConstants.PATTERN_TO_GET_THREE_OCTAT_IPV4);
+	    if (CommonMethods.isNotNull(peerIp)) {
+		response = tapEnv.executeCommandUsingSsh(device, BroadBandCommonUtils
+			.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_IFNAME_USING_IFCONFIG, peerIp));
+		if (CommonMethods.isNotNull(response)) {
+		    peerInterface = CommonMethods.patternFinder(response,
+			    BroadBandTestConstants.PATTERN_TO_GET_INTERFACE_NAME);
+		}
+	    }
+	}
+	LOGGER.info("Peer interface name: " + peerInterface);
+	LOGGER.debug("ENDING METHOD: getPeerInterfaceNameForMultiCoreDevice");
+	return peerInterface;
+    }
+    
+    /**
+     * Method to generate ip rules and save them to a particular location
+     * 
+     * @param device
+     *            instance of {@link Dut}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param locationForIpv4Table
+     *            -- location to store the ipv4 rules
+     * @param locationForIpv6Table
+     *            -- location to store the ipv6 rules
+     * 
+     * @author revanth.k
+     * @refactor Athira
+     */
+
+    public static boolean dumpIpTablesToGivenLocation(Dut device, AutomaticsTapApi tapEnv, String locationForIpv4Table,
+	    String locationForIpv6Table) {
+	LOGGER.debug("STARTING METHOD: dumpIpTablesToGivenLocation");
+	String[] commandList = new String[2];
+	String commandToListIpv4TableList = null;
+	String commandToListIpv6TableList = null;
+	String response = null;
+	String errorMessage = null;
+	boolean statusForIpv4Table = false;
+	boolean statusForIpv6Table = false;
+
+	commandList[0] = BroadBandCommonUtils
+		.concatStringUsingStringBuffer(BroadBandTestConstants.COMMAND_TO_SAVE_IPV4_TABLE_RULES
+			+ RDKBTestConstants.SINGLE_SPACE_CHARACTER + BroadBandTestConstants.CHR_CLOSING_ANGLE_BRACKET
+			+ RDKBTestConstants.SINGLE_SPACE_CHARACTER + locationForIpv4Table);
+
+	commandList[1] = BroadBandCommonUtils
+		.concatStringUsingStringBuffer(BroadBandTestConstants.COMMAND_TO_SAVE_IPV6_TABLE_RULES
+			+ RDKBTestConstants.SINGLE_SPACE_CHARACTER + BroadBandTestConstants.CHR_CLOSING_ANGLE_BRACKET
+			+ RDKBTestConstants.SINGLE_SPACE_CHARACTER + locationForIpv6Table);
+
+	tapEnv.executeCommandUsingSsh(device, commandList);
+
+	commandToListIpv4TableList = BroadBandCommonUtils.concatStringUsingStringBuffer(
+			LinuxCommandConstants.CMD_LIST_FOLDER_FILES, RDKBTestConstants.SINGLE_SPACE_CHARACTER, locationForIpv4Table);
+	commandToListIpv6TableList = BroadBandCommonUtils.concatStringUsingStringBuffer(
+		LinuxCommandConstants.CMD_LIST_FOLDER_FILES, RDKBTestConstants.SINGLE_SPACE_CHARACTER, locationForIpv6Table);
+	response = tapEnv.executeCommandUsingSsh(device, commandToListIpv4TableList);
+
+	LOGGER.info("Response for listing ipv4 table rules text file is -" + response);
+
+	response = tapEnv.executeCommandUsingSsh(device, commandToListIpv4TableList);
+	if (CommonMethods.isNotNull(response) && !response.contains(RDKBTestConstants.NO_SUCH_FILE_OR_DIRECTORY)
+		&& CommonMethods.patternMatcher(response.trim(), locationForIpv4Table)) {
+	    statusForIpv4Table = true;
+	} else {
+	    errorMessage += "Failed to save ipv4 table rules in location -" + locationForIpv4Table;
+	}
+	response = tapEnv.executeCommandUsingSsh(device, commandToListIpv6TableList);
+	if (CommonMethods.isNotNull(response) && !response.contains(RDKBTestConstants.NO_SUCH_FILE_OR_DIRECTORY)
+		&& CommonMethods.patternMatcher(response.trim(), locationForIpv6Table)) {
+	    statusForIpv6Table = true;
+	} else {
+	    errorMessage += "Failed to save ipv6 table rules in location -" + locationForIpv6Table;
+	}
+	if (!(statusForIpv4Table && statusForIpv6Table)) {
+	    LOGGER.error(errorMessage);
+	    throw new TestException(errorMessage);
+	}
+	LOGGER.debug("ENDING METHOD: dumpIpTablesToGivenLocation");
+	return statusForIpv4Table && statusForIpv6Table;
+    }
+    
+    /**
+     * Method to validate braln0 configuration..It executes "/sbin/ifconfig brlan0" and checks for the ip address fields
+     * in the reponse
+     * 
+     * @param device
+     *            instance of {@link Settop}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @return boolean true if the brlan0 configuration has both ipv4 and ipv6 addresses
+     */
+    public static boolean validateBrlan0Configuration(Dut device, AutomaticsTapApi tapEnv) {
+	LOGGER.debug("STARTING METHOD : validateBrlan0Configuration");
+	String response = null;
+	boolean statusForInet4 = false;
+	boolean statusForInet6 = false;
+	String errorMessage = "Failed to validate brlan0 configuration";
+	response = tapEnv.executeCommandUsingSsh(device, BroadBandTestConstants.IFCONFIG_BRLAN);
+
+	if (CommonMethods.isNotNull(response)) {
+	    if ((CommonMethods.patternMatcher(response, BroadBandTestConstants.INET_V4_ADDRESS_PATTERN))) {
+		statusForInet4 = true;
+	    }
+
+	    if ((CommonMethods.patternMatcher(response, BroadBandTestConstants.INET_V6_ADDRESS_PATTERN))) {
+		statusForInet6 = true;
+	    }
+	} else {
+	    errorMessage += "Null response obtained for brlan0 configuration using command /sbin/ifconfig brlan0";
+	    LOGGER.error(errorMessage);
+	    throw new TestException(errorMessage);
+	}
+	LOGGER.debug("ENDING METHOD :validateBrlan0Configuration");
+	return statusForInet4 && statusForInet6;
+    }
+    
+    /**
+     * 
+     * Method to read iptable rules stored in particular location in Device and validate them with the current rules
+     * 
+     * @param device
+     *            instance of {@link Dut}
+     * @param automaticsTapApi
+     *            instance of {@link AutomaticsTapApi}
+     * @param locationForInitialIpV4Tables
+     *            -- location where the ipv4 table rules are stored initially
+     * @param locationForInitialIpV6Tables
+     *            -- location where the ipv6 table rules are stored initially
+     * @return boolean status of validation
+     * 
+     * @author revanth.k
+     * @refactor Athira
+     */
+    public static boolean getIptableRulesAndVerify(Dut device, AutomaticsTapApi tapEnv,
+	    String locationForInitialIpV4Tables, String locationForInitialIpV6Tables) {
+
+	LOGGER.debug("STARTING METHOD : getIptableRulesAndVerify");
+	String ipv4TablesInitial = null;
+	String ipv4TablesFinal = null;
+	String ipv6TablesInitial = null;
+	String ipv6TablesFinal = null;
+	boolean statusForIpv4TablesValidation = false;
+	boolean statusForIpv6TablesValidation = false;
+	boolean status = false;
+	String errorMessage = null;
+
+	// generating current ip rules and storing in a different location
+	status = dumpIpTablesToGivenLocation(device, tapEnv,
+		BroadBandTestConstants.FILE_NAME_TO_STORE_FINAL_IPV4_TABLE_RULES,
+		BroadBandTestConstants.FILE_NAME_TO_STORE_FINAL_IPV6_TABLE_RULES);
+	if (status) {
+	    status = false;
+	    // uniq command is used to avoid repeated rules in the text file
+	    ipv4TablesInitial = tapEnv.executeCommandUsingSsh(device,
+		    BroadBandCommandConstants.COMMAND_UNIQ + locationForInitialIpV4Tables);
+	    ipv4TablesFinal = tapEnv.executeCommandUsingSsh(device, BroadBandCommandConstants.COMMAND_UNIQ
+		    + BroadBandTestConstants.FILE_NAME_TO_STORE_FINAL_IPV4_TABLE_RULES);
+	    ipv6TablesInitial = tapEnv.executeCommandUsingSsh(device,
+		    BroadBandCommandConstants.COMMAND_UNIQ + locationForInitialIpV6Tables);
+	    ipv6TablesFinal = tapEnv.executeCommandUsingSsh(device, BroadBandCommandConstants.COMMAND_UNIQ
+		    + BroadBandTestConstants.FILE_NAME_TO_STORE_FINAL_IPV6_TABLE_RULES);
+	    statusForIpv4TablesValidation = validateIpRules(ipv4TablesInitial, ipv4TablesFinal);
+	    if (!statusForIpv4TablesValidation) {
+		errorMessage += "Failed to validate ipv4 rules";
+	    }
+	    LOGGER.info("Status For validating ipv4 rules -" + statusForIpv4TablesValidation);
+	    statusForIpv6TablesValidation = validateIpRules(ipv6TablesInitial, ipv6TablesFinal);
+	    if (!statusForIpv6TablesValidation) {
+		errorMessage += "Failed to validate ipv6 rules";
+	    }
+	    LOGGER.info("Status For validating ipv6 rules -" + statusForIpv6TablesValidation);
+	    status = statusForIpv4TablesValidation && statusForIpv6TablesValidation;
+	    if (!status) {
+		throw new TestException(errorMessage);
+	    }
+	}
+	LOGGER.debug("ENDING METHOD : getIptableRulesAndVerify");
+	return status;
+    }
+    
+    /**
+     * Method to iterate through two different iptable rules passed as arguments and compare them
+     * 
+     * @param IptableInitial
+     * @param IptableFinal
+     *            --- two ip table rules which are to be compared
+     * @return boolean true if the two ip tables are identical except at logs which involve time and Rules which involve
+     *         no.of packets transferred
+     * 
+     * @author revanth.k
+     * @refactor Athira
+     */
+
+    public static boolean validateIpRules(String IptableInitial, String IptableFinal) {
+	LOGGER.debug("STARTING METHOD: validateIpRules");
+	boolean status = true;
+	// all rules which do not involve dates start with
+	Pattern pattern = Pattern.compile("(-A.*)");
+	Matcher matcherForInitialTable = pattern.matcher(IptableInitial);
+	Matcher matcherForFinalTable = pattern.matcher(IptableFinal);
+	int matchedStringCount = 1;
+	while (matcherForInitialTable.find() && matcherForFinalTable.find()) {
+
+	    LOGGER.info("in while loop " + matchedStringCount);
+	    LOGGER.info(matcherForFinalTable.group(AutomaticsConstants.CONSTANT_1));
+	    LOGGER.info(matcherForInitialTable.group(AutomaticsConstants.CONSTANT_1));
+	    if (!(matcherForFinalTable.group(AutomaticsConstants.CONSTANT_1)
+		    .equalsIgnoreCase(matcherForInitialTable.group(AutomaticsConstants.CONSTANT_1)))) {
+		status = false;
+		LOGGER.error("Mismatch found while verifying the IP rules");
+		LOGGER.error("Line number " + matchedStringCount);
+		LOGGER.error("Initial value :   " + matcherForInitialTable.group(AutomaticsConstants.CONSTANT_1));
+		LOGGER.error("Final value :   " + matcherForFinalTable.group(AutomaticsConstants.CONSTANT_1));
+		break;
+	    }
+
+	    matchedStringCount++;
+	}
+
+	LOGGER.debug("ENDING METHOD: validateIpRules");
+	return status;
+
+    }
+    
+    /**
+     * Utility method to validate whether device is in Docsis operational mode or not using WebPA command.
+     * 
+     * @param tapEnv
+     *            The {@link AutomaticsTapApi} instance.
+     * @param device
+     *            The device to be validated.
+     * @return true if device is in DOCSIS mode else false.
+     */
+    public static boolean verifyDeviceInDocsisModeStatusUsingWebPaCommand(AutomaticsTapApi tapEnv, Dut device) {
+	LOGGER.debug("STARTING METHOD: verifyDeviceInDocsisModeStatusUsingWebPaCommand()");
+
+	// status
+	boolean isDOCSISMode = false;
+
+	String response = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_OPERATIONAL_MODE);
+
+	if (CommonMethods.isNotNull(response)) {
+	    isDOCSISMode = response.contains(BroadBandTestConstants.STRING_DEVICE_OPERATIONAL_MODE_DOCSIS);
+	} else {
+	    LOGGER.error(
+		    "Null response obtained for webpa get on parameter Device.DeviceInfo.X_RDKCENTRAL-COM_EthernetWAN.CurrentOperationalMode");
+	    throw new TestException(
+		    "Null response obtained for webpa get on parameter Device.DeviceInfo.X_RDKCENTRAL-COM_EthernetWAN.CurrentOperationalMode");
+	}
+	LOGGER.debug("ENDING METHOD: verifyDeviceInDocsisModeStatusUsingWebPaCommand()");
+	return isDOCSISMode;
+    }
+    
+    /**
+     * Utility method to verify the specific partner ID is available or not
+     * 
+     * @param partnerIdToVerify
+     *            Actual partnerID retrieved from script
+     * 
+     * @return Boolean representing the result of the validation.
+     * @author Athira
+     */
+    public static boolean verifySpecificPartnerAvailability(String partnerIdToVerify) {
+	LOGGER.info("STARTING METHOD: verifySpecificPartnerAvailability");
+	boolean partnerIDExists = false;
+	String partnerID = BroadbandPropertyFileHandler.getSecificPartnerIDValues();
+	LOGGER.info("Partner id from propery file "+partnerID);
+	LOGGER.info("ACTUAL Partner id  "+partnerIdToVerify);
+
+	    if (partnerID.equalsIgnoreCase(partnerIdToVerify)) {
+		partnerIDExists = true;
+	    }
+	    LOGGER.info("Value of partnerIDExists is "+partnerIDExists);
+	LOGGER.info("ENDING METHOD: verifySpecificPartnerAvailability");
+	return partnerIDExists;
+
+    }
+    
+    /**
+     * Method to fetch self heal configuration values and verify with expected values
+     * 
+     * @param selfHealConfiguration
+     *            - Hash map with self heal parameters and its values
+     * @param selfHealParameter
+     *            - self heal params
+     * @param expectedValue
+     *            - expected value for self heal params
+     * 
+     * @return true if self heal params contains expected values
+     * 
+     * @author gnanaprakasham.s
+     * 
+     **/
+    public static boolean validateSelfHealParameterValues(HashMap<String, String> selfHealConfiguration,
+	    String selfHealParameter, String expectedValue) {
+
+	LOGGER.debug("STARTING METHOD: validateSelfHealParameterValues()");
+
+	// Variable to store command response
+	String response = null;
+	// Variable to store status
+	boolean status = false;
+	// String variable to store error message
+	String errorMessage = null;
+
+	response = selfHealConfiguration.get(selfHealParameter);
+
+	if (CommonMethods.isNotNull(response)) {
+
+	    status = response.equalsIgnoreCase(expectedValue);
+	    if (!status) {
+
+		errorMessage = "Failed to get the value for " + selfHealParameter + " as " + expectedValue
+			+ " Expected Value should be " + expectedValue + " But Actual obtained value is :" + response;
+		LOGGER.error(errorMessage);
+	    }
+	    LOGGER.info("SUCCESSFULLY OBTAINED VALUE AS " + expectedValue + " FOR " + selfHealParameter
+		    + "EXPECTED VALUE :" + expectedValue + "ACTUAL OBTAINED VALUE :" + response);
+	} else {
+
+	    errorMessage = "Obtained null response. Not able to get the value for " + selfHealParameter;
+	    throw new TestException(errorMessage);
+
+	}
+	LOGGER.debug("ENDING METHOD: validateSelfHealParameterValues()");
+	return status;
+    }
+    
+    /**
+     * Method to retrieve self heal configuration values using SNMP mib
+     * 
+     * @param device
+     *            the Dut instance to be tested
+     * @param tapEnv
+     *            The AutomaticsTapApi instance
+     * 
+     * @return hash map with self heal parameter and its values
+     * @author gnanaprakasham.s
+     * @Refactor Athira
+     */
+    public static HashMap<String, String> retrieveSelfHealparameterValues(Dut device, AutomaticsTapApi tapEnv) {
+
+	LOGGER.debug("STARTING METHOD: retrieveSelfHealparameterValues()");
+
+	// Hash map to store self heal configuration
+	HashMap<String, String> selfHealConfiguration = new HashMap<>();
+	String errorMessage = null;
+	String response = null;
+	response = BroadBandSnmpUtils.executeSnmpWalkOnRdkDevices(tapEnv, device,
+		BroadBandSnmpMib.ECM_SELF_HEAL_CONFIGURATION.getOid());
+
+	LOGGER.info("Obtained response for SNMP execution to retrieve self heal parameters : " + response);
+
+	if (CommonMethods.isNotNull(response) && !response.contains(BroadBandTestConstants.NO_SUCH_INSTANCE)
+		&& !response.contains(BroadBandTestConstants.NO_SUCH_OBJECT_AVAILABLE)) {
+
+	    LOGGER.info(" SUCCESSFULLY OBTAINED SELF HEAL CONFIGURATION DETAILS : " + response);
+	    // created hash map with self heal parameters and its values
+	    selfHealConfiguration = createMapwithSelfHealParametersAndValues(response);
+
+	} else {
+
+	    errorMessage = "Obtained null response/No such oid exists during SNMP execution for retrieving default self heal configuration ";
+	    LOGGER.error(errorMessage);
+	    // throw new TestException(errorMessage);
+	}
+	LOGGER.debug("ENDING METHOD: retrieveSelfHealparameterValues()");
+	return selfHealConfiguration;
+
+    }
+    
+    /**
+     * Method to create map with self heal parameters and its values
+     * 
+     * @param defaultSelfHealConfiguration
+     *            - Default Self heal configuration values
+     * 
+     * @return HashMap with self heal parameters with values
+     * 
+     * @author gnanaprakasham.s
+     **/
+
+    public static HashMap<String, String> createMapwithSelfHealParametersAndValues(
+	    String defaultSelfHealConfiguration) {
+
+	LOGGER.debug("STARTING METHOD: createMapwithSelfHealParametersAndValues()");
+
+	HashMap<String, String> selfHealConfiguration = new HashMap<>();
+	String pattern = ".0 = (\\d+)";
+	/** String array to hold self heal parameters */
+	String[] selfHealParameters = { AutomaticsConstants.EMPTY_STRING,
+		BroadBandTestConstants.STRING_SELF_HEAL_ENABLED_STATUS,
+		BroadBandTestConstants.STRING_NUMBER_PINGS_PER_SERVER_FOR_SELF_HEAL,
+		BroadBandTestConstants.SELF_HEAL_MINIMUM_NUMBER_OF_PING_SERVER,
+		BroadBandTestConstants.STRING_PING_INTERVAL_FOR_SELF_HEAL,
+		BroadBandTestConstants.STRING_RESET_COUNT_FOR_SELF_HEAL, AutomaticsConstants.EMPTY_STRING,
+		BroadBandTestConstants.STRING_RESOURCE_USAGE_FOR_SELF_HEAL,
+		BroadBandTestConstants.STRING_AVG_CPU_THRESHOLD_FOR_SELF_HEAL,
+		BroadBandTestConstants.STRING_AVG_MEMORY_THRESHOLD_FOR_SELF_HEAL,
+		BroadBandTestConstants.STRING_MAXIMUM_REBOOT_COUNT_FOR_SELF_HEAL,
+		BroadBandTestConstants.STRING_MAXIMUM_SUB_SYSTEM_RESET_COUNT_FOR_SELF_HEAL };
+
+	if (CommonMethods.isNotNull(defaultSelfHealConfiguration)) {
+
+	    for (int iteration = 1; iteration < selfHealParameters.length; iteration++) {
+
+		String response = CommonMethods.patternFinder(defaultSelfHealConfiguration,
+			BroadBandTestConstants.PATTERN_GET_SELF_HEAL_PArAMETER_VALUES + iteration + pattern);
+
+		if (CommonMethods.isNotNull(response)) {
+
+		    selfHealConfiguration.put(selfHealParameters[iteration], response);
+
+		}
+
+	    }
+
+	}
+	LOGGER.debug("ENDING METHOD: createMapwithSelfHealParametersAndValues()");
+	return selfHealConfiguration;
+    }
+    
+    /**
+     * helper method that executes the command in atom console if available else runs the command in arm console and
+     * returns the response
+     * 
+     * @param device
+     *            device in which command is to be executed
+     * @param tapApi
+     *            AutomaticsTapApi instance
+     * @param command
+     *            command to be executed in device
+     * @return response of the command
+     * 
+     */
+    public static String executeCommandInAtomConsoleIfAtomIsPresentElseInArm(Dut device, AutomaticsTapApi tapApi,
+	    String command) {
+
+	LOGGER.debug("STARTING METHOD: executeCommandInAtomConsoleIfAtomIsPresentElseInArm");
+	String response = null;
+	boolean isAtomSyncAvailable = CommonMethods.isAtomSyncAvailable(device, tapApi);
+	if (isAtomSyncAvailable) {
+	    response = tapApi.executeCommandOnAtom(device, command);
+	} else {
+	    response = tapApi.executeCommandUsingSsh(device, command);
+	}
+	LOGGER.debug("ENDING METHOD: executeCommandInAtomConsoleIfAtomIsPresentElseInArm");
+	return response;
+    }
+    
+    /**
+     * Method to check whether Log file is available in rdklogs/logs and tail them to Backup<Filename> in nvram in given
+     * consoletype
+     * 
+     * @param device
+     *            Dut Instance
+     * @param tapEnv
+     *            AutomaticsTapApi Instance
+     * @param mustHaveLogFileList
+     *            List of Log files to Log
+     * @param polledTime
+     *            polled duration
+     * @param maxDuration
+     *            Max Duration to poll check
+     * @param consoleType
+     *            type of console
+     * @param tailvalue
+     *            number of lines
+     * @return BroadBandResultObject
+     */
+    public static Map<String, String> verifyLogAlbltyAndTailLogToNvramInGivenConsole(Dut device,
+	    AutomaticsTapApi tapEnv, List<String> mustHaveLogFileList, String tailValue, long polledTime,
+	    long maxDuration, String consoleType) {
+	LOGGER.debug("STARTING verifyLogAlbltyAndTailLogToNvramInGivenConsole()");
+	long startTime = System.currentTimeMillis();
+	boolean result = false;
+	String errorMessage = "";
+
+	Map<String, String> mapForLogFileWithPath = new HashMap<>();
+	String pathForBackupFile;
+	try {
+	    String command = BroadBandCommandConstants.TAIL_GIVEN_LOG_FILE_WITH_PATH
+		    .replace(BroadBandTestConstants.STRING_VALUE_TO_REPLACE, tailValue);
+	    String commandToExecute;
+	    Map<String, Boolean> logFilesUpdate = new HashMap<>();
+	    for (String logFile : mustHaveLogFileList) {
+		logFilesUpdate.put(logFile, false);
+	    }
+	    List<String> missingLogFiles = mustHaveLogFileList;
+	    boolean isAtomSyncAvailable = CommonMethods.isAtomSyncAvailable(device, tapEnv);
+	    do {
+		// Identifying whether log files availble or not
+		if (consoleType.equals(BroadBandTestConstants.ARM)) {
+		    missingLogFiles = BroadBandCommonUtils.verifyMustHaveLogFilesAvailabilityinAtomOrArm(device, tapEnv,
+			    mustHaveLogFileList, false);
+		} else {
+		    missingLogFiles = BroadBandCommonUtils.verifyMustHaveLogFilesAvailabilityinAtomOrArm(device, tapEnv,
+			    mustHaveLogFileList, isAtomSyncAvailable);
+		}
+		result = missingLogFiles.isEmpty();
+		mustHaveLogFileList.removeAll(missingLogFiles);
+		if (!mustHaveLogFileList.isEmpty()) {
+		    for (String logFile : mustHaveLogFileList) {
+			pathForBackupFile = BroadBandCommandConstants.PATH_FOR_BACK_UP_FILE
+				.replace(BroadBandTestConstants.STRING_REPLACE, logFile);
+			commandToExecute = command.replace(BroadBandTestConstants.STRING_REPLACE, logFile)
+				.replace(BroadBandTestConstants.REPLACE_BACKUP_FILE, pathForBackupFile);
+			if (!logFilesUpdate.get(logFile)) {
+			    if (consoleType.equals(BroadBandTestConstants.STRING_ATOM_CONSOLE)) {
+				tapEnv.executeCommandOnAtom(device, commandToExecute);
+			    } else if (consoleType.equals(BroadBandTestConstants.ARM)) {
+				tapEnv.executeCommandUsingSsh(device, commandToExecute);
+			    } else {
+				if (isAtomSyncAvailable) {
+				    tapEnv.executeCommandOnAtom(device, commandToExecute);
+				} else {
+				    tapEnv.executeCommandUsingSsh(device, commandToExecute);
+				}
+			    }
+			    logFilesUpdate.put(logFile, true);
+			    mapForLogFileWithPath.put(logFile, pathForBackupFile);
+			}
+		    }
+		}
+		mustHaveLogFileList = missingLogFiles;
+		LOGGER.info("Successfully verified all the must have log files are present : " + result);
+	    } while (!result && ((System.currentTimeMillis() - startTime) < maxDuration)
+		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, polledTime));
+
+	    errorMessage = result ? "Successfully verified all the must have log files are present"
+		    : "Some files are missing -> " + missingLogFiles;
+
+	} catch (Exception exception) {
+	    errorMessage = "Exception occured while verifying logavailability  " + exception.getMessage();
+	    LOGGER.error(errorMessage);
+	}
+	LOGGER.info("ENDING METHOD:  verifyLogAlbltyAndTailLogToNvramInGivenConsole()");
+	return mapForLogFileWithPath;
+    }
+    
+    /**
+     * Method to delete temporary backup files
+     * 
+     * @param device
+     * @param tapEnv
+     * @param logFilesToRemove
+     * @return
+     */
+    public static boolean deleteTemporaryFilesInNvram(Dut device, AutomaticsTapApi tapEnv,
+	    List<String> logFilesToRemove) {
+	LOGGER.debug("STARTING METHOD : deleteTemporaryFilesInNvram");
+	List<String> logFileList = new ArrayList<>();
+	boolean status = false;
+	List<Boolean> statusOfDelete = new ArrayList<>();
+	for (String tempLogFile : logFilesToRemove) {
+	    logFileList.add(
+		    CommonMethods.concatStringUsingStringBuffer(BroadBandTestConstants.STRING_BACKUP, tempLogFile));
+	}
+	for (String logFile : logFileList) {
+	    boolean logFileExists = CommonUtils.isFileExists(device, tapEnv,
+		    CommonMethods.concatStringUsingStringBuffer(BroadBandCommandConstants.NAVIGATE_GIVEN_FILE_IN_NVRAM
+			    .replace(BroadBandTestConstants.STRING_REPLACE, logFile)));
+	    if (logFileExists) {
+		status = CommonUtils.deleteFile(device, tapEnv,
+			CommonMethods
+				.concatStringUsingStringBuffer(BroadBandCommandConstants.NAVIGATE_GIVEN_FILE_IN_NVRAM
+					.replace(BroadBandTestConstants.STRING_REPLACE, logFile)));
+		statusOfDelete.add(status);
+	    }
+	}
+	status = !statusOfDelete.contains(BroadBandTestConstants.BOOLEAN_VALUE_FALSE);
+	LOGGER.debug("ENDING METHOD : deleteTemporaryFilesInNvram");
+	return status;
+    }
+    
+    /**
+     * Utility method to get eRouter ipv6 address from the device
+     * 
+     * @param device
+     *            The device under test
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @return The erouteripv6 address
+     */
+    public static String getErouteripv6Address(Dut device, AutomaticsTapApi tapEnv) {
+
+	String eRouteripv6 = null;
+	String pattern = null;
+	ifConfigErouter0Response = tapEnv.executeCommandUsingSsh(device, BroadBandTestConstants.IFCONFIG_EROUTER);
+	if (!DeviceModeHandler.isDSLDevice(device)) {
+	    pattern = BroadBandTestConstants.INET_V6_ADDRESS_PATTERN;
+	} else {
+	    pattern = BroadBandTestConstants.INET_V6_ADDRESS_LINK_PATTERN;
+	}
+
+	LOGGER.info("PATTERN: " + pattern);
+	if (CommonMethods.isNotNull(ifConfigErouter0Response)) {
+	    eRouteripv6 = CommonMethods.patternFinder(ifConfigErouter0Response, pattern);
+	}
+
+	return eRouteripv6;
+    }
+
+    /**
+     * Utility method to verify last reboot reason from '\rdklogs\logs\BootTime.log' file after factory resetting the
+     * device
+     * 
+     * @param device
+     *            instance of {@link Dut}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @return status true if string 'Received reboot_reason as:factory-reset' is found in BootTime.log
+     * @author Praveenkumar Paneerselvam
+     * @Refactor Athira
+     */
+    // Renaming the API from verifyFactoryResetReasonFromWebpaLog to
+    // verifyFactoryResetReasonFromBootTimeLog
+
+    public static boolean verifyFactoryResetReasonFromBootTimeLog(Dut device, AutomaticsTapApi tapEnv) {
+	LOGGER.debug("STARTING METHOD : verifyFactoryResetReasonFromBootTimeLog");
+	boolean status = false;
+	String response = null;
+	long startTime = System.currentTimeMillis();
+	LOGGER.info(
+		"GOING TO POLL FOR MAX 10 min WITH 30 sec TIME INTERVAL FOR '/rdklogs/logs/BootTime.log' FILE GENERATION.");
+	do {
+	    if (CommonUtils.isFileExists(device, tapEnv, BroadBandCommandConstants.FILE_BOOT_TIME_LOG)) {
+		response = BroadBandCommonUtils.searchLogFiles(tapEnv, device,
+			BroadBandTraceConstants.LOG_MESSAGE_REBOOT_REASON_FACTORY_RESET,
+			BroadBandCommandConstants.FILE_BOOT_TIME_LOG);
+		LOGGER.info("RESPONSE FROM '/rdklogs/logs/BootTime.log' IS : " + response);
+		status = CommonMethods.isNotNull(response);
+	    }
+	} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TEN_MINUTE_IN_MILLIS && !status
+		&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+	LOGGER.info(
+		"IS FILE '/rdklogs/logs/BootTime.log' EXISTS TO VALIDATE THE LAST REBOOT REASON AFTER FACTORY RESET : "
+			+ status);
+
+	LOGGER.info("IS 'Received reboot_reason as:factory-reset' STRING FOUND IN '/rdklogs/logs/BootTime.log' FILE : "
+		+ status);
+	LOGGER.debug("ENDING METHOD : verifyFactoryResetReasonFromBootTimeLog");
+	return status;
+    }
+    
+    /**
+     * Utility method to get LAN end IP for partners
+     * 
+     * @param partnerId
+     *            Actual partnerID retrieved from script
+     * 
+     * @return String LAN end IP
+     * @author Athira
+     */   
+    public static String getSynEndIPforPartner(String partnerId) {
+	LOGGER.info("STARTING METHOD: getSynEndIPforPartner");
+	String propKeySynEndIP = BroadBandPropertyKeyConstants.PROP_KEY_SYN_END_IP_ADDRESS + partnerId; 
+	String SynEndIP = AutomaticsTapApi.getSTBPropsValue(propKeySynEndIP);
+	LOGGER.info("propKeySynEndIP is "+propKeySynEndIP);
+	LOGGER.info("SynEndIP is "+SynEndIP);
+	LOGGER.info("ENDING METHOD: getSynEndIPforPartner");
+	return SynEndIP;
+
+    }	
+    /**
+     * Utility method to get LAN start IP for partners
+     * 
+     * @param partnerId
+     *            Actual partnerID retrieved from script
+     * 
+     * @return String LAN Start IP
+     * @author Athira
+     */   
+    public static String getSynStartIPforPartner(String partnerId) {
+	LOGGER.info("STARTING METHOD: getSynStartIPforPartner");
+	String propKeySycStartIP = BroadBandPropertyKeyConstants.PROP_KEY_SYN_START_IP_ADDRESS + partnerId; 
+	String SynStartIP = AutomaticsTapApi.getSTBPropsValue(propKeySycStartIP);
+	LOGGER.info("propKeySycStartIP is "+propKeySycStartIP);
+	LOGGER.info("SynStartIP is "+SynStartIP);
+	LOGGER.info("ENDING METHOD: getSynStartIPforPartner");
+	return SynStartIP;
+
+    }
+    
+    /**
+     * Utility method to get LAN local IP for partners
+     * 
+     * @param partnerId
+     *            Actual partnerID retrieved from script
+     * 
+     * @return String LAN Local IP
+     * @author Athira
+     */   
+    public static String getSynLocalIPforPartner(String partnerId) {
+	LOGGER.info("STARTING METHOD: getSynLocalIPforPartner");
+	String propKeySynLocalIP = BroadBandPropertyKeyConstants.PROP_KEY_SYN_LAN_LOCAL_IP + partnerId; 
+	String SynLocalIP = AutomaticsTapApi.getSTBPropsValue(propKeySynLocalIP);
+	LOGGER.info("propKeySynLocalIP is "+propKeySynLocalIP);
+	LOGGER.info("SynLocalIP is "+SynLocalIP);
+	LOGGER.info("ENDING METHOD: getSynLocalIPforPartner");
+	return SynLocalIP;
+
+    }
+    
+    /**
+     * Utility method to perform factory reset through SNMP and verify it in '/rdklogs/logs/BootTime.log' file
+     * 
+     * @param device
+     *            instance of {@link Dut}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @return status true, if factory reset is successfully performed using SNMP and also reboot reason appears as
+     *         'factory reset' in '/rdklogs/logs/BootTime.log' file
+     */
+    // Renaming the API from performFactoryUsingSNMPAndVerifyInWebPaLog to
+    // performFactoryUsingSNMPAndVerifyInBootTimeLog
+
+    public static boolean performFactoryUsingSNMPAndVerifyInBootTimeLog(Dut device, AutomaticsTapApi tapEnv) {
+	LOGGER.debug("STARTING METHOD : performFactoryUsingSNMPAndVerifyInBootTimeLog");
+	boolean status = BroadBandCommonUtils.performFactoryResetSnmp(tapEnv, device);
+	LOGGER.info("Is Factory Reset success through SNMP : " + status);
+	if (status) {
+	    status = BroadBandCommonUtils.verifyFactoryResetReasonFromBootTimeLog(device, tapEnv);
+	}
+	LOGGER.debug("ENDING METHOD : performFactoryUsingSNMPAndVerifyInBootTimeLog");
+	return status;
+    }
+    
+    /**
+     * Utility method to perform Factory Reset on the device using SNMP & then wait for the device to comeup.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * 
+     * @return Boolean representing the result of the Factory Reset Operation.
+     */
+    public static boolean performFactoryResetSnmp(AutomaticsTapApi tapEnv, Dut device) {
+
+	LOGGER.debug("ENTERING METHOD performFactoryResetSnmp");
+
+	String snmpOutput = null;
+	if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
+	    BroadBandCommonUtils.getAtomSyncUptimeStatus(device, tapEnv);
+	}
+	if (DeviceModeHandler.isFibreDevice(device)) {
+	    /*
+	     * snmpOutput = BroadBandSnmpUtils.snmpSetOnEstb(tapEnv, device,
+	     * BroadBandSnmpMib.ESTB_FACTORY_RESET_DEVICE.getOid(), SnmpDataType.INTEGER,
+	     * BroadBandTestConstants.STRING_VALUE_ONE).trim();
+	     */
+	} else {
+	    snmpOutput = BroadBandSnmpUtils
+		    .snmpSetOnEcm(tapEnv, device, BroadBandSnmpMib.ESTB_FACTORY_RESET_DEVICE.getOid(),
+			    SnmpDataType.INTEGER, BroadBandTestConstants.STRING_VALUE_ONE)
+		    .trim();
+	}
+
+	boolean result = CommonMethods.isNotNull(snmpOutput)
+		&& snmpOutput.equals(BroadBandTestConstants.STRING_VALUE_ONE);
+	if (result) {
+	    // Check if the device goes down.
+	    long pollDuration = BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS;
+	    long startTime = System.currentTimeMillis();
+	    do {
+		LOGGER.info("GOING TO WAIT FOR 1 MINUTE.");
+		tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+		result = !CommonMethods.isSTBAccessible(device);
+	    } while ((System.currentTimeMillis() - startTime) < pollDuration && !result);
+	}
+	LOGGER.info("DEVICE REBOOTS AFTER TRIGGERING FACTORY RESET: " + result);
+
+	long startTime = 0L;
+	if (result) {
+	    startTime = System.currentTimeMillis();
+	    do {
+		LOGGER.info("GOING TO WAIT FOR 1 MINUTE.");
+		tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+		result = CommonMethods.isSTBAccessible(device);
+	    } while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIFTEEN_MINUTES_IN_MILLIS
+		    && !result);
+	    LOGGER.info("DEVICE COMES UP AFTER FACTORY RESET: " + result);
+	}
+	if (result) {
+	    result = verifyFactoryReset(tapEnv, device);
+	}
+	LOGGER.info("BROAD BAND DEVICE FACTORY RESET (SNMP) PERFORMED SUCCESSFULLY: " + result);
+	LOGGER.debug("ENDING METHOD performFactoryResetSnmp");
+	return result;
+    }
+    
+    /**
+     * Utility Method to verify the Factory Reset is successful; verified using the Private SSID which must contain the
+     * last 4 digits of ECM MAC Address of the device.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * 
+     * @return Boolean representing the result of the validation; TRUE if the factory reset is successful; else FALSE.
+     * @author Govardhan
+     */
+    public static boolean verifyFactoryReset(AutomaticsTapApi tapEnv, Dut device) {
+	LOGGER.info("STARTING METHOD verifyFactoryReset");
+	boolean result = false;
+	tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+	String privateSsid = null;
+	long startTime = System.currentTimeMillis();
+	do {
+	    LOGGER.info("GOING TO WAIT FOR 30 SECONDS.");
+	    tapEnv.waitTill(BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+	    privateSsid = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID);
+	    LOGGER.info("Private Ssid is : " + privateSsid);
+	    BroadBandResultObject resultObject = BroadBandRestoreWifiUtils.verifyDefaultSSIDForPartner(device,
+		    WiFiFrequencyBand.WIFI_BAND_2_GHZ, tapEnv, false);
+	    result = resultObject.isStatus();
+	} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TEN_MINUTE_IN_MILLIS && !result);
+	LOGGER.info("FACTORY RESET SUCCESSFUL: " + result);
+	LOGGER.info("ENDING METHOD verifyFactoryReset");
+	return result;
+    }
+    
+    /**
+     * Utility method to Validate defualt SSId for various Partners
+     * 
+     * @param devive
+     *            Dut under test
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param ssidValue
+     *            String ssid obtained by webpa command
+     * @param parameter
+     *            parameter for Band of the Wi-Fi
+     * @param deviceModel
+     *            String instance for Device Model
+     * @param PartnerId
+     *            String instance of Partener ID for which Expected SSID varies
+     * @param radio
+     *            {@link WiFiFrequencyBand}
+     * @return boolean true if the ssid is as expected
+     * 
+     *         Expected SSID for cisco - 'HOME-[last four digits of ecmmac]-[wifiband]' for tech cbr- 'CBCI-[last four
+     *         digits of ecmmac]' for others - 'XFSETUP-[last four digits of ecmmac]'
+     * 
+     */
+    public static boolean validateDefaultSsidforDifferentPartners(Dut device, AutomaticsTapApi tapEnv, String ssidValue,
+	    RdkBSsidParameters parameter, String deviceModel, String partnerId, WiFiFrequencyBand radio) {
+	LOGGER.debug("STARTING METHOD validateDefaultSsidforDifferentPartners");
+	boolean status = false;
+	String expectedSsid = null;
+	String prefix = null;
+	String serialNumber = null;
+	try {
+	    if (DeviceModeHandler.isDSLDevice(device)) {
+		if (ssidValue.length() == BroadBandTestConstants.EIGHT_NUMBER
+			|| ssidValue.length() == BroadBandTestConstants.INTEGER_VALUE_13) {
+		    expectedSsid = ssidValue;
+		}
+	    } else {
+		prefix = getDefaultSSIDPrefixForDeviceAndPartnerSpecific(device, partnerId);
+		LOGGER.info("Prefix for The SSID Specific To Device is: " + prefix);
+		String ecmMac = ((Device) device).getEcmMac();
+		try {
+		    serialNumber = tapEnv
+			    .executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_SERIAL_NUMBER)
+			    .trim();
+		} catch (Exception exception) {
+		    LOGGER.error("Caught exception while getting the serial Number by WebPa" + exception.getMessage());
+		}
+		ecmMac = ecmMac.replace(BroadBandTestConstants.DELIMITER_COLON, BroadBandTestConstants.EMPTY_STRING);
+		LOGGER.info("ecmMAC of the device is: " + ecmMac);
+		expectedSsid = getExpectedSSID(device, partnerId, prefix, serialNumber, ecmMac,
+			parameter.getWifiBand());
+	    }
+	    LOGGER.info("Expected SSID is: " + expectedSsid);
+	    status = ssidValue.equalsIgnoreCase(expectedSsid);
+	    LOGGER.info("Is Expected and Actual SSID are equal :" + status);
+	    // Applicable only for Atom based device
+
+	    if (!status) {
+		String verifyPartnerID = BroadbandPropertyFileHandler.getPartnerIDandModelValues();
+		JSONObject json = new JSONObject(verifyPartnerID);
+		String partnerIDFromProperty = json.getString(partnerId);
+		String deviceModelFromProperty = json.getString(deviceModel);
+
+		if (partnerIDFromProperty == partnerId && deviceModelFromProperty == device.getModel()) {
+		    String webpaParameter = null;
+		    if (radio.equals((WiFiFrequencyBand.WIFI_BAND_2_GHZ))) {
+			webpaParameter = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_MAC_ADDRESS;
+		    } else if (radio.equals((WiFiFrequencyBand.WIFI_BAND_5_GHZ))) {
+			webpaParameter = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_MAC_ADDRESS;
+		    }
+		    String wifiMAC = tapEnv.executeWebPaCommand(device, webpaParameter);
+		    LOGGER.info("wifiMAC  -" + wifiMAC);
+		    wifiMAC = wifiMAC.replace(BroadBandTestConstants.DELIMITER_COLON,
+			    BroadBandTestConstants.EMPTY_STRING);
+		    expectedSsid = wifiMAC.substring(wifiMAC.length() - BroadBandTestConstants.CONSTANT_6);
+		    LOGGER.info("wifiMAC last 6 digits -" + expectedSsid);
+		    if (CommonMethods.isNotNull(ssidValue) && CommonMethods.isNotNull(expectedSsid)) {
+			status = ssidValue.equalsIgnoreCase(expectedSsid);
+			LOGGER.info("Is Expected and Actual SSID are equal :" + status);
+		    }
+		}
+	    }
+	} catch (Exception e) {
+	    LOGGER.error(
+		    "Caught exception while Validating the default SSid for Different Partners : " + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD validateDefaultSsidforDifferentPartners");
+	return status;
+    }
+    /**
+     * Utility method to verify the expected partner ID is available or not
+     * 
+     * @param partnerIdToVerify
+     *            Actual partnerID retrieved from script
+     * 
+     * @return Boolean representing the result of the validation.
+     * @author Govardhan
+     */
+    public static boolean verifyPartnerAvailability(String partnerIdToVerify) {
+	LOGGER.info("STARTING METHOD: verifyPartnerAvailability");
+	boolean partnerIDExists = false;
+	String partnerIDList = BroadbandPropertyFileHandler.getPartnerIDValues();
+
+	String[] partnerIDValues = partnerIDList.split(",");
+
+	for (String partnerID : partnerIDValues) {
+	    if (partnerID.equalsIgnoreCase(partnerIdToVerify)) {
+		partnerIDExists = true;
+		break;
+	    }
+	}
+	return partnerIDExists;
+    }
+    
 }

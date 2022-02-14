@@ -25,8 +25,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automatics.device.Dut;
+import com.automatics.exceptions.TestException;
 import com.automatics.rdkb.BroadBandResultObject;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
+import com.automatics.rdkb.constants.BroadBandWebPaConstants;
+import com.automatics.rdkb.constants.BroadBandTestConstants.BAND_STEERING_PARAM;
+import com.automatics.rdkb.constants.RDKBTestConstants.WiFiFrequencyBand;
 import com.automatics.rdkb.constants.WebPaParamConstants.WebPaDataTypes;
 import com.automatics.rdkb.utils.dmcli.DmcliUtils;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
@@ -130,4 +134,302 @@ public class BroadBandBandSteeringUtils {
 
 	return result;
     }
+
+    /**
+     * Method to enable band steering on the gateway via WebPa
+     * 
+     * @param device
+     *            Instance of Dut
+     * @param tapEnv
+     *            Instance of AutomaticsTapApi
+     * @return result of set operation
+     * @refactor Said Hisham
+     */
+    public static boolean enableDisableBandSteeringViaWebPa(Dut device, AutomaticsTapApi tapEnv, boolean isEnable) {
+	boolean setResult = false;
+	LOGGER.info("<--- Starting method enableDisableBandSteeringViaWebPa --->");
+	List<WebPaParameter> setResponse = tapEnv.setWebPaParams(device,
+		BroadBandWebPaConstants.WEBPA_PARAM_BAND_STEERING_ENABLE,
+		(isEnable) ? BroadBandTestConstants.TRUE : BroadBandTestConstants.FALSE,
+		WebPaDataTypes.BOOLEAN.getValue());
+	setResult = null != setResponse && setResponse.size() > 0
+		&& CommonMethods.isNotNull(setResponse.get(0).getMessage())
+		&& (setResponse.get(0).getMessage().equalsIgnoreCase(BroadBandTestConstants.SUCCESS_TXT));
+	LOGGER.info("<--- Ending method enableDisableBandSteeringViaWebPa --->");
+	return setResult;
+    }
+    
+	/**
+	 * This method will get the PhyThreshold for required radio
+	 * 
+	 * @param device
+	 *            {@link Dut}
+	 * @param tapEnv
+	 *            {@link AutomaticsTapApi}
+	 * @param band
+	 * @link {@link WiFiFrequencyBand}
+	 * @return parameter value
+	 * @author anandam.s
+	 * @refactor Alan_Bivera
+	 */
+	public static String getBandSteeringPhyThreshold(Dut device, AutomaticsTapApi tapEnv, WiFiFrequencyBand band) {
+
+		String parameter = null;
+		String response = null;
+		switch (band) {
+		case WIFI_BAND_2_GHZ:
+			parameter = BroadBandWebPaConstants.WEBPA_PARAM_BAND_STEERING_PHY_THRESHOLD_2_4GHZ;
+			break;
+		case WIFI_BAND_5_GHZ:
+			parameter = BroadBandWebPaConstants.WEBPA_PARAM_BAND_STEERING_PHY_THRESHOLD_5GHZ;
+			break;
+		default:
+			LOGGER.error("Wrong radio type passed");
+			break;
+
+		}
+		if (CommonUtils.isNotEmptyOrNull(parameter)) {
+			response = tapEnv.executeWebPaCommand(device, parameter);
+		} else {
+			LOGGER.error("Wrong radio type passed");
+		}
+		return response;
+	}
+	
+	/**
+	 * This method will set the PhyThreshold for required radio
+	 * 
+	 * @param device
+	 *            {@link Dut}
+	 * @param tapEnv
+	 *            {@link AutomaticsTapApi}
+	 * @param band
+	 *            {@link WiFiFrequencyBand}
+	 * @param value
+	 *            value to be set
+	 * @return parameter value
+	 * @author anandam.s
+	 * @refactor Alan_Bivera
+	 */
+	public static boolean setBandSteeringPhyThreshold(Dut device, AutomaticsTapApi tapEnv, WiFiFrequencyBand band,
+			String value) {
+
+		String parameter = null;
+		boolean response = false;
+		switch (band) {
+		case WIFI_BAND_2_GHZ:
+			parameter = BroadBandWebPaConstants.WEBPA_PARAM_BAND_STEERING_PHY_THRESHOLD_2_4GHZ;
+			break;
+		case WIFI_BAND_5_GHZ:
+			parameter = BroadBandWebPaConstants.WEBPA_PARAM_BAND_STEERING_PHY_THRESHOLD_5GHZ;
+			break;
+		default:
+			LOGGER.error("Wrong radio type passed");
+			break;
+		}
+		WebPaParameter webPaParameter = new WebPaParameter();
+		webPaParameter.setName(parameter);
+		webPaParameter.setDataType(BroadBandTestConstants.CONSTANT_1);
+		webPaParameter.setValue(value);
+		if (CommonUtils.isNotEmptyOrNull(parameter)) {
+			response = BroadBandCommonUtils.setWebPaParam(tapEnv, device, webPaParameter);
+		} else {
+			LOGGER.error("Wrong radio type passed");
+		}
+		return response;
+	}
+	
+	/**
+	 * This method checks for specific parameter in lbd.conf file
+	 * 
+	 * @param device
+	 *            {@link Settop}
+	 * @param tapEnv
+	 *            {@link AutomaticsTapApi}
+	 * @param band
+	 *            {@link WiFiFrequencyBand}
+	 * @param param
+	 *            {@link BAND_STEERING_PARAM}
+	 * @return true if pattern is seen
+	 * @refactor Alan_Bivera
+	 */
+	public static BroadBandResultObject checkForPatternInLbdConfFile(Dut device, AutomaticsTapApi tapEnv,
+			WiFiFrequencyBand band, BAND_STEERING_PARAM param) {
+
+		BroadBandResultObject result = new BroadBandResultObject();
+		try {
+			String fileContents = getContentsForRadioFromLBDConfFile(device, tapEnv, band);
+			LOGGER.info(" Relevant contents of file: " + fileContents);
+			String checkForString = null;
+			if (null != band && null != param) {
+				switch (param) {
+				case BAND_STEERING_PARAM_APGROUP:
+					LOGGER.error("Currently not implemented");
+					break;
+				case BAND_STEERING_PARAM_IDLE_INACTIVE_TIME:
+					checkForString = BroadBandTestConstants.CMD_LBD_IDLE_INACTIVE + "="
+							+ ((band == WiFiFrequencyBand.WIFI_BAND_2_GHZ)
+									? BroadBandTestConstants.TEST_VALUE_IDLE_INACTIVE_TIME_2GHZ
+									: BroadBandTestConstants.TEST_VALUE_IDLE_INACTIVE_TIME_5GHZ);
+					break;
+				case BAND_STEERING_PARAM_OVERLOAD_INACTIVE_TIME:
+					checkForString = BroadBandTestConstants.CMD_LBD_OVERLOAD_INACTIVE + "="
+							+ ((band == WiFiFrequencyBand.WIFI_BAND_2_GHZ)
+									? BroadBandTestConstants.TEST_VALUE_OVERLOAD_INACTIVE_TIME_2GHZ
+									: BroadBandTestConstants.TEST_VALUE_OVERLOAD_INACTIVE_TIME_5GHZ);
+					break;
+				default:
+					result.setStatus(false);
+					result.setErrorMessage("Unsupported Pram");
+					LOGGER.error(result.getErrorMessage());
+					break;
+
+				}
+				LOGGER.info("Going to check for String :" + checkForString);
+				if (CommonMethods.isNotNull(checkForString)) {
+					result.setStatus(fileContents.contains(checkForString));
+					if (result.isStatus()) {
+						LOGGER.info("String " + checkForString + " is present in lbd.conf");
+					} else {
+						result.setErrorMessage("String " + checkForString + " is not present in lbd.conf");
+						LOGGER.error("String " + checkForString + " is not present in lbd.conf");
+					}
+				} else {
+					result.setStatus(false);
+					result.setErrorMessage("String for checking in lbd.conf is null");
+					LOGGER.error(result.getErrorMessage());
+				}
+			} else {
+				result.setStatus(false);
+				result.setErrorMessage("WifiFrequeny band or band steering parameter is passed as null");
+				LOGGER.error(result.getErrorMessage());
+			}
+		} catch (Exception e) {
+			result.setStatus(false);
+			result.setErrorMessage("Exception occured !!!" + e.getMessage());
+			LOGGER.error(result.getErrorMessage());
+		}
+		return result;
+	}
+	
+	/**
+	 * Get the contents of given radio from LBD.conf file
+	 * 
+	 * @param settop
+	 *            {@link Settop}
+	 * @param tapEnv
+	 *            {@link AutomaticsTapApi}
+	 * @param band
+	 *            {@link WiFiFrequencyBand}
+	 * @return fileContents
+	 * @refactor Alan_Bivera
+	 * 
+	 */
+	public static String getContentsForRadioFromLBDConfFile(Dut device, AutomaticsTapApi tapEnv, WiFiFrequencyBand band)
+			throws TestException {
+		String fileContents = null;
+		try {
+			String response = tapEnv.executeCommandOnAtom(device, BroadBandTestConstants.CMD_CAT_LBD);
+			LOGGER.debug("Response of command  " + BroadBandTestConstants.CMD_CAT_LBD + " :  " + response);
+			switch (band) {
+			case WIFI_BAND_2_GHZ:
+				fileContents = response.substring(response.indexOf(BroadBandTestConstants.STRING_LBD_HEADING_2G_PARAMS),
+						response.indexOf(BroadBandTestConstants.STRING_LBD_HEADING_5G_PARAMS));
+				break;
+			case WIFI_BAND_5_GHZ:
+				fileContents = response.substring(response.indexOf(BroadBandTestConstants.STRING_LBD_HEADING_5G_PARAMS),
+						response.indexOf(BroadBandTestConstants.STRING_LBD_STADB_PARAMS));
+				break;
+			default:
+				LOGGER.error("Unsupported radio");
+				break;
+
+			}
+		} catch (Exception e) {
+			throw new TestException("Exception occured while executing command in atom console. " + e.getMessage());
+		}
+		return fileContents;
+	}
+	
+	/**
+	 * This method checks for specific parameter in cfg
+	 * 
+	 * @param device
+	 *            {@link Settop}
+	 * @param tapEnv
+	 *            {@link AutomaticsTapApi}
+	 * @param band
+	 *            {@link WiFiFrequencyBand}
+	 * @param param
+	 *            {@link BAND_STEERING_PARAM}
+	 * @return true if pattern is seen
+	 * @refactor Alan_Bivera
+	 */
+	public static BroadBandResultObject checkForPatternInCfg(Dut device, AutomaticsTapApi tapEnv, WiFiFrequencyBand band,
+			BAND_STEERING_PARAM param) {
+
+		String command = null;
+		String value = null;
+		String response = null;
+		BroadBandResultObject result = new BroadBandResultObject();
+		try {
+			if (null != band && null != param) {
+				switch (param) {
+				case BAND_STEERING_PARAM_APGROUP:
+					LOGGER.error("Currently not implemented");
+					break;
+				case BAND_STEERING_PARAM_IDLE_INACTIVE_TIME:
+					command = BroadBandTestConstants.CMD_CFG_IDLE_INACTIVE;
+					value = (band == WiFiFrequencyBand.WIFI_BAND_2_GHZ)
+							? BroadBandTestConstants.TEST_VALUE_IDLE_INACTIVE_TIME_2GHZ
+							: BroadBandTestConstants.TEST_VALUE_IDLE_INACTIVE_TIME_5GHZ;
+					break;
+				case BAND_STEERING_PARAM_OVERLOAD_INACTIVE_TIME:
+					command = BroadBandTestConstants.CMD_CFG_OVERLOAD_INACTIVE;
+					value = (band == WiFiFrequencyBand.WIFI_BAND_2_GHZ)
+							? BroadBandTestConstants.TEST_VALUE_OVERLOAD_INACTIVE_TIME_2GHZ
+							: BroadBandTestConstants.TEST_VALUE_OVERLOAD_INACTIVE_TIME_5GHZ;
+					break;
+				default:
+					LOGGER.error("Unsupported Pram");
+					break;
+
+				}
+				LOGGER.info("Going to execute command" + command + " and check for string " + value
+						+ " in the command output");
+				if (CommonMethods.isNotNull(command)) {
+					response = tapEnv.executeCommandOnAtom(device, command);
+				} else {
+					result.setStatus(false);
+					result.setErrorMessage("Command to execute ins atom console is null");
+					LOGGER.error(result.getErrorMessage());
+				}
+
+				LOGGER.info("Response of command  " + command + " :  " + response);
+				if (CommonMethods.isNotNull(response)) {
+					result.setStatus(response.contains(value));
+					if (result.isStatus()) {
+						LOGGER.info("String " + value + " is present in cfg");
+					} else {
+						result.setErrorMessage("String " + value + " is not present in cfg");
+						LOGGER.error("String " + value + " is not present in cfg");
+					}
+				} else {
+					result.setStatus(false);
+					result.setErrorMessage("Response of command  " + command + "is obtained as null");
+					LOGGER.error(result.getErrorMessage());
+				}
+			} else {
+				result.setStatus(false);
+				result.setErrorMessage("WifiFrequeny band or band steering parameter is passed as null");
+				LOGGER.error(result.getErrorMessage());
+			}
+		} catch (Exception e) {
+			result.setStatus(false);
+			result.setErrorMessage("Exception occured !!!" + e.getMessage());
+			LOGGER.error(result.getErrorMessage());
+		}
+		return result;
+	}
+
 }

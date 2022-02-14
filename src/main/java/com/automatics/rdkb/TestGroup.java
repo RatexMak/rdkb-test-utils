@@ -40,6 +40,9 @@ public class TestGroup {
     public static final String XCONF_CODE_DOWNLOAD = "xconfcdl";
     
     /** Test group for SNMP command triggering tests. */
-    public static final String SNMP_OPERATIONS = "snmpOperations";
+    public static final String SNMP_OPERATIONS = "snmpOperations";    
+    
+    /** Test group for UI. */
+    public static final String UI = "ui";
 
 }

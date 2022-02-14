@@ -36,6 +36,7 @@ public enum BroadBandSnmpMib {
     ECM_DOCS_DEVSW_ADMIN_STATAUS("docsDevSwAdminStatus", ".1.3.6.1.2.1.69.1.3.3.0"),
     ECM_DOCS_DEV_SW_OPER_STATUS("docsDevOperStatus", "1.3.6.1.2.1.69.1.3.4.0"),
     ESTB_REBOOT_DEVICE("rebootDevice", "1.3.6.1.4.1.17270.50.2.1.1.1.0"),
+    ESTB_WIFI_RESTORE_DEVICE("wifiRestoreDevice", "1.3.6.1.4.1.17270.50.2.1.1.1003"),
     ECM_CURRENT_SSID("currentSSID", "1.3.6.1.4.1.17270.50.2.2.2.1.1.3"),
     ENABLE_DISABLE_BRIDGE_MODE("enableDisableBridgeMode","1.3.6.1.4.1.17270.50.2.3.2.1.1","32"),
     ESTB_FACTORY_RESET_DEVICE("factoryResetDevice", "1.3.6.1.4.1.17270.50.2.1.1.1002.0"),
@@ -44,8 +45,10 @@ public enum BroadBandSnmpMib {
     HOT_SPOT_2_4_SSID_STATUS("HotSpotStatus2.4", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.2", "10004"),
     LNF_2_4_SSID_STATUS("LnfStatus2.4", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.2", "10006"),
     ECM_STATUS_PRIVATE_WIFI_5_GHZ("privateWifiStatus5",".1.3.6.1.4.1.17270.50.2.2.2.1.1.2","10101"),
+    WIFI_2_4_SSID_STATUS("ssidStatus2.4", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.2", "10001"),
     HOT_SPOT_5_SSID_STATUS("HotSpotStatus5", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.2", "10104"),
     LNF_5_SSID_STATUS("LnfStatus5", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.2", "10106"),
+    PUBLIC_5_SSID_STATUS("HomeSecurityssidStatus5", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.2", "10103"),
     ECM_PRIVATE_WIFI_SSID_2_4("privateSsid2.4", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.3", "10001"),
     ECM_PRIVATE_WIFI_SSID_5("privateSsid5", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.3", "10101"),
     ECM_PRIVATE_WIFI_2_4_WIRELESSPASS("privateWifiWirelessPass2.4", "1.3.6.1.4.1.17270.50.2.2.3.3.1.3", "10001"),
@@ -80,6 +83,7 @@ public enum BroadBandSnmpMib {
     ECM_FWUPGRADE_AND_FACTORYRESET("rdkbRgDeviceFWupdateAndFactoryReset","1.3.6.1.4.1.17270.50.2.1.1.1008."),
     ECM_DOCS_DEV_START_CODE_DOWNLOAD("docsDevStartCodeDownload", "1.3.6.1.2.1.69.1.3.3.0"),
     ESTB_SYS_UP_TIME("sysUpTime", ".1.3.6.1.2.1.1.3"),
+    WIFI_APPLY_SETTINGS("applySettings",".1.3.6.1.4.1.17270.50.2.2.1001"),
 	
     /** OIDs for geting device serial number. */
     EMTA_TELEPHONE_LINE_RESET_NEGATIVE_SCENARIO("mtaReset", "1.3.6.1.2.1.2.2.1.7.9", "0"),
@@ -134,7 +138,9 @@ public enum BroadBandSnmpMib {
     ECM_WIFI_RADIO_MODE_5("radiowifisecuritymode5", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.4", "10101"),
     ESTB_VERIFY_MOCA_INTERFACE_STATUS("verifyMocaInterfaceStatus", " .1.3.6.1.4.1.31621.1.1.1.1.1.1"),
     FACTORY_RESET_DEVICE("FactoryReset","1.3.6.1.4.1.17270.50.2.1.1.1002"),
-    ECM_DOCS_DEV_SW_IPV4_SERVER_ADDRESS("docsDevSwipv4ServerAddres", "1.3.6.1.2.1.69.1.3.1");
+    ECM_STATIC_WAN_IPV4("rdkbRgDeviceConfigStaticIp", ".1.3.6.1.4.1.17270.50.2.1.4.6", "0"),																							
+    ECM_DOCS_DEV_SW_IPV4_SERVER_ADDRESS("docsDevSwipv4ServerAddres", "1.3.6.1.2.1.69.1.3.1"),
+    ECM_BAND_STEERING("rdkbRgDot11BandSteeringEnable",".1.3.6.1.4.1.17270.50.2.2.8.2","0");
     
     private String mibName;
 

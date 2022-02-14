@@ -38,7 +38,7 @@ public class BroadBandTraceConstants extends RDKBTraceConstants{
     public static final String LOG_MESSAGE_BEACON_CHANGE_MODE_GN = "BEACON RATE CHANGED vAP0 1Mbps to 6Mbps by TR-181 Object Device.WiFi.Radio.1.OperatingStandards";
     
     /** Log message for beacon rate changed using webpa */
-    public static final String LOG_MESSAGE_BEACON_PARAM_CHANGE = "BEACON RATE CHANGED vAP0 6Mbps to 2Mbps by TR-181 Object Device.WiFi.AccessPoint.1.X_RDKCENTRAL-COM_BeaconRate";
+    public static final String LOG_MESSAGE_BEACON_PARAM_CHANGE = "BEACON RATE CHANGED vAP0 6Mbps to 12Mbps by TR-181 Object Device.WiFi.AccessPoint.1.X_RDKCENTRAL-COM_BeaconRate";
 
     /** Log Message for wifi ssid removed from Mac OS wifi profile */
     public static final String LOG_MESSAGE_MAC_OS_WIFI_SSID_REMOVED_IN_PROFILE = "Removed\\s+(.*)\\s+from the preferred networks list";
@@ -54,6 +54,39 @@ public class BroadBandTraceConstants extends RDKBTraceConstants{
    
     /** Log message for snmp initialized in SNMP.txt.0 */
     public static final String LOG_MESSAGE_SNMP_INITIALIZED = "snmp initialzed";
+    
+    /** Log message for Alert! RDK Event will be processed once Device is online; Received WHITE Solid in SecConsole */
+    public static final String LOG_MESSAGE_WHITE_SOLID_AFTER_BOOT_SECCONSOLE = "Alert! RDK Event will be processed once Device is online; Received WHITE Solid";
+    
+    /** Log message for Front LED Transition: WHITE LED will SOLID in PAMLOG */
+    public static final String LOG_MESSAGE_WHITE_SOLID_PAMLOG = "Front LED Transition: WHITE LED will be SOLID";  
+    
+    /** Log message for Front LED Transition: GREEN LED will blink, Reason: Factory Reset in PAMlog */
+    public static final String LOG_MESSAGE_LED_CHANGE_GREEN_BEFORE_FR_PAMLOG = "Front LED Transition: GREEN LED will blink, Reason: Factory Reset";
+
+    public static final String LOG_MESSAGE_LED_CHANGE_WHITE_BEFORE_FR_SECCONSOLE = "Front LED Transition: Changing Led to White";
+    /** Log message for Front LED Transition : Mode -----> SOLID in SecConsole */
+
+    /** Log message for Front LED Transition: Changing Led to Green in SecConsole */
+    public static final String LOG_MESSAGE_LED_CHANGE_GREEN_BEFORE_FR_SECCONSOLE = "Front LED Transition: Changing Led to Green";
+
+    /** Log message for Front LED Transition : Mode -----> SOLID in SecConsole */
+    public static final String LOG_MESSAGE_LED_MODE_SOLID_BEFORE_FR_SECCONSOLE = "Front LED Transition :  Mode----> Solid";        
+
+    /** Log message for Front LED Transition : Mode -----> Blink in SecConsole */
+    public static final String LOG_MESSAGE_LED_MODE_BLINK_BEFORE_FR_SECCONSOLE = "Front LED Transition :  Mode -----> Blink";
+ 
+    /** Log message for Front LED Transition: WHITE LED will SOLID, Reason: CaptivePortal Disabled in PAMlog */
+    public static final String LOG_MESSAGE_WHITE_SOLID_AFTER_BOOT_PAMLOG = "Front LED Transition: WHITE LED will be SOLID, Reason: ConfigureWiFi is TRUE, but CaptivePortal is disabled";
+    
+    /** Log message for Changing Led to White in SecConsole */
+    public static final String LOG_MESSAGE_LED_CHANGE_WHITE_AFTER_BOOT_SECCONSOLE = "Changing Led to White";
+    
+    /** Log message for Alert! RDK Event will be processed once Device is online; Received WHITE Blink in SecConsole */
+    public static final String LOG_MESSAGE_WHITE_BLINK_AFTER_BOOT_SECCONSOLE = "Alert! RDK Event will be processed once Device is online; Received WHITE Blink";
+    
+    /** Log message for Front LED Transition: WHITE LED will blink, Reason: CaptivePortal_MODE in PAMlog */
+    public static final String LOG_MESSAGE_WHITE_BLINK_AFTER_BOOT_PAMLOG = "Front LED Transition: WHITE LED will blink, Reason: CaptivePortal_MODE";
     
     /** Log Message for Execution Succeed Message */
     public static final String DMCLI_OUTPUT_EXECUTION_SUCCEED = "Execution succeed";
@@ -339,6 +372,281 @@ public class BroadBandTraceConstants extends RDKBTraceConstants{
     /** Log Message for Parodus process */
     public static final String LOG_MESSAGE_PARODUS_PROCESS = "\"Started parodusStart in background\"";
     
+    /** Log message parameter server.http-parseopts available in /var/lighttpd.conf */
+    public static final String LOG_MESSAGE_SERVER_HTTP_PARSEOPTS = "server.http-parseopts";
+    
+    /** Log message available in /var/lighttpd.conf */
+    public static final String LOG_MESSAGE_URL_PATH_2F_DECODE = "url-path-2f-decode";
+    
+    /** Log message available in Consolelog.txt.0 or ArmConsolelog.txt.0 when UpdateNvram is true */
+    public static final String LOG_MESSAGE_SYSCFG_MESSAGE_STORED_IN_NVRAM = "SEC: Syscfg stored in /nvram/syscfg.db";
+    
+    /** Log message available in Consolelog.txt.0 or ArmConsolelog.txt.0 */
+    public static final String LOG_MESSAGE_SYSCFG_MESSAGE_STORED_IN_SECURE_DATA = "SEC: Syscfg stored in ";
+ 	
+ 	/** Log message to check if syscfg.db moved to /opt/secure/data folder */
+    public static final String LOG_MESSAGE_SYSCFG_FIREWALL = "firewall_level=High";
+ 	
+    /** Log message available in Consolelog.txt.0 or ArmConsolelog.txt.0 when UpdateNvram is true */
+    public static final String LOG_MESSAGE_SYSCFG_STORED_IN_NVRAM = "Syscfg stored in /nvram/syscfg.db";
+
+    /** Log message available in Consolelog.txt.0 or ArmConsolelog.txt.0 when UpdateNvram is false */
+    public static final String LOG_MESSAGE_SYSCFG_STORED_IN_OPT_SECURE_DATA = "Syscfg stored in /opt/secure/data/syscfg.db";
+    
+    /** Log Message for IOT Client Registered */
+    public static final String LOG_MESSAGE_CONFIG_CLIENT_REGISTERED = "\"PARODUS: Client config Registered successfully\"";
+    
+    /** Log message for uprivilege mode running as non-root */
+    public static final String LOG_MESSAGE_UNPRIVILEGE_MODE_NON_ROOT = "unprivilege user name: non-root";
+    
+    /** Log message for uprivilege mode */
+    public static final String LOG_MESSAGE_UNPRIVILEGE = "unprivilege";
+
+    /** Log message for uprivilege mode */
+    public static final String LOG_MESSAGE_UNPRIVILEGE_MODE = "Dropping root privilege of parodus: runs as unprivilege mode";
+    
+    /** Log message for response code 200 */
+    public static final String LOG_MESSAGE_RESPONSE_200 = "Response code: 200";
+    
+    /** Log message for back off retry time */
+    public static final String LOG_MESSAGE_BACK_OFF_RETRY_TIME = "backoffRetryTime";
+    
+    /** Log message for Connected to server over SSL in parodus log */
+    public static final String LOG_MESSAGE_CONNECTED_TO_SERVER_OVER_SSL = "Connected to server over SSL";
+
+    /** Trace Constants for WebPA Telemetry */
+    /** Log Message for WebPA_process is not running */
+    public static final String LOG_MESSAGE_WEBPA_PROCESS_RESTART = "\"WebPA_process is not running, restarting it\"";
+    
+    /** Log Message for parodus process is not running */
+    public static final String LOG_MESSAGE_PARODUS_PROCESS_RESTART = "\"parodus process is not running, need restart\"";
+  
+    /**
+     * Log Message for Parameter value field is not available in WebPA curl patch request
+     */
+    public static final String LOG_MESSAGE_WEBPA_WITHOUT_FIELD = "\"Parameter value field is not available\"";
+    
+    /** Log Message for Received reboot reason */
+    public static final String LOG_MESSAGE_RECEIVED_REBOOT_REASON = "\"Received reboot_reason as:webpa-reboot\"";
+    
+    /** Log Message in PAMlog.txt for reboot pending notification */
+    public static final String LOG_MESSAGE_REBOOT_PENDING_NOTIFICATION = "reboot-pending";
+    
+    /** Log message for shutdown parodus in Arm/Consolelog */
+    public static final String LOG_MESSAGE_SHUTDOWN_PARODUS = "Shutdown parodus";
+    
+    /** Log message for shutdown reason in PARODUSlog */
+    public static final String LOG_MESSAGE_PARODUS_SHUTDOWN_REASON = "PARODUS: shutdown reason at close system_restarting";
+    
+    /** Log message for firmware download started notification in xconf.txt */
+    public static final String LOG_MESSAGE_FIRMWARE_DOWNLOAD_STARTED_NOTIFICATION = "FirmwareDownloadStartedNotification";
+    
+    /** Log message for firmware download started notification in PAM and PARODUS logs */
+    public static final String LOG_MESSAGE_FIRMWARE_DOWNLOAD_STARTED = "firmware-download-started";
+    
+    /** Log message for firmware download completed notification in xconf.txt */
+    public static final String LOG_MESSAGE_FIRMWARE_DOWNLOAD_COMPLETED_NOTIFICATION = "FirmwareDownloadCompletedNotification";
+    
+    /** Log message for firmware download completed notification in PAM and PARODUS logs */
+    public static final String LOG_MESSAGE_FIRMWARE_DOWNLOAD_COMPLETED = "firmware-download-completed";
+    
+    /** Log message for "***Exiting the application***" */
+    public static final String LOG_MESSAGE_EXITING_THE_APPLICATION = "Exiting the application";
+
+    /** Log message for "Triggering RunCPUProcAnalyzer.sh" */
+    public static final String LOG_MESSAGE_TRIGGERING_RUNCPUPROCANALYZER = "Triggering RunCPUProcAnalyzer.sh";
+
+    /** Log message for CPAstats */
+    public static final String LOG_MESSAGE_CPASTATS = "CPAstats";
+    
+    /** Log Message for Logs Uploaded Successfully */
+    public static final String LOG_MESSAGE_LOGS_UPLOADED_SUCCESSFULLY = "\"LOGS UPLOADED SUCCESSFULLY, RETURN CODE: 200\"";
+    
+    /** Log message for minidump upload failed to S3 amazon location */
+    public static final String LOG_MESSAGE_MINIDUMP_AMAZON_UPLOAD_FAILED = "S3 Amazon Upload of minidump Failed";
+
+    /** Log message for retry minidump upload to S3 amazon location */
+    public static final String LOG_MESSAGE_MINIDUMP_AMAZON_UPLOAD_RETRY = "Retry";
+
+    /** Log message for minidump Fail over mechanism upload to crash portal */
+    public static final String LOG_MESSAGE_MINIDUMP_FAIL_OVER_UPLOAD = "Fail Over Mechanism: CURL minidump to crashportal";
+
+    /** Log message for minidump successfully uploaded to crash portal */
+    public static final String LOG_MESSAGE_MINIDUMP_CRASH_PORTAL_SUCCESS_UPLOAD = "Success uploading minidump file:";
+
+    /** Log message for minidump Fail over mechanism upload to crash portal failed */
+    public static final String LOG_MESSAGE_MINIDUMP_FAIL_OVER_FAILED = "Fail Over Mechanism for minidump : Failed..!";
+
+    /** Log message for cleanup minidump working directory */
+    public static final String LOG_MESSAGE_MINIDUMP_CLEANUP_DIRECTORY = "Cleanup minidump directory /minidumps";
+
+    /** Log message for minidump working directory empty */
+    public static final String LOG_MESSAGE_MINIDUMP_WORKING_DIR_EMPTY = "WORKING_DIR is empty";
+
+    /** Log message for minidump upload success to S3 amazon location */
+    public static final String LOG_MESSAGE_MINIDUMP_AMAZON_UPLOAD_SUCCESS = "S3 minidump Upload is successful with TLS1.2";
+    
+    /** Log message for upload string in core_log for crash files */
+    public static final String LOG_MESSAGE_UPLOAD_STRING = "Upload string";
+    
+    /** Log message to indicate that DNS strict order is disabled */
+    public static final String LOG_MSG_FOR_DNS_STRICT_ORDER_DISABLED = "\"RFC DNSTRICT ORDER is not defined or Enabled\" ";
+    
+    /** Log message to indicate that DNS strict order is enabled via RFC */
+    public static final String LOG_MSG_FOR_DNS_STRICT_ORDER_ENABLED = " \"Starting dnsmasq with additional dns strict order option:\" ";
+
+    /** Log Message in PAM log for wifi reset */
+    public static final String LOG_MESSAGE_WIFI_REBOOT_MESSAGE = "WiFi is going to reboot";
+    
+    /** Log Message in PAM log for Router reboot */
+    public static final String LOG_MESSAGE_ROUTER_REBOOT_MESSAGE = "Router is going to reboot";
+    
+    /** Log message for firmware download started notification not sent */
+    public static final String LOG_MESSAGE_FW_DWN_START_NOTIFY_NOT_SENT = "\"firmware download start notification is not sent\""; 
+    
+    /** Log message for firmware download completed notification not sent */
+    public static final String LOG_MESSAGE_FW_DWN_COMPLETE_NOTIFY_NOT_SENT = "\"firmware download completed notfication is not sent\"";
+    
+    /** Log message for fully manageable notification in PAMlog */
+    public static final String LOG_MESSAGE_FULLY_MANAGEABLE_NOTIFICATION = "fully-manageable";
+    
+    /** Log Message in PAMlog.txt.0 for reboot abort */
+    public static final String LOG_MESSAGE_ABORT_REBOOT = "\"invalid request for parameter.*AbortReboot\"";
+    
+    /** Log message for abort count under xconf.txt.0 log */
+    public static final String LOG_MESSAGE_ABORT_COUNT = "\"Abort Count is\" ";
+    
+    /** Log message for maximum abort count */
+    public static final String LOG_MESSAGE_MAXIMUM_ABORT_COUNT = "\"Abort Count reached maximum limit 5\""; 
+    
+    /** Telemetry marker to validate device initiation */
+    public static final String TELEMETRY_MARKER_DEVICE_INITIATION = "DEVICE_INIT";
+    
+    /** Log message to validate Firmware upgrade start time */
+    public static final String LOG_MESSAGE_FIRMWARE_START_TIME = "Firmware upgrade start time";
+
+    /** Log message to validate Firmware upgrade end time */
+    public static final String LOG_MESSAGE_FIRMWARE_END_TIME = "Firmware upgrade end time";
+    
+    /** Log message for Wan Link Heal for bootup-check invoked in SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_WAN_LINK_HEAL_INVOKED = "Wan Link Heal";
+    
+    /** Log message for cm_status operational in SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_CM_STATUS_OPERATIONAL = "cm_status=OPERATIONAL";
+    
+    /** Log message for cm_status 1 in SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_CM_STATUS_ONE = "cm_status=1";
+    
+    /** Log message for cm prov IPv6 in SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_CM_PROV_IPV6 = "cm_prov=IPv6";
+    
+    /** Log message for cm ipv6 in SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_CM_IPV6 = "cm_ipv6=";
+    
+    /** Log message for cm_ip_status in SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_CM_IP_STATUS = "cm_ip_status=1";
+    
+    /** Log message for wan_ipv4 in SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_WAN_IPV4 = "wan_ipv4=";
+
+    /** Log message for wan_ipv6 in SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_WAN_IPV6 = "wan_ipv6=";
+    
+    /** Log message for wan_ip_status in SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_WAN_IP_STATUS = "wan_ip_status=1";
+    
+    /** Log message for ping4_status in SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_PING_IPV4_STATUS = "ping4_status=1";
+    
+    /** Log message for gw_health stored in SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_GW_HEALTH_STORED = "gw_health stored";
+
+    /** Log message for gw_health current in SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_GW_HEALTH_CURRENT = "gw_health current";
+    
+    /** Log message for IsNeedtoRebootDevice in SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_NEED_TO_REBOOT = "IsNeedtoRebootDevice = 0";
+    
+    /** Log message which indicates that /opt/secure is mounted successfully */
+    public static final String LOG_TO_VERIFY_OPT_SECURE_IS_MOUNTED = "Mounted cpc directory successfully";
+    
+    /** Log message which indicates that /opt/secure is not mounted successfully */
+    public static final String LOG_TO_VERIFY_OPT_SECURE_IS_NOT_MOUNTED = "Failed to mount cpc directory";
+    
+    /** Log message for unmount target is busy */
+    public static final String LOG_TARGET_IS_BUSY = "umount: /opt/secure: target is busy";
+    
+    /** Log message for interval is 2 */
+    public static final String LOG_MESSAGE_AGGR_SELFHEAL_INTERVAL = "\"INTERVAL is: 2\"";
+
+    /** Log message for brlan0 is not completely up */
+    public static final String LOG_MESSAGE_BRLAN0_DOWN = "\"brlan0 is not completely up\"";
+
+    /** Log message for brlan0 already restarted */
+    public static final String LOG_MESSAGE_BRLAN0_RESTARTED = "\"brlan0 already restarted\"";
+
+    /** Log message for brlan1 is not completely up */
+    public static final String LOG_MESSAGE_BRLAN1_DOWN = "\"brlan1 is not completely up\"";
+
+    /** Log message for brlan1 already restarted */
+    public static final String LOG_MESSAGE_BRLAN1_RESTARTED = "\"brlan1 already restarted\"";
+
+    /** Log message for dnsmasq is not running */
+    public static final String LOG_MESSAGE_DNSMASQ_NOT_RUN = "\"dnsmasq is not running\"";
+
+    /** Log message for dibbler is not running */
+    public static final String LOG_MESSAGE_DIBBLER_NOT_RUN = "\"dibbler is not running\"";
+
+    /** Log message for erouter0 is down */
+    public static final String LOG_MESSAGE_EROUTER0_DOWN = "\"erouter0 is DOWN\"";
+
+    /** Log message for zombie instance of dnsmasq */
+    public static final String LOG_MESSAGE_ZOMBIE_INSTANCE_OF_DNSMASQ = "\"Zombie instance of dnsmasq is present\"";
+    
+    /** Log message for DHCPv6 client not running */
+    public static final String LOG_MESSAGE_DHCP_V6_CLIENT_NOT_RUNNING = "\"DHCP Client for v6 is not running, need restart\"";
+    
+    /** Log message for DHCPv4 client is not running */
+    public static final String LOG_MESSAGE_DHCP_CLIENT_V4_NOT_RUNNING = "\"DHCP Client for v4 is not running, need restart\"";
+    
+    /** Log message for dibbler client running */
+    public static final String LOG_MESSAGE_DIBBLER_CLIENT_PID = "Dibbler client: RUNNING, pid=";
+    
+    /** Log message for ping to peer ip failed */
+    public static final String LOG_MESSAGE_PING_TO_PEER_IP_FAILED = "\"Ping to Peer IP failed\"";
+    
+    /** Log message for peer interface ip */
+    public static final String LOG_MESSAGE_PEER_INT_IP = "PEER_INTERFACE_IP";
+    
+    /** Constant for Netcat invoked log */
+    public static final String LOG_MESSAGE_NC_NETCAT_INVOKED = "Use `dbg here' to see log messages; other dbg cmds for log level";
+    
+    /** The constant holding a log for no such file or directory while using grep command */
+    public static final String LOG_MESSAGE_GREP_NO_SUCH_FILE_OR_DIRECTORY = "No such file or directory";
+    
+    /** Log message for fetching ethernet related details in windows NUC */
+    public static final String LOG_MESSAGE_IPCONFIG_ETHERNET = "\"Ethernet adapter Ethernet:\"";
+    
+    /** Log message for fetching ethernet related details in windows NUC */
+    public static final String LOG_MESSAGE_IPCONFIG_WIFI = "\"Wireless LAN adapter Wi-Fi\"";
+    
+    /** Log message for harvester integration with seshat library */
+    public static final String LOG_MESSAGE_HARVESTER_INTEGRATION = "\"Init for parodus Success\""; 
+    
+    /** Log Message in WEBPA.txt.0 for factory reset verification */
+    public static final String LOG_MESSAGE_REBOOT_REASON_FACTORY_RESET = "Received reboot_reason as:factory-reset";
+
+    /** Log message for openssl failed certificate verification */
+    public static final String OPENSSL_FAILED_CERTIFICATE_VERIFICATION = "openssl_connect - SSL handshake failed -- ssl state = SSLERR";
+
+    /** Log message for openssl success certificate verification */
+    public static final String OPENSSL_SUCCESS_CERTIFICATE_VERIFICATION = "client_openssl_validate_certificate - X509 certificate successfully verified on host";
+    
+    /** Log message from SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_100_CPU_LOAD_FROM_SELFHEAL = "RDKB_SELFHEAL : CPU load at 100, top process:";
+    
+    /** Trace Constant for Management Frame Power Control Change */
+    public static final String LOG_MESSAGE_MGMT_FRAME_POWER_CONTROL = "X_RDKCENTRAL-COM_ManagementFramePowerControl:";
     
 
 }

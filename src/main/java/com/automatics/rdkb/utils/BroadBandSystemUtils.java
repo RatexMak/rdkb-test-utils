@@ -26,6 +26,7 @@ import com.automatics.constants.AutomaticsConstants;
 import com.automatics.device.Dut;
 import com.automatics.enums.ProcessRestartOption;
 import com.automatics.exceptions.TestException;
+import com.automatics.rdkb.BroadBandResultObject;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandTraceConstants;
@@ -556,6 +557,94 @@ public class BroadBandSystemUtils {
 	    throw new TestException(exception.getMessage());
 	}
 	return status;
+    }
+    
+    /**
+     * helper method to verify that the three backup files, which are used for
+     * encrypting /opt/secure folder, exist under /opt
+     * 
+     * 
+     * @param device
+     *            instance of {@link Dut}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi
+     * 
+     * @return true if all the backup files are found under /opt, else false
+     * 
+     * @author  Sumathi Gunasekaran
+     * @refactor yamini.s
+     */
+    public static BroadBandResultObject verifyBackupFilesArePresentForEncryption(Dut device, AutomaticsTapApi tapEnv) {
+	BroadBandResultObject result = new BroadBandResultObject();
+	result.setStatus(false);
+	result.setErrorMessage(null);
+	String files = BroadbandPropertyFileHandler.getSecureMountBackUpFiles();
+	String[] backup_files = files.split(",");
+	
+	try {
+	    LOGGER.debug("STARTING METHOD : verifyBackupFilesArePresentForEncryption() ");
+	    for (int loopCounter = BroadBandTestConstants.CONSTANT_0; loopCounter < backup_files.length; loopCounter++) {
+		try {
+		    LOGGER.info("Checking for the presence of file : " + backup_files[loopCounter]);
+		    result.setStatus(CommonUtils.isFileExists(device, tapEnv,
+			    CommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.MOUNT_NVRAM,
+			    		backup_files[loopCounter])));
+		    LOGGER.info("The file " + backup_files[loopCounter] + " is present under /opt");
+
+		} catch (Exception e) {
+		    result.setStatus(false);
+		    result.setErrorMessage("The file /opt/" + backup_files[loopCounter]
+			    + " is not present under /opt");
+		}
+	    }
+	} catch (Exception e) {
+	    result.setStatus(false);
+	    result.setErrorMessage(
+		    "Exception occured inside method:: verifyBackupFilesArePresentForEncryption. " + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD : verifyBackupFilesArePresentForEncryption() ");
+	return result;
+    }
+    
+    /**
+     * helper method to remove all the three backup files, which are used for
+     * encrypting /opt/secure folder, from /opt
+     * 
+     * @param device
+     *            instance of {@link Dut}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi
+     * 
+     * @return true if all the backup files are removed successfully, else false
+     * 
+     * @author Sumathi Gunasekaran
+     * @refactor yamini.s
+     */
+    public static BroadBandResultObject removeBackupFilesUsedForEncryption(Dut device, AutomaticsTapApi tapEnv) {
+	BroadBandResultObject result = new BroadBandResultObject();
+	result.setStatus(false);
+	result.setErrorMessage(null);
+	String files = BroadbandPropertyFileHandler.getSecureMountBackUpFiles();
+	String[] backup_files = files.split(",");
+	try {
+	    LOGGER.debug("STARTING METHOD : removeBackupFilesUsedForEncryption() ");
+	    for (int loopCounter = BroadBandTestConstants.CONSTANT_0; loopCounter < backup_files.length; loopCounter++) {
+		try {
+		    LOGGER.info("Removing the backup file :: " + backup_files[loopCounter]);
+		    result.setStatus(CommonUtils.removeFileandVerifyFileRemoval(tapEnv, device,
+			    CommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.MOUNT_NVRAM,
+			    		backup_files[loopCounter])));
+
+		} catch (Exception e) {
+		    result.setStatus(false);
+		    result.setErrorMessage("Failed to remove the file /opt/" + backup_files[loopCounter]);
+		}
+	    }
+	} catch (Exception e) {
+	    result.setErrorMessage("Exception occured inside method:: removeBackupFilesUsedForEncryption. " + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD : removeBackupFilesUsedForEncryption() ");
+	return result;
     }
 
 }

@@ -245,4 +245,21 @@ public class RDKBTestConstants {
     /** DeviceConfig IP Address Type - ESTB. */
     public static final String DEVICE_IP_ADDRESS_TYPE_ESTB = "ESTB";
     
+    public static final String CMD_GET_LIGHTTPD_VERSION = "/usr/sbin/lighttpd -version";
+    
+    public static final String PATTERN_GET_LIGHTTPD_VERSION = "lighttpd\\/(\\S+)";
+    
+    /** Forward Slash Character */
+    public static final String FORWARD_SLASH_CHARACTER = "/";
+    
+    /** constant represents the status code 200 */
+    public static final String STATUS_CODE_SUCCESS = "status_code:200";
+    
+    public static final String PROP_KEY_PROXY_XCONF_RFC_URL = "proxy.xconf.rfc.url";
+    
+    public static final String CMD_EPOCH_TIME = "date +%s";
+    
+    /** CAT command. */
+    public static final String CAT_COMMAND = "cat ";
+    
 }

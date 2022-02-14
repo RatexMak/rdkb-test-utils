@@ -17,6 +17,11 @@
  */
 package com.automatics.rdkb.utils.telemetry;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.ws.rs.core.MediaType;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -24,13 +29,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automatics.device.Dut;
+import com.automatics.exceptions.TestException;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.BroadBandTelemetryConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandTraceConstants;
+import com.automatics.rdkb.constants.BroadBandWebPaConstants;
 import com.automatics.rdkb.constants.RDKBTestConstants;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
+import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
 import com.automatics.rdkb.utils.CommonUtils;
+import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
+import com.automatics.restclient.RestClientException;
+import com.automatics.restclient.RestEasyClientImpl;
+import com.automatics.restclient.RestRequest;
+import com.automatics.restclient.RestResponse;
+import com.automatics.restclient.RestClientConstants.HttpRequestMethod;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.AutomaticsPropertyUtility;
 import com.automatics.utils.CommonMethods;
@@ -64,6 +78,14 @@ public class BroadBandTelemetryUtils {
      * keyword to be appended for completing the proxy xconf url for retireving dcm settinsg
      **/
     private static String PROXY_DCM_XCONF_GET_SETTINGS_KEYWORD = "getSettings";
+    
+    private static final int CONNECTION_TIMEOUT = 60000;
+    
+    /** Constant to hold response from dcmScript log */
+    private static String responseDcmScriptLog = null;
+    
+    /** Error Message text */
+    private static String errorMessage = null;
 
 	/**
 	 * Utility Method to remove the Telemetry Configuration Files.
@@ -402,4 +424,348 @@ public class BroadBandTelemetryUtils {
 	LOGGER.debug("ENDING METHOD : verifyPingFailedPayloadParamFromDcmScript");
 	return status;
     }
+    
+    /**
+     * Helper method to post dcm data to proxy server for updating dcm properties
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapApi
+     *            {@link AutomaticsTapApi}
+     * @return http post - server response
+     * @refactor yamini.s
+     */
+    public static int postDataToProxyDcmServer(Dut device, AutomaticsTapApi tapApi, boolean isLogUploadSettingsRequired,
+	    boolean basicCustomScenario) throws TestException {
+
+	LOGGER.debug("STARTING METHOD : TelemetryUtils.postDataToProxyDcmServer");
+
+	LOGGER.info("Posting data to proxy dcm server with updated dcm settings...");
+	JSONObject dcmSettings = getJsonParamForUpdatingProxyDcmServer(device, tapApi, isLogUploadSettingsRequired,
+		basicCustomScenario);
+	// Appending the updateSettings keyword to proxy Xconf url so as to post
+	// our telemetry data to the server
+	String proxyDcmServerUpdateUrl = BroadbandPropertyFileHandler.getProxyXconfUrl() + PROXY_DCM_XCONF_UPDATE_SETTINGS_KEYWORD;
+
+	// For storing request header
+	Map<String, String> headers = new HashMap<String, String>();
+	headers.put("Content-Type", "application/json");
+
+	int httpResponseStatusCode=0;
+	
+	RestEasyClientImpl restClient = new RestEasyClientImpl();
+	
+    RestRequest request = new RestRequest(proxyDcmServerUpdateUrl, HttpRequestMethod.POST, headers);
+    request.setTimeoutInMilliSeconds(CONNECTION_TIMEOUT);
+    request.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+    request.setContent(dcmSettings.toString());
+
+    RestResponse response = null;
+    try {
+		 response = restClient.executeAndGetResponse(request);
+	} catch (RestClientException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    
+    httpResponseStatusCode = response.getResponseCode();
+    
+    LOGGER.info("HTTP POST response is : " + httpResponseStatusCode);
+	LOGGER.debug("ENDING METHOD : TelemetryUtils.postDataToProxyDcmServer");
+	return httpResponseStatusCode;
+}
+    
+    /**
+     * Helper method to get the JSON param for posting DATA to the poroxy DCM server for updating dcm stelemetry
+     * settings
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapApi
+     *            {@link AutomaticsTapApi}
+     * @return Json object containing the dcm settings
+     * @refactor yamini.s
+     */
+    public static JSONObject getJsonParamForUpdatingProxyDcmServer(Dut device, AutomaticsTapApi tapApi,
+	    boolean isLogUploadSettingsRequired, boolean basicCustomScenario) {
+
+	LOGGER.debug("STARTING METHOD : TelemetryUtils.getJsonParamForUpdatingProxyDcmServer");
+	JSONObject dcmSettings = new JSONObject();
+	// VALIDATE IF ECM MAC is returned for RDKB device
+	String stbMacAddress = device.getHostMacAddress();
+	// adding the stb mac address, log upload settings and telemetry
+	// settings
+	try {
+	    /*
+	     * Adding the telemetry settings and log upload settings based on requirements
+	     */
+	    dcmSettings.put("estbMacAddress", stbMacAddress);
+	    if (isLogUploadSettingsRequired) {
+
+		dcmSettings.put("logUploadSettings", getLogUploadSettingsForUpdatingProxyDcmServer(device, tapApi));
+	    } else {
+		dcmSettings.put("telemetrySettings",
+			getTelemetrySettingsForUpdatingProxyDcmServer(device, tapApi, basicCustomScenario));
+	    }
+
+	} catch (JSONException e) {
+
+	    e.printStackTrace();
+	}
+	LOGGER.info("DCM Settings: " + dcmSettings.toString());
+	LOGGER.debug("ENDING METHOD : TelemetryUtils.getJsonParamForUpdatingProxyDcmServer");
+	return dcmSettings;
+    }
+    
+    /**
+     * Helper method to get the loag upload settings to update dcm settings in dcm proxy server
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapApi
+     *            {@link AutomaticsTapApi}
+     * 
+     * @return Json object containing the log upload settings for updation
+     * @refactor yamini.s
+     */
+    public static JSONObject getLogUploadSettingsForUpdatingProxyDcmServer(Dut device, AutomaticsTapApi tapApi) {
+
+	LOGGER.debug("STARTING METHOD : TelemetryUtils.getLogUploadSettingsForUpdatingProxyDcmServer");
+	
+	String propValue = BroadbandPropertyFileHandler.getPropKeyForLogUploadSettings();
+	JSONObject logUploadSettings = null;
+	try {
+	    logUploadSettings = new JSONObject(propValue);
+	} catch (JSONException e) {
+	    e.printStackTrace();
+	}
+
+	LOGGER.debug("ENDING METHOD : TelemetryUtils.getLogUploadSettingsForUpdatingProxyDcmServer");
+	return logUploadSettings;
+    }
+    
+    /**
+     * helper method to get the telemetry settings to update dcm settings in dcm proxy server
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapApi
+     *            {@link AutomaticsTapApi}
+     * @return Json object containing the telemetry settings for updation
+     * @refactor yamini.s
+     */
+    public static JSONObject getTelemetrySettingsForUpdatingProxyDcmServer(Dut device, AutomaticsTapApi tapApi,
+	    boolean basicCustomScenario) {
+
+	LOGGER.debug("STARTING METHOD : TelemetryUtils.getTelemetrySettingsForUpdatingProxyDcmServer");
+	JSONObject telemetrySettings = new JSONObject();
+
+	/*
+	 * Appending the various telemtry setting values including the profiles
+	 */
+	try {
+	    telemetrySettings.put("scheduleCron", SCHEDULE_CRON_JOB_TIME_FOR_TELEMETRY);
+	    telemetrySettings.put("uploadUrl", TELEMTRY_UPLOAD_URL);
+	    telemetrySettings.put("uploadProtocol", HTTP_PROTOCOL.toUpperCase());
+	    // adding the telemetry profile to the telemetry settings
+	    telemetrySettings.put("telemetryProfile",
+		    getTelemetryProfileForUpdatingProxyDcmServer(device, tapApi, basicCustomScenario));
+	} catch (JSONException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+
+	LOGGER.debug("ENDING METHOD : TelemetryUtils.getTelemetrySettingsForUpdatingProxyDcmServer");
+	return telemetrySettings;
+    }
+    
+    /**
+     * 
+     * Helper method to get the various telemtry profiles to be added in proxy DCM server
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapApi
+     *            {@link AutomaticsTapApi}
+     * @return Json array containing the various telemetry profiles
+     * @refactor yamini.s
+     */
+    private static JSONArray getTelemetryProfileForUpdatingProxyDcmServer(Dut device, AutomaticsTapApi tapApi,
+	    boolean basicCustomScenario) {
+
+	LOGGER.debug("STARTING METHOD : TelemetryUtils.getTelemetryProfileForUpdatingProxyDcmServer");
+
+	// getting the profile props value from common.props/xi3.props based on
+	// device type
+	String propValue = null;
+
+	if (basicCustomScenario) {
+	    LOGGER.info("Getting profile for Custom Scenario");
+	    propValue = BroadbandPropertyFileHandler.getPropKeyForBasicTelemetryProfile();  
+	} else {
+	    propValue =BroadbandPropertyFileHandler.getPropKeyForTelemetryProfile(); 
+	}
+
+	JSONArray telemetryProfile = new JSONArray();
+	try {
+	    telemetryProfile = new JSONArray(propValue);
+	} catch (JSONException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+
+	LOGGER.debug("ENDING METHOD : TelemetryUtils.getTelemetryProfileForUpdatingProxyDcmServer");
+	return telemetryProfile;
+    }
+    
+    /**
+     * Helper method to reboot the device and cross check with ip after reboot. Check for reconnecting only till given
+     * time period
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param device
+     *            Dut instance
+     * @param waitTime
+     *            waitTime for how long to validate
+     * @return true if device is accessbile
+     * @author  Praveenkumar Paneerselvam
+     * @refactor yamini.s
+     */
+    public static boolean rebootAndWaitForDeviceAccessible(AutomaticsTapApi tapEnv, Dut device, long waitTime) {
+	LOGGER.debug("STARTING METHOD : rebootAndWaitForIpAcquisition ");
+	boolean status = false;
+	// Rebooting the device
+	LOGGER.debug("Rebooting the device");
+	tapEnv.reboot(device);
+	long startTime = System.currentTimeMillis();
+	do {
+	    LOGGER.info("Waiting for device to be accessed");
+	    // Devices tries to access 5 min in util tapEnv.reboot after reboot. We are just cross checking here.
+	    status = CommonMethods.isSTBAccessible(device);
+	} while (!status && (System.currentTimeMillis() - startTime) < waitTime
+		&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+	LOGGER.debug("ENDING METHOD : rebootAndWaitForIpAcquisition ");
+	return status;
+    }
+    
+    
+    /**
+     * Utility method to get the logupload url from XConf query by grepping dcmscript.log
+     * 
+     * @param device
+     *            The device under test
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param propKey
+     *            The property key for the url for verification
+     * @return The response string after executing the grep command
+     * @throws TestException
+     *             Throws exception if failed to get the required url
+     * @author divya.rs
+     * @refactor yamini.s
+     */
+    public static String verifyXconfDcmConfigurationUrlAndDownloadStatusFromDcmScriptLogs(Dut device,
+	    AutomaticsTapApi tapEnv, String propKey) throws TestException {
+	LOGGER.info("STARTING METHOD : verifyLogUploadUrlInXConfQuery");
+	String uploadurl = BroadbandPropertyFileHandler.getProxyXconfUrl(); 
+	String searchUrl = uploadurl;
+	boolean dcmUrlStatus = false;
+	boolean isTelemetry2Enabled = BroadBandWebPaUtils.getAndVerifyWebpaValueInPolledDuration(device, tapEnv, 
+		BroadBandWebPaConstants.WEBPA_PARAM_FOR_TELEMETRY_2_0_ENABLE, BroadBandTestConstants.TRUE,
+		BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS, BroadBandTestConstants.TEN_SECOND_IN_MILLIS);
+	try {
+	    long startTime = System.currentTimeMillis();
+	    do {
+		searchUrl = isTelemetry2Enabled
+			? BroadbandPropertyFileHandler.getCIXconfUrlForTelemetry2() : uploadurl;
+		LOGGER.info("URL to validate:" + searchUrl);
+		responseDcmScriptLog = tapEnv.executeCommandUsingSsh(device,
+			isTelemetry2Enabled ? BroadBandTelemetryConstants.CMD_GET_TELEMETRY_REQUEST_DETAILS_FOR_T2
+				: BroadBandTelemetryConstants.DCMSCRIPT_LOG_FILE_LOGS_FOLDER);
+	
+		LOGGER.info(
+			"SearchingForStrings: " + searchUrl + " And "
+				+ (isTelemetry2Enabled
+					? BroadBandTelemetryConstants.CMD_TO_STORE_T2_DOHTTPGET_SUCCESSFULLY
+					: BroadBandTelemetryConstants.DCM_CONFIGURATION_DOWNLOAD_STATUS_DCMSCRIPT_LOG));
+		if (CommonMethods.isNotNull(responseDcmScriptLog) && !responseDcmScriptLog
+			.contains(BroadBandTraceConstants.LOG_MESSAGE_GREP_NO_SUCH_FILE_OR_DIRECTORY)) {
+		    dcmUrlStatus = responseDcmScriptLog.contains(searchUrl) && responseDcmScriptLog.contains(
+			    isTelemetry2Enabled ? BroadBandTelemetryConstants.CMD_TO_STORE_T2_DOHTTPGET_SUCCESSFULLY
+				    : BroadBandTelemetryConstants.DCM_CONFIGURATION_DOWNLOAD_STATUS_DCMSCRIPT_LOG);
+		    LOGGER.info("dcmUrlStatus:" + dcmUrlStatus);
+		    /*
+		     * Replace default HTTPS URL with HTTP and check whether request URL is present in dcm script logs.
+		     * This is is because, most of RDKB devices are not migrated to HTTPS.
+		     */
+		    if (!dcmUrlStatus) {
+			searchUrl = searchUrl.replace("https", "http");
+			dcmUrlStatus = responseDcmScriptLog.contains(searchUrl) && responseDcmScriptLog.contains(
+				isTelemetry2Enabled ? BroadBandTelemetryConstants.CMD_TO_STORE_T2_DOHTTPGET_SUCCESSFULLY
+					: BroadBandTelemetryConstants.DCM_CONFIGURATION_DOWNLOAD_STATUS_DCMSCRIPT_LOG);
+			LOGGER.info("dcmUrlStatus after replace:" + dcmUrlStatus);
+		    }
+		}
+	    } while (!dcmUrlStatus
+		    && (System.currentTimeMillis() - startTime) < BroadBandTestConstants.TWENTY_MINUTES_IN_MILLIS
+		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.ONE_MINUTE_IN_MILLIS));
+	    if (!dcmUrlStatus) {
+		throw new TestException(
+			"Failed to get any of the expected strings in response. Expected Strings: 1." + uploadurl
+				+ "\n2." + BroadBandTelemetryConstants.DCM_CONFIGURATION_DOWNLOAD_STATUS_DCMSCRIPT_LOG
+				+ ";\nActual: " + responseDcmScriptLog);
+	    }
+	} catch (Exception e) {
+	    LOGGER.error(" Exception occurred : " + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD : verifyLogUploadUrlInXConfQuery");
+	return responseDcmScriptLog;
+    }
+    
+    /**
+     * Utility method to verify the crin settings in the device.
+     * 
+     * @param device
+     *            The device under test
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @throws TestException
+     *             Throws exception if failed to get the cron settings
+     * @author divya.rs
+     * @refactor yamini.s
+     */
+    public static boolean  verifyDcmCronJobsConfiguredBasedOnDcmSettings(Dut device, AutomaticsTapApi tapEnv,
+	    String cronSetting) throws TestException {
+	LOGGER.debug("STARTING METHOD: verifyCronSettings");
+	boolean status = false;
+	String response = null;
+
+	String command = BroadBandTelemetryConstants.CMD_CRONTAB_NON_ATOM_SYNC_AVAILABLE;
+	
+	if (CommonMethods.isAtomSyncAvailable(device, tapEnv)){
+	
+	    command = BroadBandTelemetryConstants.CMD_CRONTAB_IS_ATOM_SYNC_AVAILABLE;
+	    response = BroadBandCommonUtils.executeCommandInAtomConsole(device, tapEnv, command);
+	} else {
+	    response = tapEnv.executeCommandUsingSsh(device, command);
+	}
+
+	if (CommonMethods.isNotNull(response) && response.contains(BroadBandTestConstants.DCA_UTILITY_SH)) {
+	    if (CommonMethods.isNotNull(cronSetting)) {
+		status = response.contains(cronSetting);
+	    } else {
+		status = true;
+	    }
+	} else {
+	    errorMessage = "Device is not configured with required Cron settings mentioned in DCM configuration for uploading telemetry data events at 15 minutes of regular intervals";
+	}
+
+	LOGGER.debug("ENDING METHOD: verifyCronSettings");
+	if (!status) {
+	    throw new TestException(errorMessage);
+	}
+	return status;
+    }
+    
 }

@@ -15,22 +15,32 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-package com.automatics.rdkb;
+package com.automatics.rdkb.utils.tr69;
 
-public class TestCategory {
-    /** Test category for system test. */
-    public static final String SYSTEM = "SYSTEM";
-    
-    /** Test Category for Logging **/
-    public static final String LOGGING = "LOGGING";
-    
-    /** Test Category for Prefered Gateway **/
-    public static final String WEBPA = "WEBPA";
-    
-    /** Test category for SNMP. */
-    public static final String SNMP = "SNMP";
-    
-    /** Test Category for TR69 test */
-    public static final String TR69 = "TR69";
-    
+import java.util.List;
+
+import com.automatics.providers.tr69.Parameter;
+
+
+/**
+ * Pojo class to store the Parameters while communicating to ACS server
+ * 
+ * @author malu.s
+ *
+ */
+public class ParameterList {
+
+    private List<Parameter> parameters = null;
+
+    public List<Parameter> getList() {
+	return parameters;
+    }
+
+    public void setList(List<Parameter> list) {
+	this.parameters = list;
+    }
+
 }
+
+
+

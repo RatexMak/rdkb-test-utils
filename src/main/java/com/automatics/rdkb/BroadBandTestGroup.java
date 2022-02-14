@@ -22,4 +22,13 @@ public class BroadBandTestGroup extends TestGroup{
      * IP Multi cast Test Group.
      */
     public static final String IP_MULTI_CAST = "multicast";
+    
+    /** Test Group for self heal **/
+    public static final String SELF_HEAL = "selfheal";
+    
+    /**
+     * Reboot Test Group.
+     */
+    public static final String REBOOT = "reboot";
+    
 }

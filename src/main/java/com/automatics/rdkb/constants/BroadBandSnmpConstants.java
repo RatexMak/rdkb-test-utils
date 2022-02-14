@@ -216,6 +216,9 @@ public class BroadBandSnmpConstants {
      */
     public static final String SNMP_COMMAND_5_GHZ_SECURITY_MODE = "1010<REPLACE>";
     
+    /** SNMP Error response for No writable */
+    public static final String SNMP_ERROR_NON_WRITABLE = "notWritable";
+    
 
     /** DOCSIS MIBs */
     public static enum BROADBAND_WAREHOUSE_DOCSIS_SNMP_LIST {

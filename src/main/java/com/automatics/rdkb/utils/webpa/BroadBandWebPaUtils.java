@@ -26,6 +26,7 @@ import java.time.LocalTime;
  * @refactor Govardhan
  */
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +37,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +57,7 @@ import com.automatics.rdkb.utils.CommonUtils;
 import com.automatics.rdkb.utils.DeviceModeHandler;
 import com.automatics.rdkb.utils.dmcli.DmcliUtils;
 import com.automatics.tap.AutomaticsTapApi;
+import com.automatics.utils.AutomaticsPropertyUtility;
 import com.automatics.utils.CommonMethods;
 import com.automatics.webpa.WebPaConnectionHandler;
 import com.automatics.webpa.WebPaParameter;
@@ -2416,93 +2420,512 @@ public class BroadBandWebPaUtils {
 		return webPaServerResponse;
 	}
 
-    
-    /**
-     * Method to execute a webpa command Get Attribute
-     * 
-     * @param tapEnv
-     *            {@link AutomaticsTapApi}
-     * @param device
-     *            {@link Dut}
-     * @param parameter
-     *            WebPA command to be executed.
-     * 
-     * @return the WebPa command response
-     * 
-     * @author Sumathi Gunasekaran
-     * @refactor Govardhan
-     */
-    public static boolean executeWebPaCommandGetAttribute(AutomaticsTapApi tapEnv, Dut device, String parameter,
-	    String attribute) {
-	LOGGER.debug("STARTING METHOD: executeWebPaCommandGetAttribute");
-	boolean status = false;
-	String getAttributeValue = null;
+	/**
+	 * Method to execute a webpa command Get Attribute
+	 * 
+	 * @param tapEnv    {@link AutomaticsTapApi}
+	 * @param device    {@link Dut}
+	 * @param parameter WebPA command to be executed.
+	 * 
+	 * @return the WebPa command response
+	 * 
+	 * @author Sumathi Gunasekaran
+	 * @refactor Govardhan
+	 */
+	public static boolean executeWebPaCommandGetAttribute(AutomaticsTapApi tapEnv, Dut device, String parameter,
+			String attribute) {
+		LOGGER.debug("STARTING METHOD: executeWebPaCommandGetAttribute");
+		boolean status = false;
+		String getAttributeValue = null;
 
-	getAttributeValue = CommonUtils.concatStringUsingStringBuffer(parameter,
-		AutomaticsConstants.DELIMITER_AMPERSAND, BroadBandTestConstants.ATTRIBUTES,
-		AutomaticsConstants.DELIMITER_EQUALS, attribute);
-	LOGGER.debug("WebPA Command to be run on client " + getAttributeValue);
-	String[] commandArray = new String[] { getAttributeValue };
-	status = tapEnv.getWebPaAttributeValues(device, commandArray);
+		getAttributeValue = CommonUtils.concatStringUsingStringBuffer(parameter,
+				AutomaticsConstants.DELIMITER_AMPERSAND, BroadBandTestConstants.ATTRIBUTES,
+				AutomaticsConstants.DELIMITER_EQUALS, attribute);
+		LOGGER.debug("WebPA Command to be run on client " + getAttributeValue);
+		String[] commandArray = new String[] { getAttributeValue };
+		status = tapEnv.getWebPaAttributeValues(device, commandArray);
 
-	LOGGER.debug("ENDING METHOD: executeWebPaCommandGetAttribute");
-	return status;
-    }
-    
-    /**
-     * Method to execute and verify get webpa command with one or more webpa parameters
-     * 
-     * @param request
-     * @param settop
-     * @return
-     * @Refactor Sruthi Santhosh
-     */
-    public static long executeAndVerifyGetWebpaResponseReturnTimeDifference(String[] parameters, Dut device) {
-	LOGGER.debug("STARTING METHOD : executeAndVerifyGetWebpaResponseReturnTimeDifference () ");
-	long endTime = 0;
-	long startTime = 0;
-	long timeDifference = 0;
+		LOGGER.debug("ENDING METHOD: executeWebPaCommandGetAttribute");
+		return status;
+	}
+
+	/**
+	 * Method to execute and verify get webpa command with one or more webpa
+	 * parameters
+	 * 
+	 * @param request
+	 * @param settop
+	 * @return
+	 * @Refactor Sruthi Santhosh
+	 */
+	public static long executeAndVerifyGetWebpaResponseReturnTimeDifference(String[] parameters, Dut device) {
+		LOGGER.debug("STARTING METHOD : executeAndVerifyGetWebpaResponseReturnTimeDifference () ");
+		long endTime = 0;
+		long startTime = 0;
+		long timeDifference = 0;
+
+		try {
+			// Execution of webpa get command
+			WebPaServerResponse webPaServerResponse = new WebPaServerResponse();
+			startTime = System.currentTimeMillis();
+			webPaServerResponse = WebPaConnectionHandler.get().getWebPaParamValue(device, parameters);
+			endTime = System.currentTimeMillis();
+			if (null != webPaServerResponse) {
+				timeDifference = endTime - startTime;
+				LOGGER.info("Verification of webpa get response from device is Success");
+			} else {
+				LOGGER.error("Verification of webpa get response from device is Failure");
+			}
+		} catch (Exception exception) {
+			LOGGER.error("Failure in executing webpa command :" + exception.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD : executeAndVerifyGetWebpaResponseReturnTimeDifference () ");
+		return timeDifference;
+	}
+
+	/**
+	 * 
+	 * Method to validate webpa Set with different get value in polled time**
+	 * 
+	 * @param device
+	 * @param tapEnv
+	 * @param webPaParam
+	 * @param dataType
+	 * @param valueToBePassed
+	 * @param valueTobeValidated
+	 * @param maxDuration
+	 * @param pollDuration
+	 * @return status
+	 */
+	public static boolean setVerifyWebPAInPolledDurationForPassedValue(Dut device, AutomaticsTapApi tapEnv,
+			String webPaParam, int dataType, String valueToBePassed, String valueTobeValidated, long maxDuration,
+			long pollDuration) {
+		LOGGER.debug("Entering Method: verifyWebPaValueAfterDurationWithValidatedValueInPolledTime");
+		boolean result = false;
+		String response = null;
+		long startTime = 0;
+		WebPaParameter webPaParameter = new WebPaParameter();
+		webPaParameter = generateWebpaParameterWithValueAndType(webPaParam, valueToBePassed, dataType);
+		// Polled setting of WebPA parameter
+		startTime = System.currentTimeMillis();
+		do {
+			result = BroadBandCommonUtils.setWebPaParam(tapEnv, device, webPaParameter);
+			if (result) {
+				LOGGER.info("WebPA set successful");
+				break;
+			}
+			LOGGER.info("WebPA set failed");
+		} while ((System.currentTimeMillis() - startTime) < maxDuration
+				&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, pollDuration));
+		if (result) {
+			// Polled fetching of WebPA parameter after setting
+			startTime = System.currentTimeMillis();
+			do {
+				response = tapEnv.executeWebPaCommand(device, webPaParam);
+				// Verifying WebPA value after setting is not null and
+				// equal to value to be set
+				result = CommonMethods.isNotNull(response) && response.equalsIgnoreCase(valueTobeValidated);
+				if (result) {
+					LOGGER.info("WebPA get after set successful");
+					break;
+				}
+				LOGGER.info("WebPA get validation after set failed");
+			} while ((System.currentTimeMillis() - startTime) < maxDuration
+					&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, pollDuration));
+		}
+		LOGGER.info("Result of setting WebPaParameter values: " + result);
+		LOGGER.debug("Exiting Method: verifyWebPaValueAfterDurationWithValidatedValueInPolledTime");
+		return result;
+	}
+
+	/**
+	 * Method to get traceroute output from WEBPA and validate IP address
+	 * 
+	 * @param device
+	 * @param tapEnv
+	 * @param isIpv6Address
+	 * @return broadbandresultobject object
+	 */
+	public static BroadBandResultObject validateTraceRouteOutput(Dut device, AutomaticsTapApi tapEnv,
+			boolean isIpv6Address) {
+		boolean status = false;
+		BroadBandResultObject bandResultObject = new BroadBandResultObject();
+		try {
+			LOGGER.debug("STARTING METHOD: validateTraceRouteOutput");
+			String errorMessage = "Unable to verify traceroute hops response";
+			String response = tapEnv.executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAM_TRACEROUTE_HOPS);
+			if (CommonMethods.patternMatcher(response,
+					BroadBandWebPaConstants.WEBPA_PARAM_TRACEROUTE_HOPS_FIRST_HOST)) {
+				errorMessage = "Unable to validate traceroute host IP address";
+				response = tapEnv.executeWebPaCommand(device,
+						BroadBandWebPaConstants.WEBPA_PARAM_TRACEROUTE_HOPS_FIRST_HOST);
+				if (CommonMethods.isNotNull(response)) {
+					if (isIpv6Address) {
+						status = CommonMethods.isIpv6Address(response);
+					} else {
+						status = CommonMethods.isIpv4Address(response);
+					}
+					bandResultObject.setStatus(status);
+				} else {
+					bandResultObject.setStatus(status);
+					bandResultObject.setErrorMessage(errorMessage);
+				}
+			} else {
+				bandResultObject.setStatus(status);
+				bandResultObject.setErrorMessage(errorMessage);
+			}
+		} catch (Exception exception) {
+			LOGGER.error("Exception in Validation :validateTraceRouteOutput function ");
+		}
+		LOGGER.debug("ENDING METHOD:validateTraceRouteOutput");
+		return bandResultObject;
+	}
+
+	/**
+	 * Method to execute multiple webpa requests in parallel
+	 * 
+	 * @param settop {@link device}
+	 * @param tapEnv {@link AutomaticsTapApi}
+	 * @param params String list of webpa parameters to execute parallel requests
+	 * @return List of webpa request outputs
+	 * @refactor Alan_Bivera
+	 */
+	public static List<String> executeParallelWebPaRequests(Dut device, AutomaticsTapApi tapEnv, List<String> params) {
+
+		LOGGER.debug("Entering method: executeParallelWebPARequests");
+		// Restricting maximum number of threads to 5 to avoid memory or CPU issues
+		int numberOfThreads = (params.size() <= BroadBandTestConstants.CONSTANT_5) ? params.size()
+				: BroadBandTestConstants.CONSTANT_5;
+		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+		List<String> output = new ArrayList<String>();
+
+		try {
+			Set<Callable<String>> callables = new HashSet<Callable<String>>();
+			for (String parameter : params) {
+				Callable<String> callable = new BroadBandParallelWebPaRequest(device, tapEnv, parameter);
+				callables.add(callable);
+			}
+			List<Future<String>> futures = executor.invokeAll(callables);
+			LOGGER.debug("Submitted threads for execution");
+			for (Future<String> future : futures) {
+				output.add(future.get());
+			}
+		} catch (Exception e) {
+			LOGGER.error("Exception occured during parallel webpa request execution: " + e.getMessage());
+		} finally {
+			executor.shutdown();
+		}
+
+		LOGGER.debug("Exiting method: executeParallelWebPARequests");
+		return output;
+	}
+
+	/**
+	 * Method to execute set for multiple webpa parameters of a particular type
+	 * 
+	 * @param tapEnv            {@link AutomaticsTapApi}
+	 * @param device            {@link Dut}
+	 * @param parameterValueMap Map<string string> with all the parameters as the
+	 *                          keys and value to be set as values.
+	 * 
+	 * @param dataType          type of the webPaPrameters
+	 * @return boolean true if we get success message for all the parameters false
+	 *         even if setting one parameter fails
+	 * 
+	 *         throws TestException with failure message on failure
+	 */
+	public static boolean executeMultipleWebpaParametersSet(Dut device, AutomaticsTapApi tapEnv,
+			HashMap<String, String> parameterValueMap, int dataType) {
+		LOGGER.debug("STARTING METHOD: executeMultipleStringTypeWebpaParameters");
+		boolean status = true;
+		List<WebPaParameter> webPaParameters = new ArrayList<WebPaParameter>();
+		String errorMessage = "";
+		String responseMessage = null;
+		Map<String, String> webPaResponse = null;
+		for (String parameter : parameterValueMap.keySet()) {
+			WebPaParameter webPaParameter = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(parameter,
+					parameterValueMap.get(parameter), dataType);
+			webPaParameters.add(webPaParameter);
+		}
+		webPaResponse = tapEnv.executeMultipleWebPaSetCommands(device, webPaParameters);
+		for (String parameter : parameterValueMap.keySet()) {
+			responseMessage = webPaResponse.get(parameter);
+			if (CommonMethods.isNotNull(responseMessage)) {
+				if (!responseMessage.trim().equalsIgnoreCase(BroadBandTestConstants.SUCCESS_TXT)) {
+					errorMessage += "Failed to set parameter -" + parameter + "with value -"
+							+ parameterValueMap.get(parameter) + " webpa set response obtained is " + responseMessage
+							+ "\n";
+					status = false;
+				}
+			} else {
+				errorMessage += "Null message obtained for setting webpa parameter -" + parameter + "\n";
+				status = false;
+			}
+		}
+		if (!status) {
+			LOGGER.error(errorMessage);
+			throw new TestException(errorMessage);
+		}
+
+		LOGGER.debug("ENDING METHOD: executeMultipleStringTypeWebpaParameters");
+		return status;
+	}
+
+	/**
+	 * Method to fetch default possible channels for 2.4Ghz and 5Ghz
+	 * 
+	 * @param device                   {@link Dut}
+	 * @param tapEnv                   {@link AutomaticsTapApi}
+	 * @param wifiBand                 WiFi Band . Its 2.4 GHz/5 Ghz
+	 * @param preconditionDefaultvalue 2.4 GHz/5 Ghz channel default value.
+	 * @return possible channels for 2.4GHz /5GHz
+	 * @Refactor Sruthi Santhosh
+	 */
+
+	public static String getTheChannelInUseFor2or5Ghz(Dut device, AutomaticsTapApi tapEnv, String wifiBand,
+			String preconditionDefaultvalue) {
+		LOGGER.debug("Entering method: getTheChannelInUseFor2or5Ghz");
+		List<String> defaultChannelList = null;
+		String defaultChannel = null;
+		String webpaResponse = null;
+		String defaultChannelWepParam = null;
+		try {
+			defaultChannelWepParam = wifiBand.equalsIgnoreCase(BroadBandTestConstants.BAND_2_4GHZ)
+					? BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_POSSIBLECHANNELS
+							.replace(BroadBandTestConstants.TR181_NODE_REF, BroadBandTestConstants.RADIO_24_GHZ_INDEX)
+					: BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_POSSIBLECHANNELS
+							.replace(BroadBandTestConstants.TR181_NODE_REF, BroadBandTestConstants.RADIO_5_GHZ_INDEX);
+			webpaResponse = tapEnv.executeWebPaCommand(device, defaultChannelWepParam);
+			if (CommonMethods.isNotNull(webpaResponse)) {
+
+				defaultChannelList = Arrays.asList(webpaResponse.split(BroadBandTestConstants.CHARACTER_COMMA));
+			}
+			if (!defaultChannelList.isEmpty()) {
+				for (String defaultChannelValue : defaultChannelList) {
+					if (CommonMethods.isNotNull(preconditionDefaultvalue)
+							&& !defaultChannelValue.equalsIgnoreCase(preconditionDefaultvalue)) {
+						defaultChannel = defaultChannelValue;
+						break;
+					}
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error("Exception occured while retrieving the default channel in use: " + e.getMessage());
+		}
+		LOGGER.debug("Exiting method: getTheChannelInUseFor2or5Ghz");
+		return defaultChannel;
+	}
+
+	/**
+	 * Method Create list of webpa parameters for enable or disable Xdns
+	 * 
+	 * Below are the webpa parametera are added in the list
+	 * <li>1.Set the globalIpv4 value</li>
+	 * <li>2.Set the globalIpv6</li>
+	 * <li>3.Set the Xdns Status</li>
+	 * 
+	 * @return list of webpaparameter
+	 */
+	public static List<WebPaParameter> getListOfWebpaParametersToEnableOrDisableXdns(String xdnsStatus,
+			String globalIpv4, String globalIpv6) {
+		List<WebPaParameter> webPaParameters = new ArrayList<WebPaParameter>();
+		LOGGER.debug("ENTERING METHOD : getListOfWebpaParametersToEnableOrDisableXdns()");
+		try {
+			WebPaParameter webPaParamForGlobalDNSIPv4 = setAndReturnWebPaParameterObject(
+					BroadBandWebPaConstants.WEBPA_PARAM_TO_UPDATE_GLOBAL_XDNS_IPV4, globalIpv4,
+					WebPaDataTypes.STRING.getValue());
+			WebPaParameter webPaParamForGlobalDNSIPv6 = setAndReturnWebPaParameterObject(
+					BroadBandWebPaConstants.WEBPA_PARAM_TO_UPDATE_GLOBAL_XDNS_IPV6, globalIpv6,
+					WebPaDataTypes.STRING.getValue());
+			WebPaParameter webPaParamToEnableOrDisableXdns = setAndReturnWebPaParameterObject(
+					BroadBandWebPaConstants.WEBPA_PARAM_TO_GET_XDNS_FEATURE_STATUS, xdnsStatus,
+					BroadBandTestConstants.CONSTANT_3);
+			webPaParameters.add(webPaParamForGlobalDNSIPv4);
+			webPaParameters.add(webPaParamForGlobalDNSIPv6);
+			webPaParameters.add(webPaParamToEnableOrDisableXdns);
+		} catch (Exception e) {
+			LOGGER.error("EXCEPTION OCCURRED WHILE ADDING LIST OF WEBPA PARAMETERS TO ENABLE OR DISABLE XDNS : "
+					+ e.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD : getListOfWebpaParametersToEnableOrDisableXdns()");
+		return webPaParameters;
+	}
+
+	/**
+	 * Method to set values to webpaparameter
+	 * 
+	 * @param webPaParameter
+	 * @param value
+	 * @param dataType
+	 * @return WebPaParameter
+	 * @refactor Govardhan
+	 */
+	public static WebPaParameter setAndReturnWebPaParameterObject(String webPaParameter, String value,
+			Integer dataType) {
+		WebPaParameter webPaParam = new WebPaParameter();
+		webPaParam.setName(webPaParameter);
+		webPaParam.setDataType(dataType);
+		webPaParam.setValue(value);
+		LOGGER.info("Webpa parameters being set are:");
+		LOGGER.info("webPaParameter: " + webPaParameter);
+		LOGGER.info("webPa datatype: " + dataType);
+		LOGGER.info("webPa value: " + value);
+		return webPaParam;
+	}
+
+	/**
+	 * Method executes webpa set command with one stretch and validate with get
+	 * response
+	 * 
+	 * @param device
+	 * @param tapEnv
+	 * @param webPaParameters
+	 * @return broadbandresultobject object
+	 */
+	public static BroadBandResultObject executeSetAndGetOnMultipleWebPaGetParams(Dut device, AutomaticsTapApi tapEnv,
+			List<WebPaParameter> webPaParameters) {
+		LOGGER.info("STARTING METHOD: setAndGetWebPaParameterAtOneStretchAndValidate");
+		boolean status = false;
+		BroadBandResultObject bandResultObject = new BroadBandResultObject();
+
+		try {
+			tapEnv.executeMultipleWebPaSetCommands(device, webPaParameters);
+			tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+			String[] webPaParametersArray = new String[webPaParameters.size()];
+			for (int count = 0; count < webPaParameters.size(); count++) {
+				webPaParametersArray[count] = webPaParameters.get(count).getName();
+			}
+			String errorMessage = "Failure in setting webPa set values";
+			Map<String, String> webPaGetResponse = tapEnv.executeMultipleWebPaGetCommands(device, webPaParametersArray);
+			if (!webPaGetResponse.isEmpty()) {
+				for (int counter = 0; counter < webPaParameters.size(); counter++)
+					if (!webPaGetResponse.get(webPaParameters.get(counter).getName())
+							.equals(webPaParameters.get(counter).getValue())) {
+						errorMessage = "Failure in Validating webPa set values";
+						status = false;
+						bandResultObject.setStatus(status);
+						bandResultObject.setErrorMessage(errorMessage);
+						break;
+					} else {
+						status = true;
+						bandResultObject.setStatus(status);
+						bandResultObject.setErrorMessage(errorMessage);
+					}
+			}
+		} catch (Exception e) {
+			bandResultObject.setStatus(false);
+			bandResultObject.setErrorMessage(e.getMessage());
+			LOGGER.error("Exception occured in Validation :setAndGetWebPaParameterAtOneStretchAndValidate");
+		}
+		LOGGER.info("ENDING METHOD :setAndGetWebPaParameterAtOneStretchAndValidate");
+		return bandResultObject;
+	}
+
+	/**
+	 * Helper method to get the Partner ID of the Device
+	 * 
+	 * @param settop {@link device}
+	 * @param tapEnv {@link tapEnv}
+	 * 
+	 */
+	public static void getPartnerIdOfDevice(Dut device, AutomaticsTapApi tapEnv) {
+		String partnerId = null;
+		long startTime = System.currentTimeMillis();
+		do {
+			partnerId = tapEnv.executeWebPaCommand(device,
+					BroadBandWebPaConstants.WEBPA_PARAM_FOR_SYNDICATION_PARTNER_ID);
+			LOGGER.info("Current Partner ID of the device Retrieved via WEBPA is :" + partnerId);
+
+		} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TWO_MINUTE_IN_MILLIS
+				&& !CommonMethods.isNotNull(partnerId)
+				&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+	}
+
+	/**
+	 * Method Create list of webpa parameters for enabling public wifi for both
+	 * SSID's
+	 * 
+	 * Below are the webpa parametera are added in the list
+	 * <li>1.Set the DSCPMarkPolicy value as "44"</li>
+	 * <li>2.Set the PrimaryRemoteEndpoint value as <primary_remote_endpoint>"</li>
+	 * <li>3.Set the SecondaryRemoteEndpoint as <secondary_remote_endpoint>"</li>
+	 * <li>4.Set the public WiFi 5 GHz name as "<public wifi_5_name>"</li>
+	 * <li>5.Set 5 GHz public WiFi SSID value as "true"</li>
+	 * <li>6.Set 5 GHz public WiFi Security mode as "none"</li>
+	 * <li>7.Set public WiFi value as "true"</li>
+	 * 
+	 * @return list of webpaparameter
+	 * @Refactor Sruthi Santhosh
+	 */
+	public static List<WebPaParameter> getListOfWebpaParametersForBothPublicWifis() {
+
+		LOGGER.debug("STARTING METHOD: getListOfWebpaParametersForBothPublicWifis");
+		List<WebPaParameter> webPaParameters = new ArrayList<WebPaParameter>();
+		WebPaParameter webPaParamForDscpPolicy = setAndReturnWebPaParameterObject(
+				BroadBandWebPaConstants.WEBPA_PARAM_DSCP_MARK_POLICY, BroadBandTestConstants.DSCP_MARK_POLICY,
+				BroadBandTestConstants.INCERMENTAL_ONE);
+		WebPaParameter webPaParamPrimaryEndPoint = setAndReturnWebPaParameterObject(
+				BroadBandWebPaConstants.WEBPA_PARAM_PRIMARY_REMOTE_ENDPOINT,
+				AutomaticsPropertyUtility.getProperty(BroadBandTestConstants.PROP_KEY_PRIMARY_ENDPOINT_IP),
+				BroadBandTestConstants.CONSTANT_0);
+		WebPaParameter webPaParamSecondaryEndpoint = setAndReturnWebPaParameterObject(
+				BroadBandWebPaConstants.WEBPA_PARAM_SECONDARY_REMOTE_ENDPOINT,
+				AutomaticsPropertyUtility.getProperty(BroadBandTestConstants.PROP_KEY_SECONDARY_ENDPOINT_IP),
+				BroadBandTestConstants.CONSTANT_0);
+		WebPaParameter webPaParam5ghzWifi = setAndReturnWebPaParameterObject(
+				BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID,
+				BroadBandTestConstants.PUBLIC_WIFI_SSID_5, BroadBandTestConstants.CONSTANT_0);
+		WebPaParameter webPaParam5GhzPublicSSIDEnableStatus = setAndReturnWebPaParameterObject(
+				BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID_ENABLE_STATUS,
+				BroadBandTestConstants.TRUE, BroadBandTestConstants.INCERMENTAL_THREE);
+		WebPaParameter webPaParam5GhzPublicSSIDSecurityMode = setAndReturnWebPaParameterObject(
+				BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_5_GHZ_PUBLIC_SECURITY_MODEENABLED,
+				BroadBandTestConstants.SECURITY_MODE_NONE, BroadBandTestConstants.CONSTANT_0);
+		WebPaParameter webPaParamEnablePublicWifi = setAndReturnWebPaParameterObject(
+				BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI, BroadBandTestConstants.TRUE,
+				BroadBandTestConstants.CONSTANT_3);
+		WebPaParameter webPaParamEnablePublicWifiAdvertisementEnabled = setAndReturnWebPaParameterObject(
+				BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID_ADVERTISE_ENABLED,
+				BroadBandTestConstants.TRUE, BroadBandTestConstants.CONSTANT_3);
+		webPaParameters.add(webPaParamForDscpPolicy);
+		webPaParameters.add(webPaParamPrimaryEndPoint);
+		webPaParameters.add(webPaParamSecondaryEndpoint);
+		webPaParameters.add(webPaParam5ghzWifi);
+		webPaParameters.add(webPaParam5GhzPublicSSIDEnableStatus);
+		webPaParameters.add(webPaParam5GhzPublicSSIDSecurityMode);
+		webPaParameters.add(webPaParamEnablePublicWifi);
+		webPaParameters.add(webPaParamEnablePublicWifiAdvertisementEnabled);
+		LOGGER.debug("ENDING METHOD: getListOfWebpaParametersForBothPublicWifis");
+		return webPaParameters;
+	}
 	
-	try {
-	    // Execution of webpa get command
-	    WebPaServerResponse webPaServerResponse = new WebPaServerResponse();
-	    startTime = System.currentTimeMillis();
-	    webPaServerResponse = WebPaConnectionHandler.get().getWebPaParamValue(device, parameters);
-	    endTime = System.currentTimeMillis();
-	    if (null != webPaServerResponse) {
-		timeDifference = endTime - startTime;
-		LOGGER.info("Verification of webpa get response from device is Success");
-		    } 
-	    else {
-		LOGGER.error("Verification of webpa get response from device is Failure");
-		 }
-	} catch (Exception exception) {
-	    LOGGER.error("Failure in executing webpa command :" + exception.getMessage());
-	} 
-	LOGGER.debug("ENDING METHOD : executeAndVerifyGetWebpaResponseReturnTimeDifference () ");
-	return timeDifference;
-    }
-    /**
-     * 
-     * Method to validate webpa Set with different get value in polled time**
+	/**
+     * Method to do polled set of WebPA parameter, then poll get operation for specified duration set.
      * 
      * @param device
+     *            The device to be used.
      * @param tapEnv
-     * @param webPaParam
+     *            The {@link AutomaticsTapApi} instance.
+     * @param webpaParameter
+     *            The webpa parameter that has to be passed.
      * @param dataType
+     *            Data type of the value.
      * @param valueToBePassed
-     * @param valueTobeValidated
+     *            Value that has to be passed.
      * @param maxDuration
+     *            value in milliseconds to totally poll for
      * @param pollDuration
-     * @return status
+     *            value in milliseconds to wait for in between checks
+     * @return result Boolean value representing the result of set and get actions.
+     * 
      */
-    public static boolean setVerifyWebPAInPolledDurationForPassedValue(Dut device, AutomaticsTapApi tapEnv,
-	    String webPaParam, int dataType, String valueToBePassed, String valueTobeValidated, long maxDuration,
-	    long pollDuration) {
-	LOGGER.debug("Entering Method: verifyWebPaValueAfterDurationWithValidatedValueInPolledTime");
+
+    public static boolean setWebPAInPolledDuration(Dut device, AutomaticsTapApi tapEnv, String webPaParam, int dataType,
+	    String valueToBePassed, long maxDuration, long pollDuration) {
+	LOGGER.debug("STARTING METHOD: setWebPAInPolledDuration");
 	boolean result = false;
-	String response = null;
-	long startTime = 0;
+	// Polled fetching of WebPA parameter before setting
+	long startTime = System.currentTimeMillis();
 	WebPaParameter webPaParameter = new WebPaParameter();
 	webPaParameter = generateWebpaParameterWithValueAndType(webPaParam, valueToBePassed, dataType);
 	// Polled setting of WebPA parameter
@@ -2516,162 +2939,761 @@ public class BroadBandWebPaUtils {
 	    LOGGER.info("WebPA set failed");
 	} while ((System.currentTimeMillis() - startTime) < maxDuration
 		&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, pollDuration));
-	if (result) {
-	    // Polled fetching of WebPA parameter after setting
-	    startTime = System.currentTimeMillis();
-	    do {
-		response = tapEnv.executeWebPaCommand(device, webPaParam);
-		// Verifying WebPA value after setting is not null and
-		// equal to value to be set
-		result = CommonMethods.isNotNull(response) && response.equalsIgnoreCase(valueTobeValidated);
-		if (result) {
-		    LOGGER.info("WebPA get after set successful");
-		    break;
-		}
-		LOGGER.info("WebPA get validation after set failed");
-	    } while ((System.currentTimeMillis() - startTime) < maxDuration
-		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, pollDuration));
-	}
-	LOGGER.info("Result of setting WebPaParameter values: " + result);
-	LOGGER.debug("Exiting Method: verifyWebPaValueAfterDurationWithValidatedValueInPolledTime");
+
+	LOGGER.debug("EXITING METHOD: setWebPAInPolledDuration");
 	return result;
     }
     
     /**
-     * Method to get traceroute output from WEBPA and validate IP address
+     * Method used to the execute the multiple webpa parameter
      * 
      * @param device
+     *            instance of {@link Settop}
      * @param tapEnv
-     * @param isIpv6Address
-     * @return broadbandresultobject object
+     *            instance of {@link AutomaticsTapApi}
+     * @param listOfWebpaGetParameters
+     *            List of webpa parameters to execute
+     * @return webpaResponseMap Its return the key and pair value given list of webpa parameters
      */
-    public static BroadBandResultObject validateTraceRouteOutput(Dut device, AutomaticsTapApi tapEnv,
-	    boolean isIpv6Address) {
-	boolean status = false;
-	BroadBandResultObject bandResultObject = new BroadBandResultObject();
+    public static Map<String, String> executeAndGetListOfWebParameters(Dut device, AutomaticsTapApi tapEnv,
+	    String[] listOfWebpaGetParameters) {
+	LOGGER.debug("STARTING METHOD: executeAndGetListOfWebParameters()");
+	Map<String, String> webpaResponseMap = null;
 	try {
-	    LOGGER.debug("STARTING METHOD: validateTraceRouteOutput");
-	    String errorMessage = "Unable to verify traceroute hops response";
-	    String response = tapEnv.executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAM_TRACEROUTE_HOPS);
-	    if (CommonMethods.patternMatcher(response,
-		    BroadBandWebPaConstants.WEBPA_PARAM_TRACEROUTE_HOPS_FIRST_HOST)) {
-		errorMessage = "Unable to validate traceroute host IP address";
-		response = tapEnv.executeWebPaCommand(device,
-			BroadBandWebPaConstants.WEBPA_PARAM_TRACEROUTE_HOPS_FIRST_HOST);
-		if (CommonMethods.isNotNull(response)) {
-		    if (isIpv6Address) {
-			status = CommonMethods.isIpv6Address(response);
-		    } else {
-			status = CommonMethods.isIpv4Address(response);
-		    }
-		    bandResultObject.setStatus(status);
-		} else {
-		    bandResultObject.setStatus(status);
-		    bandResultObject.setErrorMessage(errorMessage);
-		}
-	    } else {
-		bandResultObject.setStatus(status);
-		bandResultObject.setErrorMessage(errorMessage);
-	    }
-	} catch (Exception exception) {
-	    LOGGER.error("Exception in Validation :validateTraceRouteOutput function ");
+	    webpaResponseMap = tapEnv.executeMultipleWebPaGetCommands(device, listOfWebpaGetParameters);
+	} catch (Exception exec) {
+	    LOGGER.error("Failed to get the list of wepba parameter map:" + exec.getMessage());
 	}
-	LOGGER.debug("ENDING METHOD:validateTraceRouteOutput");
-	return bandResultObject;
-    }
-    
-    /**
-     * Method to execute multiple webpa requests in parallel
-     * 
-     * @param settop
-     *            {@link device}
-     * @param tapEnv
-     *            {@link AutomaticsTapApi}
-     * @param params
-     *            String list of webpa parameters to execute parallel requests
-     * @return List of webpa request outputs
-     * @refactor Alan_Bivera
-     */
-    public static List<String> executeParallelWebPaRequests(Dut device, AutomaticsTapApi tapEnv, List<String> params) {
-
-	LOGGER.debug("Entering method: executeParallelWebPARequests");
-	// Restricting maximum number of threads to 5 to avoid memory or CPU issues
-	int numberOfThreads = (params.size() <= BroadBandTestConstants.CONSTANT_5) ? params.size()
-		: BroadBandTestConstants.CONSTANT_5;
-	ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
-	List<String> output = new ArrayList<String>();
-
-	try {
-	    Set<Callable<String>> callables = new HashSet<Callable<String>>();
-	    for (String parameter : params) {
-		Callable<String> callable = new BroadBandParallelWebPaRequest(device, tapEnv, parameter);
-		callables.add(callable);
-	    }
-	    List<Future<String>> futures = executor.invokeAll(callables);
-	    LOGGER.debug("Submitted threads for execution");
-	    for (Future<String> future : futures) {
-		output.add(future.get());
-	    }
-	} catch (Exception e) {
-	    LOGGER.error("Exception occured during parallel webpa request execution: " + e.getMessage());
-	} finally {
-	    executor.shutdown();
-	}
-
-	LOGGER.debug("Exiting method: executeParallelWebPARequests");
-	return output;
+	LOGGER.debug("ENDING METHOD: executeAndGetListOfWebParameters()");
+	return webpaResponseMap;
     }
 
     /**
-     * Method to execute set for multiple webpa parameters of a particular type
+     * Method used to set and verify the Non default values for common web Parameters
      * 
      * @param tapEnv
      *            {@link AutomaticsTapApi}
      * @param device
      *            {@link Dut}
-     * @param parameterValueMap
-     *            Map<string string> with all the parameters as the keys and value to be set as values.
-     * 
-     * @param dataType
-     *            type of the webPaPrameters
-     * @return boolean true if we get success message for all the parameters false even if setting one parameter fails
-     * 
-     *         throws TestException with failure message on failure
+     * @param initialMapValues
+     *            Instance of {Map}
+     * @param setInPostCond
+     *            setInPostCond portForwardingEnable should be enabled/disabled when device is in router mode
+     * @return setValuesMap Instance of {Map}
+     * @refactor Govardhan
      */
-    public static boolean executeMultipleWebpaParametersSet(Dut device, AutomaticsTapApi tapEnv,
-	    HashMap<String, String> parameterValueMap, int dataType) {
-	LOGGER.debug("STARTING METHOD: executeMultipleStringTypeWebpaParameters");
-	boolean status = true;
-	List<WebPaParameter> webPaParameters = new ArrayList<WebPaParameter>();
-	String errorMessage = "";
-	String responseMessage = null;
-	Map<String, String> webPaResponse = null;
-	for (String parameter : parameterValueMap.keySet()) {
-	    WebPaParameter webPaParameter = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(parameter,
-		    parameterValueMap.get(parameter), dataType);
-	    webPaParameters.add(webPaParameter);
-	}
-	webPaResponse = tapEnv.executeMultipleWebPaSetCommands(device, webPaParameters);
-	for (String parameter : parameterValueMap.keySet()) {
-	    responseMessage = webPaResponse.get(parameter);
-	    if (CommonMethods.isNotNull(responseMessage)) {
-		if (!responseMessage.trim().equalsIgnoreCase(BroadBandTestConstants.SUCCESS_TXT)) {
-		    errorMessage += "Failed to set parameter -" + parameter + "with value -"
-			    + parameterValueMap.get(parameter) + " webpa set response obtained is " + responseMessage
-			    + "\n";
-		    status = false;
-		}
-	    } else {
-		errorMessage += "Null message obtained for setting webpa parameter -" + parameter + "\n";
-		status = false;
-	    }
-	}
-	if (!status) {
-	    LOGGER.error(errorMessage);
-	    throw new TestException(errorMessage);
-	}
+    public static Map<String, String> setTheCommonWebParams(Dut device, AutomaticsTapApi tapEnv,
+	    Map<String, String> initialMapValues, boolean setInPostCond) {
+	LOGGER.debug("STARTING METHOD: setTheCommonWebParams()");
+	Map<String, String> setValuesMap = null;
+	try {
+	    List<WebPaParameter> webPaParameters = new ArrayList<WebPaParameter>();
 
-	LOGGER.debug("ENDING METHOD: executeMultipleStringTypeWebpaParameters");
+	    WebPaParameter dmzLanIpAddress = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAM_TO_CONFIGURE_LAN_IP_ADDRESS_TO_DMZ,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+		    ? initialMapValues
+			    .get(BroadBandWebPaConstants.WEBPA_PARAM_TO_CONFIGURE_LAN_IP_ADDRESS_TO_DMZ)
+		    : DeviceModeHandler.isBusinessClassDevice(device)
+			    ? BroadBandTestConstants.STRING_DHCP_MIN_ADDRESS_BUSSI
+			    : BroadBandTestConstants.STRING_DHCP_MIN_ADDRESS,
+	    BroadBandTestConstants.CONSTANT_0);
+
+
+	    WebPaParameter cloudUiStauts = null;
+	    cloudUiStauts = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_CLOUD_UI,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_CLOUD_UI)
+			    : BroadBandTestConstants.TRUE,
+		    BroadBandTestConstants.CONSTANT_3);
+
+	    WebPaParameter erouterEnable = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_DEVICE_CONTROL_EROUTER_ENABLE,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues
+				    .get(BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_DEVICE_CONTROL_EROUTER_ENABLE)
+			    : BroadBandTestConstants.FALSE,
+		    BroadBandTestConstants.CONSTANT_3);
+
+	    WebPaParameter portForwardingEnable = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAM_TO_ENABLE_AND_DISABLE_PORT_FORWARDING,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues
+				    .get(BroadBandWebPaConstants.WEBPA_PARAM_TO_ENABLE_AND_DISABLE_PORT_FORWARDING)
+			    : BroadBandTestConstants.TRUE,
+		    BroadBandTestConstants.CONSTANT_3);
+
+	    webPaParameters.add(dmzLanIpAddress);
+	    webPaParameters.add(cloudUiStauts);
+	    webPaParameters.add(erouterEnable);
+	    webPaParameters.add(portForwardingEnable);
+
+	    setValuesMap = validateMulitpleWebpaResponse(device, tapEnv, webPaParameters);
+	} catch (Exception e) {
+	    LOGGER.error("Exception occurred while set the common webpa parameters:" + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: setTheCommonWebParams()");
+	return setValuesMap;
+    }
+
+    
+    /**
+     * Method used to execute and validate the Multiple webpa response
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param webPaParameters
+     *            List of web parameters
+     * @return key and values for set values
+     * @refactor Govardhan
+     */
+    public static Map<String, String> validateMulitpleWebpaResponse(Dut device, AutomaticsTapApi tapEnv,
+	    List<WebPaParameter> webPaParameters) {
+	LOGGER.debug("STARTING METHOD: validateMulitpleWebpaResponse()");
+	Map<String, String> setValuesMap = null;
+	boolean status = true;
+	Map<String, String> webPaResponse = null;
+	String responseMessage = null;
+	try {
+	    webPaResponse = tapEnv.executeMultipleWebPaSetCommands(device, webPaParameters);
+	    doApplySettingsForWiFiParameter(device, tapEnv, webPaParameters);
+	    if (!webPaResponse.isEmpty()) {
+		for (Map.Entry<String, String> webpaResp : webPaResponse.entrySet()) {
+		    responseMessage = webpaResp.getValue();
+		    if (CommonMethods.isNotNull(responseMessage)) {
+			if (!responseMessage.trim().equalsIgnoreCase(BroadBandTestConstants.SUCCESS_TXT)) {
+			    LOGGER.error("Failed to set parameter -" + webpaResp.getKey() + "with value -"
+				    + webpaResp.getValue() + " webpa set response obtained is " + responseMessage
+				    + "\n");
+			    status = false;
+			}
+		    } else {
+			LOGGER.error("Null message obtained for setting webpa parameter -" + webpaResp.getKey() + "\n");
+			status = false;
+		    }
+		}
+		if (status) {
+		    LOGGER.info("webPaParameters size:" + webPaParameters.size());
+		    setValuesMap = new HashMap<>();
+		    for (WebPaParameter webparam : webPaParameters) {
+			LOGGER.info("webparam : " + webparam.getName() + " Value : " + webparam.getValue());
+			setValuesMap.put(webparam.getName(), webparam.getValue());
+		    }
+		}
+	    }
+	    LOGGER.info("setValuesMap size:" + setValuesMap.size());
+	} catch (Exception exec) {
+	    LOGGER.error("Exception occurred while validating validateMulitpleWebpaResponse():" + exec.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: validateMulitpleWebpaResponse()");
+	return setValuesMap;
+    }
+
+    /**
+     * Method used to do the apply settings for wifi parameter
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param webPaParameters
+     *            List of web parameters
+     * @return key and values for set values
+     */
+    public static boolean doApplySettingsForWiFiParameter(Dut device, AutomaticsTapApi tapEnv,
+	    List<WebPaParameter> webPaParameters) {
+	LOGGER.debug("STARTING METHOD: doApplySettingsForWiFiParameter()");
+	boolean status = false;
+	boolean isWiFiParameterPresent = false;
+	HashMap<String, String> parameterValueMap = new HashMap<String, String>();
+	try {
+	    for (WebPaParameter param : webPaParameters) {
+		if (param.getName().contains(BroadBandWebPaConstants.WEBPA_TABLE_DEVICE_WIFI)) {
+		    isWiFiParameterPresent = true;
+		    LOGGER.info("Wi-Fi SET Parameter Present, adding Apply setting parameters");
+		    break;
+		}
+	    }
+	    if (isWiFiParameterPresent) {
+		parameterValueMap.put(BroadBandWebPaConstants.WEBPA_PARAM_WIFI_2_4_APPLY_SETTING,
+			BroadBandTestConstants.TRUE);
+		parameterValueMap.put(BroadBandWebPaConstants.WEBPA_PARAM_WIFI_5_APPLY_SETTING,
+			BroadBandTestConstants.TRUE);
+		status = BroadBandWebPaUtils.executeMultipleWebpaParametersSet(device, tapEnv, parameterValueMap,
+			WebPaDataTypes.BOOLEAN.getValue());
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Failed to do the apply settings:" + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: doApplySettingsForWiFiParameter()");
 	return status;
     }
+    
+    /**
+     * Method to validate the two Map Entries. i.e comparing the key an value pair both maps
+     * 
+     * @param device
+     *            instance of {@link Settop}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param inititalValues
+     *            instance of initial map values {@link Map}
+     * @param valuesToCompare
+     *            instance of current map values {@link Map}
+     * @return resultCount. True- Map comparison success. Else-False
+     */
+    public static boolean verifyWebpaGetResponseValues(Dut device, AutomaticsTapApi tapEnv,
+	    Map<String, String> inititalValues, Map<String, String> valuesToCompare) {
+	LOGGER.debug("STARTING METHOD: verifyWebpaGetResponseValues()");
+	boolean status = false;
+	int resultCount = BroadBandTestConstants.CONSTANT_0;
+	try {
+	    if (inititalValues.size() == valuesToCompare.size()) {
+		for (Map.Entry<String, String> initialEntityMap : inititalValues.entrySet()) {
+		    for (Map.Entry<String, String> actualEntityMap : valuesToCompare.entrySet()) {
+			if (initialEntityMap.getKey().equals(actualEntityMap.getKey())) {
+			    if (initialEntityMap.getValue().trim().equals(actualEntityMap.getValue().trim())) {
+				resultCount = resultCount + BroadBandTestConstants.CONSTANT_1;
+				LOGGER.info("Successfully compared Initial webparam :" + initialEntityMap.getKey()
+					+ " and value:" + initialEntityMap.getValue() + " " + "Current webparam :"
+					+ actualEntityMap.getKey() + " and value:" + actualEntityMap.getValue());
+			    } else {
+				LOGGER.error("Failed to compare Initial webparam :" + initialEntityMap.getKey()
+					+ " and value:" + initialEntityMap.getValue() + " " + "Current webparam :"
+					+ actualEntityMap.getKey() + " and value:" + actualEntityMap.getValue());
+			    }
+			}
+		    }
+		}
+	    } else {
+		LOGGER.error("Initital list of params size " + inititalValues.size()
+			+ " and value to compare list size " + valuesToCompare.size() + " are not same ");
+	    }
+	    status = (inititalValues.size() == resultCount && valuesToCompare.size() == resultCount);
+	} catch (Exception e) {
+	    LOGGER.error("Failed to compare the map values:" + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: verifyWebpaGetResponseValues()");
+	return status;
+    }
+
+    
+    /**
+     * Method used to set and verify the Non default values for 2.4 and 5 GHz radios
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param initialMapValues
+     *            Instance of {Map}
+     * @return setValuesMap Instance of {Map}
+     * @refactor Govardhan
+     */
+    public static Map<String, String> setTheWebParamForWifiRadios(Dut device, AutomaticsTapApi tapEnv,
+	    Map<String, String> initialMapValues) {
+	LOGGER.debug("STARTING METHOD: setTheWebParamForWifiRadios()");
+	Map<String, String> setValuesMap = null;
+	try {
+	    List<WebPaParameter> webPaParameters = new ArrayList<WebPaParameter>();
+	    /** 2.4 GHz radio values */
+	    WebPaParameter extensionChannelFor24Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAM_FOR_24GHZ_EXTENSION_CHANNEL,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(BroadBandWebPaConstants.WEBPA_PARAM_FOR_24GHZ_EXTENSION_CHANNEL)
+			    : BroadBandTestConstants.EXTENSION_CHANNEL_VALUE,
+		    BroadBandTestConstants.CONSTANT_0);
+
+	    WebPaParameter beaconIntervalFor24Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_2GHZ_BEACON_INTERVAL,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_2GHZ_BEACON_INTERVAL)
+			    : BroadBandTestConstants.STRING_CONSTANT_15,
+		    BroadBandTestConstants.CONSTANT_2);
+
+	    WebPaParameter basicRateFor24Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_2GHZ_RADIO_BASIC_RATE,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_2GHZ_RADIO_BASIC_RATE)
+			    : BroadBandTestConstants.STRING_ALL,
+		    BroadBandTestConstants.CONSTANT_0);
+
+	    WebPaParameter operatingStdFor24Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_2_4_GHZ_OPERATING_STANDARD,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(
+				    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_2_4_GHZ_OPERATING_STANDARD)
+			    : BroadBandTestConstants.OPERATING_MODE_N,
+		    BroadBandTestConstants.CONSTANT_0);
+
+	    WebPaParameter transmitPowerFor24Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_2GHZ_RADIO_TRANSMIT_POWER,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues
+				    .get(BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_2GHZ_RADIO_TRANSMIT_POWER)
+			    : BroadBandTestConstants.STRING_VALUE_TWENTY_FIVE,
+		    BroadBandTestConstants.CONSTANT_1);
+
+	    WebPaParameter radioStatusFor24Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAM_WIFI_2_4_RADIO_ENABLE,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(BroadBandWebPaConstants.WEBPA_PARAM_WIFI_2_4_RADIO_ENABLE)
+			    : BroadBandTestConstants.FALSE,
+		    BroadBandTestConstants.CONSTANT_3);
+
+	    WebPaParameter radioChannelFor24Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_WAREHOUSE_WIFI_2G_CHANNEL,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(BroadBandWebPaConstants.WEBPA_WAREHOUSE_WIFI_2G_CHANNEL)
+			    : BroadBandTestConstants.RADIO_CHANNEL_11,
+		    BroadBandTestConstants.CONSTANT_2);
+
+	    WebPaParameter radioWirelessChannelFor24Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_WAREHOUSE_WIFI_2G_WIRELESS_CHANNEL,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(BroadBandWebPaConstants.WEBPA_WAREHOUSE_WIFI_2G_WIRELESS_CHANNEL)
+			    : BroadBandTestConstants.FALSE,
+		    BroadBandTestConstants.CONSTANT_3);
+
+	    WebPaParameter operChannelBandwidthFor24Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAM_FOR_OPERATING_BANDWIDTH_IN_2GHZ_BAND,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues
+				    .get(BroadBandWebPaConstants.WEBPA_PARAM_FOR_OPERATING_BANDWIDTH_IN_2GHZ_BAND)
+			    : BroadBandTestConstants.CHANNEL_WIDTH_40MHZ,
+		    BroadBandTestConstants.CONSTANT_0);
+
+	    WebPaParameter dfsEnableFor24Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_2GHZ_RADIO_DFS_ENABLE,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_2GHZ_RADIO_DFS_ENABLE)
+			    : BroadBandTestConstants.TRUE,
+		    BroadBandTestConstants.CONSTANT_3);
+
+	    /** 5 GHz radio values */
+	    WebPaParameter extensionChannelFor5Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAM_FOR_5GHZ_EXTENSION_CHANNEL,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(BroadBandWebPaConstants.WEBPA_PARAM_FOR_5GHZ_EXTENSION_CHANNEL)
+			    : BroadBandTestConstants.EXTENSION_CHANNEL_VALUE,
+		    BroadBandTestConstants.CONSTANT_0);
+
+	    WebPaParameter beaconIntervalFor5Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_BEACON_INTERVAL,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_BEACON_INTERVAL)
+			    : BroadBandTestConstants.STRING_CONSTANT_15,
+		    BroadBandTestConstants.CONSTANT_2);
+
+	    WebPaParameter basicRateFor5Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_5GHZ_RADIO_BASIC_RATE,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_5GHZ_RADIO_BASIC_RATE)
+			    : BroadBandTestConstants.STRING_ALL,
+		    BroadBandTestConstants.CONSTANT_0);
+
+	    WebPaParameter operatingStdFor5Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_5GHZ_OPERATING_STANDARD,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues
+				    .get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_5GHZ_OPERATING_STANDARD)
+			    : BroadBandTestConstants.OPERATING_MODE_N,
+		    BroadBandTestConstants.CONSTANT_0);
+
+	    WebPaParameter transmitPowerFor5Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_5GHZ_RADIO_TRANSMIT_POWER,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues
+				    .get(BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_5GHZ_RADIO_TRANSMIT_POWER)
+			    : BroadBandTestConstants.STRING_VALUE_TWENTY_FIVE,
+		    BroadBandTestConstants.CONSTANT_1);
+
+	    WebPaParameter radioStatusFor5Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAM_WIFI_5_RADIO_ENABLE,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(BroadBandWebPaConstants.WEBPA_PARAM_WIFI_5_RADIO_ENABLE)
+			    : BroadBandTestConstants.FALSE,
+		    BroadBandTestConstants.CONSTANT_3);
+
+	    WebPaParameter radioChannelFor5Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_WAREHOUSE_WIFI_5G_CHANNEL,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(BroadBandWebPaConstants.WEBPA_WAREHOUSE_WIFI_5G_CHANNEL)
+			    : BroadBandTestConstants.RADIO_CHANNEL_36,
+		    BroadBandTestConstants.CONSTANT_2);
+
+	    WebPaParameter radioWirelessChannelFor5Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_WAREHOUSE_WIFI_5G_WIRELESS_CHANNEL,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(BroadBandWebPaConstants.WEBPA_WAREHOUSE_WIFI_5G_WIRELESS_CHANNEL)
+			    : BroadBandTestConstants.FALSE,
+		    BroadBandTestConstants.CONSTANT_3);
+
+	    WebPaParameter operChannelBandwidthFor5Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAM_FOR_OPERATING_BANDWIDTH_IN_5GHZ_BAND,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues
+				    .get(BroadBandWebPaConstants.WEBPA_PARAM_FOR_OPERATING_BANDWIDTH_IN_5GHZ_BAND)
+			    : BroadBandTestConstants.CHANNEL_WIDTH_40MHZ,
+		    BroadBandTestConstants.CONSTANT_0);
+
+	    WebPaParameter dfsEnableFor5Ghz = BroadBandWebPaUtils.setAndReturnWebPaParameterObject(
+		    BroadBandWebPaConstants.WEBPA_PARAM_DFS_ENABLE,
+		    (initialMapValues != null && !initialMapValues.isEmpty())
+			    ? initialMapValues.get(BroadBandWebPaConstants.WEBPA_PARAM_DFS_ENABLE)
+			    : BroadBandTestConstants.TRUE,
+		    BroadBandTestConstants.CONSTANT_3);
+
+	    webPaParameters.add(extensionChannelFor24Ghz);
+	    webPaParameters.add(beaconIntervalFor24Ghz);
+	    webPaParameters.add(basicRateFor24Ghz);
+	    webPaParameters.add(operatingStdFor24Ghz);
+	    webPaParameters.add(transmitPowerFor24Ghz);
+	    webPaParameters.add(radioStatusFor24Ghz);
+	    webPaParameters.add(radioChannelFor24Ghz);
+	    webPaParameters.add(radioWirelessChannelFor24Ghz);
+	    webPaParameters.add(operChannelBandwidthFor24Ghz);
+	    webPaParameters.add(dfsEnableFor24Ghz);
+	    webPaParameters.add(extensionChannelFor5Ghz);
+	    webPaParameters.add(beaconIntervalFor5Ghz);
+	    webPaParameters.add(basicRateFor5Ghz);
+	    webPaParameters.add(operatingStdFor5Ghz);
+	    webPaParameters.add(transmitPowerFor5Ghz);
+	    webPaParameters.add(radioStatusFor5Ghz);
+	    webPaParameters.add(radioChannelFor5Ghz);
+	    webPaParameters.add(radioWirelessChannelFor5Ghz);
+	    webPaParameters.add(operChannelBandwidthFor5Ghz);
+	    webPaParameters.add(dfsEnableFor5Ghz);
+	    setValuesMap = validateMulitpleWebpaResponse(device, tapEnv, webPaParameters);
+	} catch (Exception e) {
+	    LOGGER.error("Exception occurred while set the value for 2.4 and 5 GHz radios :" + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: setTheWebParamForWifiRadios()");
+	return setValuesMap;
+    }
+    
+    /**
+     * Method used to verify the map values in empty or null
+     * 
+     * @param responseMap
+     *            Instance of {@Map}
+     * @return resultCount True-Map doesn't have any empty or null valuse.Else-False
+     * @refactor Govardhan
+     */
+    public static boolean getAndVerifyMapValueIsNotNullOrEmpty(Map<String, String> responseMap) {
+	LOGGER.debug("STARTING METHOD: getAndVerifyMapValueIsNotNullOrEmpty()");
+	boolean status = false;
+	int resultCount = BroadBandTestConstants.CONSTANT_0;
+	try {
+	    for (Map.Entry<String, String> responseMapValues : responseMap.entrySet()) {
+		if (CommonUtils.isNotEmptyOrNull(responseMapValues.getValue())) {
+		    resultCount = resultCount + BroadBandTestConstants.CONSTANT_1;
+		} else {
+		    LOGGER.error("Parameter :" + responseMapValues.getKey() + " value is empty or null : "
+			    + responseMapValues.getValue());
+		}
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Failed to verify the the map value is empty or null:" + e.getMessage());
+	}
+	status = (responseMap.size() == resultCount);
+	LOGGER.debug("ENDING METHOD: getAndVerifyMapValueIsNotNullOrEmpty()");
+	return status;
+    }
+    
+    /**
+     * Utility Method to set and get parameter values using WebPA command
+     * 
+     * @param Dut
+     *            The device to be used.
+     * @param tapEnv
+     *            The {@link AutomaticsTapApi} instance.
+     * @param webpaParameter
+     *            The webpa parameter that has to be passed.
+     * @param dataType
+     *            Data type of the value.
+     * @param valueToBePassed
+     *            Value that has to be passed.
+     * @param setWaitTime
+     *            wait time for parameter to set.
+     * @return status Boolean representing the result of set and get actions.
+     * 
+     * @author RamaTeja Meduri
+     * @refactor Athira
+     */
+    public static boolean setAndVerifyParameterValuesUsingWebPaorDmcli(Dut device, AutomaticsTapApi tapEnv,
+	    String webPaParam, int dataType, String valueToBePassed, long setWaitTime) {
+	LOGGER.debug("STARTING METHOD: setAndVerifyParameterValuesUsingWebPaorDmcli");
+	boolean status = false;
+	String response = null;
+	status = setParameterValuesUsingWebPaOrDmcli(device, tapEnv, webPaParam, dataType, valueToBePassed);
+	LOGGER.info("Status of setting WebPaParameter values: " + status);
+	if (status) {
+	    status = false;
+	    if (webPaParam.contains("Device.WiFi")) {
+		LOGGER.info("Waiting to reflect the WiFi changes before getting or setting any WiFi parameters.");
+		tapEnv.waitTill(setWaitTime);
+	    }
+	    response = tapEnv.executeWebPaCommand(device, webPaParam);
+	    LOGGER.info("valueToBePassed: " + valueToBePassed);
+	    LOGGER.info("response: " + response);
+	    status = CommonMethods.isNotNull(response)
+		    && CommonUtils.patternSearchFromTargetString(response, valueToBePassed);
+	    if (!status) {
+		LOGGER.info("Validating through WebPA failed vaildating using DMCLI command");
+		response = getParameterValuesUsingWebPaOrDmcli(device, tapEnv, webPaParam);
+		status = CommonMethods.isNotNull(response)
+			&& CommonUtils.patternSearchFromTargetString(response, valueToBePassed);
+	    }
+	    LOGGER.info("Status of getting WebPaParameter values: " + status);
+	} else {
+	    LOGGER.info("The WebPaParam " + webPaParam + " could not set to the value " + valueToBePassed);
+	}
+	LOGGER.debug("ENDING METHOD: setAndVerifyParameterValuesUsingWebPaorDmcli");
+	return status;
+    }
+    
+    /**
+     * Utility Method to get webpa parameter response and Partners_Default json message
+     * 
+     * @param device
+     *            The Dut to be used.
+     * @param tapEnv
+     *            The {@link AutomaticsTapApi} instance.
+     * @param partnerId
+     *            The partnerId for which the validation that needs to be done.
+     * @return webPaValueInJson It will return the default value for webpa parameters from partners_defaults.json.
+     * 
+     */
+    public static String getWebPaParameterResponseAndPartnersDefaultJson(Dut device, AutomaticsTapApi tapEnv,
+	    String webPaParameterName, String partnerId) {
+	LOGGER.debug("STARTING METHOD: getWebPaParameterResponseAndPartnersDefaultJson");
+	String response = null;
+	String jsonResponse = null;
+	String webPaValueInJson = null;
+	JSONObject objectName = null;
+	JSONObject partnerIdJsonResponse = null;
+	response = tapEnv.executeCommandUsingSsh(device, BroadBandCommandConstants.CMD_CAT_PARTNERS_DEFAULT_JSON);
+	try {
+	    if (CommonMethods.isNotNull(response)) {
+		// convert string to json object
+		objectName = new JSONObject(response);
+		// get the json response for partner specific
+		jsonResponse = objectName.getString(partnerId);
+		partnerIdJsonResponse = new JSONObject(jsonResponse);
+		// checking webpa response and json value for wepa parameter
+		webPaValueInJson = partnerIdJsonResponse.getString(webPaParameterName);
+		LOGGER.info("Value of WebPA Parameter: " + webPaParameterName + " In Json Response is: "
+			+ webPaValueInJson);
+	    }
+	} catch (JSONException e) {
+	    LOGGER.error("Exception found::::>>>>" + e.getMessage(), e);
+	}
+	LOGGER.debug("ENDING METHOD: getWebPaParameterResponseAndPartnersDefaultJson");
+	return webPaValueInJson;
+    }
+    
+    /**
+     * Method to enable public wifi
+     * 
+     * @param settop
+     * @param tapEnv
+     * @return status
+     * @refactor Alan_Bivera
+     */
+    public static boolean enablePublicWifiWithSetParameters(Dut device, AutomaticsTapApi tapEnv) {
+	boolean statusRemote = false;
+	boolean statusSetWifi = false;
+	boolean statusEnableWifi = false;
+	boolean status = false;
+	List<WebPaParameter> listOfWebpaParameters = BroadBandWebPaUtils.getWebpaParametersForDscpAndRemoteEndPoints();
+	statusRemote = BroadBandWebPaUtils.setVerifyMultipleWebPAInPolledDuration(device, tapEnv, listOfWebpaParameters,
+		BroadBandTestConstants.THREE_MINUTE_IN_MILLIS, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+	statusSetWifi = BroadBandWiFiUtils.setWebPaParams(device,
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PUBLIC_SSID,
+		BroadBandTestConstants.PUBLIC_WIFI_SSID_2, BroadBandTestConstants.CONSTANT_0);
+	// wait for two minutes
+	LOGGER.info("Waiting in set public wifi");
+	tapEnv.waitTill(BroadBandTestConstants.TWO_MINUTES);
+	if (statusSetWifi) {
+	    listOfWebpaParameters = BroadBandWebPaUtils.getWebpaParametersForEnablingPublicSsid();
+	    statusEnableWifi = BroadBandWebPaUtils.setVerifyMultipleWebPAInPolledDuration(device, tapEnv,
+		    listOfWebpaParameters, BroadBandTestConstants.THREE_MINUTE_IN_MILLIS,
+		    BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+	}
+	if (statusRemote && statusSetWifi && statusEnableWifi) {
+	    status = true;
+	}
+	return status;
+    }
+
+    /**
+     * Method Create list of webpa parameters for enabling public wifi
+     * 
+     * @return list of webpaparameter
+     * @refactor Alan_Bivera
+     */
+    public static List<WebPaParameter> getWebpaParametersForDscpAndRemoteEndPoints() {
+
+	List<WebPaParameter> webPaParameters = new ArrayList<WebPaParameter>();
+	WebPaParameter webPaParamForDscpPolicy = setAndReturnWebPaParameterObject(
+		BroadBandWebPaConstants.WEBPA_PARAM_DSCP_MARK_POLICY, BroadBandTestConstants.DSCP_MARK_POLICY,
+		BroadBandTestConstants.INCERMENTAL_ONE);
+	WebPaParameter webPaParamPrimaryEndPoint = setAndReturnWebPaParameterObject(
+		BroadBandWebPaConstants.WEBPA_PARAM_PRIMARY_REMOTE_ENDPOINT,
+		BroadBandTestConstants.PRIMARY_REMOTE_ENDPOINT, BroadBandTestConstants.CONSTANT_0);
+	WebPaParameter webPaParamSecondaryEndpoint = setAndReturnWebPaParameterObject(
+		BroadBandWebPaConstants.WEBPA_PARAM_SECONDARY_REMOTE_ENDPOINT,
+		BroadBandTestConstants.SECONDARY_REMOTE_ENDPOINT, BroadBandTestConstants.CONSTANT_0);
+
+	webPaParameters.add(webPaParamForDscpPolicy);
+	webPaParameters.add(webPaParamPrimaryEndPoint);
+	webPaParameters.add(webPaParamSecondaryEndpoint);
+
+	return webPaParameters;
+    }
+    
+    /**
+     * Method Create list of webpa parameters for enabling public wifi
+     * 
+     * @return list of webpaparameter
+     * @refactor Alan_Bivera
+     */
+    public static List<WebPaParameter> getWebpaParametersForEnablingPublicSsid() {
+
+	List<WebPaParameter> webPaParameters = new ArrayList<WebPaParameter>();
+	WebPaParameter webPaParam24GhzPublicSSIDEnableStatus = setAndReturnWebPaParameterObject(
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PUBLIC_SSID_ENABLE_STATUS,
+		BroadBandTestConstants.TRUE, BroadBandTestConstants.INCERMENTAL_THREE);
+
+	WebPaParameter webPaParamEnablePublicWifi = setAndReturnWebPaParameterObject(
+		BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI, BroadBandTestConstants.TRUE,
+		BroadBandTestConstants.CONSTANT_3);
+	webPaParameters.add(webPaParam24GhzPublicSSIDEnableStatus);
+	webPaParameters.add(webPaParamEnablePublicWifi);
+
+	return webPaParameters;
+    }
+    
+    /**
+     * Method to verify WiFi Client Data Model Default values
+     * 
+     * @param device
+     *            Dut instance
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param parameters
+     *            Array which contains WiFiClient parameters to verify
+     * @param defaultvalues
+     *            Array which contains default values of WiFiClient parameters
+     * @return true if all parameters values are verified to default
+     * @author Alan_Bivera
+     */
+    public static boolean verifyWiFiClientDataModelDefaultValues(Dut device, AutomaticsTapApi tapEnv, String[] parameters,
+	    String[] defaultvalues) {
+	LOGGER.debug("STARTING METHOD: verifyWiFiClientDataModelDefaultValues()");
+	// Variable declaration starts
+	boolean areWifiClientParamsVerified = false;
+	String errorMessage = "";
+	List<String> webpaOutput = new ArrayList<>();
+	int counter = 0;
+	// Variable declaration starts
+
+	try {
+	    webpaOutput = getParameterValuesUsingWebPaOrDmcli(device, tapEnv, parameters);
+	    if (webpaOutput.size() == BroadBandTestConstants.INTEGER_VALUE_4) {
+		for (counter = 0; counter < BroadBandTestConstants.INTEGER_VALUE_4; counter++) {
+		    areWifiClientParamsVerified = BroadBandCommonUtils.compareValues(
+			    BroadBandTestConstants.CONSTANT_TXT_COMPARISON, defaultvalues[counter].trim(),
+			    webpaOutput.get(counter).trim());
+		    if (!areWifiClientParamsVerified) {
+			break;
+		    }
+		}
+	    } else {
+		LOGGER.error("Unable to get all WiFiClient parameters value.");
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while verifying WiFiClient Data Model default values.");
+	    errorMessage = errorMessage + e.getMessage();
+	}
+	LOGGER.debug("ENDING METHOD: verifyWiFiClientDataModelDefaultValues()");
+	return areWifiClientParamsVerified;
+    }
+    
+    /**
+     * Utility Method to get values for list of parameters using WebPA command. If WebPA fails fall back to DMCLI to
+     * query same parameters. This method is only used for setting preconditions.
+     * 
+     * @param device
+     *            The Dut to be used.
+     * @param tapApi
+     *            The {@link AutomaticsTapApi} instance.
+     * @return Parameter values which retrieved from WebPA and fall back as DMCLI.
+     * @author Alan_Bivera
+     */
+    public static List<String> getParameterValuesUsingWebPaOrDmcli(Dut device, AutomaticsTapApi tapEnv,
+	    String[] parameters) {
+	boolean isWebpaConnBroken = Boolean.parseBoolean(System.getProperty(
+		BroadBandTestConstants.SYSTEM_PROPERTY_WEBPA_CONNECTIVITY_BROKEN, BroadBandTestConstants.FALSE));
+	List<String> parameterValue = null;
+	if (!isWebpaConnBroken) {
+	    parameterValue = tapEnv.executeWebPaCommands(device, parameters);
+	}
+	if (null == parameterValue || parameterValue.isEmpty()) {
+	    parameterValue = DmcliUtils.getParameterValuesUsingDmcliCommand(device, tapEnv, parameters);
+	}
+
+	return parameterValue;
+    }
+    
+    /**
+     * Method to verify the Persistency of WiFiClient Params values
+     * 
+     * @param device
+     *            Dut instance
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param parameters
+     *            Array which contains WiFiClient parameters to verify
+     * @param expectedValues
+     *            Array which contains expected values of WiFiClient parameters
+     * @return true if all parameters values are are verified to expected
+     * @author Alan_Bivera
+     */
+    public static boolean verifyWiFiClientDataModelPersistence(Dut device, AutomaticsTapApi tapEnv, String[] parameters,
+	    String[] expectedValues) {
+	LOGGER.debug("STARTING METHOD: verifyWiFiClientDataModelPersistence()");
+	// Variable declaration starts
+	boolean areWifiClientParamspersistent = false;
+	String errorMessage = "";
+	List<String> webpaOutput = new ArrayList<>();
+	int counter = 0;
+	// Variable declaration starts
+
+	try {
+	    webpaOutput = getParameterValuesUsingWebPaOrDmcli(device, tapEnv, parameters);
+	    if (webpaOutput.size() == BroadBandTestConstants.INTEGER_VALUE_4) {
+		for (counter = 0; counter < BroadBandTestConstants.INTEGER_VALUE_4; counter++) {
+		    areWifiClientParamspersistent = BroadBandCommonUtils.compareValues(
+			    BroadBandTestConstants.CONSTANT_TXT_COMPARISON, expectedValues[counter].trim(),
+			    webpaOutput.get(counter).trim());
+		    if (!areWifiClientParamspersistent) {
+			break;
+		    }
+		}
+	    } else {
+		LOGGER.error("Unable to get all WiFiClient parameters value.");
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while verifying WiFiClient Parameters persistence.");
+	    errorMessage = errorMessage + e.getMessage();
+	}
+	LOGGER.debug("ENDING METHOD: verifyWiFiClientDataModelPersistence()");
+	return areWifiClientParamspersistent;
+    }
+   
 }

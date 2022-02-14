@@ -21,14 +21,14 @@ public class SplunkUtils {
      * Collection.
      * 
      * @param tapApi
-     *            - instance of eCATS
+     *            - instance of AutomaticsTapApi
      * 
      * @param searchString
      *            - value to be searched in Splunk
      * @param host
-     *            - splunk host IP, if nothing mentioned it will choose default one configured in eCATS - 172.24.141.249
+     *            - splunk host IP, if nothing mentioned it will choose default one configured
      * @param port
-     *            - splunk port, if nothing mentioned it will choose default one configured in eCATS - 8089
+     *            - splunk port, if nothing mentioned it will choose default one configured
      * @param startIndex
      *            - start time from which search should begin
      * @return search results
@@ -48,14 +48,14 @@ public class SplunkUtils {
      * Collection.
      * 
      * @param tapApi
-     *            - instance of eCATS
+     *            - instance of AutomaticsTapApi
      * 
      * @param searchString
      *            - value to be searched in Splunk
      * @param host
-     *            - splunk host IP, if nothing mentioned it will choose default one configured in eCATS - 172.24.141.249
+     *            - splunk host IP, if nothing mentioned it will choose default one configured
      * @param port
-     *            - splunk port, if nothing mentioned it will choose default one configured in eCATS - 8089
+     *            - splunk port, if nothing mentioned it will choose default one configured
      * @param startIndex
      *            - start time from which search should begin
      * @param schema

@@ -619,8 +619,8 @@ public class BroadBandXconfCdlUtils {
     /**
      * Method used to preform XCONF CDL and retrieving the XCONF code download logs
      * 
-     * @param settop
-     *            instance of{@link Settop}
+     * @param device
+     *            instance of{@link Dut}
      * @param tapEnv
      *            instance of {@link AutomaticsTapApi}
      * @param firmwareVersionToUpgrade
@@ -719,7 +719,7 @@ public class BroadBandXconfCdlUtils {
      * Helper method to configure the XCONF firmware configuration details with Invalid url.
      * 
      *
-     * @param AutomaticsTapApi
+     * @param tapEnv
      *            The {@link AutomaticsTapApi} instance.
      * @param settop
      *            The settop to be used.
@@ -741,4 +741,56 @@ public class BroadBandXconfCdlUtils {
 	return XConfUtils.configureXconfDownloadFirmwareDetails(device, imageVersion, rebootImmediately, protocol, null,
 		XConfUtils.getFirmwareLocation( protocol, device, imageVersion), upgradeDelay);
     }
+    
+    /**
+    * Method used to preform XCONF CDL and retrieving the XCONF code download logs
+    * 
+    * @param device
+    *            instance of{@link Dut}
+    * @param tapEnv
+    *            instance of {@link AutomaticsTapApi}
+    * @param firmwareVersionToUpgrade
+    *            Firmware Version To Upgrade
+    * 
+    * @return Code downloaded log file from /rdklogs/logs/xconf.txt.0
+    * @Refactor Sruthi Santhosh
+    */
+   public static String triggerXconfCodeDownload(Dut device, AutomaticsTapApi tapEnv, String firmwareVersionToUpgrade) {
+	String cdlLogsForValidation = null;
+	String errorMessage = null;
+	boolean status = false;
+	LOGGER.debug("STARTING METHOD : triggerXconfCodeDownload()");
+	try {
+	    // Configure RDKB device for XCONF Code download
+	    try {
+		configureRdkbDeviceForXconfCdl(tapEnv, device, firmwareVersionToUpgrade, false,
+			BroadBandTestConstants.FIRMWARE_DOWNLOAD_PROTOCOL_HTTP);
+		status = true;
+		LOGGER.info("SUCCESSFULLY CONFIGURED XCONF CODE DOWNLOAD");
+	    } catch (Exception exception) {
+		errorMessage = "Exception occured while configuring xconf code download " + exception.getMessage();
+		LOGGER.error(errorMessage);
+	    }
+	    if (status && BroadBandXconfCdlUtils.initiateXconfCdlThroughWebpa(tapEnv, device)) {
+		LOGGER.info("SUCCESSFULLY INITIATED XCONF CDL THROUGH WEBPA");
+		// wait for 5 minutes to get the code download logs
+		LOGGER.info("WAITING FOR FIVE MINUTES TO GET THE CODE DOWNLOAD LOGS");
+		tapEnv.waitTill(BroadBandTestConstants.FIVE_MINUTES);
+		try {
+		    cdlLogsForValidation = getCdlLogsForValidation(tapEnv, device);
+		} catch (Exception exception) {
+		    errorMessage = "Exception occured while validating cdl logs " + exception.getMessage();
+		    LOGGER.error(errorMessage);
+		}
+	    } else {
+		errorMessage = "FAILED TO INITIATE XCONF CDL THROUGH WEBPA";
+		LOGGER.error(errorMessage);
+	    }
+	} catch (Exception exception) {
+	    errorMessage = "Exception occured while performing xconf upgrade " + exception.getMessage();
+	    LOGGER.error(errorMessage);
+	}
+	LOGGER.debug("ENDING METHOD : triggerXconfCodeDownload()");
+	return cdlLogsForValidation;
+   }
 }

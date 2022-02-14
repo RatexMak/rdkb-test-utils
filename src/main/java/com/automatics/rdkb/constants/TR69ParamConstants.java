@@ -15,22 +15,17 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-package com.automatics.rdkb;
+package com.automatics.rdkb.constants;
 
-public class TestCategory {
-    /** Test category for system test. */
-    public static final String SYSTEM = "SYSTEM";
+public class TR69ParamConstants {
+	
+	/** TR-069 Parameter for device serial number. */
+    public static final String TR69_PARAM_SERIAL_NUMBER = "Device.DeviceInfo.SerialNumber";
     
-    /** Test Category for Logging **/
-    public static final String LOGGING = "LOGGING";
+    /** TR-069 Parameter for device model name. */
+    public static final String TR69_PARAM_MODEL_NAME = "Device.DeviceInfo.ModelName";
     
-    /** Test Category for Prefered Gateway **/
-    public static final String WEBPA = "WEBPA";
-    
-    /** Test category for SNMP. */
-    public static final String SNMP = "SNMP";
-    
-    /** Test Category for TR69 test */
-    public static final String TR69 = "TR69";
-    
+    /** TR-069 Parameter for device software version. */
+    public static final String TR69_PARAM_SOFTWARE_VERSION = "Device.DeviceInfo.SoftwareVersion";
+
 }

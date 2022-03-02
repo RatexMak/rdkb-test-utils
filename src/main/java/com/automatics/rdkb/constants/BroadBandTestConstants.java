@@ -938,16 +938,16 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	};
 
 	/** Constant to hold LAN local IP */
-	public static final String LAN_LOCAL_IP = "192.168.0.1";
+	public static final String LAN_LOCAL_IP = "";
 
 	/** Constant to hold LAN subnet mask */
-	public static final String LAN_SUBNET_MASK_DEFAULT = "255.255.255.0";
+	public static final String LAN_SUBNET_MASK_DEFAULT = "";
 
 	/** Constant to hold LAN start IP */
-	public static final String LAN_START_IP_ADDRESS = "192.168.0.2";
+	public static final String LAN_START_IP_ADDRESS = "";
 
 	/** Constant to hold DHCP end IP address */
-	public static final String DHCP_END_IP_ADDRESS_DEFAULT = "192.168.0.253";
+	public static final String DHCP_END_IP_ADDRESS_DEFAULT = "";
 
 	/** Constant to get RFC value from rfc_configdata.txt */
 	public static final String COMMAND_TO_RFC_VALUE_CONFIG_FILE = "cat /tmp/rfc_configdata.txt";
@@ -1918,10 +1918,10 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String PATTERN_TO_GET_IPV4_ADDRESS = "(\\d+\\.\\d+\\.\\d+\\.\\d+)";
 
 	/** Constant for Primary remote endpoint */
-	public static final String PRIMARY_REMOTE_ENDPOINT = "68.86.15.199";
+	public static final String PRIMARY_REMOTE_ENDPOINT = "";
 
 	/** Constant for Secondary remote endpoint */
-	public static final String SECONDARY_REMOTE_ENDPOINT = "68.86.15.171";
+	public static final String SECONDARY_REMOTE_ENDPOINT = "";
 
 	/** Pattern to get xfinity wifi status from rfc config data */
 	public static final String PATTERN_GET_XFINITY_WIFI_STATUS_FROM_RFC_CONFIG = "tr181.Device.DeviceInfo.X_COMCAST_COM_xfinitywifiEnable\\W+(\\w+)";
@@ -1936,11 +1936,11 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	 */
 	public static final String DEFAULT_FIRMWARE_UPGRADE_MAINTENANCE_WINDOW_END_TIME = "14400";
 
-	/** Test constant for Global Dns IPv4 default value 75.75.75.75 */
-	public static final String STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE = "75.75.75.75";
+	/** Test constant for Global Dns IPv4 default value */
+	public static final String STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE = " ";
 
-	/** Test constant for Global Dns IPv6 default value 2001:558:feed::1 */
-	public static final String STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE = "2001:558:feed::1";
+	/** Test constant for Global Dns IPv6 default value  */
+	public static final String STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE = " ";
 
 	/** Constant for DSCPMarkPolicy */
 	public static final String DSCP_MARK_POLICY = "44";
@@ -2408,22 +2408,22 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String RDKLOGS_LOGS_WEBPA_TXT_0 = "/rdklogs/logs/WEBPAlog.txt.0";
 
 	/** string for holding dummy first mac address for XDNS */
-	public static final String VALUE_MACADDRESS_FIRST_XDNS = "00:24:9B:1A:C5:AD";
+	public static final String VALUE_MACADDRESS_FIRST_XDNS = " ";
 
 	/** string for holding dummy second mac address for XDNS */
-	public static final String VALUE_MACADDRESS_SECOND_XDNS = "30:E3:7A:C4:14:EA";
+	public static final String VALUE_MACADDRESS_SECOND_XDNS = " ";
 
 	/**
 	 * Test constant for applying Dns ovverride at client MAC level IPv4 level three
-	 * primaryvalue 75.75.75.30
+	 * primaryvalue
 	 */
-	public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = "75.75.75.30";
+	public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = " ";
 
 	/**
 	 * Test constant for applying Dns ovverride at client MAC level IPv6 level three
-	 * primary value 2001:558:feed::7530
+	 * primary value
 	 */
-	public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = "2001:558:feed::7530";
+	public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = "";
 
 	/** Test constant for string value MacAddress */
 	public static final String STRING_DNS_MAC_ADDRESS = "MacAddress";
@@ -3064,15 +3064,15 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	/**
 	 * Test constant for applying Dns ovverride at client MAC level IPv4 level one
-	 * primary value 75.75.75.10
+	 * primary value
 	 */
-	public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = "75.75.75.10";
+	public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = " ";
 
 	/**
 	 * Test constant for applying Dns ovverride at client MAC level IPv6 level one
-	 * primary value 2001:558:feed::7510
+	 * primary value 
 	 */
-	public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = "2001:558:feed::7510";
+	public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = " ";
 
 	/**
 	 * The constant holding command for seeing the process status of CCSPXDNSSSP
@@ -3210,7 +3210,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String NSLOOKUP_NO_RESPONSE = "No response from server";
 	public static final String NSLOOKUP_TIMEOUT_RESPONSE = "DNS request timed out";
 
-	public static final String NSLOOKUP_CACHE_REDIRECT_IP = "10.0.0.1";
+	public static final String NSLOOKUP_CACHE_REDIRECT_IP = "";
 
 	/** constant to hold int 900 */
 	public static final String CONSTANT_NINE_HUNDRED = "900";
@@ -3375,12 +3375,12 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String PATTERN_PROCESS_DNSMASQ = "(\\d+) +\\w+ +.* dnsmasq";
 
 	/** invalid dns server */
-	public static final String INVALID_DNS_SERVER = "2001:558:feed::10";
+	public static final String INVALID_DNS_SERVER = "";
 	/** String value 10 */
 	public static final String STRING_10 = "10";
 
 	/** dns server 2 */
-	public static final String DNS_SERVER_2 = "2001:558:feed::2";
+	public static final String DNS_SERVER_2 = "";
 
 	/** String variable to store webpa error message */
 	public static final String WEBPA_ERROR_UNSUPPORTED_NAME_SPACE = "Error unsupported namespace";
@@ -3447,10 +3447,10 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	public static final String TR181_PARAM_CM_IPV6 = "Device.DeviceInfo.X_COMCAST-COM_CM_IP";
 
-	/** Property key for Xfinity WiFi Primary End point IP */
+	/** Property key for Public WiFi Primary End point IP */
 	public static final String PROP_KEY_PRIMARY_ENDPOINT_IP = "xfinity.gre.tunnel.primary.remote.endpoint.ip";
 
-	/** Property key for Xfinity WiFi Secondary End point IP */
+	/** Property key for Public WiFi Secondary End point IP */
 	public static final String PROP_KEY_SECONDARY_ENDPOINT_IP = "xfinity.gre.tunnel.secondary.remote.endpoint.ip";
 
 	/** int value to store five hundred and twenty */

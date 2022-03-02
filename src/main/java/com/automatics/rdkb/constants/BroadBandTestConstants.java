@@ -938,16 +938,17 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	};
 
 	/** Constant to hold LAN local IP */
-	public static final String LAN_LOCAL_IP = "";
+	public static final String LAN_LOCAL_IP = "192.168.0.1";
 
 	/** Constant to hold LAN subnet mask */
-	public static final String LAN_SUBNET_MASK_DEFAULT = "";
+	public static final String LAN_SUBNET_MASK_DEFAULT = "255.255.255.0";
 
 	/** Constant to hold LAN start IP */
-	public static final String LAN_START_IP_ADDRESS = "";
+	public static final String LAN_START_IP_ADDRESS = "192.168.0.2";
 
 	/** Constant to hold DHCP end IP address */
-	public static final String DHCP_END_IP_ADDRESS_DEFAULT = "";
+	public static final String DHCP_END_IP_ADDRESS_DEFAULT = "192.168.0.253";
+
 
 	/** Constant to get RFC value from rfc_configdata.txt */
 	public static final String COMMAND_TO_RFC_VALUE_CONFIG_FILE = "cat /tmp/rfc_configdata.txt";
@@ -3210,7 +3211,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String NSLOOKUP_NO_RESPONSE = "No response from server";
 	public static final String NSLOOKUP_TIMEOUT_RESPONSE = "DNS request timed out";
 
-	public static final String NSLOOKUP_CACHE_REDIRECT_IP = "";
+	public static final String NSLOOKUP_CACHE_REDIRECT_IP = "10.0.0.1";
 
 	/** constant to hold int 900 */
 	public static final String CONSTANT_NINE_HUNDRED = "900";

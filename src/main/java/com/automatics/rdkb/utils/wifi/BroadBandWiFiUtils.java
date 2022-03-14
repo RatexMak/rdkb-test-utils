@@ -20,6 +20,7 @@ package com.automatics.rdkb.utils.wifi;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,18 +33,25 @@ import com.automatics.constants.AutomaticsConstants;
 import com.automatics.device.Device;
 import com.automatics.device.Dut;
 import com.automatics.enums.ExecutionStatus;
+import com.automatics.enums.TR69ParamDataType;
 import com.automatics.exceptions.TestException;
+import com.automatics.providers.tr69.Parameter;
 import com.automatics.rdkb.BroadBandResultObject;
 import com.automatics.rdkb.WiFiSsidConfigStatus;
+import com.automatics.rdkb.constants.BroadBandConnectedClientTestConstants;
+import com.automatics.rdkb.constants.BroadBandPropertyKeyConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandTraceConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
 import com.automatics.rdkb.constants.RDKBTestConstants;
+import com.automatics.rdkb.constants.RDKBTestConstants.WiFiFrequencyBand;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
+import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
 import com.automatics.rdkb.utils.ConnectedNattedClientsUtils;
 import com.automatics.rdkb.utils.DeviceModeHandler;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
 import com.automatics.rdkb.utils.wifi.connectedclients.BroadBandConnectedClientUtils;
+import com.automatics.rdkb.webui.page.BroadBandWifiPage.SSIDFrequency;
 import com.automatics.snmp.SnmpDataType;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.test.AutomaticsTestBase;
@@ -52,6 +60,8 @@ import com.automatics.utils.CommonMethods;
 import com.automatics.webpa.WebPaParameter;
 import com.automatics.webpa.WebPaServerResponse;
 import com.automatics.rdkb.constants.WebPaParamConstants.WebPaDataTypes;
+import com.automatics.rdkb.enums.ProtocolOperationTypeEnum;
+import com.automatics.rdkb.enums.BroadBandWhixEnumConstants.WEBPA_AP_INDEXES;
 import com.automatics.rdkb.utils.snmp.BroadBandSnmpMib;
 import com.automatics.rdkb.utils.snmp.BroadBandSnmpUtils;
 
@@ -1162,48 +1172,734 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 		}
 		LOGGER.debug("ENDING METHOD : verifyIpv4AndIpV6ConnectionInterface()");
 	}
-	
+
+	/**
+	 * Method to assign gateway IP based on device type
+	 * 
+	 * @param device
+	 * @return gateway ip
+	 */
+
+	public static String getGatewayIpOfDevice(Dut device) {
+		String gatewayIp = DeviceModeHandler.isBusinessClassDevice(device)
+				? BroadBandTestConstants.STRING_BUSINESS_CLASS_GATEWAYIP
+				: BroadBandTestConstants.STRING_RESIDENTIAL_CLASS_GATEWAYIP;
+		if (DeviceModeHandler.isDSLDevice(device)) {
+			gatewayIp = BroadBandTestConstants.LAN_LOCAL_IP;
+		}
+		return gatewayIp;
+	}
+
+	public static boolean checkAndSetPublicWifi(Dut device, AutomaticsTapApi tapEnv) {
+
+		String publicWifiValue = null;
+		boolean reactivationStatus = false;
+
+		try {
+			// get the property value from stb.properties
+			LOGGER.info(" Going to get property value for " + BroadBandTestConstants.KEY_FOR_PUBLIC_WIFI_WHITELISTING);
+			publicWifiValue = AutomaticsTapApi
+					.getSTBPropsValue(BroadBandTestConstants.KEY_FOR_PUBLIC_WIFI_WHITELISTING);
+			LOGGER.info("Public wifi is set as " + publicWifiValue + " in stb.properties");
+			reactivationStatus = BroadBandWebPaUtils.setAndVerifyParameterValuesUsingWebPaorDmcli(device, tapEnv,
+					BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI, WebPaDataTypes.BOOLEAN.getValue(),
+					publicWifiValue);
+			if (reactivationStatus) {
+				LOGGER.info("Sucessfully set Public wifi as " + publicWifiValue);
+
+			} else {
+				LOGGER.info("Failed to set Public wifi as " + publicWifiValue + " as part of reactivation ");
+			}
+		} catch (Exception e) {
+			LOGGER.error("Exception occured while checking publicWifiValue from stb.properties ." + e.getMessage());
+
+		}
+		return reactivationStatus;
+	}
+
+	/**
+	 * Method to frame command to ping based on OS.
+	 * 
+	 * @param connectedSetop
+	 * @param gatewayIp
+	 * @return command
+	 */
+	public static String commandToPingBasedOnTypeOfOs(Dut connectedDevice, String gatewayIp) {
+		String command = null;
+		if (connectedDevice != null) {
+			Device connectedClientDevice = (Device) connectedDevice;
+			if (connectedClientDevice.isLinux()) {
+				command = BroadBandTestConstants.STRING_PING_TO_LINUX.replace("<IPADDRESS>", gatewayIp);
+			} else if (connectedClientDevice.isWindows()) {
+				command = BroadBandTestConstants.STRING_PING_TO_WINDOWS.replace("<IPADDRESS>", gatewayIp);
+			}
+		}
+		return command;
+	}
+
+	/**
+	 * Utility method to validate the allowed number of clients based on residential
+	 * or commercial device.
+	 * 
+	 * @param device {@link Dut}
+	 * 
+	 * @param output value allowed No of clients retrieved using snmp/webpa.
+	 * 
+	 * @return true if the output matches with the expected value
+	 * @refactor Athira
+	 */
+	public static boolean validateAllowedNoOfClientsValueRetrievedFromWebPA(Dut device, String output) {
+		boolean status = false;
+		String errorMessage = "Null value retrieved for the Device model";
+		String deviceModel = device.getModel();
+		
+		String allowedNoOfClients = null;
+		try {
+		if(CommonMethods.isNotNull(deviceModel))
+		{
+		try {
+			// The default number of allowed clients is 15 for business gateway devices.
+			allowedNoOfClients = BroadbandPropertyFileHandler
+					.getAutomaticsPropsValueByResolvingPlatform(device,
+							BroadBandPropertyKeyConstants.PROP_KEY_ALLOWED_NOOFCLIENTS);
+
+		} catch (Exception e) {
+			allowedNoOfClients = BroadBandTestConstants.STRING_VALUE_FIVE;
+			LOGGER.info("No device specific value found allowed number of clients ");
+		}
+		}
+		status = output.equals(allowedNoOfClients);
+		
+		}catch (Exception exception) {
+			errorMessage = "Exception occured during execution : " + exception.getMessage();
+			LOGGER.error(errorMessage);
+		}
+		return status;
+	}
+
+	/**
+	 * Utils method to frame grep command to check snmp, webPa & Tr-069 Set & Get
+	 * operations in logs
+	 * 
+	 * @param Parameter
+	 * @param value
+	 * @param logFileName
+	 * @param commandType
+	 * @return the framed grep command
+	 * @refactor Athira
+	 */
+	public static String generateGrepForProtocolOperationType(String Parameter, String value, String logFileName,
+			ProtocolOperationTypeEnum protocalOperationType, boolean isAtom) {
+		String grepCommand = null;
+		try {
+			switch (protocalOperationType) {
+			case SNMP_SET:
+				grepCommand = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND,
+						BroadBandTestConstants.DOUBLE_QUOTE,
+						BroadBandTraceConstants.SNMP_LOG_MESSAGE_SET_CALLED_FOR_PARAM,
+						BroadBandTestConstants.DOUBLE_QUOTE, BroadBandTestConstants.SINGLE_SPACE_CHARACTER, logFileName,
+						BroadBandTestConstants.SINGLE_SPACE_CHARACTER, "|",
+						BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.GREP_COMMAND, Parameter);
+				break;
+			case SNMP_GET:
+				grepCommand = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND,
+						BroadBandTestConstants.DOUBLE_QUOTE,
+						BroadBandTraceConstants.SNMP_LOG_MESSAGE_GET_CALLED_FOR_PARAM,
+						BroadBandTestConstants.DOUBLE_QUOTE, BroadBandTestConstants.SINGLE_SPACE_CHARACTER, logFileName,
+						BroadBandTestConstants.SINGLE_SPACE_CHARACTER, "|",
+						BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.GREP_COMMAND, Parameter);
+				break;
+			case TR69_GET:
+			case TR69_SET:
+				grepCommand = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND,
+						BroadBandTestConstants.DOUBLE_QUOTE, Parameter, BroadBandTestConstants.DOUBLE_QUOTE,
+						BroadBandTestConstants.SINGLE_SPACE_CHARACTER, logFileName);
+				break;
+
+			case WEBPA_SET:
+				grepCommand = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND,
+						BroadBandTestConstants.DOUBLE_QUOTE, BroadBandTestConstants.SET_REQUEST,
+						BroadBandTestConstants.DOUBLE_QUOTE, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+						logFileName);
+				break;
+
+			case WEBPA_GET:
+				grepCommand = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND,
+						BroadBandTestConstants.DOUBLE_QUOTE, BroadBandTestConstants.GET,
+						BroadBandTestConstants.DOUBLE_QUOTE, BroadBandTestConstants.SINGLE_SPACE_CHARACTER, logFileName,
+						BroadBandTestConstants.SINGLE_SPACE_CHARACTER, "|",
+						BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.GREP_COMMAND,
+						BroadBandTestConstants.DOUBLE_QUOTE, Parameter, BroadBandTestConstants.DOUBLE_QUOTE);
+				break;
+
+			default:
+				LOGGER.error("INVALID COMMAND TYPE PASSED AS PARAMETER: " + protocalOperationType);
+				break;
+			}
+
+		} catch (Exception exception) {
+			LOGGER.error("Exception occurred framing grep Command " + exception.getMessage());
+		}
+		return grepCommand;
+	}
+
+	/**
+	 * Utils method to execute grep command in device console and verify the logs
+	 * with execution timestamp
+	 * 
+	 * @param tapEnv
+	 * @param device
+	 * @param dateResponse
+	 * @param commandList
+	 * @return true if the log generated after the execution
+	 * @refactor Athira
+	 */
+	public static boolean grepLogAndVerifyUsingTimeStamp(AutomaticsTapApi tapEnv, Dut device, String dateResponse,
+			String command, boolean isAtom) {
+		boolean result = false;
+
+		try {
+			String response = null;
+
+			// BroadBandCommonUtils.executeCommandInAtomConsole
+
+			long startTime = System.currentTimeMillis();
+			do {
+				response = isAtom ? CommonMethods.executeCommandInAtomConsole(device, tapEnv, command)
+						: tapEnv.executeCommandUsingSsh(device, command);
+			} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.THREE_MINUTE_IN_MILLIS
+					&& !(CommonMethods.isNotNull(dateResponse)));
+
+			SimpleDateFormat logMessageDateTimeFormat = new SimpleDateFormat(
+					BroadBandTestConstants.TIMESTAMP_FORMAT_LOG_MESSAGE);
+
+			Date dtCapturedDateTime = null;
+			try {
+				dtCapturedDateTime = CommonMethods.isNotNull(dateResponse)
+						? logMessageDateTimeFormat.parse(dateResponse.trim())
+						: null;
+				LOGGER.info("CAPTURED TIMESTAMP (DATE INSTANCE): " + dtCapturedDateTime);
+			} catch (ParseException parseException) {
+				LOGGER.error(dateResponse + " COULD NOT BE PARSED: " + parseException.getMessage());
+			}
+			List<String> logMessageTimeStamps = new ArrayList<>();
+			// Retrieve the TimeStamps from the log message
+			logMessageTimeStamps = CommonMethods.isNotNull(response)
+					? CommonMethods.patternFinderToReturnAllMatchedString(response, "(\\d{6}-\\d{2}:\\d{2}:\\d{2})")
+					: null;
+			if (null != logMessageTimeStamps && !logMessageTimeStamps.isEmpty()) {
+				for (String strLogMessageDateTime : logMessageTimeStamps) {
+					Date logMessageDateTime = null;
+					try {
+						logMessageDateTime = CommonMethods.isNotNull(strLogMessageDateTime)
+								? logMessageDateTimeFormat.parse(strLogMessageDateTime)
+								: null;
+						LOGGER.info("LOG MESSAGE TIMESTAMP (DATE INSTANCE):: " + logMessageDateTime);
+					} catch (ParseException parseException) {
+						LOGGER.error(strLogMessageDateTime + " COULD NOT BE PARSED: " + parseException.getMessage());
+					}
+					// Convert the captured DateTime to MilliSeconds & Compare them
+					result = null != dtCapturedDateTime && null != logMessageDateTime
+							&& dtCapturedDateTime.getTime() < logMessageDateTime.getTime();
+					if (result) {
+						break;
+					}
+				}
+			}
+		} catch (Exception exception) {
+			LOGGER.error(
+					"Exception occurred while getting the logs and time validating them: " + exception.getMessage());
+		}
+		return result;
+	}
+
+	/**
+	 * Method to modify private wifi SSID and password for 2.4 and 5 Ghz
+	 * 
+	 * @param device
+	 * @refactor Athira
+	 */
+
+	public static boolean changePrivateWiFiSsidAndPassphraseFor24And5Ghz(Dut device) {
+		boolean setResult = false;
+
+		List<WebPaParameter> webPaParameters = new ArrayList<WebPaParameter>();
+		Map<String, String> webpaResponse = null;
+		String ssid_24 = BroadBandTestConstants.APPEND_STRING_FOR_24_GHZ_SSID_NAME_CHANGE
+				.concat(Long.toString(System.currentTimeMillis()));
+		String ssid_5 = BroadBandTestConstants.APPEND_STRING_FOR_5_GHZ_SSID_NAME_CHANGE
+				.concat(Long.toString(System.currentTimeMillis()));
+		LOGGER.info("The SSIDs for 2.4 and 5 GHz private wifi: 2.4 GHz - " + ssid_24 + " 5 GHz - " + ssid_5);
+		webPaParameters.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+				BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_NAME, ssid_24,
+				WebPaDataTypes.STRING.getValue()));
+		webPaParameters.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+				BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_NAME, ssid_5,
+				WebPaDataTypes.STRING.getValue()));
+		webPaParameters.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+				BroadBandWebPaConstants.WEBPA_PARAM_FOR_WIFI_PRIVATE_SSID_2GHZ_PASSPHRASE,
+				(AutomaticsPropertyUtility
+						.getProperty(BroadBandPropertyKeyConstants.PRIVATE_WIFI_PASSPHRASE_BAND_STEERING)),
+				WebPaDataTypes.STRING.getValue()));
+		webPaParameters.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+				BroadBandWebPaConstants.WEBPA_PARAM_FOR_WIFI_PRIVATE_SSID_5GHZ_PASSPHRASE,
+				(AutomaticsPropertyUtility
+						.getProperty(BroadBandPropertyKeyConstants.PRIVATE_WIFI_PASSPHRASE_BAND_STEERING)),
+				WebPaDataTypes.STRING.getValue()));
+		webpaResponse = tapEnv.executeMultipleWebPaSetCommands(device, webPaParameters);
+		setResult = null != webpaResponse && !webpaResponse.isEmpty()
+				&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
+						BroadBandTestConstants.SUCCESS_TXT,
+						webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_NAME))
+				&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
+						BroadBandTestConstants.SUCCESS_TXT,
+						webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_NAME))
+				&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
+						BroadBandTestConstants.SUCCESS_TXT,
+						webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_FOR_WIFI_PRIVATE_SSID_2GHZ_PASSPHRASE))
+				&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
+						BroadBandTestConstants.SUCCESS_TXT,
+						webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_FOR_WIFI_PRIVATE_SSID_5GHZ_PASSPHRASE));
+
+		return setResult;
+	}
+
+	/**
+	 * Method to enable disable mac filter mode
+	 * 
+	 * @param device
+	 * @param tapEnv
+	 * @param index
+	 * @refactor Athira
+	 */
+	public static boolean changeMacFilterStatus(Dut device, AutomaticsTapApi tapEnv, WEBPA_AP_INDEXES index,
+			String setValue) {
+		boolean setResult = false;
+		List<WebPaParameter> webPaParameters = new ArrayList<WebPaParameter>();
+		Map<String, String> webpaResponse = null;
+		webPaParameters.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+				BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_MACFILTER_ENABLE
+						.replace(BroadBandTestConstants.TR181_NODE_REF, index.get24Ghz()),
+				setValue, WebPaDataTypes.BOOLEAN.getValue()));
+		webPaParameters.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+				BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_MACFILTER_ENABLE
+						.replace(BroadBandTestConstants.TR181_NODE_REF, index.get5Ghz()),
+				setValue, WebPaDataTypes.BOOLEAN.getValue()));
+
+		webpaResponse = tapEnv.executeMultipleWebPaSetCommands(device, webPaParameters);
+		setResult = null != webpaResponse && !webpaResponse.isEmpty()
+				&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
+						BroadBandTestConstants.SUCCESS_TXT,
+						webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_MACFILTER_ENABLE
+								.replace(BroadBandTestConstants.TR181_NODE_REF, index.get24Ghz())))
+				&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
+						BroadBandTestConstants.SUCCESS_TXT,
+						webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_MACFILTER_ENABLE
+								.replace(BroadBandTestConstants.TR181_NODE_REF, index.get5Ghz())));
+		if (!setResult) {
+			setResult = BroadBandWebPaUtils.executeSetAndGetOnMultipleWebPaGetParams(device, tapEnv, webPaParameters)
+					.isStatus();
+		}
+		return setResult;
+	}
+
+	/**
+	 * Method to verify the IPv4 and IPv6 connection interface & Internet
+	 * connectivity for Ethernet with break execution-true since the client should
+	 * get valid Ipv4, Ipv6 and connectivity
+	 * 
+	 * @param device          {@link Dut}
+	 * @param testId          Test case ID
+	 * @param deviceConnected Device Connected
+	 * @param stepNumber      Step Number
+	 * 
+	 * @refactor Athira
+	 */
+	public static void verifyIpv4AndIpV6ConnectionForEthernetClient(Dut device, String testId, Dut deviceConnected,
+			int stepNumber) throws TestException {
+		LOGGER.debug("STARTING METHOD : verifyIpv4AndIpV6ConnectionForEthernetClient()");
+		String step = null;
+		boolean status = false;
+		String errorMessage = null;
+		BroadBandResultObject result = null;
+		//
+		boolean isSystemdPlatforms = false;
+		isSystemdPlatforms = DeviceModeHandler.isFibreDevice(device);
+		LOGGER.info("Gateway device model is:" + isSystemdPlatforms);
+		try {
+			String model = ((Device) deviceConnected).getModel();
+
+			/**
+			 * STEP : VERIFY THE CORRECT IPV4 ADDRESS FOR CONNECTED CLIENT
+			 */
+			step = "S" + stepNumber;
+			status = false;
+			LOGGER.info("**********************************************************************************");
+			LOGGER.info("STEP " + stepNumber
+					+ ": DESCRIPTION :Verify the client  connected to ethernet has valid IPv4 Address " + model);
+			LOGGER.info("STEP " + stepNumber
+					+ ": ACTION : Get the device IPv4 address using below commandLinux : ifconfig eth0 |grep -i \"inet addr:\"Windows: ipconfig "
+					+ "|grep -A 10 \"Ethernet LAN adapter Wi-Fi\" |grep -i \"IPv4 Address\"");
+			LOGGER.info("STEP " + stepNumber
+					+ ": EXPECTED : Client connected to the Ethernet should be assigned with a valid IP Address");
+			LOGGER.info("**********************************************************************************");
+			errorMessage = "Unable to get the correct IPV4 address from LAN client";
+			long startTime = System.currentTimeMillis();
+			do {
+				status = BroadBandConnectedClientUtils.verifyIpv4AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(
+						((Device) deviceConnected).getOsType(), deviceConnected, tapEnv);
+			} while (!status && (System.currentTimeMillis() - startTime) < BroadBandTestConstants.THREE_MINUTE_IN_MILLIS
+					&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+			if (status) {
+				LOGGER.info("STEP " + stepNumber
+						+ " : ACTUAL : Successfully verified the correct IPV4 address from LAN client");
+			} else {
+				LOGGER.error("STEP " + stepNumber + " : ACTUAL : " + errorMessage);
+			}
+			LOGGER.info("**********************************************************************************");
+			tapEnv.updateExecutionStatus(device, testId, step, status, errorMessage, false);
+
+			/**
+			 * STEP : Verify the IPv6 Address is retrieved from the client connected to
+			 * Ethernet
+			 */
+			stepNumber++;
+			step = "S" + stepNumber;
+			status = false;
+			LOGGER.info("#####################################################################################");
+			LOGGER.info("STEP " + stepNumber
+					+ ": DESCRIPTION :Verify the IPv6 Address is retrieved from the client connected to Ethernet");
+			LOGGER.info("STEP " + stepNumber
+					+ ": ACTION :  Get the device IPv4 address using below commandLinux : ifconfig eth0 |"
+					+ "grep -i \"inet addr6:\"Windows: ipconfig |grep -A 10 \"Ethernet LAN adapter Wi-Fi\" |grep -i \"IPv6 Address\"");
+
+			LOGGER.info("STEP " + stepNumber
+					+ ": EXPECTED :  Local IPv6 Address assigned to the client should be retrieved successfully");
+			LOGGER.info("#####################################################################################");
+			errorMessage = "UNABLE TO GET THE CORRECT IPV6 ADDRESS FROM CLIENT MODEL " + model;
+			if (!isSystemdPlatforms) {
+				startTime = System.currentTimeMillis();
+				do {
+					status = BroadBandConnectedClientUtils
+							.verifyIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(
+									((Device) deviceConnected).getOsType(), deviceConnected, tapEnv);
+				} while (!status
+						&& (System.currentTimeMillis() - startTime) < BroadBandTestConstants.THREE_MINUTE_IN_MILLIS
+						&& BroadBandCommonUtils.hasWaitForDuration(tapEnv,
+								BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+				if (status) {
+					LOGGER.info("STEP " + stepNumber
+							+ " : ACTUAL : SUCCESSFYLLY VERIFIED CORRECT IPV6 ADDRESS FROM CLIENT DEVICE MODEL : "
+							+ model);
+				} else {
+					LOGGER.error("STEP " + stepNumber + " : ACTUAL : " + errorMessage);
+				}
+				LOGGER.info("**********************************************************************************");
+				tapEnv.updateExecutionStatus(device, testId, step, status, errorMessage, false);
+			} else {
+				LOGGER.info("**********************************************************************************");
+				tapEnv.updateExecutionForAllStatus(device, testId, step, ExecutionStatus.NOT_APPLICABLE,
+						BroadBandTestConstants.PACE_NOT_APPLICABLE_IPV6, false);
+			}
+
+			/**
+			 * Step : Verify the internet is accessible in the client connected to Ethernet
+			 * using IPV4 interface
+			 */
+			stepNumber++;
+			step = "S" + stepNumber;
+			errorMessage = "Not able to access the site'www.google.com' from LAN client using IPV4 address";
+			status = false;
+			LOGGER.info("**********************************************************************************");
+			LOGGER.info("STEP " + stepNumber
+					+ ": DESCRIPTION : Verify the internet is accessible in the client connected to Ethernet using IPV4 interface");
+			LOGGER.info("STEP " + stepNumber
+					+ ": ACTION : Execute the command in connected client:curl -4 -v 'www.google.com' "
+					+ " | grep '200 OK' OR ping -4 -n 5 google.com, LINUX : curl -4 -f --interface <interfaceName>"
+					+ " www.google.com | grep '200 OK' OR ping -4 -n 5 google.com");
+			LOGGER.info("STEP " + stepNumber + ": EXPECTED :Internet should be accessible in the connected client.");
+			LOGGER.info("**********************************************************************************");
+			result = BroadBandConnectedClientUtils.verifyInternetIsAccessibleInConnectedClientUsingCurl(tapEnv,
+					deviceConnected,
+					BroadBandTestConstants.URL_HTTPS + BroadBandTestConstants.STRING_GOOGLE_HOST_ADDRESS,
+					BroadBandTestConstants.IP_VERSION4);
+			status = result.isStatus();
+			if (!status) {
+				errorMessage = "Ping operation failed to access the site 'www.google.com' using IPV4 address";
+				status = ConnectedNattedClientsUtils.verifyPingConnectionForIpv4AndIpv6(deviceConnected, tapEnv,
+						BroadBandTestConstants.PING_TO_GOOGLE, BroadBandTestConstants.IP_VERSION4);
+			}
+			if (status) {
+				LOGGER.info("STEP " + stepNumber
+						+ " : ACTUAL : Connected LAN client has internet connectivity using IPV4 interface");
+			} else {
+				LOGGER.error("STEP " + stepNumber + " : ACTUAL : " + errorMessage);
+			}
+			LOGGER.info("**********************************************************************************");
+			tapEnv.updateExecutionStatus(device, testId, step, status, errorMessage, false);
+
+			/**
+			 * Step : Verify the internet is accessible in the client connected to Ethernet
+			 * using IPV6 interface
+			 */
+			stepNumber++;
+			step = "S" + stepNumber;
+			errorMessage = "Not able to access the site'www.google.com' from LAN client using IPV6 address";
+			status = false;
+			LOGGER.info("**********************************************************************************");
+			LOGGER.info("STEP " + stepNumber
+					+ ": DESCRIPTION :Verify the internet is accessible in the client connected to Ethernet using IPV6 interface");
+			LOGGER.info("STEP " + stepNumber
+					+ ": ACTION : Execute the command in connected client:curl -4 -v 'www.google.com' "
+					+ " | grep '200 OK' OR ping -4 -n 5 google.com, LINUX : curl -4 -f --interface <interfaceName>"
+					+ " www.google.com | grep '200 OK' OR ping -4 -n 5 google.com ");
+			LOGGER.info("STEP " + stepNumber + ": EXPECTED : Internet should be accessible in the connected client.");
+			LOGGER.info("**********************************************************************************");
+			errorMessage = "NOT ABLE TO ACCESS THE SITE 'www.google.com' FROM LAN CLIENT WITH USING IPV6";
+			if (isSystemdPlatforms) {
+				LOGGER.info("STEP : ACTUAL : IPV6 INTERNET CONNECTIVITY VERIFICATION NOT APPLICABLE FOR PACE DEVICES");
+				LOGGER.info("**********************************************************************************");
+				tapEnv.updateExecutionForAllStatus(device, testId, step, ExecutionStatus.NOT_APPLICABLE,
+						BroadBandTestConstants.NOTAPPLICABLE_VALUE, false);
+			} else {
+				result = BroadBandConnectedClientUtils.verifyInternetIsAccessibleInConnectedClientUsingCurl(tapEnv,
+						deviceConnected,
+						BroadBandTestConstants.URL_HTTPS + BroadBandTestConstants.STRING_GOOGLE_HOST_ADDRESS,
+						BroadBandTestConstants.IP_VERSION6);
+				status = result.isStatus();
+				errorMessage = result.getErrorMessage();
+				if (!status) {
+					errorMessage = "PING OPERATION FAILED TO ACCESS THE SITE 'www.google.com' USING IPV6 ";
+					status = ConnectedNattedClientsUtils.verifyPingConnectionForIpv4AndIpv6(deviceConnected, tapEnv,
+							BroadBandTestConstants.PING_TO_GOOGLE, BroadBandTestConstants.IP_VERSION6);
+				}
+				if (status) {
+					LOGGER.info("STEP " + stepNumber
+							+ " : ACTUAL : Connected LAN client has internet connectivity using IPV6 interface");
+				} else {
+					LOGGER.error("STEP " + stepNumber + " : ACTUAL : " + errorMessage);
+				}
+				LOGGER.info("**********************************************************************************");
+				tapEnv.updateExecutionStatus(device, testId, step, status, errorMessage, false);
+			}
+		} catch (TestException e) {
+			LOGGER.error(errorMessage);
+			throw new TestException(errorMessage);
+		}
+		LOGGER.debug("ENDING METHOD : verifyIpv4AndIpV6ConnectionForEthernetClient()");
+	}
+
+	/**
+	 * Enum variable to store the operating modes in different bands. Connected
+	 * clients only displaying only latest operating standard. Only way to get the
+	 * correct standard is to use client with same lower standard clients.
+	 * 
+	 * @refactor Alan_Bivera
+	 */
+	public enum WifiOperatingStandard {
+		OPERATING_STANDARD_G_N("g,n", "802.11g;802.11n"), OPERATING_STANDARD_B_G_N("b,g,n", "802.11n;802.11b;802.11g"),
+		OPERATING_STANDARD_N("n", "802.11n"), OPERATING_STANDARD_A_N_AC("a,n,ac", "802.11a;802.11n;802.11ac"),
+		OPERATING_STANDARD_AC("ac", "802.11ac"), OPERATING_STANDARD_N_AC("n,ac", "802.11n;802.11ac"),
+		OPERATING_STANDARD_A_N("a,n", "802.11a;802.11n"),
+		OPERATING_STANDARD_A_N_AC_AX("a,n,ac,ax", "802.11a;802.11n;802.11ac;802.11ax"),
+		OPERATING_STANDARD_G_N_AX("g,n,ax", "802.11g;802.11n;802.11ax");
+
+		private String gatewayOperatingMode;
+		private String clientOperatingMode;
+
+		public List<String> getClientOperatingMode() {
+			return Arrays.asList(clientOperatingMode.split(";"));
+		}
+
+		public void setClientOperatingMode(String clientOperatingMode) {
+			this.clientOperatingMode = clientOperatingMode;
+		}
+
+		WifiOperatingStandard(String gatewayMode, String clientMode) {
+			this.gatewayOperatingMode = gatewayMode;
+			this.clientOperatingMode = clientMode;
+		}
+
+		public String getOperatingmode() {
+			return gatewayOperatingMode;
+		}
+
+		public void operatingMode(String mode) {
+			this.gatewayOperatingMode = mode;
+		}
+
+	}
+
+	/**
+	 * Helper method to verify enabling private SSID from snmp.
+	 * 
+	 * @param device        Dut instance
+	 * @param tapEnv        AutomaticsTapApi instance
+	 * @param ssidFrequency Wifi SSID frequency
+	 * @return true if private ssid is enabled
+	 */
+	public static boolean verifyEnablingPrivateSsidUsingSnmp(Dut device, AutomaticsTapApi tapEnv,
+			SSIDFrequency ssidFrequency) {
+		LOGGER.debug("STARTING METHOD : verifyEnablingPrivateSsidUsingSnmp");
+		boolean status = false;
+		String oid = BroadBandSnmpMib.ECM_WIFI_2_4_SSID_STATUS.getOid();
+		if (SSIDFrequency.FREQUENCY_5_GHZ.equals(ssidFrequency)) {
+			oid = BroadBandSnmpMib.ECM_WIFI_5_SSID_STATUS.getOid();
+		}
+
+		String snmpSetResponse = BroadBandSnmpUtils.snmpSetOnEcm(tapEnv, device, oid, SnmpDataType.INTEGER,
+				BroadBandTestConstants.STRING_VALUE_ONE);
+		LOGGER.info("Response from SNMP Set command is -" + snmpSetResponse);
+		if (CommonMethods.isNotNull(snmpSetResponse)
+				&& BroadBandTestConstants.STRING_VALUE_ONE.equalsIgnoreCase(snmpSetResponse)) {
+			// Waiting one min
+			tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+			String snmpGetResponse = BroadBandSnmpUtils.snmpGetOnEcm(tapEnv, device, oid);
+			status = CommonMethods.isNotNull(snmpGetResponse)
+					&& !snmpGetResponse.contains(BroadBandTestConstants.TIME_OUT_RESPONSE)
+					&& snmpSetResponse.equals(snmpGetResponse);
+		}
+		LOGGER.info("Is Private SSID enabled through SNMP- " + status);
+		LOGGER.debug("ENDING METHOD : verifyEnablingPrivateSsidUsingSnmp");
+		return status;
+	}
+
+	/**
+	 * Helper method to verify enabling private SSID from Tr69.
+	 * 
+	 * @param device        Dut instance
+	 * @param tapEnv        AutomaticsTapApi instance
+	 * @param ssidFrequency Wifi SSID frequency
+	 * @return true if private ssid is enabled
+	 * @Refactor Sruthi Santhosh
+	 */
+	public static boolean verifyEnablingPrivateSsidUsingTr69(Dut device, AutomaticsTapApi tapEnv,
+			SSIDFrequency ssidFrequency) {
+		LOGGER.debug("STARTING METHOD : verifyEnablingPrivateSsidUsingTr69");
+		boolean status = false;
+		// This parameter gives the value of the Private SSID in MSO page, ready only
+		// parameter
+		String checkSsidStatus = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_SSID_STATUS_FOR_2_4GHZ_PRIVATE_SSID;
+		// This parameter is for modifying Private SSID state.
+		String enableSsid = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_ENABLE;
+		if (SSIDFrequency.FREQUENCY_5_GHZ.equals(ssidFrequency)) {
+			checkSsidStatus = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_SSID_STATUS_FOR_5GHZ_PRIVATE_SSID;
+			enableSsid = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_ENABLED_STATUS;
+		}
+		long startTime = System.currentTimeMillis();
+		boolean exceptionStatus = false;
+
+		// parameter 1
+		Parameter setParam = new Parameter();
+
+		setParam.setDataType(TR69ParamDataType.BOOLEAN.get());
+		setParam.setParamName(enableSsid);
+		setParam.setParamValue(BroadBandTestConstants.TRUE);
+
+		List<Parameter> parameters = new ArrayList<Parameter>();
+		parameters.add(setParam);
+
+		// parameter 2
+
+		List<String> parameters2 = new ArrayList<String>();
+		parameters2.add(checkSsidStatus);
+
+		do {
+			try {
+				String response = tapEnv.setTR69ParameterValues(device, parameters);
+				LOGGER.info("Response of setTR69ParameterValues method is:" + response);
+
+				if (!response.equalsIgnoreCase("Failed to set TR69 param value")) {
+					status = !(BroadBandConnectedClientTestConstants.RADIO_STATUS_DOWN
+							.equalsIgnoreCase(tapEnv.getTR69ParameterValues(device, parameters2)));
+				}
+			} catch (Exception exception) {
+				exceptionStatus = true;
+				LOGGER.error("Exception occurred while verifying radio status of Wifi using TR69.");
+			}
+		} while (!status && exceptionStatus
+				&& ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.THREE_MINUTE_IN_MILLIS)
+				&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.ONE_MINUTE_IN_MILLIS));
+
+		LOGGER.info("Is Private SSID enabled through TR69- " + status);
+		LOGGER.debug("ENDING METHOD : verifyEnablingPrivateSsidUsingTr69");
+		return status;
+	}
+
+	/**
+	 * Helper method to verify enabling private SSID from WebPA.
+	 * 
+	 * @param device        Dut instance
+	 * @param tapEnv        AutomaticsTapApi instance
+	 * @param ssidFrequency Wifi SSID frequency
+	 * @return true if private ssid is enabled
+	 */
+	public static boolean verifyEnablingPrivateSsidUsingWebpa(Dut device, AutomaticsTapApi tapEnv,
+			SSIDFrequency ssidFrequency) {
+		LOGGER.debug("STARTING METHOD : verifyEnablingPrivateSsidUsingWebpa");
+		boolean status = false;
+
+		// This parameter gives the value of the Private SSID in MSO page, ready only
+		// parameter
+		String checkSsidStatus = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_SSID_STATUS_FOR_2_4GHZ_PRIVATE_SSID;
+		// This parameter is for modifying Private SSID state.
+		String enableSsid = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_ENABLE;
+		if (SSIDFrequency.FREQUENCY_5_GHZ.equals(ssidFrequency)) {
+			checkSsidStatus = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_SSID_STATUS_FOR_5GHZ_PRIVATE_SSID;
+			enableSsid = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_ENABLED_STATUS;
+		}
+
+		status = BroadBandWiFiUtils.setWebPaParams(device, enableSsid, BroadBandTestConstants.TRUE,
+				WebPaDataTypes.BOOLEAN.getValue());
+
+		LOGGER.info("Response from WEBPA command is -" + status);
+		if (status) {
+			status = false;
+			String getResponse = tapEnv.executeWebPaCommand(device, checkSsidStatus);
+			LOGGER.info("Response from WEBPA GET command is -" + getResponse + ".");
+			status = CommonMethods.isNotNull(getResponse)
+					&& !(BroadBandConnectedClientTestConstants.RADIO_STATUS_DOWN.equalsIgnoreCase(getResponse.trim()));
+		}
+		LOGGER.info("Is Private SSID enabled through WebPA- " + status);
+		LOGGER.debug("ENDING METHOD : verifyEnablingPrivateSsidUsingWebpa");
+		return status;
+	}
+
     /**
-     * Method to assign gateway IP based on device type
+     * Method to validate channels are from supported list
      * 
-     * @param device
-     * @return gateway ip
+     * @param channelList
+     *            Channel list from webpa
+     * @param band
+     *            Wifi frequency band
+     * @return validation result
+     * @Refactor Alan_Bivera
      */
 
-    public static String getGatewayIpOfDevice(Dut device) {
-	String gatewayIp = DeviceModeHandler.isBusinessClassDevice(device)
-		? BroadBandTestConstants.STRING_BUSINESS_CLASS_GATEWAYIP
-		: BroadBandTestConstants.STRING_RESIDENTIAL_CLASS_GATEWAYIP;
-	if (DeviceModeHandler.isDSLDevice(device)) {
-	    gatewayIp = BroadBandTestConstants.LAN_LOCAL_IP;
-	}
-	return gatewayIp;
-    }
-
-    public static boolean checkAndSetPublicWifi(Dut device, AutomaticsTapApi tapEnv) {
-
-	String publicWifiValue = null;
-	boolean reactivationStatus = false;
-
+    public static boolean validateIfChannelsAreFromSupportedList(String channelList, WiFiFrequencyBand band,
+	    Dut device) {
+	LOGGER.debug("STARTING METHOD: validateIfChannelsAreFromSupportedList ");
+	boolean result = false;
 	try {
-	    // get the property value from stb.properties
-	    LOGGER.info(" Going to get property value for " + BroadBandTestConstants.KEY_FOR_PUBLIC_WIFI_WHITELISTING);
-	    publicWifiValue = AutomaticsTapApi
-		    .getSTBPropsValue(BroadBandTestConstants.KEY_FOR_PUBLIC_WIFI_WHITELISTING);
-	    LOGGER.info("Public wifi is set as " + publicWifiValue + " in stb.properties");
-	    reactivationStatus = BroadBandWebPaUtils.setAndVerifyParameterValuesUsingWebPaorDmcli(device, tapEnv,
-		    BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI, WebPaDataTypes.BOOLEAN.getValue(),
-		    publicWifiValue);
-	    if (reactivationStatus) {
-		LOGGER.info("Sucessfully set Public wifi as " + publicWifiValue);
 
-	    } else {
-		LOGGER.info("Failed to set Public wifi as " + publicWifiValue + " as part of reactivation ");
+	    String[] channels = channelList.split(AutomaticsConstants.COMMA);
+	    for (String channel : channels) {
+		result = CommonMethods.patternMatcher(channel,
+			band == WiFiFrequencyBand.WIFI_BAND_2_GHZ
+				? (CommonMethods.isAtomSyncAvailable(device, tapEnv))
+					? BroadBandTestConstants.PATTERN_MATCHER_24_GHZ_CHANNEL_ATOM
+					: BroadBandTestConstants.PATTER_MATCHER_FOR_CHANNEL_SELECT_OF_2GHZ_PRIVATE_WIFI
+				: BroadBandTestConstants.PATTER_MATCHER_FOR_CHANNEL_SELECT_OF_5GHZ_PRIVATE_WIFI);
+		if (!result) {
+		    break;
+		}
 	    }
-	} catch (Exception e) {
-	    LOGGER.error("Exception occured while checking publicWifiValue from stb.properties ." + e.getMessage());
 
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while validating the channels", e);
 	}
-	return reactivationStatus;
+	LOGGER.debug("ENDING METHOD: validateIfChannelsAreFromSupportedList ");
+	return result;
     }
+
 }

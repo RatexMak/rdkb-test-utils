@@ -363,4 +363,69 @@ public class BroadBandRestoreWifiUtils {
 	LOGGER.debug("Ending METHOD verifyDefaultSSIDForPartner");
 	return broadBandResultObject;
     }
+    /**
+     * Verify whether the SSID obtained has last 4 hex values in mac address
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param radio
+     *            {@link WiFiFrequencyBand}
+     * @return true if ssid is as per standard
+     * @refactor Athira
+     */
+    public static BroadBandResultObject verifyDefaultSsidForAllPartners(Dut device, AutomaticsTapApi tapEnv,
+	    WiFiFrequencyBand radio) {
+	LOGGER.debug("STARTING METHOD verifyDefaultSsidForAllPartners");
+	// Variable declaration starts
+	BroadBandResultObject broadBandResultObject = new BroadBandResultObject();
+	String webpaParameter = null;
+	RdkBSsidParameters ssidparam = null;
+	long startTime = System.currentTimeMillis();
+	String partnerId = null;
+	String errorMessage = "Unable to validate default SSID of radio " + radio;
+	boolean status = false;
+	// Variable declaration ends
+	try {
+	    do {
+		partnerId = tapEnv.executeWebPaCommand(device,
+			BroadBandWebPaConstants.WEBPA_PARAM_FOR_SYNDICATION_PARTNER_ID);
+		LOGGER.info("Current Partner ID of the device Retrieved via WEBPA is :" + partnerId);
+	    } while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TWO_MINUTE_IN_MILLIS
+		    && !CommonMethods.isNotNull(partnerId)
+		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+	    if (CommonMethods.isNotNull(partnerId) && BroadBandCommonUtils.verifyPartnerAvailability(partnerId)) {
+		if (radio.equals((WiFiFrequencyBand.WIFI_BAND_2_GHZ))) {
+		    ssidparam = RdkBSsidParameters.SSID_FOR_2GHZ_PRIVATE_WIFI;
+		    webpaParameter = BroadBandWebPaConstants.WEBPA_DEFAULT_SSID_NAME_2_4_GHZ;
+		} else if (radio.equals((WiFiFrequencyBand.WIFI_BAND_5_GHZ))) {
+		    ssidparam = RdkBSsidParameters.SSID_FOR_5GHZ_PRIVATE_WIFI;
+		    webpaParameter = BroadBandWebPaConstants.WEBPA_DEFAULT_SSID_NAME_5_GHZ;
+		}
+		String ssid = tapEnv.executeWebPaCommand(device, webpaParameter);
+		LOGGER.info(radio.toString() + "SSID retieved after wifi reset  :  " + ssid);
+		if (CommonMethods.isNotNull(ssid)) {
+		    status = BroadBandCommonUtils.validateDefaultSsidforDifferentPartners(device, tapEnv, ssid,
+			    ssidparam, device.getModel(), partnerId, radio);
+		    broadBandResultObject.setStatus(status);
+		    broadBandResultObject.setErrorMessage(errorMessage);
+		    return broadBandResultObject;
+		} else {
+		    errorMessage = "Null value obtained for SSID!";
+		    broadBandResultObject.setErrorMessage(errorMessage);
+		    broadBandResultObject.setStatus(status);
+		}
+	    } else {
+		errorMessage = "Invalid Partner ID Obtained Via WEBPA Response.";
+		broadBandResultObject.setErrorMessage(errorMessage);
+		broadBandResultObject.setStatus(status);
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception Occured While Validating the Default SSID: " + e.getMessage());
+	    broadBandResultObject.setErrorMessage(e.getMessage());
+	}
+	LOGGER.debug("Ending METHOD verifyDefaultSsidForAllPartners");
+	return broadBandResultObject;
+    }
 }

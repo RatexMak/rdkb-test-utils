@@ -17,6 +17,8 @@
  */
 package com.automatics.rdkb.utils.wifi.connectedclients;
 
+import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +40,7 @@ import com.automatics.rdkb.constants.BroadBandTraceConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
 import com.automatics.rdkb.constants.RDKBTestConstants.WiFiFrequencyBand;
 import com.automatics.rdkb.constants.WebPaParamConstants.WebPaDataTypes;
+import com.automatics.rdkb.enums.BroadBandWhixEnumConstants.WEBPA_AP_INDEXES;
 import com.automatics.rdkb.utils.BroadBandBandSteeringUtils;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
 import com.automatics.rdkb.utils.BroadBandSystemUtils;
@@ -45,8 +48,11 @@ import com.automatics.rdkb.utils.CommonUtils;
 import com.automatics.rdkb.utils.ConnectedNattedClientsUtils;
 import com.automatics.rdkb.utils.DeviceModeHandler;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
+import com.automatics.rdkb.utils.wifi.BroadBandWiFiUtils;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.CommonMethods;
+import com.automatics.webpa.WebPaParameter;
+import com.automatics.webpa.WebPaServerResponse;
 import com.google.common.net.InetAddresses;
 
 /**
@@ -216,7 +222,7 @@ public class BroadBandConnectedClientUtils {
 	 * Method to get the NUC device from connected client and connect with 5 GHz
 	 * wifi network
 	 * 
-	 * @param device      instance of {@link Dut}
+	 * @param device           instance of {@link Dut}
 	 * @param AutomaticsTapApi instance of {@link AutomaticsTapApi}
 	 * @return 5 Ghz client device instance
 	 * 
@@ -1130,795 +1136,2444 @@ public class BroadBandConnectedClientUtils {
 		return deviceConnectedWith2Ghz;
 	}
 
-    /**
-     * Method to set private ssid names to standard values following pattern "RKDB-<MAC address>-<Band>"
-     * 
-     * 
-     * @param device
-     *            instance of {@link Dut}
-     * @param tapEnv
-     *            instance of {@link AutomaticsTapApi}
-     * @return status of setting the parameter values true if both are set to value false even if one is not set
-     * 
-     * @author rvella613
-     * @refactor Athira
-     */
-    public static boolean setPrivateWifiSsidNamesIn2GhzAnd5GhzToStandardValues(Dut device, AutomaticsTapApi tapEnv) {
-	LOGGER.debug("SARTING METHOD: setPrivateWifiSsidNamesIn2GhzAnd5GhzToStandardValues");
-	BroadBandResultObject result = new BroadBandResultObject();
-	String ssidNameFor2Ghz = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.TEXT_RDKB,
-		BroadBandTestConstants.CHARACTER_HYPHEN, device.getHostMacAddress(),
-		BroadBandTestConstants.CHARACTER_HYPHEN, BroadBandTestConstants.BAND_2_4GHZ);
-	String ssidNameFor5Ghz = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.TEXT_RDKB,
-		BroadBandTestConstants.CHARACTER_HYPHEN, device.getHostMacAddress(),
-		BroadBandTestConstants.CHARACTER_HYPHEN, WiFiFrequencyBand.WIFI_BAND_5_GHZ.getValue());
-	Map<String, String> paramMap = new HashMap<String, String>();
-	paramMap.put(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID, ssidNameFor2Ghz);
-	paramMap.put(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID, ssidNameFor5Ghz);
-	result = BroadBandBandSteeringUtils.configureSSIDForBothRadios(device, tapEnv, paramMap);
-	LOGGER.debug("ENDING METHOD: setPrivateWifiSsidNamesIn2GhzAnd5GhzToStandardValues");
-	return result.isStatus();
-    }
-    
-    /**
-     * Method to verify SSID visibility from client device
-     * 
-     * @param device
-     *            {@link Dut}
-     * @param tapEnv
-     *            {@link AutomaticsTapApi}
-     * @param ssidName
-     *            SSID name
-     * 
-     * @return true is ssid is visible in client device
-     * @refactor Athira
-     */
+	/**
+	 * Method to set private ssid names to standard values following pattern
+	 * "RKDB-<MAC address>-<Band>"
+	 * 
+	 * 
+	 * @param device instance of {@link Dut}
+	 * @param tapEnv instance of {@link AutomaticsTapApi}
+	 * @return status of setting the parameter values true if both are set to value
+	 *         false even if one is not set
+	 * 
+	 * @author Revanth Kumar Vella
+	 * @refactor Athira
+	 */
+	public static boolean setPrivateWifiSsidNamesIn2GhzAnd5GhzToStandardValues(Dut device, AutomaticsTapApi tapEnv) {
+		LOGGER.debug("SARTING METHOD: setPrivateWifiSsidNamesIn2GhzAnd5GhzToStandardValues");
+		BroadBandResultObject result = new BroadBandResultObject();
+		String ssidNameFor2Ghz = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.TEXT_RDKB,
+				BroadBandTestConstants.CHARACTER_HYPHEN, device.getHostMacAddress(),
+				BroadBandTestConstants.CHARACTER_HYPHEN, BroadBandTestConstants.BAND_2_4GHZ);
+		String ssidNameFor5Ghz = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.TEXT_RDKB,
+				BroadBandTestConstants.CHARACTER_HYPHEN, device.getHostMacAddress(),
+				BroadBandTestConstants.CHARACTER_HYPHEN, WiFiFrequencyBand.WIFI_BAND_5_GHZ.getValue());
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID, ssidNameFor2Ghz);
+		paramMap.put(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID, ssidNameFor5Ghz);
+		result = BroadBandBandSteeringUtils.configureSSIDForBothRadios(device, tapEnv, paramMap);
+		LOGGER.debug("ENDING METHOD: setPrivateWifiSsidNamesIn2GhzAnd5GhzToStandardValues");
+		return result.isStatus();
+	}
 
-    public static boolean verifySsidVisibilityInClientDevice(Dut clientDevice, AutomaticsTapApi tapEnv, String ssidName,
-	    boolean isVisibility) {
-    	
-    LOGGER.debug("SARTING METHOD: verifySsidVisibilityInClientDevice");
+	/**
+	 * Method to verify SSID visibility from client device
+	 * 
+	 * @param device   {@link Dut}
+	 * @param tapEnv   {@link AutomaticsTapApi}
+	 * @param ssidName SSID name
+	 * 
+	 * @return true is ssid is visible in client device
+	 * @refactor Athira
+	 */
 
-	// Variable to store status
-	boolean status = false;
-	// Variable to store command response
-	String response = null;
-	// Variable to store errorMessage
-	String errorMessage = null;
-	// Variable to store command
-	String[] command = null;
-	int iteration = 0;
+	public static boolean verifySsidVisibilityInClientDevice(Dut clientDevice, AutomaticsTapApi tapEnv, String ssidName,
+			boolean isVisibility) {
 
-	// Get the OS type of the client device
-	String clientOsType = ((Device) clientDevice).getOsType();
+		LOGGER.debug("SARTING METHOD: verifySsidVisibilityInClientDevice");
 
-	if (CommonMethods.isNotNull(ssidName) && CommonMethods.isNotNull(clientOsType)) {
+		// Variable to store status
+		boolean status = false;
+		// Variable to store command response
+		String response = null;
+		// Variable to store errorMessage
+		String errorMessage = null;
+		// Variable to store command
+		String[] command = null;
+		int iteration = 0;
 
-	    // get the command based on OS type
-	    if (clientOsType.equalsIgnoreCase(BroadBandTestConstants.OS_TYPE_WINDOWS)) {
-		command = new String[] { BroadBandConnectedClientTestConstants.WINDOWS_COMMAND_TO_GET_WLAN_NETWORK };
-	    } else if (clientOsType.equalsIgnoreCase(BroadBandTestConstants.OS_TYPE_LINUX)) {
-		command = new String[] { BroadBandConnectedClientTestConstants.LINUX_COMMAND_TO_GET_WLAN_NETWORK };
-	    }
-	    for (iteration = 0; iteration < 4; iteration++) {
-		response = tapEnv.executeCommandOnOneIPClients(clientDevice, command);
-		if (CommonMethods.isNotNull(response)) {
-		    if (isVisibility) {
-			status = response.contains(ssidName);
-			if (status) {
-			    LOGGER.info(ssidName + "is  available in the client device network.");
-			    break;
+		// Get the OS type of the client device
+		String clientOsType = ((Device) clientDevice).getOsType();
+
+		if (CommonMethods.isNotNull(ssidName) && CommonMethods.isNotNull(clientOsType)) {
+
+			// get the command based on OS type
+			if (clientOsType.equalsIgnoreCase(BroadBandTestConstants.OS_TYPE_WINDOWS)) {
+				command = new String[] { BroadBandConnectedClientTestConstants.WINDOWS_COMMAND_TO_GET_WLAN_NETWORK };
+			} else if (clientOsType.equalsIgnoreCase(BroadBandTestConstants.OS_TYPE_LINUX)) {
+				command = new String[] { BroadBandConnectedClientTestConstants.LINUX_COMMAND_TO_GET_WLAN_NETWORK };
 			}
-		    } else {
-			status = !response.contains(ssidName);
-			if (status) {
-			    LOGGER.info(ssidName + "is  not available in the client device network.");
-			    break;
+			for (iteration = 0; iteration < 4; iteration++) {
+				response = tapEnv.executeCommandOnOneIPClients(clientDevice, command);
+				if (CommonMethods.isNotNull(response)) {
+					if (isVisibility) {
+						status = response.contains(ssidName);
+						if (status) {
+							LOGGER.info(ssidName + "is  available in the client device network.");
+							break;
+						}
+					} else {
+						status = !response.contains(ssidName);
+						if (status) {
+							LOGGER.info(ssidName + "is  not available in the client device network.");
+							break;
+						}
+					}
+				} else {
+
+					errorMessage = "Obtained null response for " + command + " command execution";
+					LOGGER.error(errorMessage);
+					if (iteration == 3) {
+						throw new TestException(errorMessage);
+					}
+				}
+				LOGGER.info("waiting for two minute before checking the client device again for ssid visibility");
+				tapEnv.waitTill(AutomaticsConstants.TWO_MINUTES);
 			}
-		    }
 		} else {
-
-		    errorMessage = "Obtained null response for " + command + " command execution";
-		    LOGGER.error(errorMessage);
-		    if (iteration == 3) {
+			errorMessage = "Either Obtained null response for SSID name or Client device OS type ";
+			LOGGER.error(errorMessage);
 			throw new TestException(errorMessage);
-		    }
 		}
-		LOGGER.info("waiting for two minute before checking the client device again for ssid visibility");
-		tapEnv.waitTill(AutomaticsConstants.TWO_MINUTES);
-	    }
-	} else {
-	    errorMessage = "Either Obtained null response for SSID name or Client device OS type ";
-	    LOGGER.error(errorMessage);
-	    throw new TestException(errorMessage);
-	}
-	LOGGER.debug("ENDING METHOD : verifySsidVisibilityInClientDevice () ");
-	return status;
-    }  
-    
-    /**
-     * Method to verify whether the client device is connected and to get its ip address
-     * 
-     * @param device
-     * @param connectedDeviceActivated
-     * @param testId
-     * @author anandam.s
-     * @refactor Athira
-     */
-    public static void checkIpAddressAndConnectivity(Dut device, AutomaticsTapApi tapEnv, Dut connectedDeviceActivated,
-	    String testId, String[] stepNumbers) {
-	// String to store the test case status
-	boolean status = false;
-	// Test step number
-	String testStepNumber = stepNumbers[0];
-	// String to store the error message
-	String errorMessage = null;
-	// response obtained
-	String commandResponse = null;
-	boolean isSystemdPlatforms = false;
-	isSystemdPlatforms = DeviceModeHandler.isFibreDevice(device);
-	LOGGER.info("Gateway device model is:" + isSystemdPlatforms);
-
-	if (stepNumbers.length == 4) {
-	    checkIpAddressObtained(device, tapEnv, connectedDeviceActivated, testId,
-		    new String[] { stepNumbers[0], stepNumbers[1] });
-
-	    LOGGER.info("******************************************************");
-	    LOGGER.info("STEP " + stepNumbers[2]
-		    + " : DESCRIPTION : Verify whether you have connectivity using that particular interface using IPV4 ");
-	    LOGGER.info("STEP " + stepNumbers[2]
-		    + " : ACTION : Execute command :Linux :  curl -4 -f --interface <interface name> www.google.com Windows:ping www.google.com -4");
-	    LOGGER.info("STEP " + stepNumbers[2] + " : EXPECTED: Connectivity check should return status as 200");
-	    LOGGER.info("******************************************************");
-	    testStepNumber = stepNumbers[2];
-	    status = false;
-	    String command = ((Device) connectedDeviceActivated).getOsType()
-		    .equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
-			    ? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV4_ADDRESS
-			    : BroadBandConnectedClientTestConstants.COMMAND_CURL_WINDOWS_IPV4_ADDRESS;
-	    errorMessage = "Connectivty check using IPV4 address failed";
-	    commandResponse = tapEnv.executeCommandOnOneIPClients(connectedDeviceActivated, command);
-	    if (CommonMethods.isNotNull(commandResponse)) {
-		status = commandResponse.contains(BroadBandConnectedClientTestConstants.RESPONSE_STATUS_OK);
-
-		if (status) {
-		    LOGGER.info("STEP " + stepNumbers[2] + " : ACTUAL :  Connectivity check return status as 200");
-		} else {
-		    errorMessage = "Expected 200 OK as response .But obtained " + commandResponse;
-		    LOGGER.error("STEP " + stepNumbers[2] + " : ACTUAL : " + errorMessage);
-		}
-	    } else {
-		errorMessage = "Unable to execute curl command for IPV4 on connected client device. Please check the connectivity between connected client and Jump server.";
-	    }
-	    tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
-
-	    LOGGER.info("******************************************************");
-	    LOGGER.info("STEP " + stepNumbers[3]
-		    + " : DESCRIPTION : Verify whether you have connectivity using that particular interface using IPV6 ");
-	    LOGGER.info("STEP " + stepNumbers[3]
-		    + " : ACTION : Linux Result:It should return the http status code as 200 Windows Result: Pinging google.com Response should return true");
-	    LOGGER.info("STEP " + stepNumbers[3] + " : EXPECTED: Connectivity check should return status as 200");
-	    LOGGER.info("******************************************************");
-	    testStepNumber = stepNumbers[3];
-	    status = false;
-	    errorMessage = "Connectivty check using IPV6 address failed";
-
-	    if (!isSystemdPlatforms) {
-
-		command = ((Device) connectedDeviceActivated).getOsType()
-			.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
-				? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV6_ADDRESS
-				: BroadBandConnectedClientTestConstants.COMMAND_CURL_WINDOWS_IPV6_ADDRESS;
-		commandResponse = tapEnv.executeCommandOnOneIPClients(connectedDeviceActivated, command);
-		if (CommonMethods.isNotNull(commandResponse)) {
-		    status = commandResponse.contains(BroadBandConnectedClientTestConstants.RESPONSE_STATUS_OK);
-		    if (status) {
-			LOGGER.info("STEP " + stepNumbers[3] + " : ACTUAL :  Connectivity check return status as 200");
-		    } else {
-
-			errorMessage = "Expected 200 OK as response .But obtained " + commandResponse;
-			LOGGER.error("STEP " + stepNumbers[3] + " : " + errorMessage);
-		    }
-		} else {
-		    errorMessage = "Unable to execute curl command for IPv6 on connected client device. Please check the connectivity between connected client and Jump server.";
-		}
-		tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
-	    } else {
-		tapEnv.updateExecutionForAllStatus(device, testId, testStepNumber, ExecutionStatus.NOT_APPLICABLE,
-			BroadBandTestConstants.STRING_NOT_APPLICABLE, false);
-	    }
-
-	} else {
-	    LOGGER.info("This function is meant for executing 4 steps.Current steps passed are " + stepNumbers.length);
-	}
-    }
-    
-    /**
-     * Common steps for checking IP address obtained for the connected client device
-     * 
-     * @param device
-     * @param connectedDeviceActivated
-     * @param testId
-     * @param stepNumbers
-     * @refactor Athira
-     */
-    public static void checkIpAddressObtained(Dut device, AutomaticsTapApi tapEnv, Dut connectedDeviceActivated,
-	    String testId, String[] stepNumbers) {
-	// String to store the test case status
-	boolean status = false;
-	// Test step number
-	String testStepNumber = stepNumbers[0];
-	long polling_window_ms = 90000L;
-	// String to store the error message
-	String errorMessage = null;
-	if (stepNumbers.length == 2) {
-
-	    LOGGER.info("******************************************************");
-	    LOGGER.info("STEP " + stepNumbers[0]
-		    + " : DESCRIPTION : Verify whether interface got the correct IPv4  address.");
-	    LOGGER.info("STEP " + stepNumbers[0]
-		    + " : ACTION : Connected a 5GHz wifi client with the gateway device's 5GHz wifi network using SSID and PASSWORD");
-	    LOGGER.info("STEP " + stepNumbers[0] + " : EXPECTED : Interface IP address should be shown");
-	    LOGGER.info("******************************************************");
-
-	    errorMessage = "interface did not get the correct IPV4 address";
-	    String osType = ((Device) connectedDeviceActivated).getOsType();
-	    long startTime = System.currentTimeMillis();
-	    // Loop for this function is a waiting time of max 90sec for the
-	    // webpa changes to get applied
-	    do {
-		status = BroadBandConnectedClientUtils.verifyIpv4AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(
-			osType, connectedDeviceActivated, tapEnv);
-		if (status) {
-		    LOGGER.info("STEP " + stepNumbers[0]
-			    + " : ACTUAL : Successfully verified interface got the correct IPv4  address.");
-		    break;
-		} else {
-		    LOGGER.info("STEP " + stepNumbers[0] + " : ACTUAL : " + errorMessage);
-		}
-	    } while (System.currentTimeMillis() < (startTime + polling_window_ms));
-	    tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
-
-	    LOGGER.info("******************************************************");
-	    LOGGER.info("STEP " + stepNumbers[1] + " : Verify whether interface got the correct IPv6  address.");
-	    LOGGER.info("STEP " + stepNumbers[1]
-		    + " : ACTION : Get the device IPv4 address using below command Linux : ifconfig wlan0 |grep -i \"inet6 addr:\"Windows:ipconfig |grep -A 10 \"Wireless LAN adapter Wi-Fi\" |grep -i \"Pv6 Address");
-	    LOGGER.info("STEP " + stepNumbers[1] + " : EXPECTED:Interface IP address should be shown");
-	    LOGGER.info("******************************************************");
-
-	    testStepNumber = stepNumbers[1];
-	    status = false;
-	    status = BroadBandConnectedClientUtils.verifyIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(osType,
-		    connectedDeviceActivated, tapEnv);
-	    if (status) {
-		LOGGER.info("STEP " + stepNumbers[1]
-			+ " : ACTUAL : Successfully verified interface got the correct IPv6  address.");
-	    } else {
-		LOGGER.error("STEP " + stepNumbers[1] + " : ACTUAL : " + errorMessage);
-	    }
-	    tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
-	} else {
-	    LOGGER.info("This function is meant for executing 2 steps.Current steps passed are " + stepNumbers.length);
-	}
-    }
-
-    
-    /**
-     * Method to get a 2.4 GHz or 5 GHz Wi-Fi connected client and connect with respective Wi-Fi network
-     * 
-     * @param tapEnv
-     *            {@link AutomaticsTapApi}
-     * @param device
-     *            {@link Dut}
-     * @return 2.4 Ghz or 5Ghz client device instance
-     * 
-     * @author Susheela C
-     * @refactor Govardhan
-     */
-    public static Dut get2GhzOr5GhzWiFiCapableClientDeviceAndConnectToCorrespondingSsid(Dut device,
-	    AutomaticsTapApi tapEnv) throws TestException {
-	LOGGER.debug("STARTING METHOD : get2GhzOr5GhzWiFiCapableClientDeviceAndConnectToCorrespondingSsid () ");
-	// Connected client device instance
-	Dut connectedClientDevice = null;
-	try {
-	    connectedClientDevice = BroadBandConnectedClientUtils
-		    .get2GhzWiFiCapableClientDeviceAndConnectToAssociated2GhzSsid(device, tapEnv);
-	    LOGGER.info("Successfully obtained a 2.4GHz Capable Wi-Fi client and Connected to 2.4GHz Wi-Fi network.");
-	} catch (TestException e) {
-	    LOGGER.error("Following error occured while trying to get a 2.4GHz connected client. ERROR : "
-		    + e.getMessage() + ". Going to try getting a 5GHz connected client!");
-	    try {
-		connectedClientDevice = BroadBandConnectedClientUtils
-			.get5GhzWiFiCapableClientDeviceAndConnectToAssociated5GhzSsid(device, tapEnv);
-		LOGGER.info("Successfully obtained a 5GHz Capable Wi-Fi client and Connected to 5GHz Wi-Fi network.");
-	    } catch (TestException exeception) {
-		LOGGER.error("Following error occured while trying to get a 5GHz connected client. ERROR : "
-			+ exeception.getMessage());
-	    }
-	}
-	if (connectedClientDevice == null) {
-	    throw new TestException("Unable to obtain a 2.4 GHz or 5GHz  Working Wi-Fi connected client!");
-	}
-	LOGGER.debug("ENDING METHOD : get2GhzOr5GhzWiFiCapableClientDeviceAndConnectToCorrespondingSsid () ");
-	return connectedClientDevice;
-    }
-    
-    /**
-     * Method to connect given connectec client to band 2.4ghz/5ghz
-     * 
-     * @param settop
-     *            Settop Instance
-     * @param tapEnv
-     *            AutomaticsTapApi instance
-     * @param clientSettop
-     *            Connected client instance
-     * @param wifiBand
-     *            Wifi Frequency band
-     * @return Time
-     * @refactor Athira
-     */
-    public static long connectToGivenWiFiCapableClientForPerfTest(Dut device, AutomaticsTapApi tapEnv,
-	    Dut clientSettop, String wifiBand) {
-	LOGGER.info("STARTING METHOD : connectToGivenWiFiCapableClientForPerfTest () ");
-	// variable to store the SSID Wi-Fi Network
-	String ssidName = null;
-	// variable to store the Pass Phrase Wi-Fi Network
-	String passPhraseName = null;
-	String securityModeofNetwork = null;
-	// Long to store connection time
-	long connectTime = 0;
-	WiFiFrequencyBand wifiFrequecyBand = wifiBand.equalsIgnoreCase(BroadBandTestConstants.BAND_2_4GHZ)
-		? WiFiFrequencyBand.WIFI_BAND_2_GHZ
-		: WiFiFrequencyBand.WIFI_BAND_5_GHZ;
-	try {
-	    ssidName = getSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv, wifiFrequecyBand);
-	    passPhraseName = getSsidPassphraseFromGatewayUsingWebPaOrDmcli(device, tapEnv, wifiFrequecyBand);
-	    securityModeofNetwork = getSsidSecurityModeFromGatewayUsingWebPaOrDmcli(device, tapEnv, wifiFrequecyBand);
-	    LOGGER.info("SECURITY MODE OBTAINED FOR " + wifiFrequecyBand + " WI-FI NETWORK FROM THE ROUTER DEVICE IS : "
-		    + securityModeofNetwork);
-	    boolean openSecurityMode = CommonMethods.isNotNull(securityModeofNetwork)
-		    && securityModeofNetwork.equalsIgnoreCase(BroadBandTestConstants.SECURITY_MODE_NONE);
-	    if (verfyCnctdClntIsWifiCpble(clientSettop)) {
-		if (openSecurityMode) {
-		    LOGGER.info("GOING TO CONNECT THE CLIENT WITH " + wifiFrequecyBand
-			    + " WI-FI NETWORK : OPEN SECURITY MODE.");
-		    connectTime = ConnectedNattedClientsUtils.connectToSSIDForPerfTest(device, clientSettop, tapEnv,
-			    ssidName, passPhraseName,
-			    BroadBandConnectedClientTestConstants.SECURITY_MODE_OPEN.toLowerCase(), false);
-		} else {
-		    LOGGER.info("GOING TO CONNECT THE CLIENT WITH " + wifiFrequecyBand
-			    + " WI-FI NETWORK : RECOMMANDED SECURITY MODE.");
-		    connectTime = ConnectedNattedClientsUtils.connectToSSIDForPerfTest(device, clientSettop, tapEnv,
-			    ssidName, passPhraseName, false);
-		}
-		if (connectTime != 0) {
-		    LOGGER.info("SUCCESSFULLY ESTABLISHED WI-FI CONNECTION WITH " + wifiFrequecyBand
-			    + " WI-FI NETWORK AND CAPTURED TIME DIFFERENCE");
-		}
-	    }
-	    if (connectTime == 0) {
-		LOGGER.error("UNABLE TO ESTABLISH WI-FI CONNECTION/PING STATISTICS MISMATCH WITH " + wifiFrequecyBand
-			+ " WI-FI NETWORK FROM THE OBTAINED CONNECTED CLIENTS!");
-	    }
-	} catch (Exception exception) {
-	    throw new TestException("UNABLE TO CONNECT THE CLIENT WITH " + wifiFrequecyBand
-		    + " WI-FI NETWORK DUE TO FOLLOWING REASON : " + exception.getMessage());
-	}
-	LOGGER.info("ENDING METHOD : connectToGivenWiFiCapableClientForPerfTest () ");
-	return connectTime;
-
-    }
-    
-    /**
-     * Method to get the SSID Security mode using Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_KeyPassphrase
-     * 
-     * @param device
-     *            instance of {@link Dut}
-     * @param tapEnv
-     *            instance of {@link AutomaticsTapApi}
-     * @param WiFiFrequencyBand
-     *            frequency band
-     * @return SSID Security mode
-     * @refactor Athira
-     * 
-     */
-    public static String getSsidSecurityModeFromGatewayUsingWebPaOrDmcli(Dut device, AutomaticsTapApi tapEnv,
-	    WiFiFrequencyBand wifiBand) {
-	LOGGER.debug("START METHOD : getSsidSecurityModeFromGatewayUsingWebPaOrDmcli");
-	String securityMode = null;
-
-	if (wifiBand.compareTo(WiFiFrequencyBand.WIFI_BAND_2_GHZ) == 0) {
-	    securityMode = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
-		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_2_4_GHZ_PRIVATE_SECURITY_MODEENABLED);
-
-	} else if (wifiBand.compareTo(WiFiFrequencyBand.WIFI_BAND_5_GHZ) == 0) {
-	    securityMode = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
-		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_5_GHZ_PRIVATE_SECURITY_MODEENABLED);
+		LOGGER.debug("ENDING METHOD : verifySsidVisibilityInClientDevice () ");
+		return status;
 	}
 
-	if (!CommonMethods.isNotNull(securityMode)) {
-	    throw new TestException(
-		    "Not able to get the security mode for client device connected with " + wifiBand + " GHz ");
-	}
-	LOGGER.debug("ENDING METHOD : getSsidSecurityModeFromGatewayUsingWebPaOrDmcli");
-	return securityMode;
+	/**
+	 * Method to verify whether the client device is connected and to get its ip
+	 * address
+	 * 
+	 * @param device
+	 * @param connectedDeviceActivated
+	 * @param testId
+	 * @author anandam.s
+	 * @refactor Athira
+	 */
+	public static void checkIpAddressAndConnectivity(Dut device, AutomaticsTapApi tapEnv, Dut connectedDeviceActivated,
+			String testId, String[] stepNumbers) {
+		// String to store the test case status
+		boolean status = false;
+		// Test step number
+		String testStepNumber = stepNumbers[0];
+		// String to store the error message
+		String errorMessage = null;
+		// response obtained
+		String commandResponse = null;
+		boolean isSystemdPlatforms = false;
+		isSystemdPlatforms = DeviceModeHandler.isFibreDevice(device);
+		LOGGER.info("Gateway device model is:" + isSystemdPlatforms);
 
-    }
-    
-    /**
-     * Method to check whether Given connected client is capable of wifi or not
-     * 
-     * @param connectedClient
-     *            Connected client Settop instance
-     * @return Wifi Capability status
-     */
-    public static boolean verfyCnctdClntIsWifiCpble(Dut connectedClient) {
+		if (stepNumbers.length == 4) {
+			checkIpAddressObtained(device, tapEnv, connectedDeviceActivated, testId,
+					new String[] { stepNumbers[0], stepNumbers[1] });
 
-	    // get the Quad atten URL from extra Properties
-	   // Map<String, String> extraProps = deviceAccount.getExtraProperties();
-	    
-	String connectionType = ((Device) connectedClient).getConnectedDeviceInfo().getConnectionType();   
-	LOGGER.info("CLIENT DEVICE CONNECTION TYPE : " + connectionType);
-	String wifiCapability = ((Device) connectedClient).getConnectedDeviceInfo().getWifiCapability();
-	LOGGER.info("CLIENT DEVICE WI-FI CAPABILITY : " + wifiCapability);
-	if (CommonMethods.isNotNull(connectionType) && CommonMethods.isNotNull(wifiCapability)) {
-	    if (connectionType
-		    .equalsIgnoreCase(BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI)
-		    && (wifiCapability
-			    .equalsIgnoreCase(BroadBandConnectedClientTestConstants.STRING_WIFI_CAPABILITY_2_4GHZ_ONLY)
-			    || wifiCapability.equalsIgnoreCase(
-				    BroadBandConnectedClientTestConstants.STRING_WIFI_CAPABILITY_DUAL_BAND))) {
-		LOGGER.info("DEVICE IS CAPABLE OF WIFI CONNECTIVITY ");
-		return true;
-	    }
-	} else {
-	    LOGGER.error(
-		    "OBTAINED NULL RESPONSE FOR CLIENT DEVICE 'CONNECTION TYPE' OR 'WIFI CAPABILITY'. CHECK MDS CONFIGURATION FOR THE CONNECTED CLIENT WITH WI-FI MAC ADDRESS : "
-			    + ((Device) connectedClient).getConnectedDeviceInfo().getWifiCapability());
-	    return false;
-	}
-	return false;
-    }
-    
-    /**
-     * Utils method to verify if the IP address assigned to the connected client is between DHCP configured range
-     * 
-     * @param tapEnv
-     *            instance of {@link AutomaticsTapApi}
-     * @param device
-     *            instance of {@link Dut}
-     * @param connectedClientDevice
-     *            Connected client device instance
-     * 
-     * @return true if the IP address to the connected client is between configured DHCP range
-     * @refactor Said Hisham
-     */
-    public static boolean verifyIpv4AddressOFConnectedClientIsBetweenDhcpRange(AutomaticsTapApi tapEnv, Dut device,
-	    Dut connectedClientDevice) {
-	LOGGER.debug("ENTERING METHOD verifyIpv4AddressOFConnectedClientIsBetweenDhcpRange");
-	boolean result = false;
-	try {
+			LOGGER.info("******************************************************");
+			LOGGER.info("STEP " + stepNumbers[2]
+					+ " : DESCRIPTION : Verify whether you have connectivity using that particular interface using IPV4 ");
+			LOGGER.info("STEP " + stepNumbers[2]
+					+ " : ACTION : Execute command :Linux :  curl -4 -f --interface <interface name> www.google.com Windows:ping www.google.com -4");
+			LOGGER.info("STEP " + stepNumbers[2] + " : EXPECTED: Connectivity check should return status as 200");
+			LOGGER.info("******************************************************");
+			testStepNumber = stepNumbers[2];
+			status = false;
+			String command = ((Device) connectedDeviceActivated).getOsType()
+					.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
+							? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV4_ADDRESS
+							: BroadBandConnectedClientTestConstants.COMMAND_CURL_WINDOWS_IPV4_ADDRESS;
+			errorMessage = "Connectivty check using IPV4 address failed";
+			commandResponse = tapEnv.executeCommandOnOneIPClients(connectedDeviceActivated, command);
+			if (CommonMethods.isNotNull(commandResponse)) {
+				status = commandResponse.contains(BroadBandConnectedClientTestConstants.RESPONSE_STATUS_OK);
 
-	    String dhcpMinRange = tapEnv.executeWebPaCommand(device,
-		    BroadBandWebPaConstants.WEBPA_PARAM_TO_RETRIEVE_DHCP_STARTING_IP_ADDRESS);
-	    LOGGER.info("DHCP MINIMUM IP RANGE CONFIGURED FOR GATEWAY : " + dhcpMinRange);
-	    String dhcpMaxRange = tapEnv.executeWebPaCommand(device,
-		    BroadBandWebPaConstants.WEBPA_PARAM_TO_RETRIEVE_DHCP_ENDING_IP_ADDRESS);
-	    LOGGER.info("DHCP MAXIMUM IP RANGE CONFIGURED FOR GATEWAY : " + dhcpMaxRange);
-	    String ipAddressRetrievedFromClient = getIpv4AddressFromConnClient(tapEnv, device, connectedClientDevice);
-	    LOGGER.info("IP ADDRESS ASSIGNED TO THE CONNECTED CLIENT FROM DHCP : " + ipAddressRetrievedFromClient);
-
-	    if (CommonMethods.isIpv4Address(dhcpMinRange) && CommonMethods.isIpv4Address(dhcpMaxRange)
-		    && CommonMethods.isIpv4Address(ipAddressRetrievedFromClient)) {
-		if (CommonMethods
-			.patternFinder(ipAddressRetrievedFromClient,
-				BroadBandTestConstants.PATTERN_TO_RETRIEVE_FIRST_3_DIGITS_OF_IPv4_ADDRESS)
-			.equalsIgnoreCase(CommonMethods.patternFinder(dhcpMinRange,
-				BroadBandTestConstants.PATTERN_TO_RETRIEVE_FIRST_3_DIGITS_OF_IPv4_ADDRESS))) {
-
-		    int minRange = Integer.parseInt(CommonMethods.patternFinder(dhcpMinRange,
-			    BroadBandTestConstants.PATTERN_TO_RETRIEVE_LAST_DIGIT_OF_IPv4_ADDRESS));
-		    int maxRange = Integer.parseInt(CommonMethods.patternFinder(dhcpMaxRange,
-			    BroadBandTestConstants.PATTERN_TO_RETRIEVE_LAST_DIGIT_OF_IPv4_ADDRESS));
-		    int actualvalue = Integer.parseInt(CommonMethods.patternFinder(ipAddressRetrievedFromClient,
-			    BroadBandTestConstants.PATTERN_TO_RETRIEVE_LAST_DIGIT_OF_IPv4_ADDRESS));
-		    result = actualvalue >= minRange && actualvalue <= maxRange;
-		}
-	    }
-
-	} catch (Exception e) {
-	    LOGGER.error("EXCEPTION OCCURRED WHILE VERIFYING IPv4 ASSIGNNED TO CONNECTED CLIENT IS WITHIN DHCP RANGE : "
-		    + e.getMessage());
-	}
-
-	LOGGER.info("IS IP ADDRESS ASSIGNED TO THE CONNECTED CLIENT BETWEEN DHCP RANGE : " + result);
-	LOGGER.debug("ENDING METHOD verifyIpv4AddressOFConnectedClientIsBetweenDhcpRange");
-	return result;
-
-    }
-    
-    /**
-     * Helper method to get the ipv4 address of the connected client
-     * 
-     * @param tapEnv
-     *            instance of {@link AutomaticsTapApi}
-     * @param device
-     *            instance of {@link Dut}
-     * @param connectedClientDevice
-     *            Connected client device instance
-     * @return Ipv4 of the connected client device
-     * 
-     * @author BALAJI V, INFOSYS
-     * @refactor Said Hisham
-     */
-    public static String getIpv4AddressFromConnClient(AutomaticsTapApi tapEnv, Dut device, Dut connectedClientDevice) {
-	LOGGER.debug("STARTING METHOD: getIpv4AddressFromConnClient");
-	String ipv4Value = null;
-	Device ecastSettop = (Device) connectedClientDevice;
-	if (ecastSettop.isLinux()) {
-	    ipv4Value = getIpv4AddressFromLinuxConnClient(tapEnv, device, connectedClientDevice);
-	} else if (ecastSettop.isWindows()) {
-	    ipv4Value = getIpOrMacFromWindowsConnectedClient(device, connectedClientDevice, tapEnv, true);
-	} else if (ecastSettop.isRaspbianLinux()) {
-	    ipv4Value = getIpv4AddressFromRaspbianConnClient(tapEnv, device, connectedClientDevice);
-	} else {
-	    LOGGER.error("'getIpv4AddressFromConnClient' IS ONLY APPLICABLE FOR WINDOWS/LINUX OS CONNECTED CLIENTS.");
-	}
-	LOGGER.debug("ENDING METHOD: getIpv4AddressFromConnClient");
-	return ipv4Value;
-    }
-
-    /**
-     * Helper method to get the ipv4 address from a linux connected client
-     * 
-     * @param tapEnv
-     *            instance of {@link AutomaticsTapApi}
-     * @param device
-     *            instance of {@link Dut}
-     * @param connectedClientDevice
-     *            Connected client device instance
-     * @return Ipv4 address of the linux connected client device
-     * 
-     * @author BALAJI V, INFOSYS
-     * @refactor Said Hisham
-     */
-    public static String getIpv4AddressFromLinuxConnClient(AutomaticsTapApi tapEnv, Dut device,
-	    Dut connectedClientDevice) {
-	LOGGER.debug("STARTING METHOD: getIpv4AddressFromLinuxConnClient");
-	// String to store ipv4 address
-	String linuxIpv4Value = null;
-	// Instance to store client device
-	Device ecastSettop = (Device) connectedClientDevice;
-	try {
-	    if (ecastSettop.isLinux()) {
-		String defaultInterface = getDefaultInterfaceNameOfTheLinuxConnClientDevice(connectedClientDevice,
-			tapEnv).trim();
-		LOGGER.info("DEFAULT INTERFACE OBTAINED IN THE LINUX CLIENT IS  : " + defaultInterface);
-		String connectionType = ecastSettop.getConnectedDeviceInfo().getConnectionType();
-		LOGGER.info("CONNECTION TYPE OF THE CONNECTED CLIENT IS : " + connectionType);
-		String[] expectedInterfaces = null;
-		if (CommonMethods.isNotNull(defaultInterface) && CommonMethods.isNotNull(connectionType)
-			&& CONNECTION_TYPE_ETHERNET.equalsIgnoreCase(connectionType)) {
-		    LOGGER.info("GOING TO GET IPV4 ADDRESS FROM ETHERNET INTERFACE");
-		    expectedInterfaces = AutomaticsTapApi
-			    .getSTBPropsValue(
-				    BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_ETHERNET_INTERFACE_IN_LINUX_CLIENT)
-			    .split(BroadBandTestConstants.SEMI_COLON);
-		} else if (CommonMethods.isNotNull(defaultInterface)
-			&& BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI
-				.equalsIgnoreCase(connectionType)) {
-		    LOGGER.info("GOING TO GET IPV4 ADDRESS FROM WI-FI INTERFACE");
-		    expectedInterfaces = AutomaticsTapApi
-			    .getSTBPropsValue(
-				    BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_WIFI_INTERFACE_IN_LINUX_CLIENT)
-			    .split(BroadBandTestConstants.SEMI_COLON);
-		} else {
-		    String errorMessage = CommonMethods.isNotNull(defaultInterface)
-			    ? "'getIpv4AddressFromLinuxConnClient' METHOD IS ONLY APPLICABLE FOR ETHERNET/WI-FI CONNECTION TYPE"
-			    : "UNABLE TO OBTAIN THE DEFAULT INTERFACE NAME FROM LINUX CLIENT";
-		    LOGGER.error(errorMessage);
-		}
-		if (expectedInterfaces != null && expectedInterfaces.length != 0) {
-		    for (String interfaceName : expectedInterfaces) {
-			if (CommonUtils.patternSearchFromTargetString(defaultInterface, interfaceName)) {
-			    LOGGER.info(
-				    "GOING TO GET IPV4 ASSIGNED TO THE CLIENT FROM THE INTERFACE : " + interfaceName);
-			    String response = tapEnv
-				    .executeCommandOnOneIPClients(connectedClientDevice,
-					    BroadBandCommonUtils.concatStringUsingStringBuffer(
-						    BroadBandTestConstants.COMMAND_TO_GET_IP_CONFIGURATION_DETAILS,
-						    BroadBandTestConstants.SINGLE_SPACE_CHARACTER, interfaceName))
-				    .trim();
-			    linuxIpv4Value = CommonMethods.isNotNull(response) ? CommonMethods
-				    .patternFinder(response, BroadBandTestConstants.STRING_REGEX_TO_GET_ETHERNET_IPV4)
-				    .trim() : null;
-			    if (CommonMethods.isNotNull(linuxIpv4Value)) {
-				LOGGER.info("IPv4 OBTAINED FOR ETHERNET CONNECTED LINUX CLIENT IS : " + linuxIpv4Value);
-			    }
-
-			    break;
-			}
-		    }
-		}
-	    } else {
-		String errorMessage = ecastSettop.isLinux()
-			? "UNABLE TO RETRIEVE DHCP MINIMUM IP RANGE CONFIGURED IN GATEWAY USING WEBPA PARAM 'Device.DHCPv4.Server.Pool.1.MinAddress'"
-			: "'getEthernetIpAddressFromWindowsConnectedClient' IS ONLY APPLICABLE FOR LINUX OS CONNECTED CLIENTS.";
-		LOGGER.error(errorMessage);
-	    }
-	} catch (Exception e) {
-	    LOGGER.error("EXCEPTION OCCURRED WHILE RETRIEVING THE IPv4 ASSIGNNED TO LINUX CONNECTED CLIENT. ERROR : "
-		    + e.getMessage());
-	}
-	LOGGER.debug("ENDING METHOD: getIpv4AddressFromLinuxConnClient");
-	return linuxIpv4Value;
-    }
-    
-    /**
-     * Helper method to get Connected client device ip or mac from the same windows device
-     * 
-     * @param connectedClientDevice
-     *            Connected client device instance
-     * @param tapEnv
-     *            AutomaticsTapApi instance
-     * @param isIpNeeded
-     *            true, if ip of the device is needed, false for mac
-     * @return ip of mac of the connected client device
-     * @author Praveenkumar Paneerselvam
-     * @refactor Said Hisham
-     */
-    public static String getIpOrMacFromWindowsConnectedClient(Dut device, Dut connectedClientDevice,
-	    AutomaticsTapApi tapEnv, boolean isIpNeeded) {
-	LOGGER.debug("STARTING METHOD: getIpOrMacFromWindowsConnectedClient()");
-	String value = null;
-	String connectionType = ((Device) connectedClientDevice).getConnectedDeviceInfo().getConnectionType();
-	LOGGER.info("Windows device is connected to Gateway device to " + connectionType);
-	String command = null;
-	String parameter = BroadBandTestConstants.STRING_IP_4_ADDRESS;
-	if (!isIpNeeded) {
-	    parameter = BroadBandTestConstants.STRING_PHYSICAL_ADDRESS;
-	}
-	String searchTrace = null;
-	if (CommonMethods.isNotNull(connectionType) && CONNECTION_TYPE_ETHERNET.equalsIgnoreCase(connectionType)) {
-	    searchTrace = BroadBandTraceConstants.LOG_MESSAGE_IPCONFIG_ETHERNET;
-	} else if (CommonMethods.isNotNull(connectionType)
-		&& BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI
-			.equalsIgnoreCase(connectionType)) {
-	    searchTrace = BroadBandTraceConstants.LOG_MESSAGE_IPCONFIG_WIFI;
-	}
-	if (CommonMethods.isNotNull(searchTrace)) {
-	    command = BroadBandCommonUtils.concatStringUsingStringBuffer(
-		    BroadBandTestConstants.SYMBOL_PIPE, BroadBandTestConstants.GREP_COMMAND,
-		    BroadBandTestConstants.DOUBLE_QUOTE, parameter, BroadBandTestConstants.DOUBLE_QUOTE);
-	    LOGGER.info("Command to be executed is " + command);
-	    String response = tapEnv.executeCommandOnOneIPClients(connectedClientDevice, command);
-	    if (CommonMethods.isNotNull(response)) {
-		String[] responses = response.split(BroadBandTestConstants.STRING_REGEX_PATTERN_NEW_LINE);
-		LOGGER.info("response .lenght - " + responses.length);
-		for (String ipOrMac : responses) {
-		    LOGGER.info("response of ip or mac is -" + ipOrMac);
-		    value = CommonMethods.isNotNull(ipOrMac)
-			    ? CommonMethods.patternFinder(ipOrMac,
-				    parameter + BroadBandTestConstants.STRING_REGEX_IP_MAC)
-			    : null;
-		    LOGGER.info("Value of ip or mac is -" + value + ".");
-		    if (!isIpNeeded && CommonMethods.isNotNull(value)) {
-			value = value.replaceAll(BroadBandTestConstants.SYMBOL_HYPHEN,
-				BroadBandTestConstants.DELIMITER_COLON);
-		    }
-		    if (CommonMethods.isNotNull(value) && CommonMethods.isNotNull(connectionType)) {
-			// Command sample "/sbin/arp -n | grep -i " + value;
-			command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.COMMAND_ARP,
-				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.SYMBOL_PIPE,
-				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.GREP_COMMAND,
-				value);
-			response = tapEnv.executeCommandUsingSsh(device, command);
-			LOGGER.info("Validate response is -" + response + ".");
-			if (CommonMethods.isNull(response)) {
-			    value = null;
+				if (status) {
+					LOGGER.info("STEP " + stepNumbers[2] + " : ACTUAL :  Connectivity check return status as 200");
+				} else {
+					errorMessage = "Expected 200 OK as response .But obtained " + commandResponse;
+					LOGGER.error("STEP " + stepNumbers[2] + " : ACTUAL : " + errorMessage);
+				}
 			} else {
-			    break;
+				errorMessage = "Unable to execute curl command for IPV4 on connected client device. Please check the connectivity between connected client and Jump server.";
 			}
-		    }
-		}
-	    }
-	}
-	LOGGER.info("Value of Windows connected client is " + value);
-	LOGGER.debug("ENDING METHOD: getIpOrMacFromWindowsConnectedClient()");
-	return value;
-    }
+			tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
 
-    /**
-     * Helper method to get the ipv4 address from a Raspbian linux connected client
-     * 
-     * @param tapEnv
-     *            instance of {@link AutomaticsTapApi}
-     * @param device
-     *            instance of {@link Dut}
-     * @param connectedClientDevice
-     *            Connected client device instance
-     * @return Ipv4 address of the Raspbian linux connected client device
-     * @refactor Said Hisham
-     * 
-     */
+			LOGGER.info("******************************************************");
+			LOGGER.info("STEP " + stepNumbers[3]
+					+ " : DESCRIPTION : Verify whether you have connectivity using that particular interface using IPV6 ");
+			LOGGER.info("STEP " + stepNumbers[3]
+					+ " : ACTION : Linux Result:It should return the http status code as 200 Windows Result: Pinging google.com Response should return true");
+			LOGGER.info("STEP " + stepNumbers[3] + " : EXPECTED: Connectivity check should return status as 200");
+			LOGGER.info("******************************************************");
+			testStepNumber = stepNumbers[3];
+			status = false;
+			errorMessage = "Connectivty check using IPV6 address failed";
 
-    public static String getIpv4AddressFromRaspbianConnClient(AutomaticsTapApi tapEnv, Dut device,
-	    Dut connectedClientDevice) {
-	LOGGER.debug("STARTING METHOD: getIpv4AddressFromRaspbianLinuxConnClient");
-	// String to store ipv4 address
-	String raspbianLinuxIpv4Value = null;
-	// Instance to store client device
-	Device ecastSettop = (Device) connectedClientDevice;
-	try {
-	    if (ecastSettop.isRaspbianLinux()) {
-		String defaultInterface = getDefaultInterfaceNameOfTheLinuxConnClientDevice(connectedClientDevice,
-			tapEnv).trim();
-		LOGGER.info("DEFAULT INTERFACE OBTAINED IN THE LINUX CLIENT IS  : " + defaultInterface);
-		String connectionType = ecastSettop.getConnectedDeviceInfo().getConnectionType();
-		LOGGER.info("CONNECTION TYPE OF THE CONNECTED CLIENT IS : " + connectionType);
-		String[] expectedInterfaces = null;
-		if (CommonMethods.isNotNull(defaultInterface) && CommonMethods.isNotNull(connectionType)
-			&& CONNECTION_TYPE_ETHERNET.equalsIgnoreCase(connectionType)) {
-		    LOGGER.info("GOING TO GET IPV4 ADDRESS FROM ETHERNET INTERFACE");
-		    expectedInterfaces = AutomaticsTapApi
-			    .getSTBPropsValue(
-				    BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_ETHERNET_INTERFACE_IN_LINUX_CLIENT)
-			    .split(BroadBandTestConstants.SEMI_COLON);
-		} else if (CommonMethods.isNotNull(defaultInterface)
-			&& BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI
-				.equalsIgnoreCase(connectionType)) {
-		    LOGGER.info("GOING TO GET IPV4 ADDRESS FROM WI-FI INTERFACE");
-		    expectedInterfaces = AutomaticsTapApi
-			    .getSTBPropsValue(
-				    BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_WIFI_INTERFACE_IN_LINUX_CLIENT)
-			    .split(BroadBandTestConstants.SEMI_COLON);
+			if (!isSystemdPlatforms) {
+
+				command = ((Device) connectedDeviceActivated).getOsType()
+						.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
+								? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV6_ADDRESS
+								: BroadBandConnectedClientTestConstants.COMMAND_CURL_WINDOWS_IPV6_ADDRESS;
+				commandResponse = tapEnv.executeCommandOnOneIPClients(connectedDeviceActivated, command);
+				if (CommonMethods.isNotNull(commandResponse)) {
+					status = commandResponse.contains(BroadBandConnectedClientTestConstants.RESPONSE_STATUS_OK);
+					if (status) {
+						LOGGER.info("STEP " + stepNumbers[3] + " : ACTUAL :  Connectivity check return status as 200");
+					} else {
+
+						errorMessage = "Expected 200 OK as response .But obtained " + commandResponse;
+						LOGGER.error("STEP " + stepNumbers[3] + " : " + errorMessage);
+					}
+				} else {
+					errorMessage = "Unable to execute curl command for IPv6 on connected client device. Please check the connectivity between connected client and Jump server.";
+				}
+				tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
+			} else {
+				tapEnv.updateExecutionForAllStatus(device, testId, testStepNumber, ExecutionStatus.NOT_APPLICABLE,
+						BroadBandTestConstants.STRING_NOT_APPLICABLE, false);
+			}
+
 		} else {
-		    String errorMessage = CommonMethods.isNotNull(defaultInterface)
-			    ? "'getIpv4AddressFromRaspbianConnClient' METHOD IS ONLY APPLICABLE FOR ETHERNET/WI-FI CONNECTION TYPE"
-			    : "UNABLE TO OBTAIN THE DEFAULT INTERFACE NAME FROM LINUX CLIENT";
-		    LOGGER.error(errorMessage);
+			LOGGER.info("This function is meant for executing 4 steps.Current steps passed are " + stepNumbers.length);
+		}
+	}
+
+	/**
+	 * Common steps for checking IP address obtained for the connected client device
+	 * 
+	 * @param device
+	 * @param connectedDeviceActivated
+	 * @param testId
+	 * @param stepNumbers
+	 * @refactor Athira
+	 */
+	public static void checkIpAddressObtained(Dut device, AutomaticsTapApi tapEnv, Dut connectedDeviceActivated,
+			String testId, String[] stepNumbers) {
+		// String to store the test case status
+		boolean status = false;
+		// Test step number
+		String testStepNumber = stepNumbers[0];
+		long polling_window_ms = 90000L;
+		// String to store the error message
+		String errorMessage = null;
+		if (stepNumbers.length == 2) {
+
+			LOGGER.info("******************************************************");
+			LOGGER.info("STEP " + stepNumbers[0]
+					+ " : DESCRIPTION : Verify whether interface got the correct IPv4  address.");
+			LOGGER.info("STEP " + stepNumbers[0]
+					+ " : ACTION : Connected a 5GHz wifi client with the gateway device's 5GHz wifi network using SSID and PASSWORD");
+			LOGGER.info("STEP " + stepNumbers[0] + " : EXPECTED : Interface IP address should be shown");
+			LOGGER.info("******************************************************");
+
+			errorMessage = "interface did not get the correct IPV4 address";
+			String osType = ((Device) connectedDeviceActivated).getOsType();
+			long startTime = System.currentTimeMillis();
+			// Loop for this function is a waiting time of max 90sec for the
+			// webpa changes to get applied
+			do {
+				status = BroadBandConnectedClientUtils.verifyIpv4AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(
+						osType, connectedDeviceActivated, tapEnv);
+				if (status) {
+					LOGGER.info("STEP " + stepNumbers[0]
+							+ " : ACTUAL : Successfully verified interface got the correct IPv4  address.");
+					break;
+				} else {
+					LOGGER.info("STEP " + stepNumbers[0] + " : ACTUAL : " + errorMessage);
+				}
+			} while (System.currentTimeMillis() < (startTime + polling_window_ms));
+			tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
+
+			LOGGER.info("******************************************************");
+			LOGGER.info("STEP " + stepNumbers[1] + " : Verify whether interface got the correct IPv6  address.");
+			LOGGER.info("STEP " + stepNumbers[1]
+					+ " : ACTION : Get the device IPv4 address using below command Linux : ifconfig wlan0 |grep -i \"inet6 addr:\"Windows:ipconfig |grep -A 10 \"Wireless LAN adapter Wi-Fi\" |grep -i \"Pv6 Address");
+			LOGGER.info("STEP " + stepNumbers[1] + " : EXPECTED:Interface IP address should be shown");
+			LOGGER.info("******************************************************");
+
+			testStepNumber = stepNumbers[1];
+			status = false;
+			status = BroadBandConnectedClientUtils.verifyIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(osType,
+					connectedDeviceActivated, tapEnv);
+			if (status) {
+				LOGGER.info("STEP " + stepNumbers[1]
+						+ " : ACTUAL : Successfully verified interface got the correct IPv6  address.");
+			} else {
+				LOGGER.error("STEP " + stepNumbers[1] + " : ACTUAL : " + errorMessage);
+			}
+			tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
+		} else {
+			LOGGER.info("This function is meant for executing 2 steps.Current steps passed are " + stepNumbers.length);
+		}
+	}
+
+	/**
+	 * Method to get a 2.4 GHz or 5 GHz Wi-Fi connected client and connect with
+	 * respective Wi-Fi network
+	 * 
+	 * @param tapEnv {@link AutomaticsTapApi}
+	 * @param device {@link Dut}
+	 * @return 2.4 Ghz or 5Ghz client device instance
+	 * 
+	 * @author Susheela C
+	 * @refactor Govardhan
+	 */
+	public static Dut get2GhzOr5GhzWiFiCapableClientDeviceAndConnectToCorrespondingSsid(Dut device,
+			AutomaticsTapApi tapEnv) throws TestException {
+		LOGGER.debug("STARTING METHOD : get2GhzOr5GhzWiFiCapableClientDeviceAndConnectToCorrespondingSsid () ");
+		// Connected client device instance
+		Dut connectedClientDevice = null;
+		try {
+			connectedClientDevice = BroadBandConnectedClientUtils
+					.get2GhzWiFiCapableClientDeviceAndConnectToAssociated2GhzSsid(device, tapEnv);
+			LOGGER.info("Successfully obtained a 2.4GHz Capable Wi-Fi client and Connected to 2.4GHz Wi-Fi network.");
+		} catch (TestException e) {
+			LOGGER.error("Following error occured while trying to get a 2.4GHz connected client. ERROR : "
+					+ e.getMessage() + ". Going to try getting a 5GHz connected client!");
+			try {
+				connectedClientDevice = BroadBandConnectedClientUtils
+						.get5GhzWiFiCapableClientDeviceAndConnectToAssociated5GhzSsid(device, tapEnv);
+				LOGGER.info("Successfully obtained a 5GHz Capable Wi-Fi client and Connected to 5GHz Wi-Fi network.");
+			} catch (TestException exeception) {
+				LOGGER.error("Following error occured while trying to get a 5GHz connected client. ERROR : "
+						+ exeception.getMessage());
+			}
+		}
+		if (connectedClientDevice == null) {
+			throw new TestException("Unable to obtain a 2.4 GHz or 5GHz  Working Wi-Fi connected client!");
+		}
+		LOGGER.debug("ENDING METHOD : get2GhzOr5GhzWiFiCapableClientDeviceAndConnectToCorrespondingSsid () ");
+		return connectedClientDevice;
+	}
+
+	/**
+	 * Method to connect given connectec client to band 2.4ghz/5ghz
+	 * 
+	 * @param settop       Settop Instance
+	 * @param tapEnv       AutomaticsTapApi instance
+	 * @param clientSettop Connected client instance
+	 * @param wifiBand     Wifi Frequency band
+	 * @return Time
+	 * @refactor Athira
+	 */
+	public static long connectToGivenWiFiCapableClientForPerfTest(Dut device, AutomaticsTapApi tapEnv, Dut clientSettop,
+			String wifiBand) {
+		LOGGER.info("STARTING METHOD : connectToGivenWiFiCapableClientForPerfTest () ");
+		// variable to store the SSID Wi-Fi Network
+		String ssidName = null;
+		// variable to store the Pass Phrase Wi-Fi Network
+		String passPhraseName = null;
+		String securityModeofNetwork = null;
+		// Long to store connection time
+		long connectTime = 0;
+		WiFiFrequencyBand wifiFrequecyBand = wifiBand.equalsIgnoreCase(BroadBandTestConstants.BAND_2_4GHZ)
+				? WiFiFrequencyBand.WIFI_BAND_2_GHZ
+				: WiFiFrequencyBand.WIFI_BAND_5_GHZ;
+		try {
+			ssidName = getSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv, wifiFrequecyBand);
+			passPhraseName = getSsidPassphraseFromGatewayUsingWebPaOrDmcli(device, tapEnv, wifiFrequecyBand);
+			securityModeofNetwork = getSsidSecurityModeFromGatewayUsingWebPaOrDmcli(device, tapEnv, wifiFrequecyBand);
+			LOGGER.info("SECURITY MODE OBTAINED FOR " + wifiFrequecyBand + " WI-FI NETWORK FROM THE ROUTER DEVICE IS : "
+					+ securityModeofNetwork);
+			boolean openSecurityMode = CommonMethods.isNotNull(securityModeofNetwork)
+					&& securityModeofNetwork.equalsIgnoreCase(BroadBandTestConstants.SECURITY_MODE_NONE);
+			if (verfyCnctdClntIsWifiCpble(clientSettop)) {
+				if (openSecurityMode) {
+					LOGGER.info("GOING TO CONNECT THE CLIENT WITH " + wifiFrequecyBand
+							+ " WI-FI NETWORK : OPEN SECURITY MODE.");
+					connectTime = ConnectedNattedClientsUtils.connectToSSIDForPerfTest(device, clientSettop, tapEnv,
+							ssidName, passPhraseName,
+							BroadBandConnectedClientTestConstants.SECURITY_MODE_OPEN.toLowerCase(), false);
+				} else {
+					LOGGER.info("GOING TO CONNECT THE CLIENT WITH " + wifiFrequecyBand
+							+ " WI-FI NETWORK : RECOMMANDED SECURITY MODE.");
+					connectTime = ConnectedNattedClientsUtils.connectToSSIDForPerfTest(device, clientSettop, tapEnv,
+							ssidName, passPhraseName, false);
+				}
+				if (connectTime != 0) {
+					LOGGER.info("SUCCESSFULLY ESTABLISHED WI-FI CONNECTION WITH " + wifiFrequecyBand
+							+ " WI-FI NETWORK AND CAPTURED TIME DIFFERENCE");
+				}
+			}
+			if (connectTime == 0) {
+				LOGGER.error("UNABLE TO ESTABLISH WI-FI CONNECTION/PING STATISTICS MISMATCH WITH " + wifiFrequecyBand
+						+ " WI-FI NETWORK FROM THE OBTAINED CONNECTED CLIENTS!");
+			}
+		} catch (Exception exception) {
+			throw new TestException("UNABLE TO CONNECT THE CLIENT WITH " + wifiFrequecyBand
+					+ " WI-FI NETWORK DUE TO FOLLOWING REASON : " + exception.getMessage());
+		}
+		LOGGER.info("ENDING METHOD : connectToGivenWiFiCapableClientForPerfTest () ");
+		return connectTime;
+
+	}
+
+	/**
+	 * Method to get the SSID Security mode using
+	 * Device.WiFi.AccessPoint.{i}.Security.X_COMCAST-COM_KeyPassphrase
+	 * 
+	 * @param device            instance of {@link Dut}
+	 * @param tapEnv            instance of {@link AutomaticsTapApi}
+	 * @param WiFiFrequencyBand frequency band
+	 * @return SSID Security mode
+	 * @refactor Athira
+	 * 
+	 */
+	public static String getSsidSecurityModeFromGatewayUsingWebPaOrDmcli(Dut device, AutomaticsTapApi tapEnv,
+			WiFiFrequencyBand wifiBand) {
+		LOGGER.debug("START METHOD : getSsidSecurityModeFromGatewayUsingWebPaOrDmcli");
+		String securityMode = null;
+
+		if (wifiBand.compareTo(WiFiFrequencyBand.WIFI_BAND_2_GHZ) == 0) {
+			securityMode = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+					BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_2_4_GHZ_PRIVATE_SECURITY_MODEENABLED);
+
+		} else if (wifiBand.compareTo(WiFiFrequencyBand.WIFI_BAND_5_GHZ) == 0) {
+			securityMode = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+					BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_5_GHZ_PRIVATE_SECURITY_MODEENABLED);
 		}
 
-		if (expectedInterfaces != null && expectedInterfaces.length != 0) {
-		    for (String interfaceName : expectedInterfaces) {
-			if (CommonUtils.patternSearchFromTargetString(defaultInterface, interfaceName)) {
-			    LOGGER.info(
-				    "GOING TO GET IPV4 ASSIGNED TO THE CLIENT FROM THE INTERFACE : " + interfaceName);
-			    String response = tapEnv
-				    .executeCommandOnOneIPClients(connectedClientDevice,
-					    BroadBandCommonUtils.concatStringUsingStringBuffer(
-						    BroadBandTestConstants.COMMAND_TO_GET_IP_CONFIGURATION_DETAILS,
-						    BroadBandTestConstants.SINGLE_SPACE_CHARACTER, interfaceName))
-				    .trim();
-			    raspbianLinuxIpv4Value = CommonMethods.isNotNull(response)
-				    ? CommonMethods
-					    .patternFinder(response,
-						    BroadBandTestConstants.STRING_REGEX_TO_GET_RASPIAN_ETHERNET_IPV4)
-					    .trim()
-				    : null;
-			    if (CommonMethods.isNotNull(raspbianLinuxIpv4Value)) {
-				LOGGER.info("IPv4 OBTAINED FOR ETHERNET CONNECTED LINUX CLIENT IS : "
-					+ raspbianLinuxIpv4Value);
-			    }
-			    break;
-			}
-		    }
+		if (!CommonMethods.isNotNull(securityMode)) {
+			throw new TestException(
+					"Not able to get the security mode for client device connected with " + wifiBand + " GHz ");
 		}
-	    } else {
-		String errorMessage = ecastSettop.isRaspbianLinux()
-			? "UNABLE TO RETRIEVE DHCP MINIMUM IP RANGE CONFIGURED IN GATEWAY USING WEBPA PARAM 'Device.DHCPv4.Server.Pool.1.MinAddress'"
-			: "'getIpv4AddressFromRaspbianConnClient' IS ONLY APPLICABLE FOR LINUX OS CONNECTED CLIENTS.";
-		LOGGER.error(errorMessage);
-	    }
-	} catch (Exception e) {
-	    LOGGER.error(
-		    "EXCEPTION OCCURRED WHILE RETRIEVING THE IPv4 ASSIGNNED TO RASPBIAN LINUX CONNECTED CLIENT. ERROR : "
-			    + e.getMessage());
+		LOGGER.debug("ENDING METHOD : getSsidSecurityModeFromGatewayUsingWebPaOrDmcli");
+		return securityMode;
+
 	}
-	LOGGER.debug("ENDING METHOD: getIpv4AddressFromRaspbianConnClient");
-	return raspbianLinuxIpv4Value;
-    }
+
+	/**
+	 * Method to check whether Given connected client is capable of wifi or not
+	 * 
+	 * @param connectedClient Connected client Settop instance
+	 * @return Wifi Capability status
+	 */
+	public static boolean verfyCnctdClntIsWifiCpble(Dut connectedClient) {
+
+		// get the Quad atten URL from extra Properties
+		// Map<String, String> extraProps = deviceAccount.getExtraProperties();
+
+		String connectionType = ((Device) connectedClient).getConnectedDeviceInfo().getConnectionType();
+		LOGGER.info("CLIENT DEVICE CONNECTION TYPE : " + connectionType);
+		String wifiCapability = ((Device) connectedClient).getConnectedDeviceInfo().getWifiCapability();
+		LOGGER.info("CLIENT DEVICE WI-FI CAPABILITY : " + wifiCapability);
+		if (CommonMethods.isNotNull(connectionType) && CommonMethods.isNotNull(wifiCapability)) {
+			if (connectionType
+					.equalsIgnoreCase(BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI)
+					&& (wifiCapability
+							.equalsIgnoreCase(BroadBandConnectedClientTestConstants.STRING_WIFI_CAPABILITY_2_4GHZ_ONLY)
+							|| wifiCapability.equalsIgnoreCase(
+									BroadBandConnectedClientTestConstants.STRING_WIFI_CAPABILITY_DUAL_BAND))) {
+				LOGGER.info("DEVICE IS CAPABLE OF WIFI CONNECTIVITY ");
+				return true;
+			}
+		} else {
+			LOGGER.error(
+					"OBTAINED NULL RESPONSE FOR CLIENT DEVICE 'CONNECTION TYPE' OR 'WIFI CAPABILITY'. CHECK MDS CONFIGURATION FOR THE CONNECTED CLIENT WITH WI-FI MAC ADDRESS : "
+							+ ((Device) connectedClient).getConnectedDeviceInfo().getWifiCapability());
+			return false;
+		}
+		return false;
+	}
+
+	/**
+	 * Utils method to verify if the IP address assigned to the connected client is
+	 * between DHCP configured range
+	 * 
+	 * @param tapEnv                instance of {@link AutomaticsTapApi}
+	 * @param device                instance of {@link Dut}
+	 * @param connectedClientDevice Connected client device instance
+	 * 
+	 * @return true if the IP address to the connected client is between configured
+	 *         DHCP range
+	 * @refactor Said Hisham
+	 */
+	public static boolean verifyIpv4AddressOFConnectedClientIsBetweenDhcpRange(AutomaticsTapApi tapEnv, Dut device,
+			Dut connectedClientDevice) {
+		LOGGER.debug("ENTERING METHOD verifyIpv4AddressOFConnectedClientIsBetweenDhcpRange");
+		boolean result = false;
+		try {
+
+			String dhcpMinRange = tapEnv.executeWebPaCommand(device,
+					BroadBandWebPaConstants.WEBPA_PARAM_TO_RETRIEVE_DHCP_STARTING_IP_ADDRESS);
+			LOGGER.info("DHCP MINIMUM IP RANGE CONFIGURED FOR GATEWAY : " + dhcpMinRange);
+			String dhcpMaxRange = tapEnv.executeWebPaCommand(device,
+					BroadBandWebPaConstants.WEBPA_PARAM_TO_RETRIEVE_DHCP_ENDING_IP_ADDRESS);
+			LOGGER.info("DHCP MAXIMUM IP RANGE CONFIGURED FOR GATEWAY : " + dhcpMaxRange);
+			String ipAddressRetrievedFromClient = getIpv4AddressFromConnClient(tapEnv, device, connectedClientDevice);
+			LOGGER.info("IP ADDRESS ASSIGNED TO THE CONNECTED CLIENT FROM DHCP : " + ipAddressRetrievedFromClient);
+
+			if (CommonMethods.isIpv4Address(dhcpMinRange) && CommonMethods.isIpv4Address(dhcpMaxRange)
+					&& CommonMethods.isIpv4Address(ipAddressRetrievedFromClient)) {
+				if (CommonMethods
+						.patternFinder(ipAddressRetrievedFromClient,
+								BroadBandTestConstants.PATTERN_TO_RETRIEVE_FIRST_3_DIGITS_OF_IPv4_ADDRESS)
+						.equalsIgnoreCase(CommonMethods.patternFinder(dhcpMinRange,
+								BroadBandTestConstants.PATTERN_TO_RETRIEVE_FIRST_3_DIGITS_OF_IPv4_ADDRESS))) {
+
+					int minRange = Integer.parseInt(CommonMethods.patternFinder(dhcpMinRange,
+							BroadBandTestConstants.PATTERN_TO_RETRIEVE_LAST_DIGIT_OF_IPv4_ADDRESS));
+					int maxRange = Integer.parseInt(CommonMethods.patternFinder(dhcpMaxRange,
+							BroadBandTestConstants.PATTERN_TO_RETRIEVE_LAST_DIGIT_OF_IPv4_ADDRESS));
+					int actualvalue = Integer.parseInt(CommonMethods.patternFinder(ipAddressRetrievedFromClient,
+							BroadBandTestConstants.PATTERN_TO_RETRIEVE_LAST_DIGIT_OF_IPv4_ADDRESS));
+					result = actualvalue >= minRange && actualvalue <= maxRange;
+				}
+			}
+
+		} catch (Exception e) {
+			LOGGER.error("EXCEPTION OCCURRED WHILE VERIFYING IPv4 ASSIGNNED TO CONNECTED CLIENT IS WITHIN DHCP RANGE : "
+					+ e.getMessage());
+		}
+
+		LOGGER.info("IS IP ADDRESS ASSIGNED TO THE CONNECTED CLIENT BETWEEN DHCP RANGE : " + result);
+		LOGGER.debug("ENDING METHOD verifyIpv4AddressOFConnectedClientIsBetweenDhcpRange");
+		return result;
+
+	}
+
+	/**
+	 * Helper method to get the ipv4 address of the connected client
+	 * 
+	 * @param tapEnv                instance of {@link AutomaticsTapApi}
+	 * @param device                instance of {@link Dut}
+	 * @param connectedClientDevice Connected client device instance
+	 * @return Ipv4 of the connected client device
+	 * 
+	 * @author BALAJI V, INFOSYS
+	 * @refactor Said Hisham
+	 */
+	public static String getIpv4AddressFromConnClient(AutomaticsTapApi tapEnv, Dut device, Dut connectedClientDevice) {
+		LOGGER.debug("STARTING METHOD: getIpv4AddressFromConnClient");
+		String ipv4Value = null;
+		Device ecastSettop = (Device) connectedClientDevice;
+		if (ecastSettop.isLinux()) {
+			ipv4Value = getIpv4AddressFromLinuxConnClient(tapEnv, device, connectedClientDevice);
+		} else if (ecastSettop.isWindows()) {
+			ipv4Value = getIpOrMacFromWindowsConnectedClient(device, connectedClientDevice, tapEnv, true);
+		} else if (ecastSettop.isRaspbianLinux()) {
+			ipv4Value = getIpv4AddressFromRaspbianConnClient(tapEnv, device, connectedClientDevice);
+		} else {
+			LOGGER.error("'getIpv4AddressFromConnClient' IS ONLY APPLICABLE FOR WINDOWS/LINUX OS CONNECTED CLIENTS.");
+		}
+		LOGGER.debug("ENDING METHOD: getIpv4AddressFromConnClient");
+		return ipv4Value;
+	}
+
+	/**
+	 * Helper method to get the ipv4 address from a linux connected client
+	 * 
+	 * @param tapEnv                instance of {@link AutomaticsTapApi}
+	 * @param device                instance of {@link Dut}
+	 * @param connectedClientDevice Connected client device instance
+	 * @return Ipv4 address of the linux connected client device
+	 * 
+	 * @author BALAJI V, INFOSYS
+	 * @refactor Said Hisham
+	 */
+	public static String getIpv4AddressFromLinuxConnClient(AutomaticsTapApi tapEnv, Dut device,
+			Dut connectedClientDevice) {
+		LOGGER.debug("STARTING METHOD: getIpv4AddressFromLinuxConnClient");
+		// String to store ipv4 address
+		String linuxIpv4Value = null;
+		// Instance to store client device
+		Device ecastSettop = (Device) connectedClientDevice;
+		try {
+			if (ecastSettop.isLinux()) {
+				String defaultInterface = getDefaultInterfaceNameOfTheLinuxConnClientDevice(connectedClientDevice,
+						tapEnv).trim();
+				LOGGER.info("DEFAULT INTERFACE OBTAINED IN THE LINUX CLIENT IS  : " + defaultInterface);
+				String connectionType = ecastSettop.getConnectedDeviceInfo().getConnectionType();
+				LOGGER.info("CONNECTION TYPE OF THE CONNECTED CLIENT IS : " + connectionType);
+				String[] expectedInterfaces = null;
+				if (CommonMethods.isNotNull(defaultInterface) && CommonMethods.isNotNull(connectionType)
+						&& CONNECTION_TYPE_ETHERNET.equalsIgnoreCase(connectionType)) {
+					LOGGER.info("GOING TO GET IPV4 ADDRESS FROM ETHERNET INTERFACE");
+					expectedInterfaces = AutomaticsTapApi
+							.getSTBPropsValue(
+									BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_ETHERNET_INTERFACE_IN_LINUX_CLIENT)
+							.split(BroadBandTestConstants.SEMI_COLON);
+				} else if (CommonMethods.isNotNull(defaultInterface)
+						&& BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI
+								.equalsIgnoreCase(connectionType)) {
+					LOGGER.info("GOING TO GET IPV4 ADDRESS FROM WI-FI INTERFACE");
+					expectedInterfaces = AutomaticsTapApi
+							.getSTBPropsValue(
+									BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_WIFI_INTERFACE_IN_LINUX_CLIENT)
+							.split(BroadBandTestConstants.SEMI_COLON);
+				} else {
+					String errorMessage = CommonMethods.isNotNull(defaultInterface)
+							? "'getIpv4AddressFromLinuxConnClient' METHOD IS ONLY APPLICABLE FOR ETHERNET/WI-FI CONNECTION TYPE"
+							: "UNABLE TO OBTAIN THE DEFAULT INTERFACE NAME FROM LINUX CLIENT";
+					LOGGER.error(errorMessage);
+				}
+				if (expectedInterfaces != null && expectedInterfaces.length != 0) {
+					for (String interfaceName : expectedInterfaces) {
+						if (CommonUtils.patternSearchFromTargetString(defaultInterface, interfaceName)) {
+							LOGGER.info(
+									"GOING TO GET IPV4 ASSIGNED TO THE CLIENT FROM THE INTERFACE : " + interfaceName);
+							String response = tapEnv
+									.executeCommandOnOneIPClients(connectedClientDevice,
+											BroadBandCommonUtils.concatStringUsingStringBuffer(
+													BroadBandTestConstants.COMMAND_TO_GET_IP_CONFIGURATION_DETAILS,
+													BroadBandTestConstants.SINGLE_SPACE_CHARACTER, interfaceName))
+									.trim();
+							linuxIpv4Value = CommonMethods.isNotNull(response) ? CommonMethods
+									.patternFinder(response, BroadBandTestConstants.STRING_REGEX_TO_GET_ETHERNET_IPV4)
+									.trim() : null;
+							if (CommonMethods.isNotNull(linuxIpv4Value)) {
+								LOGGER.info("IPv4 OBTAINED FOR ETHERNET CONNECTED LINUX CLIENT IS : " + linuxIpv4Value);
+							}
+
+							break;
+						}
+					}
+				}
+			} else {
+				String errorMessage = ecastSettop.isLinux()
+						? "UNABLE TO RETRIEVE DHCP MINIMUM IP RANGE CONFIGURED IN GATEWAY USING WEBPA PARAM 'Device.DHCPv4.Server.Pool.1.MinAddress'"
+						: "'getEthernetIpAddressFromWindowsConnectedClient' IS ONLY APPLICABLE FOR LINUX OS CONNECTED CLIENTS.";
+				LOGGER.error(errorMessage);
+			}
+		} catch (Exception e) {
+			LOGGER.error("EXCEPTION OCCURRED WHILE RETRIEVING THE IPv4 ASSIGNNED TO LINUX CONNECTED CLIENT. ERROR : "
+					+ e.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD: getIpv4AddressFromLinuxConnClient");
+		return linuxIpv4Value;
+	}
+
+	/**
+	 * Helper method to get Connected client device ip or mac from the same windows
+	 * device
+	 * 
+	 * @param connectedClientDevice Connected client device instance
+	 * @param tapEnv                AutomaticsTapApi instance
+	 * @param isIpNeeded            true, if ip of the device is needed, false for
+	 *                              mac
+	 * @return ip of mac of the connected client device
+	 * @author Praveenkumar Paneerselvam
+	 * @refactor Said Hisham
+	 */
+	public static String getIpOrMacFromWindowsConnectedClient(Dut device, Dut connectedClientDevice,
+			AutomaticsTapApi tapEnv, boolean isIpNeeded) {
+		LOGGER.debug("STARTING METHOD: getIpOrMacFromWindowsConnectedClient()");
+		String value = null;
+		String connectionType = ((Device) connectedClientDevice).getConnectedDeviceInfo().getConnectionType();
+		LOGGER.info("Windows device is connected to Gateway device to " + connectionType);
+		String command = null;
+		String parameter = BroadBandTestConstants.STRING_IP_4_ADDRESS;
+		if (!isIpNeeded) {
+			parameter = BroadBandTestConstants.STRING_PHYSICAL_ADDRESS;
+		}
+		String searchTrace = null;
+		if (CommonMethods.isNotNull(connectionType) && CONNECTION_TYPE_ETHERNET.equalsIgnoreCase(connectionType)) {
+			searchTrace = BroadBandTraceConstants.LOG_MESSAGE_IPCONFIG_ETHERNET;
+		} else if (CommonMethods.isNotNull(connectionType)
+				&& BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI
+						.equalsIgnoreCase(connectionType)) {
+			searchTrace = BroadBandTraceConstants.LOG_MESSAGE_IPCONFIG_WIFI;
+		}
+		if (CommonMethods.isNotNull(searchTrace)) {
+			command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.SYMBOL_PIPE,
+					BroadBandTestConstants.GREP_COMMAND, BroadBandTestConstants.DOUBLE_QUOTE, parameter,
+					BroadBandTestConstants.DOUBLE_QUOTE);
+			LOGGER.info("Command to be executed is " + command);
+			String response = tapEnv.executeCommandOnOneIPClients(connectedClientDevice, command);
+			if (CommonMethods.isNotNull(response)) {
+				String[] responses = response.split(BroadBandTestConstants.STRING_REGEX_PATTERN_NEW_LINE);
+				LOGGER.info("response .lenght - " + responses.length);
+				for (String ipOrMac : responses) {
+					LOGGER.info("response of ip or mac is -" + ipOrMac);
+					value = CommonMethods.isNotNull(ipOrMac)
+							? CommonMethods.patternFinder(ipOrMac,
+									parameter + BroadBandTestConstants.STRING_REGEX_IP_MAC)
+							: null;
+					LOGGER.info("Value of ip or mac is -" + value + ".");
+					if (!isIpNeeded && CommonMethods.isNotNull(value)) {
+						value = value.replaceAll(BroadBandTestConstants.SYMBOL_HYPHEN,
+								BroadBandTestConstants.DELIMITER_COLON);
+					}
+					if (CommonMethods.isNotNull(value) && CommonMethods.isNotNull(connectionType)) {
+						// Command sample "/sbin/arp -n | grep -i " + value;
+						command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.COMMAND_ARP,
+								BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.SYMBOL_PIPE,
+								BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.GREP_COMMAND,
+								value);
+						response = tapEnv.executeCommandUsingSsh(device, command);
+						LOGGER.info("Validate response is -" + response + ".");
+						if (CommonMethods.isNull(response)) {
+							value = null;
+						} else {
+							break;
+						}
+					}
+				}
+			}
+		}
+		LOGGER.info("Value of Windows connected client is " + value);
+		LOGGER.debug("ENDING METHOD: getIpOrMacFromWindowsConnectedClient()");
+		return value;
+	}
+
+	/**
+	 * Helper method to get the ipv4 address from a Raspbian linux connected client
+	 * 
+	 * @param tapEnv                instance of {@link AutomaticsTapApi}
+	 * @param device                instance of {@link Dut}
+	 * @param connectedClientDevice Connected client device instance
+	 * @return Ipv4 address of the Raspbian linux connected client device
+	 * @refactor Said Hisham
+	 * 
+	 */
+
+	public static String getIpv4AddressFromRaspbianConnClient(AutomaticsTapApi tapEnv, Dut device,
+			Dut connectedClientDevice) {
+		LOGGER.debug("STARTING METHOD: getIpv4AddressFromRaspbianLinuxConnClient");
+		// String to store ipv4 address
+		String raspbianLinuxIpv4Value = null;
+		// Instance to store client device
+		Device ecastSettop = (Device) connectedClientDevice;
+		try {
+			if (ecastSettop.isRaspbianLinux()) {
+				String defaultInterface = getDefaultInterfaceNameOfTheLinuxConnClientDevice(connectedClientDevice,
+						tapEnv).trim();
+				LOGGER.info("DEFAULT INTERFACE OBTAINED IN THE LINUX CLIENT IS  : " + defaultInterface);
+				String connectionType = ecastSettop.getConnectedDeviceInfo().getConnectionType();
+				LOGGER.info("CONNECTION TYPE OF THE CONNECTED CLIENT IS : " + connectionType);
+				String[] expectedInterfaces = null;
+				if (CommonMethods.isNotNull(defaultInterface) && CommonMethods.isNotNull(connectionType)
+						&& CONNECTION_TYPE_ETHERNET.equalsIgnoreCase(connectionType)) {
+					LOGGER.info("GOING TO GET IPV4 ADDRESS FROM ETHERNET INTERFACE");
+					expectedInterfaces = AutomaticsTapApi
+							.getSTBPropsValue(
+									BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_ETHERNET_INTERFACE_IN_LINUX_CLIENT)
+							.split(BroadBandTestConstants.SEMI_COLON);
+				} else if (CommonMethods.isNotNull(defaultInterface)
+						&& BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI
+								.equalsIgnoreCase(connectionType)) {
+					LOGGER.info("GOING TO GET IPV4 ADDRESS FROM WI-FI INTERFACE");
+					expectedInterfaces = AutomaticsTapApi
+							.getSTBPropsValue(
+									BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_WIFI_INTERFACE_IN_LINUX_CLIENT)
+							.split(BroadBandTestConstants.SEMI_COLON);
+				} else {
+					String errorMessage = CommonMethods.isNotNull(defaultInterface)
+							? "'getIpv4AddressFromRaspbianConnClient' METHOD IS ONLY APPLICABLE FOR ETHERNET/WI-FI CONNECTION TYPE"
+							: "UNABLE TO OBTAIN THE DEFAULT INTERFACE NAME FROM LINUX CLIENT";
+					LOGGER.error(errorMessage);
+				}
+
+				if (expectedInterfaces != null && expectedInterfaces.length != 0) {
+					for (String interfaceName : expectedInterfaces) {
+						if (CommonUtils.patternSearchFromTargetString(defaultInterface, interfaceName)) {
+							LOGGER.info(
+									"GOING TO GET IPV4 ASSIGNED TO THE CLIENT FROM THE INTERFACE : " + interfaceName);
+							String response = tapEnv
+									.executeCommandOnOneIPClients(connectedClientDevice,
+											BroadBandCommonUtils.concatStringUsingStringBuffer(
+													BroadBandTestConstants.COMMAND_TO_GET_IP_CONFIGURATION_DETAILS,
+													BroadBandTestConstants.SINGLE_SPACE_CHARACTER, interfaceName))
+									.trim();
+							raspbianLinuxIpv4Value = CommonMethods.isNotNull(response)
+									? CommonMethods
+											.patternFinder(response,
+													BroadBandTestConstants.STRING_REGEX_TO_GET_RASPIAN_ETHERNET_IPV4)
+											.trim()
+									: null;
+							if (CommonMethods.isNotNull(raspbianLinuxIpv4Value)) {
+								LOGGER.info("IPv4 OBTAINED FOR ETHERNET CONNECTED LINUX CLIENT IS : "
+										+ raspbianLinuxIpv4Value);
+							}
+							break;
+						}
+					}
+				}
+			} else {
+				String errorMessage = ecastSettop.isRaspbianLinux()
+						? "UNABLE TO RETRIEVE DHCP MINIMUM IP RANGE CONFIGURED IN GATEWAY USING WEBPA PARAM 'Device.DHCPv4.Server.Pool.1.MinAddress'"
+						: "'getIpv4AddressFromRaspbianConnClient' IS ONLY APPLICABLE FOR LINUX OS CONNECTED CLIENTS.";
+				LOGGER.error(errorMessage);
+			}
+		} catch (Exception e) {
+			LOGGER.error(
+					"EXCEPTION OCCURRED WHILE RETRIEVING THE IPv4 ASSIGNNED TO RASPBIAN LINUX CONNECTED CLIENT. ERROR : "
+							+ e.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD: getIpv4AddressFromRaspbianConnClient");
+		return raspbianLinuxIpv4Value;
+	}
+
+	/**
+	 * Helper method to get device instance of connected client device based on
+	 * given connection type
+	 * 
+	 * @param device                 Dut instance
+	 * @param tapEnv                 AutomaticsTapApi Instance
+	 * @param connectedClientSettops List of connected client settops
+	 * @param connectionType         connection type
+	 * @return Dut instance
+	 * 
+	 * @author Praveenkumar Paneerselvam
+	 * @refactor Athira
+	 */
+	public static Dut getConnectedClientFromConnectionType(Dut device, AutomaticsTapApi tapEnv,
+			List<Dut> connectedClientDevices, String connectionType) {
+		LOGGER.debug("STARTING METHOD: getConnectedClientBasedOnConnectionType()");
+		Dut requiredDevices = null;
+		for (Dut clientDevice : connectedClientDevices) {
+			if (CommonMethods.isNotNull(connectionType) && connectionType
+					.equalsIgnoreCase(((Device) clientDevice).getConnectedDeviceInfo().getConnectionType())) {
+				requiredDevices = clientDevice;
+
+				break;
+			}
+		}
+		LOGGER.info(
+				"Number of Connected client with connection type " + connectionType + " found is " + requiredDevices);
+		LOGGER.debug("ENDING METHOD: getConnectedClientBasedOnConnectionType()");
+		return requiredDevices;
+	}
+
+	/**
+	 * Method to connect clients to either private/PUBLICWiFi wifi
+	 * 
+	 * @param device
+	 * @param tapApi
+	 * @param clientDevices
+	 * @param wifiType
+	 * @refactor Athira
+	 */
+	public static BroadBandResultObject connectClientsToGivenTypeOfWifi(Dut device, AutomaticsTapApi tapApi,
+			Dut clientDevice, WEBPA_AP_INDEXES wifiType, WiFiFrequencyBand band) {
+		BroadBandResultObject bandResultObject = new BroadBandResultObject();
+		String ssid = null;
+		String password = null;
+		if (wifiType == WEBPA_AP_INDEXES.PRIVATE_WIFI) {
+			ssid = band == WiFiFrequencyBand.WIFI_BAND_2_GHZ
+					? tapApi.executeWebPaCommand(device,
+							BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_SSID_10001_SSID)
+					: tapApi.executeWebPaCommand(device,
+							BroadBandWebPaConstants.WEBPA_PARAM_Device_WiFi_SSID_10101_SSID);
+			password = band == WiFiFrequencyBand.WIFI_BAND_2_GHZ
+					? tapApi.executeWebPaCommand(device,
+							BroadBandWebPaConstants.WEBPA_PARAM_FOR_WIFI_PRIVATE_SSID_2GHZ_PASSPHRASE)
+					: tapApi.executeWebPaCommand(device,
+							BroadBandWebPaConstants.WEBPA_PARAM_FOR_WIFI_PRIVATE_SSID_5GHZ_PASSPHRASE);
+			bandResultObject
+					.setErrorMessage("SSID name and phrase is not obtained for the gateway device. Failed to connect to"
+							+ " Broadband Gateway device. SSID NAME - " + ssid + " SSID Passphrase -" + password);
+			if (CommonMethods.isNotNull(ssid) && CommonMethods.isNotNull(password)) {
+				bandResultObject
+						.setStatus(ConnectedNattedClientsUtils.connectToSSID(clientDevice, tapApi, ssid, password));
+				bandResultObject
+						.setErrorMessage("Attempt to connect client to " + band + " has failed for " + wifiType);
+			}
+		} else if (wifiType == WEBPA_AP_INDEXES.PUBLIC_WIFI) {
+			ssid = getPublicSsidNameFromGatewayUsingWebPaOrDmcli(device, tapApi, band);
+			password = (band == WiFiFrequencyBand.WIFI_BAND_2_GHZ)
+					? BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapApi,
+							BroadBandWebPaConstants.WEBPA_PARAM_FOR_WIFI_PUBLIC_SSID_PASSPHRASE.replace(
+									BroadBandTestConstants.STRING_REPLACE,
+									BroadBandWebPaConstants.WEBPA_INDEX_2_4_GHZ_PUBLIC_WIFI))
+					: BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapApi,
+							BroadBandWebPaConstants.WEBPA_PARAM_FOR_WIFI_PUBLIC_SSID_PASSPHRASE.replace(
+									BroadBandTestConstants.STRING_REPLACE,
+									BroadBandWebPaConstants.WEBPA_INDEX_5_GHZ_PUBLIC_WIFI));
+			if (BroadBandWiFiUtils.changeMacFilterStatus(device, tapApi, wifiType, BroadBandTestConstants.FALSE)
+					&& CommonMethods.isNotNull(ssid) && CommonMethods.isNotNull(password)) {
+				bandResultObject
+						.setErrorMessage("Attempt to connect client to " + band + " has failed for " + wifiType);
+				LOGGER.info("waiting for a two minutes for the changes to take effect");
+				tapApi.waitTill(BroadBandTestConstants.TWO_MINUTE_IN_MILLIS);
+
+			}
+		} else if (wifiType == WEBPA_AP_INDEXES.PHASE1_LNF) {
+			ssid = band == WiFiFrequencyBand.WIFI_BAND_2_GHZ
+					? tapApi.executeWebPaCommand(device,
+							BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_SSID_10004_SSID)
+					: tapApi.executeWebPaCommand(device,
+							BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_SSID_10104_SSID);
+			password = (band == WiFiFrequencyBand.WIFI_BAND_2_GHZ)
+					? BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapApi,
+							BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_10004_SECURITY_KEYPASSPHRASE)
+					: BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapApi,
+							BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_10104_SECURITY_KEYPASSPHRASE);
+			bandResultObject
+					.setErrorMessage("SSID name and phrase is not obtained for the gateway device. Failed to connect to"
+							+ " Broadband Gateway device. SSID NAME - " + ssid + " SSID Passphrase -" + password);
+			if (CommonMethods.isNotNull(ssid) && CommonMethods.isNotNull(password)) {
+				bandResultObject
+						.setStatus(ConnectedNattedClientsUtils.connectToSSID(clientDevice, tapApi, ssid, password));
+				bandResultObject
+						.setErrorMessage("Attempt to connect client to " + band + " has failed for " + wifiType);
+			}
+		}
+
+		return bandResultObject;
+	}
+
+	/**
+	 * Method to get the SSID name using Device.WiFi.SSID.{i}.SSID
+	 * 
+	 * @param device            instance of {@link Dut}
+	 * @param tapEnv            instance of {@link AutomaticsTapApi}
+	 * @param WiFiFrequencyBand frequency band
+	 * @return SSID name
+	 * 
+	 * @author Praveenkumar Paneerselvam
+	 * @refactor Athira
+	 */
+	public static String getPublicSsidNameFromGatewayUsingWebPaOrDmcli(Dut device, AutomaticsTapApi tapEnv,
+			WiFiFrequencyBand wifiBand) {
+		LOGGER.debug("START METHOD : getPublicSsidNameFromGatewayUsingWebPaOrDmcli () ");
+		String ssidGatewayDevice = null;
+		String errorMessage = null;
+		if (wifiBand.compareTo(WiFiFrequencyBand.WIFI_BAND_2_GHZ) == 0) {
+			ssidGatewayDevice = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+					BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PUBLIC_SSID);
+		} else if (wifiBand.compareTo(WiFiFrequencyBand.WIFI_BAND_5_GHZ) == 0) {
+			ssidGatewayDevice = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+					BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID);
+		}
+		if (CommonMethods.isNull(ssidGatewayDevice)) {
+			errorMessage = "Not able to get the Public SSID name for client device connected with " + wifiBand
+					+ " GHz ";
+			LOGGER.error(errorMessage);
+			throw new TestException(errorMessage);
+		}
+		LOGGER.debug("Ending METHOD : getPublicSsidNameFromGatewayUsingWebPaOrDmcli () ");
+		return ssidGatewayDevice;
+	}
+
+	/**
+	 * Helper method to connect given connected client ip to give SSID name.
+	 * 
+	 * @param device          Dut instance
+	 * @param tapEnv          AutomaticsTapapi instance
+	 * @param connectedClient connected client device instance, which needs to be
+	 *                        connected to Gateway
+	 * @param wifi            frequency band.
+	 * @return Brandband result object with status true if the given connected
+	 *         client is connected to the given wifi band frequency
+	 * @author Praveenkumar Paneerselvam
+	 * @refactor Alan_Bivera
+	 */
+	public static BroadBandResultObject connectGivenConnectedClientToWifi(Dut device, AutomaticsTapApi tapEnv,
+			Dut connectedClient, WiFiFrequencyBand wifiBand) {
+		LOGGER.debug("STARTING METHOD: connectGivenConnectedClientToWifi () ");
+		BroadBandResultObject result = new BroadBandResultObject();
+		boolean status = false;
+		// variable to store wifi capability
+		String errorMessage = "connected client device object is not NUC";
+		LOGGER.info("connectedClient.getModel()====" + connectedClient.getModel());
+
+		String ssidName = BroadBandConnectedClientUtils.getSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv,
+				wifiBand);
+		String ssidPassPhrase = BroadBandConnectedClientUtils.getSsidPassphraseFromGatewayUsingWebPaOrDmcli(device,
+				tapEnv, wifiBand);
+		errorMessage = "SSID name and phrase is not obtained for the gateway device. Failed to connect to Broadband Gateway device. SSID NAME - "
+				+ ssidName + " SSID Passphrase -" + ssidPassPhrase;
+		if (CommonMethods.isNotNull(ssidName) && CommonMethods.isNotNull(ssidPassPhrase)) {
+			String connectionType = ((Device) connectedClient).getConnectedDeviceInfo().getConnectionType();
+			LOGGER.info("Client device connection type : " + connectionType);
+			String wifiCapability = ((Device) connectedClient).getConnectedDeviceInfo().getWifiCapability();
+			LOGGER.info("Client device wifi capability : " + wifiCapability);
+			errorMessage = "Obtained null value for connection type and wifi capabitlity from MDS ";
+			if (CommonMethods.isNotNull(connectionType) && CommonMethods.isNotNull(wifiCapability)) {
+				if (connectionType.equalsIgnoreCase(
+						BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI)
+						&& wifiCapability.equalsIgnoreCase(
+								BroadBandConnectedClientTestConstants.STRING_WIFI_CAPABILITY_DUAL_BAND)) {
+					status = ConnectedNattedClientsUtils.connectToSSID(connectedClient, tapEnv, ssidName,
+							ssidPassPhrase);
+					errorMessage = "Failed to connect connected client devices with Broadband Gateway ";
+				}
+			}
+		}
+
+		result.setErrorMessage(errorMessage);
+		result.setStatus(status);
+		LOGGER.info(" Is the device connected to Gateway Wi-Fi " + status);
+		LOGGER.debug("ENDING METHOD: connectGivenConnectedClientToWifi () ");
+		return result;
+	}
+
+	/**
+	 * Utils method to set the device table
+	 * 'Device.DHCPv4.Server.Pool.1.StaticAddress.' and return the result.
+	 * 
+	 * @param tapEnv instance of {@link AutomaticsTapApi}
+	 * @param device instance of {@link Dut}
+	 * 
+	 * @return the WebPA response
+	 * 
+	 *         refactor Athira
+	 */
+	public static WebPaServerResponse setDeviceDetailsToDhcpServerPool(AutomaticsTapApi tapEnv, Dut device,
+			String wifiMacAddress, String reservedIp) {
+
+		// stores the WebpaServer Response
+		WebPaServerResponse webPaServerResponse = null;
+		Map<String, List<String>> deviceTable = new HashMap<String, List<String>>();
+
+		// Host Name
+		List<String> hostNameList = new ArrayList<String>();
+		hostNameList.add(BroadBandTestConstants.STRING_DEVICE_NAME);
+
+		// Wifi MacAddress
+		List<String> macAddressList = new ArrayList<String>();
+		macAddressList.add(wifiMacAddress);
+
+		// Reserved Ip Address
+		List<String> reservedIpAddressList = new ArrayList<String>();
+		reservedIpAddressList.add(reservedIp);
+		// Comments//
+		List<String> commentsList = new ArrayList<String>();
+		commentsList.add(BroadBandTestConstants.STRING_DEVICE_COMMENT);
+
+		// adding to the Map.
+		deviceTable.put(BroadBandWebPaConstants.WEBPA_PARAM_ADD_DEVICE_NAME, hostNameList);
+		deviceTable.put(BroadBandWebPaConstants.WEBPA_PARAM_ADDING_WIFI_MAC_ADDRESS, macAddressList);
+		deviceTable.put(BroadBandWebPaConstants.WEBPA_PARAM_ADDING_RESERVED_IP_ADDRESS, reservedIpAddressList);
+		deviceTable.put(BroadBandWebPaConstants.WEBPA_PARAM_COMMENT, commentsList);
+
+		webPaServerResponse = tapEnv.postWebpaTableParamUsingRestApi(device,
+				BroadBandWebPaConstants.WEBPA_PARAM_ADD_STATIC_ADDRESS, deviceTable);
+		return webPaServerResponse;
+	}
+
+	/**
+	 * Helper method to get Connected client device ip or mac from the same device
+	 * 
+	 * @param connectedClientDevice Connected client Dut instance
+	 * @param tapEnv                AutomaticsTapApi instance
+	 * @param isIpNeeded            true if ip is needed, false if mac is needed.
+	 * @return client ip of the connected client device
+	 * @author Praveenkumar Paneerselvam
+	 * @refactor Govardhan
+	 */
+	public static String getConnectedClientIpOrMacFromTheDevice(Dut device, Dut connectedClientDevice,
+			AutomaticsTapApi tapEnv, boolean isIpNeeded) {
+		LOGGER.debug("STARTING METHOD: getConnectedClientIpOrMacFromTheDevice");
+		String clientIp = null;
+		if ((((Device) connectedClientDevice).isLinux()) || (((Device) connectedClientDevice).isRaspbianLinux())) {
+			clientIp = getIpOrMacFromLinuxConnectedClient(device, connectedClientDevice, tapEnv, isIpNeeded);
+		} else if ((((Device) connectedClientDevice).isWindows())) {
+			clientIp = getIpOrMacFromWindowsConnectedClient(device, connectedClientDevice, tapEnv, isIpNeeded);
+		}
+		LOGGER.info("Ip of the connected client device is - " + clientIp);
+		LOGGER.debug("ENDING METHOD: getConnectedClientIpOrMacFromTheDevice");
+		return clientIp;
+	}
+
+	/**
+	 * Helper method to get Connected client device ip or mac from the same linux
+	 * device
+	 * 
+	 * @param connectedClientDevice Connected client device instance
+	 * @param tapEnv                AutomaticsTapApi instance
+	 * @param isIpNeeded            true, if ip of the device is needed, false for
+	 *                              mac
+	 * @return ip of mac of the connected client device
+	 * @author Praveenkumar Paneerselvam
+	 * @refactor Govardhan
+	 */
+	public static String getIpOrMacFromLinuxConnectedClient(Dut device, Dut connectedClientDevice,
+			AutomaticsTapApi tapEnv, boolean isIpNeeded) {
+		LOGGER.debug("STARTING METHOD: getIpOrMacFromLinuxConnectedClient()");
+		String deviceInfo = null;
+		String defaultInterface = getInterfaceNameOfTheEthernetConnLinuxClientDevice(device, connectedClientDevice,
+				tapEnv);
+		deviceInfo = getIpOrMacFromLinuxInterface(connectedClientDevice, tapEnv, defaultInterface, isIpNeeded);
+		LOGGER.info("Device Info of the linux connected client is " + deviceInfo);
+		LOGGER.debug("ENDING METHOD: getIpOrMacFromLinuxConnectedClient()");
+		return deviceInfo;
+	}
+
+	/**
+	 * Helper method to get interface name of the ethernet Linux client device
+	 * 
+	 * @param device                Dut instance
+	 * @param connectedClientSettop Connected client device instance
+	 * @param tapEnv                AutomaticsTapApi instance
+	 * @return interface name of the ethernet
+	 * @author Praveenkumar Paneerselvam
+	 * @refactor Govardhan
+	 */
+	public static String getInterfaceNameOfTheEthernetConnLinuxClientDevice(Dut device, Dut connectedClientDevice,
+			AutomaticsTapApi tapEnv) {
+		LOGGER.debug("STARTING METHOD: getInterfaceNameOfTheEthernetConnLinuxClientDevice");
+		String interfaceName = null;
+		String connectionType = ((Device) connectedClientDevice).getConnectedDeviceInfo().getConnectionType();
+		LOGGER.info("Linux device is connected to Gateway device to " + connectionType);
+		if (CommonMethods.isNotNull(connectionType)
+				&& connectionType.equalsIgnoreCase(BroadBandTestConstants.CONNECTION_TYPE_ETHERNET)) {
+			// To get column number of the interface column in route table
+			String columnNumber = tapEnv.executeCommandOnOneIPClients(connectedClientDevice,
+					BroadBandCommandConstants.CMD_GET_INTERFACE_COLUMN_NUMBER_IN_ROUTE_TABLE);
+			// To get interfaces name to which device is connected to
+			// route | grep default | awk '{print $8}'
+			String command = BroadBandCommandConstants.CMD_ROUTE_ROW_FIRST_COLUMN.replace(
+					BroadBandTestConstants.STRING_DOLLAR_SIGN + BroadBandTestConstants.STRING_VALUE_ONE,
+					BroadBandTestConstants.STRING_DOLLAR_SIGN + columnNumber);
+			String response = tapEnv.executeCommandOnOneIPClients(connectedClientDevice, command);
+			String ip = null;
+			LOGGER.info("All Interfaces connected in the device - " + response);
+			if (CommonMethods.isNotNull(response)) {
+				String[] interfaces = response.trim().split(BroadBandTestConstants.DELIMITER_NEW_LINE);
+				for (String interFace : interfaces) {
+					LOGGER.info("interface name - " + interFace);
+					ip = getIpOrMacFromLinuxInterface(connectedClientDevice, tapEnv, interFace, true);
+					LOGGER.info("Ip Address is - " + ip);
+					if (validateIpInArpCommand(device, tapEnv, ip)) {
+						interfaceName = interFace.trim();
+						break;
+					}
+				}
+			}
+		} else {
+			LOGGER.error(
+					"Device connection type is not marked in MDS. Device connection type cant be empty or Device connection is not ETHERNET in MDS");
+		}
+		LOGGER.info("Interface of the Ethernet connected client linux device is - " + interfaceName);
+		LOGGER.debug("ENDING METHOD: getInterfaceNameOfTheEthernetConnLinuxClientDevice ");
+		return interfaceName;
+	}
+
+	/**
+	 * Helper method to validate the given ip is present in arp -n command
+	 * 
+	 * @param device Dut instance
+	 * @param tapEnv AutomaticsTapApi instance
+	 * @param ip     DHCP ip of the client device
+	 * @return true, if DHCP ip provided by the gateway is present in arp -n command
+	 * @author Praveenkumar Paneerselvam
+	 * @refactor Govardhan
+	 */
+	public static boolean validateIpInArpCommand(Dut device, AutomaticsTapApi tapEnv, String ip) {
+		boolean status = false;
+		LOGGER.debug("STARTING METHOD: validateIpInArpCommand ");
+		if (CommonMethods.isNotNull(ip) && CommonMethods.isIpv4Address(ip)) {
+			// Validating whether ip is correct from arp -n command
+			String command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.COMMAND_ARP,
+					BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.SYMBOL_PIPE,
+					BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.GREP_COMMAND, ip.trim());
+			LOGGER.info("Command to be executed - " + command);
+			String response = tapEnv.executeCommandUsingSsh(device, command);
+			LOGGER.info("Valid IP response is -" + response);
+			status = CommonMethods.isNotNull(response);
+		}
+		LOGGER.info("Is given IP present in arp -n command - " + status);
+		LOGGER.debug("ENDING METHOD: validateIpInArpCommand ");
+		return status;
+	}
+
+	/**
+	 * Helper method to get ip or mac from linux interface name provided
+	 * 
+	 * @param connectedClientDevice Connected client Dut instance
+	 * @param tapEnv                AutomaticsTapApi Instance
+	 * @param interfaceName         interface Name
+	 * @param isIpNeeded            true, if IP required, false for MAC
+	 * @return IP or MAC of the given interface
+	 * @refactor Govardhan
+	 */
+	public static String getIpOrMacFromLinuxInterface(Dut connectedClientDevice, AutomaticsTapApi tapEnv,
+			String interfaceName, boolean isIpNeeded) {
+		LOGGER.debug("STARTING METHOD: getIpOrMacFromLinuxInterface");
+		String deviceInfo = null;
+		LOGGER.info("Command to be executed is ");
+		if (CommonMethods.isNotNull(interfaceName)) {
+			if (isIpNeeded) {
+				deviceInfo = tapEnv.executeCommandOnOneIPClients(connectedClientDevice,
+						BroadBandTestConstants.GET_IP_OF_INTERFACE_FROM_IFCONFIG
+								.replaceAll(BroadBandTestConstants.STRING_REPLACE, interfaceName.trim()));
+				deviceInfo = CommonMethods.isNotNull(deviceInfo) ? deviceInfo.trim().replaceAll(
+						BroadBandTestConstants.STRING_REGEX_ADDR, BroadBandTestConstants.EMPTY_STRING) : null;
+
+			} else {
+				deviceInfo = tapEnv.executeCommandOnOneIPClients(connectedClientDevice,
+						BroadBandTestConstants.GET_MAC_FROM_INTERFACE_IN_LINUX
+								.replaceAll(BroadBandTestConstants.STRING_REPLACE, interfaceName.trim()));
+			}
+			if (CommonMethods.isNotNull(deviceInfo) && !(isIpNeeded ? CommonMethods.isIpv4Address(deviceInfo)
+					: CommonMethods.patternMatcher(deviceInfo,
+							BroadBandTestConstants.REG_EXPRESSION_TO_GET_MAC_ADDRESS_SEMICOLON))) {
+				deviceInfo = null;
+			} else {
+				deviceInfo = deviceInfo.trim();
+			}
+		}
+		LOGGER.info("Device info is - " + deviceInfo);
+		LOGGER.debug("ENDING METHOD: getIpOrMacFromLinuxInterface");
+		return deviceInfo;
+	}
+
+	/**
+	 * Method to retrieve IPv6 address from connected client
+	 * 
+	 * @param device
+	 * @param tapEnv
+	 * @return Ipv6 address
+	 * 
+	 * @refactor yamini.s
+	 */
+	public static String retrieveIPv6AddressFromConnectedClientWithDeviceCOnnected(Dut device,
+			AutomaticsTapApi tapEnv) {
+		String command = null;
+		String response = null;
+		String connectedClientIpv6Address = null;
+		// List to store the ipv6 address
+		List<String> ipAddress = new ArrayList<>();
+		String patternForIpv6 = null;
+		LOGGER.debug("STARTING METHOD: retrieveIPv6AddressFromConnectedClientWithDeviceCOnnected");
+		if (((Device) device).getOsType().equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_RASPBIAN_LINUX)
+				|| ((Device) device).getOsType().equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)) {
+			connectedClientIpv6Address = getIpv6AddressFromLinuxOrRaspbianConnClient(tapEnv, device);
+		} else if (((Device) device).getOsType().equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_WINDOWS)) {
+			command = BroadBandCommandConstants.COMMAND_IPCONFIG;
+			patternForIpv6 = BroadBandTestConstants.PATTERN_TO_RETRIVE_IPV6_ADDRESS_FROM_IPCONFIG;
+			response = tapEnv.executeCommandOnOneIPClients(device, command);
+			if (CommonMethods.isNotNull(response)) {
+				ipAddress = BroadBandCommonUtils.patternFinderForMultipleMatches(response, patternForIpv6,
+						BroadBandTestConstants.CONSTANT_1);
+				for (String ipv6Addr : ipAddress) {
+					if (CommonMethods.isIpv6Address(ipv6Addr)) {
+						connectedClientIpv6Address = ipv6Addr;
+						break;
+					}
+				}
+			}
+		}
+		LOGGER.debug("ENDING METHOD: retrieveIPv6AddressFromConnectedClientWithDeviceCOnnected");
+		return connectedClientIpv6Address;
+	}
+
+	/**
+	 * Method to get IPv6 address from Linux/Raspbian connected client
+	 * 
+	 * @param tapEnv
+	 * @param connectedClientSettop
+	 * @return ipv6 address
+	 * 
+	 * @refactor yamini.s
+	 */
+	public static String getIpv6AddressFromLinuxOrRaspbianConnClient(AutomaticsTapApi tapEnv,
+			Dut connectedClientSettop) {
+		LOGGER.debug("STARTING METHOD: getIpv6AddressFromLinuxOrRaspbianConnClient");
+		// String to store ipv4 address
+		String linuxIpv6Value = null;
+		// Instance to store client device
+		Device ecastSettop = (Device) connectedClientSettop;
+		try {
+			if (ecastSettop.isLinux() || ecastSettop.isRaspbianLinux()) {
+				String defaultInterface = getDefaultInterfaceNameOfTheLinuxConnClientDevice(connectedClientSettop,
+						tapEnv).trim();
+				LOGGER.info("DEFAULT INTERFACE OBTAINED IN THE LINUX/RASPBIAN CLIENT IS  : " + defaultInterface);
+				String connectionType = ecastSettop.getConnectedDeviceInfo().getConnectionType();
+				LOGGER.info("CONNECTION TYPE OF THE CONNECTED CLIENT IS : " + connectionType);
+				String[] expectedInterfaces = null;
+				if (CommonMethods.isNotNull(defaultInterface) && CommonMethods.isNotNull(connectionType)
+						&& BroadBandTestConstants.CONNECTION_TYPE_ETHERNET.equalsIgnoreCase(connectionType)) {
+					LOGGER.info("GOING TO GET IPV6 ADDRESS FROM ETHERNET INTERFACE");
+					expectedInterfaces = AutomaticsTapApi
+							.getSTBPropsValue(
+									BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_ETHERNET_INTERFACE_IN_LINUX_CLIENT)
+							.split(BroadBandTestConstants.SEMI_COLON);
+				} else if (CommonMethods.isNotNull(defaultInterface)
+						&& BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI
+								.equalsIgnoreCase(connectionType)) {
+					LOGGER.info("GOING TO GET IPV6 ADDRESS FROM WI-FI INTERFACE");
+					expectedInterfaces = AutomaticsTapApi
+							.getSTBPropsValue(
+									BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_WIFI_INTERFACE_IN_LINUX_CLIENT)
+							.split(BroadBandTestConstants.SEMI_COLON);
+				} else {
+					String errorMessage = CommonMethods.isNotNull(defaultInterface)
+							? "UNABLE TO HANDLE IT IS ONLY APPLICABLE FOR ETHERNET/WI-FI CONNECTION TYPE"
+							: "UNABLE TO OBTAIN THE DEFAULT INTERFACE NAME FROM LINUX/RASPBIAN CLIENT";
+					LOGGER.error(errorMessage);
+				}
+				if (expectedInterfaces != null && expectedInterfaces.length != 0) {
+					for (String interfaceName : expectedInterfaces) {
+						if (CommonUtils.patternSearchFromTargetString(defaultInterface, interfaceName)) {
+							LOGGER.info(
+									"GOING TO GET IPV6 ASSIGNED TO THE CLIENT FROM THE INTERFACE : " + interfaceName);
+							String response = tapEnv
+									.executeCommandOnOneIPClients(connectedClientSettop,
+											BroadBandCommonUtils.concatStringUsingStringBuffer(
+													BroadBandTestConstants.COMMAND_TO_GET_IP_CONFIGURATION_DETAILS,
+													BroadBandTestConstants.SINGLE_SPACE_CHARACTER, interfaceName))
+									.trim();
+							List<String> ipAddress = CommonMethods.isNotNull(response)
+									? BroadBandCommonUtils.patternFinderForMultipleMatches(response,
+											BroadBandTestConstants.STRING_REGEX_TO_GET_ETHERNET_IPV6,
+											BroadBandTestConstants.CONSTANT_1)
+									: null;
+							if (!ipAddress.isEmpty() && null != ipAddress) {
+								for (String ipv6Addr : ipAddress) {
+									if (CommonMethods.isIpv6Address(ipv6Addr)) {
+										linuxIpv6Value = ipv6Addr;
+										break;
+									}
+								}
+								LOGGER.info("IPv6 OBTAINED FOR ETHERNET CONNECTED LINUX/RASPBIAN CLIENT IS : "
+										+ linuxIpv6Value);
+							}
+							break;
+						}
+
+					}
+				}
+			} else {
+				String errorMessage = "UNABLE TO HANDLE OTHER THAN LINUX/RASPBIAN OS CONNECTED CLIENTS.";
+				LOGGER.error(errorMessage);
+			}
+		} catch (Exception e) {
+			LOGGER.error(
+					"EXCEPTION OCCURRED WHILE RETRIEVING THE IPv6 ASSIGNNED TO LINUX/RASPBIAN CONNECTED CLIENT. ERROR : "
+							+ e.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD: getIpv6AddressFromLinuxOrRaspbianConnClient");
+		return linuxIpv6Value;
+	}
+
+	/**
+	 * method to verify the operating standard of the connected client device
+	 * 
+	 * method currently works only for windows connected client. Implementation for
+	 * Linux connected client is deferred due to unavailabilty of command
+	 * 
+	 * @refactor Alan_Bivera
+	 */
+
+	public static boolean verifyOperatingStandardInConnectedClient(Dut connectedClientDevice, AutomaticsTapApi tapEnv,
+			List<String> expectedOperatingMode) throws TestException {
+		LOGGER.debug("Entering verifyOperatingStandardInConnectedClient");
+		boolean status = false;
+		String clientOsType = null;
+		String command = null;
+		String response = null;
+		String pattermToGetRadioType = "Radio type[\" \"]*:(.*)";
+		clientOsType = ((Device) connectedClientDevice).getOsType();
+		LOGGER.info("OS type of client device : " + clientOsType);
+
+		if (clientOsType.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_WINDOWS)) {
+			command = BroadBandConnectedClientTestConstants.WINDOWS_COMMAND_TO_GET_OPERATING_MODE;
+			response = tapEnv.executeCommandOnOneIPClients(connectedClientDevice, command);
+			if (CommonMethods.isNotNull(response)) {
+				response = CommonMethods.patternFinder(response, pattermToGetRadioType);
+				LOGGER.info("Response for radio type in Windows client : " + response);
+
+				if (CommonMethods.isNotNull(response) && expectedOperatingMode.contains(response.trim())) {
+					status = true;
+				} else {
+
+					throw new TestException(
+							"failed in verifying the expected operating mode with the mode obatined from box "
+									+ response);
+
+				}
+			} else {
+				throw new TestException(
+						"Obtained Null response while validating the operating standard of client device");
+			}
+		} else if (clientOsType.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)) {
+
+			throw new TestException("command to get the operating mode for linux client is not known as of now");
+
+		}
+
+		LOGGER.debug("Ending verifyOperatingStandardInConnectedClient");
+		return status;
+
+	}
+
+	/**
+	 * Method to get the NUC device from connected client and connect with 5 GHz
+	 * wifi network
+	 * 
+	 * @param device                 instance of {@link Dut}
+	 * @param AutomaticsTapApi       instance of {@link AutomaticsTapApi}
+	 * @param connectedClientDevices Connected client device list
+	 * @param wifiBand               Wifi frequency band
+	 * @return client device instance
+	 * 
+	 * @author Gnanaprakasham.s
+	 * @Refactor Sruthi Santhosh
+	 */
+	public static Dut getWindowsClientsAndConnectToGivenSSID(Dut device, AutomaticsTapApi tapEnv,
+			WiFiFrequencyBand wifiBand) {
+
+		LOGGER.debug("START METHOD : getWindowsClientsAndConnectToGivenSSID () ");
+		// Dut instance to store 2gh client device
+		Dut clientDevice = null;
+		// variable to store wifi capability
+		String wifiCapability = null;
+		String errorMessage = null;
+		// Get list of connected client devices
+		List<Dut> connectedClientDevices = ((Device) device).getConnectedDeviceList();
+
+		String ssidName = getSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv, wifiBand);
+		String ssidPassPhrase = getSsidPassphraseFromGatewayUsingWebPaOrDmcli(device, tapEnv, wifiBand);
+
+		if (connectedClientDevices != null && connectedClientDevices.size() > 0) {
+			for (Dut client_Device : connectedClientDevices) {
+				String osType = ((Device) client_Device).getOsType();
+				LOGGER.info("Client device OS Type : " + osType);
+
+				if (CommonMethods.isNotNull(osType) && ((Device) client_Device).getOsType()
+						.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_WINDOWS)) {
+
+					String connectionType = ((Device) client_Device).getConnectedDeviceInfo().getConnectionType();
+					LOGGER.info("Client device connection type : " + connectionType);
+
+					wifiCapability = ((Device) client_Device).getConnectedDeviceInfo().getWifiCapability();
+					LOGGER.info("Client device wifi capability : " + wifiCapability);
+
+					if (CommonMethods.isNotNull(connectionType) && CommonMethods.isNotNull(wifiCapability)) {
+						if (connectionType.equalsIgnoreCase(
+								BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI)
+								&& wifiCapability.equalsIgnoreCase(
+										BroadBandConnectedClientTestConstants.STRING_WIFI_CAPABILITY_DUAL_BAND)) {
+
+							if (ConnectedNattedClientsUtils.connectToSSID(client_Device, tapEnv, ssidName,
+									ssidPassPhrase)) {
+								clientDevice = client_Device;
+								break;
+							}
+						}
+					} else {
+						errorMessage = "Obtained null value for connection type and wifi capabitlity from MDS ";
+					}
+
+				}
+
+			}
+
+		} else {
+			errorMessage = "There is not client device connected with current running gateway device";
+		}
+		if (clientDevice == null) {
+			LOGGER.error(errorMessage);
+			throw new TestException(errorMessage);
+		}
+
+		LOGGER.debug("ENDING METHOD : getWindowsClientsAndConnectToGivenSSID () ");
+		return clientDevice;
+
+	}
+
+	/**
+	 * Method to get one of the connected client based on the Band and Type.
+	 * 
+	 * @param device                 instance of {@link Dut}
+	 * @param tapEnv            instance of {@link AutomaticsTapApi}
+	 * @param connectedClientSettops Connected client device list
+	 * @param Type                   Type of connectivity
+	 * @param band                   band of the Wifi(2 or 5 GHZ)
+	 * @return client device instance
+	 * 
+	 * @author Joseph Maduram
+	 * @refactor yamini.s
+	 */
+	public static Dut getConnectedClientBasedOnTypeAndBand(Dut device, AutomaticsTapApi tapEnv,
+			List<Dut> connectedClientSettops, String type, String band) {
+
+		// variable to store wifi capability
+		String wifiCapability = null;
+		// device instance to store the client device
+		Dut clientDevice = null;
+
+		try {
+			if (null != connectedClientSettops && connectedClientSettops.size() > 0) {
+				for (Dut clientSettop : connectedClientSettops) {
+
+					String connectionType = ((Device) clientSettop).getConnectedDeviceInfo().getConnectionType();
+					LOGGER.info("Client device connection type : " + connectionType);
+
+					wifiCapability = ((Device) clientSettop).getConnectedDeviceInfo().getWifiCapability();
+					LOGGER.info("Client device wifi capability : " + wifiCapability);
+					if (CommonMethods.isNotNull(wifiCapability) && CommonMethods.isNotNull(connectionType)
+							&& CommonMethods.isNotNull(wifiCapability)) {
+						if (connectionType.equalsIgnoreCase(type) && (wifiCapability.equalsIgnoreCase(band)
+								|| wifiCapability.equalsIgnoreCase(BroadBandTestConstants.DUAL_BAND))) {
+
+							clientDevice = clientSettop;
+							break;
+
+						}
+					} else {
+						LOGGER.info(
+								"Either of the Connection Type  or wifi capability is null in MDS for the client device object-"
+										+ ((Device) clientSettop).getConnectedDeviceInfo().toString());
+
+					}
+				}
+			}
+			if (clientDevice == null) {
+
+				throw new TestException(
+						"Either client devices are not available or device is not enabled with Wifi port");
+			}
+		} catch (Exception exception) {
+			throw new TestException("Not able to get the connected clients due to => " + exception.getMessage());
+
+		}
+
+		return clientDevice;
+	}
+
+	/**
+	 * 
+	 * method can return a connected client of the required capability except the
+	 * passed device object.
+	 * 
+	 * @param device                 instance of {@link Dut}
+	 * @param AutomaticsTapApi       instance of {@link AutomaticsTapApi}
+	 * @param connectedClientSettops Connected client device list
+	 * @param type                   Type of connectivity
+	 * @param band                   band of the Wifi(2 or 5 GHZ)
+	 * @return client device instance
+	 * 
+	 * @author Joseph Maduram
+	 * @refactor yamini.s
+	 */
+
+	public static Dut getOtherConnectedClient(Dut cnnClientSettop, AutomaticsTapApi tapEnv,
+			List<Dut> connectedClientSettops, String type, String band) {
+		String wifiCapability = null;
+		Dut deviceConnected = null;
+		String wifiMacAddress = null;
+		String wifiMacAddrConnClient = null;
+		String connectionType = null;
+		try {
+			wifiMacAddrConnClient = ((Device) cnnClientSettop).getConnectedDeviceInfo().getWifiMacAddress();
+			LOGGER.info("ALREADY CONNECTED CLIENT'S WIFI MAC ADDRESS : " + wifiMacAddrConnClient);
+			if (null != connectedClientSettops && connectedClientSettops.size() > 0) {
+				LOGGER.info("NUMBER OF CONNECTED CLIENTS ASSOCIATED WITH THE GATEWAY DEVICE : "
+						+ connectedClientSettops.size());
+				for (Dut clientSettop : connectedClientSettops) {
+					try {
+						wifiMacAddress = ((Device) clientSettop).getConnectedDeviceInfo().getWifiMacAddress();
+						LOGGER.info("OBTAINED CONNECTED CLIENT WIFI MAC ADDRESS : " + wifiMacAddress);
+						connectionType = ((Device) clientSettop).getConnectedDeviceInfo().getConnectionType();
+						LOGGER.info("OBTAINED CONNECTED CLIENT CONNECTION TYPE : " + connectionType);
+						wifiCapability = ((Device) clientSettop).getConnectedDeviceInfo().getWifiCapability();
+						LOGGER.info("OBTAINED CONNECTED CLIENT WIFI CAPABILITY : " + wifiCapability);
+						if (CommonMethods.isNull(wifiMacAddress) || CommonMethods.isNull(connectionType)
+								|| CommonMethods.isNull(wifiCapability)) {
+							LOGGER.error(
+									"OBTAINED NULL VALUE FOR WIFI MAC ADDRESS/CONNECTION TYPE/WIFI CAPABILITY, HENCE SKIPPING THIS CLIENT SETTOP.");
+							continue;
+						}
+						if (wifiMacAddrConnClient.equalsIgnoreCase(wifiMacAddress)) {
+							LOGGER.error(
+									"OBTAINED CONNECTED CLIENT IS ALREADY CONNECTED TO THE GATEWAY, HENCE SKIPPING THIS CLIENT SETTOP.");
+							continue;
+						}
+						LOGGER.info("REQUIRED CONNECTED CLIENT CONNECTION TYPE : " + type);
+						LOGGER.info("REQUIRED CONNECTED CLIENT WIFI CAPABILITY : " + band + " OR : Dual band");
+						if (connectionType.equalsIgnoreCase(type) && (wifiCapability.equalsIgnoreCase(band)
+								|| wifiCapability.equalsIgnoreCase(BroadBandTestConstants.DUAL_BAND))) {
+							LOGGER.info("SUCCESSFULLY OBTAINED A CONNECTED CLIENT OTHER THAN : " + wifiMacAddrConnClient
+									+ ". WIFI MAC ADDRESS IS : " + wifiMacAddress);
+							deviceConnected = clientSettop;
+							break;
+						} else {
+							LOGGER.error(
+									"OBTAINED CONNECTED CLIENT'S BAND/WIFI CAPABILITY DOESN'T MATCH THE REQUIREMENT, HENCE SKIPPING THIS CLIENT SETTOP.");
+						}
+					} catch (Exception exception) {
+						LOGGER.error("FOLLOWING EXCEPTION OCCERRED WHILE ITERATING THE CONNECTED CLIENTS : "
+								+ exception.getMessage());
+					}
+				}
+			} else {
+				throw new TestException("OBTAINED CONNECTED CLIENT LIST IS EMPTY");
+			}
+			if (deviceConnected == null) {
+				throw new TestException(
+						"NOT ABLE TO GET A DIFFERENT CONNECTED CLIENT WITH REQUIRED BAND AND CAPABILITY.");
+			}
+		} catch (Exception exception) {
+			throw new TestException("NOT ABLE TO GET OTHER CONNECTED CLIENT DUE TO : " + exception.getMessage());
+		}
+		return deviceConnected;
+	}
+
+	/**
+	 * Helper method to enable/disable all radios
+	 *
+	 * @param device      instance of {@link Dut}
+	 * @param tapEnv      instance of {@link AutomaticsTapApi}
+	 * @param radioStatus radio status
+	 * @return true if radios are enabled/disabled
+	 * 
+	 * @author Gnanaprakasham.S (sgnana010c)
+	 * @refactor yamini.s
+	 */
+
+	public static boolean enableOrDisableAllRadios(Dut device, AutomaticsTapApi tapEnv, boolean radioStatus) {
+
+		String errorMessage = null;
+		boolean radioStatus2Ghz = false;
+		boolean radioStatus5Ghz = false;
+		boolean status = false;
+
+		String radioState = radioStatus ? "enable" : "disable";
+		// disable 2.4ghz radio
+		radioStatus2Ghz = BroadBandConnectedClientUtils.enableOrDisableRadiosForGivenSsidUsingWebPaCommand(
+				WiFiFrequencyBand.WIFI_BAND_2_GHZ, tapEnv, device, radioStatus);
+		errorMessage = radioStatus2Ghz ? null
+				: "Not able to " + radioState + " 2.4 GHz radio using webpa param \"Device.WiFi.SSID.10001.Enable\"";
+
+		tapEnv.waitTill(BroadBandTestConstants.NINTY_SECOND_IN_MILLIS);
+		// Enable 5ghz radio
+		radioStatus5Ghz = BroadBandConnectedClientUtils.enableOrDisableRadiosForGivenSsidUsingWebPaCommand(
+				WiFiFrequencyBand.WIFI_BAND_5_GHZ, tapEnv, device, radioStatus);
+		errorMessage = radioStatus5Ghz ? null
+				: errorMessage + " Not able to " + radioState
+						+ " 5 GHz radio using webpa param \"Device.WiFi.SSID.10101.Enable\"";
+
+		status = radioStatus2Ghz && radioStatus5Ghz;
+		if (!status) {
+			LOGGER.error(errorMessage);
+		}
+
+		return status;
+
+	}
+
+	/**
+	 * Method to verify whether client device has connectivity and ip address when
+	 * wifi disabled
+	 * 
+	 * @param device
+	 * @param connectedDeviceActivated
+	 * @param testId
+	 * @author Gnanaprakasham.s
+	 */
+	public static void checkIpAddressAndConnectivityAfterWifiDisabled(Dut device, AutomaticsTapApi tapEnv,
+			Dut connectedDeviceActivated, String testId, String[] stepNumbers) {
+		// String to store the test case status
+		boolean status = false;
+		// Test step number
+		String testStepNumber = stepNumbers[0];
+		// String to store the error message
+		String errorMessage = null;
+		// response obtained
+		String commandResponse = null;
+		if (stepNumbers.length == 4) {
+			checkIpAddressObtainedAfterWifiDisabled(device, tapEnv, connectedDeviceActivated, testId,
+					new String[] { stepNumbers[0], stepNumbers[1] });
+
+			LOGGER.info("******************************************************");
+			LOGGER.info("STEP " + stepNumbers[2]
+					+ ": Verify whether you have connectivity using that particular interface using IPV4 ");
+			LOGGER.info("EXPECTED: Connectivity check should return connection failure error message");
+			LOGGER.info("******************************************************");
+			testStepNumber = stepNumbers[2];
+			status = false;
+			String command = ((Device) connectedDeviceActivated).getOsType()
+					.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
+							? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV4_ADDRESS
+							: BroadBandConnectedClientTestConstants.COMMAND_CURL_WINDOWS_IPV4_ADDRESS;
+			errorMessage = "Connectivty check using IPV4 address failed";
+			commandResponse = tapEnv.executeCommandOnOneIPClients(connectedDeviceActivated, command);
+			if (CommonMethods.isNotNull(commandResponse)) {
+				status = commandResponse.contains("Failed to connect to www.google.com")
+						|| commandResponse.contains("Could not resolve host");
+				if (!status) {
+					errorMessage = "Expected Failed to connect to www.google.com as response .But obtained "
+							+ commandResponse;
+				}
+			} else {
+				errorMessage = "Unable to execute curl command for IPV4 on connected client device. Please check the connectivity between connected client and Jump server.";
+			}
+			tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
+
+			LOGGER.info("******************************************************");
+			LOGGER.info("STEP " + stepNumbers[3]
+					+ ": Verify whether you have connectivity using that particular interface using IPV6 ");
+			LOGGER.info("EXPECTED: Connectivity check should return network not reachable error message ");
+			LOGGER.info("******************************************************");
+			testStepNumber = stepNumbers[3];
+			status = false;
+			errorMessage = "Connectivty check using IPV6 address failed";
+			command = ((Device) connectedDeviceActivated).getOsType()
+					.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
+							? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV6_ADDRESS
+							: BroadBandConnectedClientTestConstants.COMMAND_CURL_WINDOWS_IPV6_ADDRESS;
+			commandResponse = tapEnv.executeCommandOnOneIPClients(connectedDeviceActivated, command);
+			if (CommonMethods.isNotNull(commandResponse)) {
+				status = commandResponse.contains("Failed to connect to www.google.com")
+						|| commandResponse.contains("Could not resolve host");
+				if (!status) {
+					errorMessage = "Expected Failed to connect to www.google.com as response .But obtained "
+							+ commandResponse;
+				}
+			} else {
+				errorMessage = "Unable to execute curl command for IPv6 on connected client device. Please check the connectivity between connected client and Jump server.";
+			}
+			tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
+		} else {
+			LOGGER.info("This function is meant for executing 4 steps.Current steps passed are " + stepNumbers.length);
+		}
+	}
+
+	/**
+	 * Common steps for checking IP address obtained for the connected client device
+	 * when wifi disabled
+	 * 
+	 * @param device
+	 * @param connectedDeviceActivated
+	 * @param testId
+	 * @param stepNumbers
+	 */
+	public static void checkIpAddressObtainedAfterWifiDisabled(Dut device, AutomaticsTapApi tapEnv,
+			Dut connectedDeviceActivated, String testId, String[] stepNumberss) {
+		// String to store the test case status
+		boolean status = false;
+		// Test step number
+		String testStepNumber = stepNumberss[0];
+		long polling_window_ms = 90000L;
+		// String to store the error message
+		String errorMessage = null;
+		if (stepNumberss.length == 2) {
+
+			LOGGER.info("******************************************************");
+			LOGGER.info("STEP " + stepNumberss[0] + ":Verify whether interface got the correct IPv4  address.");
+			LOGGER.info("EXPECTED:Interface IP address should not be shown");
+			LOGGER.info("******************************************************");
+
+			errorMessage = "wifi interface is having ipv4 address even after wifi disabled";
+			String osType = ((Device) connectedDeviceActivated).getOsType();
+			long startTime = System.currentTimeMillis();
+
+			do {
+				status = !BroadBandConnectedClientUtils.verifyIpv4AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(
+						osType, connectedDeviceActivated, tapEnv);
+				if (status) {
+					break;
+				}
+			} while (System.currentTimeMillis() < (startTime + polling_window_ms));
+			tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
+
+			LOGGER.info("******************************************************");
+			LOGGER.info("STEP " + stepNumberss[1] + ":Verify whether interface got the correct IPv6  address.");
+			LOGGER.info("EXPECTED:Interface IP address should not be shown");
+			LOGGER.info("******************************************************");
+
+			testStepNumber = stepNumberss[1];
+			status = false;
+			errorMessage = "wifi interface is having ipv6 address even after wifi disabled";
+			status = !BroadBandConnectedClientUtils.verifyIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(
+					osType, connectedDeviceActivated, tapEnv);
+			tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
+		} else {
+			LOGGER.info("This function is meant for executing 2 steps.Current steps passed are " + stepNumberss.length);
+		}
+	}
+
+	/**
+	 * Method to verify Renewing IPv4 connected client is in DHCP range
+	 * 
+	 * @param tapEnv                {@link AutomaticsTapApi}
+	 * @param device                {@link Dut}
+	 * @param connectedClientSettop Connected client device instance
+	 * 
+	 * @return status true if Renew of IP Address is Successful in the Connected
+	 *         Client
+	 * @refactor Govardhan
+	 */
+	public static boolean renewIpAddressInDhcp(Dut device, AutomaticsTapApi tapEnv, Dut connectedClientSettop) {
+		LOGGER.debug("STARTING METHOD: renewIpAddressInDhcp");
+		boolean result = false;
+		String osType = ((Device) connectedClientSettop).getOsType();
+		Device ecastSettop = (Device) connectedClientSettop;
+		try {
+			if (CommonMethods.isNotNull(osType) && osType.equals(BroadBandConnectedClientTestConstants.OS_WINDOWS)) {
+				tapEnv.executeCommandOnOneIPClients(connectedClientSettop,
+						BroadBandCommandConstants.CMD_TO_RENEW_IP_IN_WINDOWS);
+				LOGGER.info("Waiting for two minutes to reflect IP changes");
+				tapEnv.waitTill(BroadBandTestConstants.TWO_MINUTE_IN_MILLIS);
+				result = true;
+			} else {
+				String defaultInterface = getDefaultInterfaceNameOfTheLinuxConnClientDevice(connectedClientSettop,
+						tapEnv).trim();
+				LOGGER.info("DEFAULT INTERFACE OBTAINED IN THE LINUX CLIENT IS  : " + defaultInterface);
+				String connectionType = ecastSettop.getConnectedDeviceInfo().getConnectionType();
+				LOGGER.info("CONNECTION TYPE OF THE CONNECTED CLIENT IS : " + connectionType);
+				String[] expectedInterfaces = null;
+				if (CommonMethods.isNotNull(defaultInterface) && CommonMethods.isNotNull(connectionType)
+						&& BroadBandTestConstants.CONNECTION_TYPE_ETHERNET.equalsIgnoreCase(connectionType)) {
+					expectedInterfaces = AutomaticsTapApi
+							.getSTBPropsValue(
+									BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_ETHERNET_INTERFACE_IN_LINUX_CLIENT)
+							.split(BroadBandTestConstants.SEMI_COLON);
+				} else if (CommonMethods.isNotNull(defaultInterface) && CommonMethods.isNotNull(connectionType)
+						&& BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI
+								.equalsIgnoreCase(connectionType)) {
+					expectedInterfaces = AutomaticsTapApi
+							.getSTBPropsValue(
+									BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_WIFI_INTERFACE_IN_LINUX_CLIENT)
+							.split(BroadBandTestConstants.SEMI_COLON);
+				} else {
+					LOGGER.error("UNABLE TO OBTAIN THE DEFAULT INTERFACE NAME FROM LINUX CLIENT");
+				}
+
+				if (expectedInterfaces != null && expectedInterfaces.length != 0) {
+					for (String interfaceName : expectedInterfaces) {
+						if (CommonUtils.patternSearchFromTargetString(defaultInterface, interfaceName)) {
+							LOGGER.info("Renew IP in connected client: " + interfaceName);
+							tapEnv.executeCommandOnOneIPClients(connectedClientSettop,
+									BroadBandCommandConstants.CMD_TO_RELEASE_IP_CLIENT_INTERFACE_IN_LINUX.replace(
+											BroadBandTestConstants.STRING_INTERFACE_TO_REPLACE, interfaceName));
+							tapEnv.executeCommandOnOneIPClients(connectedClientSettop,
+									BroadBandCommandConstants.CMD_TO_RENEW_IP_CLIENT_INTERFACE_IN_LINUX.replace(
+											BroadBandTestConstants.STRING_INTERFACE_TO_REPLACE, interfaceName));
+							LOGGER.info("Waiting for one minute to reflect IP changes");
+							tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+							result = true;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error("Exception in Renewing DHCP Address in DHCP of connected client." + e.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD: renewIpAddressInDhcp");
+		return result;
+	}
+
+	/**
+	 * Helper method to get the ipv4 address of the connected client without
+	 * performing ARP Check
+	 * 
+	 * @param tapEnv                instance of {@link AutomaticsTapApi}
+	 * @param device                instance of {@link Dut}
+	 * @param connectedClientDevice Connected client device instance
+	 * @return Ipv4 of the connected client device
+	 * 
+	 * @author Vignesh
+	 * @Refactor Sruthi Santhosh
+	 */
+	public static String getIpv4AddressFromConnClientWithoutArpCheck(AutomaticsTapApi tapEnv, Dut device,
+			Dut connectedClientDevice) {
+		LOGGER.debug("STARTING METHOD: getIpv4AddressFromConnClientWithoutArpCheck");
+		String ipv4Value = null;
+		try {
+			Device connClientDevice = (Device) connectedClientDevice;
+			if (connClientDevice.isLinux()) {
+				ipv4Value = getIpv4AddressFromLinuxConnClient(tapEnv, device, connectedClientDevice);
+			} else if (connClientDevice.isWindows()) {
+				ipv4Value = getIpFromWindowsConnectedClientWithoutArpCheck(device, connectedClientDevice, tapEnv);
+			} else if (connClientDevice.isRaspbianLinux()) {
+				ipv4Value = getIpv4AddressFromRaspbianConnClient(tapEnv, device, connectedClientDevice);
+			} else {
+				LOGGER.error(
+						"'getIpv4AddressFromConnClientWithoutArpCheck' IS ONLY APPLICABLE FOR WINDOWS/LINUX OS CONNECTED CLIENTS.");
+			}
+		} catch (Exception e) {
+			LOGGER.error("Exception While Getting the IPV4 Address From The Client." + e.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD: getIpv4AddressFromConnClientWithoutArpCheck");
+		return ipv4Value;
+	}
+
+	/**
+	 * Helper method to get Connected client device ip from the same windows device
+	 * without performing Sbin\ARP Check
+	 * 
+	 * @param device                Dut Instance
+	 * @param connectedClientDevice Connected client device instance
+	 * @param tapEnv                AutomaticstapApi instance
+	 * @return ip of the connected client device
+	 * @Refactor Sruthi Santhosh
+	 */
+	public static String getIpFromWindowsConnectedClientWithoutArpCheck(Dut device, Dut connectedClientDevice,
+			AutomaticsTapApi tapEnv) {
+		LOGGER.debug("STARTING METHOD: getIpFromWindowsConnectedClientWithoutArpCheck()");
+		String value = null;
+		String command = null;
+		String searchTrace = null;
+		String response = null;
+		String connectionType = ((Device) connectedClientDevice).getConnectedDeviceInfo().getConnectionType();
+		try {
+			LOGGER.info("Windows device is connected to Gateway device to " + connectionType);
+			String parameter = BroadBandTestConstants.STRING_IP_4_ADDRESS;
+			if (CommonMethods.isNotNull(connectionType)
+					&& BroadBandConnectedClientUtils.CONNECTION_TYPE_ETHERNET.equalsIgnoreCase(connectionType)) {
+				searchTrace = BroadBandTraceConstants.LOG_MESSAGE_IPCONFIG_ETHERNET;
+			} else if (CommonMethods.isNotNull(connectionType)
+					&& BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI
+							.equalsIgnoreCase(connectionType)) {
+				searchTrace = BroadBandTraceConstants.LOG_MESSAGE_IPCONFIG_WIFI;
+			}
+			if (CommonMethods.isNotNull(searchTrace)) {
+				command = BroadBandCommonUtils.concatStringUsingStringBuffer(
+						BroadBandCommandConstants.CMD_IPCONFIG_ALL_GREP_A40, searchTrace,
+						BroadBandTestConstants.SYMBOL_PIPE, BroadBandTestConstants.GREP_COMMAND,
+						BroadBandTestConstants.DOUBLE_QUOTE, parameter, BroadBandTestConstants.DOUBLE_QUOTE);
+				LOGGER.info("Command to be executed is " + command);
+				response = tapEnv.executeCommandOnOneIPClients(connectedClientDevice, command);
+				if (CommonMethods.isNotNull(response)) {
+					value = CommonMethods.patternFinder(response, BroadBandTestConstants.PATTERN_TO_GET_IPV4_ADDRESS);
+					LOGGER.info("Value of ip is - " + value);
+				}
+			}
+			LOGGER.info("Value of Windows connected client is " + value);
+		} catch (Exception e) {
+			LOGGER.error("Exception While Getting the IPV4 Address From The Client." + e.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD: getIpFromWindowsConnectedClientWithoutArpCheck()");
+		return value;
+	}
+
+	/**
+	 * Helper method to disconnect connected client from Public 2.4Ghz / 5Ghz SSIDs,
+	 * if connected. If not connected to 2.4GHz / 5GHz Wi-fi networks the method
+	 * returns true.
+	 * 
+	 * @param tapEnv                {@link AutomaticsTapApi}
+	 * @param device                {@link Dut}
+	 * @param connectedClientSettop Connected client device instance
+	 * @return status
+	 * @refactor Govardhan
+	 */
+	public static boolean validateDhcpIpv4AddressBetweenRangeInConnectedClient(String beginIpAddress,
+			String endingIpAddress, String ipAddressToVerify) {
+		LOGGER.debug("STARTING METHOD: validateDhcpIpv4AddressBetweenRangeInConnectedClient()");
+		boolean status = false;
+		long dhcpIpv4BeginAddress = 0;
+		long dhcpIpvEndingAddress = 0;
+		long dhcpIpv4ddressToVerify = 0;
+		try {
+			dhcpIpv4BeginAddress = convertIpAddressToLong(InetAddress.getByName(beginIpAddress));
+			dhcpIpvEndingAddress = convertIpAddressToLong(InetAddress.getByName(endingIpAddress));
+			dhcpIpv4ddressToVerify = convertIpAddressToLong(InetAddress.getByName(ipAddressToVerify));
+			status = dhcpIpv4ddressToVerify >= dhcpIpv4BeginAddress && dhcpIpv4ddressToVerify <= dhcpIpvEndingAddress;
+		} catch (Exception e) {
+			LOGGER.error("Exception occurred validateDhcpIpv4AddressBetweenRangeInConnectedClient() " + e.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD: validateDhcpIpv4AddressBetweenRangeInConnectedClient()");
+		return status;
+	}
+
+	/**
+	 * Helper method to disconnect connected client from Public 2.4Ghz / 5Ghz SSIDs,
+	 * if connected. If not connected to 2.4GHz / 5GHz Wi-fi networks the method
+	 * returns true.
+	 * 
+	 * @param tapEnv                {@link AutomaticsTapApi}
+	 * @param device                {@link Dut}
+	 * @param connectedClientSettop Connected client settop instance
+	 * @return status
+	 * @refactor Govardhan
+	 */
+	public static long convertIpAddressToLong(InetAddress ip) {
+		LOGGER.debug("STARTING METHOD: convertIpAddressToLong()");
+		long result = 0;
+		try {
+			byte[] octets = ip.getAddress();
+			for (byte octet : octets) {
+				result <<= 8;
+				result |= octet & 0xff;
+			}
+		} catch (Exception e) {
+			LOGGER.error("Exception occurred converting Ip Address to Long " + e.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD: convertIpAddressToLong()");
+		return result;
+	}
+
+	/**
+	 * Method to get current security mode for wifi network using webpa command
+	 * 
+	 * @param device               instance of {@link Dut}
+	 * @param tapEnv               instance of {@link AutomaticsTapApi}
+	 * @param command              webpa params needs to be executed
+	 * @param expectedSecurityMode expectedSecurityMode
+	 * @return true if security mode returned as expected
+	 * 
+	 * @author Gnanaprakasham.s
+	 * @Refactor Sruthi Santhosh
+	 */
+	public static boolean verifyWiFiSecutityModeUsingWebPaOrDmcliCommand(Dut device, AutomaticsTapApi tapEnv,
+			String command, String expectedSecurityMode) {
+		LOGGER.debug("STARTING METHOD : verifyWiFiSecutityModeUsingWebPaOrDmcliCommand () ");
+		String response = null;
+		boolean status = false;
+		String errorMessage = null;
+
+		response = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv, command);
+
+		if (CommonMethods.isNotNull(response)) {
+			LOGGER.info("Successfully obtained " + expectedSecurityMode + " security mode using webpa command : "
+					+ response);
+			status = response.equalsIgnoreCase(expectedSecurityMode);
+
+			if (!status) {
+				errorMessage = "Failed to get " + expectedSecurityMode + " security mode!!..Obtained security mode : "
+						+ response;
+				throw new TestException(errorMessage);
+			}
+
+		} else {
+			errorMessage = "Failed to get " + expectedSecurityMode
+					+ " security mode using webpa command..Obtained ressponse " + response;
+			throw new TestException(errorMessage);
+
+		}
+		LOGGER.debug("ENDING METHOD : verifyWiFiSecutityModeUsingWebPaOrDmcliCommand () ");
+		return status;
+	}
+
+	/**
+	 * Method to verify security mode from client devices
+	 * 
+	 * @param clientDevice         Client device instance
+	 * @param response             Obtained response from device
+	 * @param pattern              pattern to be searched
+	 * @param expectedSecurityMode expected security mode
+	 * @return true if security mode returned as expected
+	 * 
+	 * @author Gnanaprakasham.s
+	 * @Refactor Sruthi Santhosh
+	 */
+	public static boolean verifyWiFiSecurityModeFromClientDeviceUsingSystemCommand(Dut clientDevice,
+			AutomaticsTapApi tapEnv, String[] command, String pattern, String expectedSecurityMode) {
+		LOGGER.debug("STARTING METHOD : verifyWiFiSecurityModeFromClientDeviceUsingSystemCommand () ");
+
+		boolean status = false;
+		String errorMessage = null;
+		String response = null;
+
+		response = tapEnv.executeCommandOnOneIPClients(clientDevice, command);
+
+		if (CommonMethods.isNotNull(response)) {
+
+			String securityMode = CommonMethods.patternFinder(response, pattern);
+			LOGGER.info("Obtained security mode from client device : " + securityMode);
+
+			if (CommonMethods.isNotNull(securityMode)) {
+
+				status = securityMode.equalsIgnoreCase(expectedSecurityMode);
+				errorMessage = "Obtained security mode from client device is" + securityMode
+						+ " but expected mode should be " + expectedSecurityMode;
+			} else {
+				errorMessage = "Obtained null response.. Not able to get the security mode from client device";
+			}
+		} else {
+			errorMessage = "Obtained null response for command => " + command;
+		}
+		if (!status) {
+			LOGGER.error(errorMessage);
+			throw new TestException(errorMessage);
+		}
+		LOGGER.debug("ENDING METHOD : verifyWiFiSecurityModeFromClientDeviceUsingSystemCommand () ");
+		return status;
+	}
+
+	/**
+	 * Method to set security mode for wifi network using webpa command
+	 * 
+	 * @param device             instance of {@link Dut}
+	 * @param securityMode       webpa command for security mode
+	 * @param securityModeValues securityMode Values
+	 * @param encryption         method webpa param for encryption method
+	 * @param encryption         method encryption method value
+	 * @return true if security mode successfully set
+	 * 
+	 * @author Gnanaprakasham.s
+	 * @Refactor Sruthi Santhosh
+	 */
+	public static boolean setSecurityModeForWiFiNetwork(AutomaticsTapApi tapEnv, Dut device, String securityModeValues,
+			String encryptionMethodValue, WiFiFrequencyBand wifiBand) {
+		LOGGER.debug("STARTING METHOD : setSecurityModeForWiFiNetwork () ");
+		boolean status = false;
+		String errorMessage = null;
+		String securityMode = null;
+		String encryptionMethod = null;
+
+		if (wifiBand.compareTo(WiFiFrequencyBand.WIFI_BAND_2_GHZ) == 0) {
+
+			securityMode = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_2_4_GHZ_PRIVATE_SECURITY_MODEENABLED;
+			encryptionMethod = BroadBandWebPaConstants.WEBPA_PARAM_FOR_ENCRYPTIONMETHOD_IN_2GHZ_PRIVATE_WIFI;
+
+		} else if (wifiBand.compareTo(WiFiFrequencyBand.WIFI_BAND_5_GHZ) == 0) {
+			securityMode = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_5_GHZ_PRIVATE_SECURITY_MODEENABLED;
+			encryptionMethod = BroadBandWebPaConstants.WEBPA_PARAM_FOR_ENCRYPTIONMETHOD_IN_5GHZ_PRIVATE_WIFI;
+		}
+
+		WebPaParameter webPaParamSecuityMode = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(securityMode,
+				securityModeValues, WebPaDataTypes.STRING.getValue());
+		WebPaParameter webPaParamEncryption = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+				encryptionMethod, encryptionMethodValue, WebPaDataTypes.STRING.getValue());
+
+		List<WebPaParameter> webPaParameters = new ArrayList<WebPaParameter>();
+		webPaParameters.add(webPaParamSecuityMode);
+		webPaParameters.add(webPaParamEncryption);
+
+		WebPaServerResponse webPaSetResponse = tapEnv.setWebPaParameterValues(device, webPaParameters);
+
+		if (webPaSetResponse.getMessage().trim().equalsIgnoreCase(BroadBandTestConstants.SUCCESS_TXT)) {
+			status = true;
+		} else {
+
+			errorMessage = "Failed to set " + securityMode + " parameter to  " + securityModeValues + " and "
+					+ encryptionMethod + " parameter to " + encryptionMethodValue;
+			LOGGER.info(errorMessage);
+			throw new TestException(errorMessage);
+
+		}
+		LOGGER.debug("ENDING METHOD : setSecurityModeForWiFiNetwork () ");
+		return status;
+
+	}
+	
+	/**
+	 * 
+	 * This method is to verify if the hostaddress passed is blocked on the dns
+	 * server by checking the DNS Configuration
+	 * 
+	 * @param tapEnv                Tap environment
+	 * @param connectedClientSettop Settop object
+	 * @param hostAddress           site to look up
+	 * @param dnsServer             dns server on which the validation has to be
+	 *                              done
+	 * @param expecteDomainName     hostAddress passed domain name expected for the
+	 * @return status of the operation
+	 * @refactor Alan_Bivera
+	 */
+	public static boolean verifyDNSConfigInCnctdClientPassingHostAddrAndDnsSrvr(AutomaticsTapApi tapEnv,
+			Dut connectedClientSettop, String hostAddress, String dnsServer, String expecteDomainName) {
+		LOGGER.debug("ENDING METHOD : verifyDNSConfigInCnctdClientPassingHostAddrAndDnsSrvr()");
+		// String to hold the response
+		String response = null;
+		// Status of dns overRiding at client mac Level
+		boolean status = false;
+		// Instance to store the client settop
+		Device ecastSettop = (Device) connectedClientSettop;
+		// String to store ssh command
+		String sshCommand = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.STRING_NS_LOOKUP,
+				AutomaticsConstants.SPACE, hostAddress, AutomaticsConstants.SPACE, dnsServer);
+		response = tapEnv.executeCommandOnOneIPClients(ecastSettop, sshCommand);
+		response = response.replaceAll(BroadBandTestConstants.PATTERN_MATCHER_FOR_MULTIPLE_SPACES,
+				BroadBandCommandConstants.BLANK);
+		status = (CommonMethods.patternMatcher(response, "Name:" + expecteDomainName) || CommonMethods.patternMatcher(
+				response, "Name:" + expecteDomainName.replace("www.", BroadBandCommandConstants.BLANK)));
+		LOGGER.debug("ENDING METHOD : verifyDNSConfigInCnctdClientPassingHostAddrAndDnsSrvr()");
+		return status;
+	}
+	
+	/**
+	 * Helper method to disconnect connected client from 2.4Ghz / 5Ghz SSIDs, if
+	 * connected. If not connected to 2.4GHz / 5GHz Wi-fi networks the method
+	 * returns true.
+	 * 
+	 * @param tapEnv                instance of {@link AutomaticsTapApi}
+	 * @param device                instance of {@link Dut}
+	 * @param connectedClientDevice Connected client device instance
+	 * @return status
+	 * 
+	 * @author BALAJI V
+	 * @refactor Govardhan
+	 */
+	public static BroadBandResultObject disconnectCnnClientFromSsid(AutomaticsTapApi tapEnv, Dut device,
+			Dut connectedClientDevice) {
+		LOGGER.debug("STARTING METHOD: disconnectCnnClientFromSSID");
+		boolean isWifiDiscntd = false;
+		String logMsg = null;
+		BroadBandResultObject result = new BroadBandResultObject();
+		try {
+			// String to store the 2.4Ghz wifi network ssid
+			String ssid2Ghz = BroadBandConnectedClientUtils.getSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv,
+					WiFiFrequencyBand.WIFI_BAND_2_GHZ);
+			// String to store the 5Ghz wifi network ssid
+			String ssid5Ghz = BroadBandConnectedClientUtils.getSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv,
+					WiFiFrequencyBand.WIFI_BAND_5_GHZ);
+			boolean isConnToWifi = ConnectedNattedClientsUtils.verifyConnectToSSID(connectedClientDevice, tapEnv,
+					ssid2Ghz, true)
+					|| ConnectedNattedClientsUtils.verifyConnectToSSID(connectedClientDevice, tapEnv, ssid5Ghz, true);
+			logMsg = isConnToWifi
+					? "CONNECTED CLIENT IS CONNECTED TO WIFI NETWORK. GOING TO TRY DISCONNECT IT FROM 2.4GHZ SSID."
+					: "Wi-Fi CLIENT IS NOT CONNECTED TO 2.4GHz SSID NETWORK : '" + ssid2Ghz
+							+ "' OR 5GHz SSID NETWORK : '" + ssid5Ghz
+							+ "', HENCE RETURNING THE DISCONNECTION STATUS AS 'TRUE'";
+			LOGGER.info(logMsg);
+			if (isConnToWifi) {
+				isWifiDiscntd = (ConnectedNattedClientsUtils.disconnectSSID(connectedClientDevice, tapEnv, ssid2Ghz)
+						&& ConnectedNattedClientsUtils.verifyConnectToSSID(connectedClientDevice, tapEnv, ssid2Ghz,
+								false));
+				if (!isWifiDiscntd) {
+					LOGGER.info(
+							"CONNECTED CLIENT IS STILL CONNECTED TO WIFI NETWORK. GOING TO TRY DISCONNECT IT FROM 5GHZ SSID.");
+					isWifiDiscntd = ConnectedNattedClientsUtils.disconnectSSID(connectedClientDevice, tapEnv, ssid5Ghz)
+							&& ConnectedNattedClientsUtils.verifyConnectToSSID(connectedClientDevice, tapEnv, ssid5Ghz,
+									false);
+				}
+				logMsg = "CONNECTED CLIENT WITH WIFI MAC ADDRESS : '"
+						+ ((Device) connectedClientDevice).getConnectedDeviceInfo().getWifiMacAddress();
+				logMsg = isWifiDiscntd ? logMsg + "' DISCONNECTED SUCCESSFULLY FROM WI-FI NETWORK."
+						: "UNABLE TO DISCONNECT THE " + logMsg + "' FROM THE WI-FI NETWORK";
+				LOGGER.info(logMsg);
+			} else {
+				isWifiDiscntd = true;
+			}
+			result.setErrorMessage(logMsg);
+			result.setStatus(isWifiDiscntd);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD: disconnectCnnClientFromSSID");
+		return result;
+	}
+
+	/**
+	 * Method verify DHCP IP of connected client In case of failure renew Ip and
+	 * recheck Ip is in DHCP range
+	 * 
+	 * @param device
+	 * @param tapEnv
+	 * @param connectedClientSettop
+	 * @return status
+	 * 
+	 * @refactor yamini.s
+	 */
+	public static BroadBandResultObject verifyConnectedClientIpv4AddressInDhcpAfterRenew(Dut device,
+			AutomaticsTapApi tapEnv, Dut connectedClientSettop) {
+		LOGGER.debug("STARTING METHOD: verifyConnectedClientIpv4AddressInDhcpAfterRenew");
+		BroadBandResultObject bandResultObject = new BroadBandResultObject();
+		String errorMessage = "Connected Client IPv4 address is not in DHCP range";
+		String timeoutDefault = null;
+		String retryDefault = null;
+		boolean result = false;
+		String osType = ((Device) connectedClientSettop).getOsType();
+		Device ecastSettop = (Device) connectedClientSettop;
+		try {
+			result = isConnClientIpv4AddrBtwnDhcpRange(tapEnv, device, connectedClientSettop);
+			if (result) {
+				// Returning true as value is already equal to value to be set
+				bandResultObject.setStatus(result);
+				return bandResultObject;
+			} else {
+				if (CommonMethods.isNotNull(osType)
+						&& osType.equals(BroadBandConnectedClientTestConstants.OS_WINDOWS)) {
+					tapEnv.executeCommandOnOneIPClients(connectedClientSettop,
+							BroadBandCommandConstants.CMD_TO_RENEW_IP_IN_WINDOWS);
+					LOGGER.info("Waiting for two minutes to reflect IP changes");
+					tapEnv.waitTill(BroadBandTestConstants.TWO_MINUTE_IN_MILLIS);
+				} else {
+					String defaultInterface = getDefaultInterfaceNameOfTheLinuxConnClientDevice(connectedClientSettop,
+							tapEnv).trim();
+					LOGGER.info("DEFAULT INTERFACE OBTAINED IN THE LINUX CLIENT IS  : " + defaultInterface);
+					String connectionType = ecastSettop.getConnectedDeviceInfo().getConnectionType();
+					LOGGER.info("CONNECTION TYPE OF THE CONNECTED CLIENT IS : " + connectionType);
+					String[] expectedInterfaces = null;
+					if (CommonMethods.isNotNull(defaultInterface) && CommonMethods.isNotNull(connectionType)
+							&& BroadBandTestConstants.CONNECTION_TYPE_ETHERNET.equalsIgnoreCase(connectionType)) {
+						LOGGER.info("GOING TO GET IPV4 ADDRESS FROM ETHERNET INTERFACE");
+						expectedInterfaces = AutomaticsTapApi.getSTBPropsValue(
+								BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_ETHERNET_INTERFACE_IN_LINUX_CLIENT)
+								.split(BroadBandTestConstants.SEMI_COLON);
+					} else if (CommonMethods.isNotNull(defaultInterface)
+							&& BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI
+									.equalsIgnoreCase(connectionType)) {
+						LOGGER.info("GOING TO GET IPV4 ADDRESS FROM WI-FI INTERFACE");
+						expectedInterfaces = AutomaticsTapApi
+								.getSTBPropsValue(
+										BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_WIFI_INTERFACE_IN_LINUX_CLIENT)
+								.split(BroadBandTestConstants.SEMI_COLON);
+					} else {
+						errorMessage = "UNABLE TO OBTAIN THE DEFAULT INTERFACE NAME FROM LINUX CLIENT \n";
+						LOGGER.error(errorMessage);
+					}
+					timeoutDefault = executeCommandInLinuxToEditDhclientDetails(connectedClientSettop, tapEnv,
+							BroadBandTestConstants.STRING_TIMEOUT, BroadBandTestConstants.STRING_TIMEOUT_WITH_VALUE_20);
+					retryDefault = executeCommandInLinuxToEditDhclientDetails(connectedClientSettop, tapEnv,
+							BroadBandTestConstants.STRING_RETRY, BroadBandTestConstants.STRING_RETRY_WITH_VALUE_20);
+
+					if (expectedInterfaces != null && expectedInterfaces.length != 0) {
+						for (String interfaceName : expectedInterfaces) {
+							if (CommonUtils.patternSearchFromTargetString(defaultInterface, interfaceName)) {
+								LOGGER.info("Renew IP in connected client: " + interfaceName);
+								tapEnv.executeCommandOnOneIPClients(connectedClientSettop,
+										BroadBandCommandConstants.CMD_TO_RENEW_IP_CLIENT_INTERFACE_IN_LINUX.replace(
+												BroadBandTestConstants.STRING_INTERFACE_TO_REPLACE, interfaceName));
+								LOGGER.info("Waiting for two minutes to reflect IP changes");
+								tapEnv.waitTill(BroadBandTestConstants.TWO_MINUTE_IN_MILLIS);
+								break;
+							}
+						}
+					}
+				}
+				errorMessage += "Connected Client IPv4 address is not in DHCP range";
+				result = isConnClientIpv4AddrBtwnDhcpRange(tapEnv, device, connectedClientSettop);
+			}
+
+		} catch (Exception e) {
+			LOGGER.error("Exception in Validating IPv4 address in DHCP of connected client ");
+		} finally {
+			if ((ecastSettop.isLinux()) || ecastSettop.isRaspbianLinux()) {
+				if (CommonMethods.isNotNull(retryDefault)) {
+					executeCommandInLinuxToEditDhclientDetails(connectedClientSettop, tapEnv,
+							BroadBandTestConstants.STRING_RETRY, retryDefault);
+				}
+				if (CommonMethods.isNotNull(timeoutDefault)) {
+					executeCommandInLinuxToEditDhclientDetails(connectedClientSettop, tapEnv,
+							BroadBandTestConstants.STRING_TIMEOUT, timeoutDefault);
+				}
+			}
+		}
+		bandResultObject.setStatus(result);
+		bandResultObject.setErrorMessage(errorMessage);
+		LOGGER.debug("EXITING : verifyConnectedClientIpv4AddressInDhcpAfterRenew");
+		return bandResultObject;
+	}
+	
+	/**
+	 * Retrieve Value in dhclient conf file and replace with value required
+	 * 
+	 * @param connectedClient
+	 * @param tapEnv
+	 * @param parameter
+	 * @param ValueWithParameter
+	 * @return replaced Value
+	 * 
+	 * @refactor yamini.s
+	 */
+	public static String executeCommandInLinuxToEditDhclientDetails(Dut connectedClient, AutomaticsTapApi tapEnv,
+			String parameter, String ValueWithParameter) {
+		String response = null;
+		String valueRetrieved = null;
+		LOGGER.debug("STARTING METHOD : executeCommandInLinuxEditDhclientDetails");
+		Device ecastSettop = (Device) connectedClient;
+		if (ecastSettop.isLinux() || ecastSettop.isRaspbianLinux()) {
+			response = tapEnv.executeCommandOnOneIPClients(connectedClient,
+					BroadBandCommandConstants.CMD_DHCLIENT_GREP_VALUE
+							.replace(BroadBandTestConstants.STRING_VALUE_TO_REPLACE, parameter));
+			if (CommonMethods.patternMatcher(response, parameter)) {
+				valueRetrieved = response.split(";")[0].trim();
+				tapEnv.executeCommandOnOneIPClients(connectedClient,
+						BroadBandCommandConstants.CMD_TO_REPLACE_VALUE_DHCLIENT_CONF
+								.replace(BroadBandTestConstants.STRING_VALUERETRIEVED_TO_REPLACE, valueRetrieved)
+								.replace(BroadBandTestConstants.STRING_VALUEPARAMETER_TO_REPLACE, ValueWithParameter));
+			}
+		}
+		LOGGER.debug("ENDING METHOD : executeCommandInLinuxEditDhclientDetails");
+		return valueRetrieved;
+
+	}
+	
+	/**
+	 * Helper method to verify if the IPv4 address assigned to connected client is
+	 * between DHCP configured range. Code duplication of method
+	 * "verifyIpv4AddressOFConnectedClientIsBetweenDhcpRange", Reason being ipv4
+	 * address was not obtained for linux OS client.
+	 * 
+	 * @param tapEnv                instance of {@link AutomaticsTapApi}
+	 * @param device                instance of {@link Dut}
+	 * @param connectedClientSettop Connected client device instance
+	 * 
+	 * @return true if the IPv4 address of the connected client is between
+	 *         configured DHCP range
+	 * 
+	 * @author BALAJI V, INFOSYS
+	 * @refactor yamini.s
+	 */
+
+	public static boolean isConnClientIpv4AddrBtwnDhcpRange(AutomaticsTapApi tapEnv, Dut device,
+			Dut connectedClientSettop) {
+		LOGGER.debug("ENTERING METHOD isConnClientIpv4AddrBtwnDhcpRange");
+		boolean result = false;
+		try {
+			String dhcpMinRange = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+					BroadBandWebPaConstants.WEBPA_PARAM_TO_RETRIEVE_DHCP_STARTING_IP_ADDRESS);
+			LOGGER.info("DHCP MINIMUM IP RANGE CONFIGURED FOR GATEWAY : " + dhcpMinRange);
+			String dhcpMaxRange = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+					BroadBandWebPaConstants.WEBPA_PARAM_TO_RETRIEVE_DHCP_ENDING_IP_ADDRESS);
+			LOGGER.info("DHCP MAXIMUM IP RANGE CONFIGURED FOR GATEWAY : " + dhcpMaxRange);
+			String ipv4RetrievedFromClient = BroadBandConnectedClientUtils.getIpv4AddressFromConnClient(tapEnv, device,
+					connectedClientSettop);
+			LOGGER.info("IP ADDRESS ASSIGNED TO THE CONNECTED CLIENT : " + ipv4RetrievedFromClient);
+			boolean isDhcpRangeAndIpv4Retrieved = CommonMethods.isNotNull(dhcpMinRange)
+					&& CommonMethods.isNotNull(dhcpMaxRange) && CommonMethods.isNotNull(ipv4RetrievedFromClient);
+			if (isDhcpRangeAndIpv4Retrieved && CommonMethods.isIpv4Address(dhcpMinRange)
+					&& CommonMethods.isIpv4Address(dhcpMaxRange)
+					&& CommonMethods.isIpv4Address(ipv4RetrievedFromClient)) {
+				if (CommonMethods
+						.patternFinder(ipv4RetrievedFromClient,
+								BroadBandTestConstants.PATTERN_TO_RETRIEVE_FIRST_3_DIGITS_OF_IPv4_ADDRESS)
+						.equalsIgnoreCase(CommonMethods.patternFinder(dhcpMinRange,
+								BroadBandTestConstants.PATTERN_TO_RETRIEVE_FIRST_3_DIGITS_OF_IPv4_ADDRESS))) {
+					LOGGER.info("GOING TO VERIFY IF THE OBTAINED IP ADDRESS IS WITHIN DHCP RANGE.");
+					int minRange = Integer.parseInt(CommonMethods.patternFinder(dhcpMinRange,
+							BroadBandTestConstants.PATTERN_TO_RETRIEVE_LAST_DIGIT_OF_IPv4_ADDRESS));
+					int maxRange = Integer.parseInt(CommonMethods.patternFinder(dhcpMaxRange,
+							BroadBandTestConstants.PATTERN_TO_RETRIEVE_LAST_DIGIT_OF_IPv4_ADDRESS));
+					int actualvalue = Integer.parseInt(CommonMethods.patternFinder(ipv4RetrievedFromClient,
+							BroadBandTestConstants.PATTERN_TO_RETRIEVE_LAST_DIGIT_OF_IPv4_ADDRESS));
+					result = actualvalue >= minRange && actualvalue <= maxRange;
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error(
+					"EXCEPTION OCCURRED WHILE VERIFYING IPv4 ASSIGNNED TO THE CLIENT CONNECTED VIA ETHERNET IS WITHIN DHCP RANGE. ERROR : "
+							+ e.getMessage());
+		}
+
+		LOGGER.info("IS IP ADDRESS ASSIGNED TO THE CONNECTED CLIENT BETWEEN DHCP RANGE : " + result);
+		LOGGER.debug("ENDING METHOD isConnClientIpv4AddrBtwnDhcpRange");
+		return result;
+
+	}
+	
+	/**
+	 * Method to verify the default gateway ip address in connected client
+	 * 
+	 * @param deviceConnected Connected client Dut instance
+	 * @param tapEnv          AutomaticsTapApi instance
+	 * @return status True-verified default Gateway IP of the connected client
+	 *         device.Else False
+	 */
+	public static boolean verifyDefaultGatewayAddressInConnectedClient(Dut device, Dut deviceConnected,
+			AutomaticsTapApi tapEnv) {
+		LOGGER.debug("STARTING METHOD: verifyDefaultGatewayAddressInConnectedClient");
+		boolean status = false;
+		String gatewayIPExpected = (DeviceModeHandler.isDSLDevice(device)) ? BroadBandTestConstants.LAN_LOCAL_IP
+				: tapEnv.executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAM_LAN_IP_ADDRESS);
+		if (CommonMethods.isNotNull(gatewayIPExpected) && CommonMethods.isIpv4Address(gatewayIPExpected)) {
+			status = CommonUtils.patternSearchFromTargetString(
+					getGatewayIpv4AddressFromConctdClient(device, deviceConnected, tapEnv), gatewayIPExpected);
+		}
+		LOGGER.debug("ENDING METHOD: verifyDefaultGatewayAddressInConnectedClient");
+		return status;
+	}
+	
+	/**
+	 * Method to retrieve the default gateway ip address in connected client
+	 * 
+	 * @param deviceConnected Connected client device instance
+	 * @param tapEnv          AutomaticsTapApi instance
+	 * @return status True-verified default Gateway IP of the connected client
+	 *         device.Else False
+	 */
+	public static String getGatewayIpv4AddressFromConctdClient(Dut device, Dut deviceConnected,
+			AutomaticsTapApi tapEnv) {
+		LOGGER.debug("STARTING METHOD: getGatewayIpv4AddressFronConctdClient");
+		String gatewayIp = null;
+		String command = null;
+		if ((((Device) deviceConnected).isLinux()) || (((Device) deviceConnected).isRaspbianLinux())) {
+			command = BroadBandConnectedClientTestConstants.CMD_LINUX_DETAULT_GATEWAY_IP;
+		} else if ((((Device) deviceConnected).isWindows())) {
+			command = BroadBandConnectedClientTestConstants.CMD_WIN_DETAULT_GATEWAY_IP;
+		}
+		gatewayIp = tapEnv.executeCommandOnOneIPClients(deviceConnected, command);
+		LOGGER.debug("ENDING METHOD: getGatewayIpv4AddressFronConctdClient");
+		return gatewayIp;
+	}
 
 
 }
-

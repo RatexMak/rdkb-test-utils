@@ -31,12 +31,14 @@ import com.automatics.exceptions.TestException;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
+import com.automatics.rdkb.constants.RDKBTestConstants.WiFiFrequencyBand;
 import com.automatics.rdkb.constants.WebPaParamConstants.WebPaDataTypes;
 import com.automatics.rdkb.utils.cdl.BroadBandCodeDownloadUtils;
 import com.automatics.rdkb.utils.cdl.BroadBandXconfCdlUtils;
 import com.automatics.rdkb.utils.telemetry.BroadBandTelemetry2Utils;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
 import com.automatics.rdkb.utils.wifi.BroadBandWiFiUtils;
+import com.automatics.rdkb.utils.wifi.connectedclients.BroadBandConnectedClientUtils;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.CommonMethods;
 import com.automatics.webpa.WebPaParameter;
@@ -403,15 +405,15 @@ public class BroadBandPostConditionUtils {
 					+ " : DESCRIPTION : VERIFY THE XFINITYWIFI STATUS IS DISABLED");
 			LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : EXECUTE WEBPA COMMAND:"
 					+ BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI);
-			LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : PUBLIC WIFI MUST BE DISABLED");
+			LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : XFINITY WIFI MUST BE DISABLED");
 			LOGGER.info("#######################################################################################");
-			errorMessage = "UNABLE TO DISABLE THE PUBLIC WIFI ON GATEWAY DEVICE";
+			errorMessage = "UNABLE TO DISABLE THE XFINITY WIFI ON GATEWAY DEVICE";
 			status = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv,
 					BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI, BroadBandTestConstants.CONSTANT_3,
 					BroadBandTestConstants.FALSE);
 			if (status) {
 				LOGGER.info("POST-CONDITION " + postConStepNumber
-						+ " : ACTUAL : SUCCESSFULLY DISABLED THE PUBLIC WIFI ON GATEWAY DEVICE");
+						+ " : ACTUAL : SUCCESSFULLY DISABLED THE XFINITY WIFI ON GATEWAY DEVICE");
 			} else {
 				LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
 			}
@@ -479,21 +481,21 @@ public class BroadBandPostConditionUtils {
 	}
 
 	/**
-	 * Post-Condition method to enable the xifnity wifi
+	 * Post-Condition method to enable the public wifi
 	 * 
 	 * @param device              instance of{@link Dut}
 	 * @param tapEnv              instance of {@link AutomaticsTapApi}
 	 * @param postConditionNumber String to hold post condition number.
 	 * @refactor Govardhan
 	 */
-	public static void executePostConditionToEnableXfinityWifi(Dut device, AutomaticsTapApi tapEnv,
+	public static void executePostConditionToEnablePublicWifi(Dut device, AutomaticsTapApi tapEnv,
 			int postConStepNumber) {
 		boolean status = false;
 		String errorMessage = null;
 		try {
 			LOGGER.info("#######################################################################################");
 			LOGGER.info("POST-CONDITION " + postConStepNumber
-					+ " : DESCRIPTION : VERIFY THE XFINITYWIFI STATUS IS ENABLED");
+					+ " : DESCRIPTION : VERIFY THE PUBLICWIFI STATUS IS ENABLED");
 			LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : EXECUTE WEBPA COMMAND:"
 					+ BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI);
 			LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : PUBLIC WIFI MUST BE ENABLED");
@@ -651,371 +653,457 @@ public class BroadBandPostConditionUtils {
 							+ exception.getMessage());
 		}
 	}
-	
-    /**
-     * Post-Condition method to enable the ethwan mode
-     * 
-     * @param device
-     *            instance of{@link Dut}
-     * @param tapEnv
-     *            instance of {@link AutomaticsTapApi}
-     * @param postConditionNumber
-     *            String to hold post condition number.
-     * @author Rucha Sonawane
-     * @refactor Athira
-     */
-    public static void executePostConditionToEnableEthwanMode(Dut device, AutomaticsTapApi tapEnv,
-	    int postConStepNumber) {
-	boolean status = false;
-	String errorMessage = null;
-	Boolean ethwanDisableStatus = false;
-	try {
-	    LOGGER.info("#######################################################################################");
-	    LOGGER.info("POST-CONDITION " + postConStepNumber
-		    + " : DESCRIPTION : SET AND VERIFY THE ETHWAN MODE STATUS AS DISABLED");
-	    LOGGER.info(
-		    "POST-CONDITION " + postConStepNumber + " : ACTION : EXECUTE WEBPA COMMAND TO ENABLE ETHWAN MODE");
-	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : ETHWAN MODE MUST BE ENABLED");
-	    LOGGER.info("#######################################################################################");
-	    errorMessage = "UNABLE TO ENALE ETHWAN MODE ON GATEWAY DEVICE";
 
-	    status = BroadBandWebPaUtils.getAndVerifyWebpaValueInPolledDuration(device, tapEnv,
-		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_ETHWAN_MODE_ENABLE, BroadBandTestConstants.TRUE,
-		    BroadBandTestConstants.TWO_MINUTE_IN_MILLIS, BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS);
-
-	    if (status) {
-		LOGGER.info("POST-CONDITION " + postConStepNumber
-			+ " ACTUAL : Successfully verified device in ETHWAN Mode.");
-	    } else {
-		ethwanDisableStatus = BroadBandWebPaUtils.setWebPAInPolledDuration(device, tapEnv,
-			"Device.X_RDKCENTRAL-COM_EthernetWAN.SelectedOperationalMode",
-			BroadBandTestConstants.CONSTANT_0,
-			BroadBandTestConstants.STRING_DEVICE_OPERATIONAL_MODE_ETHERNET,
-			BroadBandTestConstants.THREE_MINUTE_IN_MILLIS, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
-		if (!ethwanDisableStatus) {
-
-		    ethwanDisableStatus = BroadBandWebPaUtils.setWebPAInPolledDuration(device, tapEnv,
-			    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_ETHWAN_MODE_ENABLE,
-			    BroadBandTestConstants.CONSTANT_3, BroadBandTestConstants.TRUE,
-			    BroadBandTestConstants.THREE_MINUTE_IN_MILLIS,
-			    BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
-		} else if (ethwanDisableStatus) {
-		    status = CommonMethods.isSTBRebooted(tapEnv, device, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS,
-			    BroadBandTestConstants.CONSTANT_10);
-		    LOGGER.info("POST-CONDITION " + postConStepNumber
-			    + " : ACTUAL: Successfully enabled ETHWAN Mode on DUT");
-		} else {
-		    LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL: Failed to enable Ethwan Mode "
-			    + BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_ETHWAN_MODE_ENABLE + " webpa params");
-		}
-	    }
-	} catch (Exception e) {
-	    LOGGER.info(e.getMessage());
-	    LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + e.getMessage());
-	}
-    }
-
-    /**
-     * Post-Condition method to enable the xifnity wifi
-     * 
-     * @param device
-     *            instance of{@link Dut}
-     * @param tapEnv
-     *            instance of {@link AutomaticsTapApi}
-     * @param postConditionNumber
-     *            String to hold post condition number.
-     */
-
-    public static void executePostConditionToEnableOrDisablePublicWifiBasedOnStbProperty(Dut device,
-	    AutomaticsTapApi tapEnv, int postConStepNumber) {
-	boolean status = false;
-	String errorMessage = null;
-	try {
-	    LOGGER.info(" Going to get property value for " + BroadBandTestConstants.KEY_FOR_PUBLIC_WIFI_WHITELISTING);
-	    String publicWifiValue = AutomaticsTapApi
-		    .getSTBPropsValue(BroadBandTestConstants.KEY_FOR_PUBLIC_WIFI_WHITELISTING);
-	    String loggerString = publicWifiValue.equalsIgnoreCase(BroadBandTestConstants.TRUE) ? "ENABLED"
-		    : "DISABLED";
-	    LOGGER.info("#######################################################################################");
-	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : DESCRIPTION : VERIFY THE XFINITYWIFI STATUS IS "
-		    + loggerString);
-	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : EXECUTE WEBPA COMMAND:"
-		    + BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI);
-	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : PUBLIC WIFI MUST BE " + loggerString);
-
-	    LOGGER.info("#######################################################################################");
-	    errorMessage = "FAILED TO " + loggerString + " THE PUBLIC WIFI ON GATEWAY DEVICE";
-
-	    LOGGER.info("Going to check and set PublicWifi as configured in Stb.properties");
-
-	    status = BroadBandWiFiUtils.checkAndSetPublicWifi(device, tapEnv);
-
-	    if (status) {
-		LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTUAL : SUCCESSFULLY " + loggerString
-			+ " THE PUBLIC WIFI ON GATEWAY DEVICE");
-	    } else {
-		LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
-	    }
-
-	} catch (Exception e) {
-
-	    LOGGER.info(e.getMessage());
-
-	    LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + e.getMessage());
-
-	}
-    }
-    
-    /**
-     * Method to delete temporary stored files
-     * 
-     * @param device
-     *            Dut instance
-     * @param tapEnv
-     *            AutomaticsTapApi instance
-     * @param postCondition
-     *            int postcondition step
-     * @param backupMap
-     *            Map<String,String> contains file with path
-     */
-    public static void executePostCondtDeleteTemporaryFilesInGateway(Dut device, AutomaticsTapApi tapEnv,
-	    int postCondition, Map<String, String> backupMap) {
-	boolean status = false;
-	boolean atomSyncStatus = false;
-	String errorMessage = "Failed to delete temporary file from NVRAM";
 	/**
-	 * POST-CONDITION : Delete Temporary Files in given path
+	 * Post-Condition method to enable the ethwan mode
+	 * 
+	 * @param device              instance of{@link Dut}
+	 * @param tapEnv              instance of {@link AutomaticsTapApi}
+	 * @param postConditionNumber String to hold post condition number.
+	 * @author Rucha Sonawane
+	 * @refactor Athira
+	 */
+	public static void executePostConditionToEnableEthwanMode(Dut device, AutomaticsTapApi tapEnv,
+			int postConStepNumber) {
+		boolean status = false;
+		String errorMessage = null;
+		Boolean ethwanDisableStatus = false;
+		try {
+			LOGGER.info("#######################################################################################");
+			LOGGER.info("POST-CONDITION " + postConStepNumber
+					+ " : DESCRIPTION : SET AND VERIFY THE ETHWAN MODE STATUS AS DISABLED");
+			LOGGER.info(
+					"POST-CONDITION " + postConStepNumber + " : ACTION : EXECUTE WEBPA COMMAND TO ENABLE ETHWAN MODE");
+			LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : ETHWAN MODE MUST BE ENABLED");
+			LOGGER.info("#######################################################################################");
+			errorMessage = "UNABLE TO ENALE ETHWAN MODE ON GATEWAY DEVICE";
+
+			status = BroadBandWebPaUtils.getAndVerifyWebpaValueInPolledDuration(device, tapEnv,
+					BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_ETHWAN_MODE_ENABLE, BroadBandTestConstants.TRUE,
+					BroadBandTestConstants.TWO_MINUTE_IN_MILLIS, BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS);
+
+			if (status) {
+				LOGGER.info("POST-CONDITION " + postConStepNumber
+						+ " ACTUAL : Successfully verified device in ETHWAN Mode.");
+			} else {
+				ethwanDisableStatus = BroadBandWebPaUtils.setWebPAInPolledDuration(device, tapEnv,
+						"Device.X_RDKCENTRAL-COM_EthernetWAN.SelectedOperationalMode",
+						BroadBandTestConstants.CONSTANT_0,
+						BroadBandTestConstants.STRING_DEVICE_OPERATIONAL_MODE_ETHERNET,
+						BroadBandTestConstants.THREE_MINUTE_IN_MILLIS, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+				if (!ethwanDisableStatus) {
+
+					ethwanDisableStatus = BroadBandWebPaUtils.setWebPAInPolledDuration(device, tapEnv,
+							BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_ETHWAN_MODE_ENABLE,
+							BroadBandTestConstants.CONSTANT_3, BroadBandTestConstants.TRUE,
+							BroadBandTestConstants.THREE_MINUTE_IN_MILLIS,
+							BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+				} else if (ethwanDisableStatus) {
+					status = CommonMethods.isSTBRebooted(tapEnv, device, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS,
+							BroadBandTestConstants.CONSTANT_10);
+					LOGGER.info("POST-CONDITION " + postConStepNumber
+							+ " : ACTUAL: Successfully enabled ETHWAN Mode on DUT");
+				} else {
+					LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL: Failed to enable Ethwan Mode "
+							+ BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_ETHWAN_MODE_ENABLE + " webpa params");
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.info(e.getMessage());
+			LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Post-Condition method to enable the xifnity wifi
+	 * 
+	 * @param device              instance of{@link Dut}
+	 * @param tapEnv              instance of {@link AutomaticsTapApi}
+	 * @param postConditionNumber String to hold post condition number.
 	 */
 
-	LOGGER.info("##########################################################################");
-	LOGGER.info("POST-CONDITION " + postCondition + ": DESCRIPTION : Delete Temporary Files in given path");
-	LOGGER.info("POST-CONDITION " + postCondition + ": ACTION : Execute Command rm -rf <filename>");
-	LOGGER.info("POST-CONDITION " + postCondition + ": EXPECTED : File Should be removed Successfully");
-	LOGGER.info("##########################################################################");
-	try {
-	    atomSyncStatus = CommonMethods.isAtomSyncAvailable(device, tapEnv);
-	    for (Map.Entry<String, String> backFile : backupMap.entrySet()) {
-		status = atomSyncStatus
-			? BroadBandCommonUtils.removeFileAndVerifyStatus(tapEnv, device, backFile.getValue())
-			: CommonUtils.deleteFile(device, tapEnv, backFile.getValue());
-		LOGGER.info(backFile.getValue() + " : File deleted Status: " + status);
-	    }
-	} catch (Exception e) {
-	    LOGGER.error("Exception caught while deleting file" + e.getMessage());
-	}
-	if (status) {
-	    LOGGER.info("POST-CONDITION " + postCondition + ": ACTUAL : Successfully deleted the Temporary Files");
-	} else {
-	    LOGGER.error("POST-CONDITION " + postCondition + ": ACTUAL : " + errorMessage);
-	}
-    }
-    /**
-     * Post-Condition method to start the MESH using system commands
-     * 
-     * @param device
-     *            instance of{@link Dut}
-     * @param tapEnv
-     *            instance of {@link tapEnv}
-     * @param meshInitialStatus
-     *            meshInitialStatus to be verified after starting mesh
-     * @param preCondNumber
-     *            post condition number
-     * 
-     */
-    public static void executePostConditionToStartMeshUsingSystemCommands(Dut device, AutomaticsTapApi tapEnv,
-	    String meshInitialStatus, int postConStepNumber) throws TestException {
-	String errorMessage = null;
-	boolean isMeshStatus = false;
-	if (!DeviceModeHandler.isBusinessClassDevice(device)) {
-	    // Perform mesh enabling in postcondition only for Residential device when Mesh is enabled
-	    if (BroadBandWebPaUtils.getAndVerifyWebpaValueInPolledDuration(device, tapEnv,
-		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_RDKCENTRAL_MESH_ENABLE, BroadBandTestConstants.FALSE,
-		    BroadBandTestConstants.ONE_MINUTE_IN_MILLIS, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS)) {
+	public static void executePostConditionToEnableOrDisablePublicWifiBasedOnStbProperty(Dut device,
+			AutomaticsTapApi tapEnv, int postConStepNumber) {
+		boolean status = false;
+		String errorMessage = null;
+		try {
+			LOGGER.info(" Going to get property value for " + BroadBandTestConstants.KEY_FOR_PUBLIC_WIFI_WHITELISTING);
+			String publicWifiValue = AutomaticsTapApi
+					.getSTBPropsValue(BroadBandTestConstants.KEY_FOR_PUBLIC_WIFI_WHITELISTING);
+			String loggerString = publicWifiValue.equalsIgnoreCase(BroadBandTestConstants.TRUE) ? "ENABLED"
+					: "DISABLED";
+			LOGGER.info("#######################################################################################");
+			LOGGER.info("POST-CONDITION " + postConStepNumber + " : DESCRIPTION : VERIFY THE PUBLICWIFI STATUS IS "
+					+ loggerString);
+			LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : EXECUTE WEBPA COMMAND:"
+					+ BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI);
+			LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : PUBLIC WIFI MUST BE " + loggerString);
 
+			LOGGER.info("#######################################################################################");
+			errorMessage = "FAILED TO " + loggerString + " THE PUBLIC WIFI ON GATEWAY DEVICE";
+
+			LOGGER.info("Going to check and set PublicWifi as configured in Stb.properties");
+
+			status = BroadBandWiFiUtils.checkAndSetPublicWifi(device, tapEnv);
+
+			if (status) {
+				LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTUAL : SUCCESSFULLY " + loggerString
+						+ " THE PUBLIC WIFI ON GATEWAY DEVICE");
+			} else {
+				LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
+			}
+
+		} catch (Exception e) {
+
+			LOGGER.info(e.getMessage());
+
+			LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + e.getMessage());
+
+		}
+	}
+
+	/**
+	 * Method to delete temporary stored files
+	 * 
+	 * @param device        Dut instance
+	 * @param tapEnv        AutomaticsTapApi instance
+	 * @param postCondition int postcondition step
+	 * @param backupMap     Map<String,String> contains file with path
+	 */
+	public static void executePostCondtDeleteTemporaryFilesInGateway(Dut device, AutomaticsTapApi tapEnv,
+			int postCondition, Map<String, String> backupMap) {
+		boolean status = false;
+		boolean atomSyncStatus = false;
+		String errorMessage = "Failed to delete temporary file from NVRAM";
 		/**
-		 * POSTCONDITION : START THE MESH STATUS
+		 * POST-CONDITION : Delete Temporary Files in given path
+		 */
+
+		LOGGER.info("##########################################################################");
+		LOGGER.info("POST-CONDITION " + postCondition + ": DESCRIPTION : Delete Temporary Files in given path");
+		LOGGER.info("POST-CONDITION " + postCondition + ": ACTION : Execute Command rm -rf <filename>");
+		LOGGER.info("POST-CONDITION " + postCondition + ": EXPECTED : File Should be removed Successfully");
+		LOGGER.info("##########################################################################");
+		try {
+			atomSyncStatus = CommonMethods.isAtomSyncAvailable(device, tapEnv);
+			for (Map.Entry<String, String> backFile : backupMap.entrySet()) {
+				status = atomSyncStatus
+						? BroadBandCommonUtils.removeFileAndVerifyStatus(tapEnv, device, backFile.getValue())
+						: CommonUtils.deleteFile(device, tapEnv, backFile.getValue());
+				LOGGER.info(backFile.getValue() + " : File deleted Status: " + status);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Exception caught while deleting file" + e.getMessage());
+		}
+		if (status) {
+			LOGGER.info("POST-CONDITION " + postCondition + ": ACTUAL : Successfully deleted the Temporary Files");
+		} else {
+			LOGGER.error("POST-CONDITION " + postCondition + ": ACTUAL : " + errorMessage);
+		}
+	}
+
+	/**
+	 * Post-Condition method to start the MESH using system commands
+	 * 
+	 * @param device            instance of{@link Dut}
+	 * @param tapEnv            instance of {@link tapEnv}
+	 * @param meshInitialStatus meshInitialStatus to be verified after starting mesh
+	 * @param preCondNumber     post condition number
+	 * 
+	 */
+	public static void executePostConditionToStartMeshUsingSystemCommands(Dut device, AutomaticsTapApi tapEnv,
+			String meshInitialStatus, int postConStepNumber) throws TestException {
+		String errorMessage = null;
+		boolean isMeshStatus = false;
+		if (!DeviceModeHandler.isBusinessClassDevice(device)) {
+			// Perform mesh enabling in postcondition only for Residential device when Mesh
+			// is enabled
+			if (BroadBandWebPaUtils.getAndVerifyWebpaValueInPolledDuration(device, tapEnv,
+					BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_RDKCENTRAL_MESH_ENABLE, BroadBandTestConstants.FALSE,
+					BroadBandTestConstants.ONE_MINUTE_IN_MILLIS, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS)) {
+
+				/**
+				 * POSTCONDITION : START THE MESH STATUS
+				 */
+				LOGGER.info("#######################################################################################");
+				LOGGER.info("POST-CONDITION " + postConStepNumber + " : DESCRIPTION : START THE MESH SERVICE");
+				LOGGER.info("POST-CONDITION " + postConStepNumber
+						+ " : ACTION :  + Execute system command to start mesh and verify "
+						+ BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_RDKCENTRAL_MESH_ENABLE);
+				LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : MESH SERVICE MUST BE STARTED");
+				LOGGER.info("#######################################################################################");
+				errorMessage = "UNABLE TO START THE MESH SERVICE";
+				try {
+					if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
+						tapEnv.executeCommandOnAtom(device, BroadBandCommandConstants.CMD_SYSTEM_START_MESH_AGENT);
+						tapEnv.executeCommandOnAtom(device, BroadBandCommandConstants.CMD_SYSTEM_START_MESH_SERVICE);
+					} else {
+						tapEnv.executeCommandUsingSsh(device, BroadBandCommandConstants.CMD_SYSTEM_START_MESH_AGENT);
+						tapEnv.executeCommandUsingSsh(device, BroadBandCommandConstants.CMD_SYSTEM_START_MESH_SERVICE);
+
+					}
+					isMeshStatus = BroadBandWebPaUtils.getAndVerifyWebpaValueInPolledDuration(device, tapEnv,
+							BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_RDKCENTRAL_MESH_ENABLE, meshInitialStatus,
+							BroadBandTestConstants.ONE_MINUTE_IN_MILLIS,
+							BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+				} catch (Exception e) {
+					LOGGER.error("Unable to start mesh service due to " + e.getMessage());
+				}
+				if (isMeshStatus) {
+					LOGGER.info("POST-CONDITION " + postConStepNumber
+							+ " : ACTUAL : SUCCESSFULLY STARTED THE MESH SERVICE");
+				} else {
+					LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Post-Condition method to set the initial values for common webpa parameters
+	 * 
+	 * @param device           instance of{@link Dut}
+	 * @param tapEnv           instance of {@link AutomaticsTapApi}
+	 * @param postCondNumber   Post condition number
+	 * @param initialMapValues Instance of {Map}
+	 * @refactor Govardhan
+	 */
+	public static void executePostConditionToSetTheDefaultValuesForCommonParams(Dut device, AutomaticsTapApi tapEnv,
+			int postCondNumber, Map<String, String> initialMapValues) throws TestException {
+		String errorMessage = null;
+		boolean status = false;
+		Map<String, String> commonParamValues = null;
+		/**
+		 * POST-CONDITION : SET THE INITIAL VALUES FOR COMMON WEBPA PARAMETERS
 		 */
 		LOGGER.info("#######################################################################################");
-		LOGGER.info("POST-CONDITION " + postConStepNumber + " : DESCRIPTION : START THE MESH SERVICE");
-		LOGGER.info("POST-CONDITION " + postConStepNumber
-			+ " : ACTION :  + Execute system command to start mesh and verify "
-			+ BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_RDKCENTRAL_MESH_ENABLE);
-		LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : MESH SERVICE MUST BE STARTED");
+		LOGGER.info("POST-CONDITION " + postCondNumber + " : DESCRIPTION : SET THE INITIAL COMMON PARAMETER VALUES");
+		LOGGER.info("POST-CONDITION " + postCondNumber + " : ACTION : EXECUTE WEBPA COMMAND :\n "
+				+ "	1. Set the value for DMZ LAN IP Address \n" + "	2. Set the value for Device cloud UI status \n"
+				+ "	3. Set the value for device control router enable status \n"
+				+ "	4. Set the value for port forwarding status");
+		LOGGER.info("PRE-CONDITION " + postCondNumber + " : EXPECTED : MUST SET THE INITIAL COMMON PARAMETER VALUES.");
 		LOGGER.info("#######################################################################################");
-		errorMessage = "UNABLE TO START THE MESH SERVICE";
-		try {
-		    if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
-			tapEnv.executeCommandOnAtom(device, BroadBandCommandConstants.CMD_SYSTEM_START_MESH_AGENT);
-			tapEnv.executeCommandOnAtom(device, BroadBandCommandConstants.CMD_SYSTEM_START_MESH_SERVICE);
-		    } else {
-			tapEnv.executeCommandUsingSsh(device, BroadBandCommandConstants.CMD_SYSTEM_START_MESH_AGENT);
-			tapEnv.executeCommandUsingSsh(device, BroadBandCommandConstants.CMD_SYSTEM_START_MESH_SERVICE);
-
-		    }
-		    isMeshStatus = BroadBandWebPaUtils.getAndVerifyWebpaValueInPolledDuration(device, tapEnv,
-			    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_RDKCENTRAL_MESH_ENABLE, meshInitialStatus,
-			    BroadBandTestConstants.ONE_MINUTE_IN_MILLIS,
-			    BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
-		} catch (Exception e) {
-		    LOGGER.error("Unable to start mesh service due to " + e.getMessage());
-		}
-		if (isMeshStatus) {
-		    LOGGER.info("POST-CONDITION " + postConStepNumber
-			    + " : ACTUAL : SUCCESSFULLY STARTED THE MESH SERVICE");
+		errorMessage = "FAILED TO SET THE INITIAL COMMON PARAMETER VALUES.";
+		BroadBandWebPaUtils.setTheCommonWebParams(device, tapEnv, initialMapValues, true);
+		commonParamValues = BroadBandWebPaUtils.executeAndGetListOfWebParameters(device, tapEnv,
+				BroadBandWebPaConstants.WEBPA_PARAMS_FOR_COMMON_RESI_DEVICE);
+		errorMessage = "Unable to cross verify the common parameter values with initial common parameter values.";
+		status = BroadBandWebPaUtils.verifyWebpaGetResponseValues(device, tapEnv, initialMapValues, commonParamValues);
+		if (status) {
+			LOGGER.info("POST-CONDITION " + postCondNumber
+					+ " : ACTUAL : SUCESSFULLY SET THE INITIAL COMMON PARAMETER VALUES");
 		} else {
-		    LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
+			LOGGER.error("POST" + postCondNumber + " : ACTUAL : " + errorMessage);
 		}
-	    }
 	}
-    }
-    
-    /**
-     * Post-Condition method to set the initial values for common webpa parameters
-     * 
-     * @param device
-     *            instance of{@link Dut}
-     * @param tapEnv
-     *            instance of {@link AutomaticsTapApi}
-     * @param postCondNumber
-     *            Post condition number
-     * @param initialMapValues
-     *            Instance of {Map}
-     * @refactor Govardhan
-     */
-    public static void executePostConditionToSetTheDefaultValuesForCommonParams(Dut device, AutomaticsTapApi tapEnv,
-	    int postCondNumber, Map<String, String> initialMapValues) throws TestException {
-	String errorMessage = null;
-	boolean status = false;
-	Map<String, String> commonParamValues = null;
-	/**
-	 * POST-CONDITION : SET THE INITIAL VALUES FOR COMMON WEBPA PARAMETERS
-	 */
-	LOGGER.info("#######################################################################################");
-	LOGGER.info("POST-CONDITION " + postCondNumber + " : DESCRIPTION : SET THE INITIAL COMMON PARAMETER VALUES");
-	LOGGER.info("POST-CONDITION " + postCondNumber + " : ACTION : EXECUTE WEBPA COMMAND :\n "
-		+ "	1. Set the value for DMZ LAN IP Address \n" + "	2. Set the value for Device cloud UI status \n"
-		+ "	3. Set the value for device control router enable status \n"
-		+ "	4. Set the value for port forwarding status");
-	LOGGER.info("PRE-CONDITION " + postCondNumber + " : EXPECTED : MUST SET THE INITIAL COMMON PARAMETER VALUES.");
-	LOGGER.info("#######################################################################################");
-	errorMessage = "FAILED TO SET THE INITIAL COMMON PARAMETER VALUES.";
-	BroadBandWebPaUtils.setTheCommonWebParams(device, tapEnv, initialMapValues, true);
-	commonParamValues = BroadBandWebPaUtils.executeAndGetListOfWebParameters(device, tapEnv,
-		BroadBandWebPaConstants.WEBPA_PARAMS_FOR_COMMON_RESI_DEVICE);
-	errorMessage = "Unable to cross verify the common parameter values with initial common parameter values.";
-	status = BroadBandWebPaUtils.verifyWebpaGetResponseValues(device, tapEnv, initialMapValues, commonParamValues);
-	if (status) {
-	    LOGGER.info("POST-CONDITION " + postCondNumber
-		    + " : ACTUAL : SUCESSFULLY SET THE INITIAL COMMON PARAMETER VALUES");
-	} else {
-	    LOGGER.error("POST" + postCondNumber + " : ACTUAL : " + errorMessage);
-	}
-    }   
-    
-    /**
-     * Post-Condition method to set the initial values for 2.4 & 5 GHZ radio's
-     * 
-     * @param tapEnv
-     *            {@link AutomaticsTapApi}
-     * @param device
-     *            {@link Dut}
-     * @param postCondNumber
-     *            Pre condition number
-     * @param initialMapValues
-     *            Instance of {Map}
-     */
-    public static void executePostConditionToSetTheDefaultValuesForBothRadios(Dut device, AutomaticsTapApi tapEnv,
-	    int postCondNumber, Map<String, String> initialMapValues) throws TestException {
-	String errorMessage = null;
-	boolean status = false;
-	Map<String, String> wifiRadioValues = null;
-	/**
-	 * POST-CONDITION : SET THE INITIAL VALUES FOR 2.4 & 5 GHZ RADIO'S
-	 */
-	LOGGER.info("#######################################################################################");
-	LOGGER.info(
-		"POST-CONDITION " + postCondNumber + " : DESCRIPTION : SET VALUE FOR 2.4 & 5 GHZ RADIOS FROM DEVICE");
-	LOGGER.info("POST-CONDITION " + postCondNumber + " : ACTION : EXECUTE WEBPA COMMAND :\n "
-		+ "1. Set the value for 2.4 GHz radio extension channel \n"
-		+ "2. Set the value for 2.4 GHz radio beacon interval \n"
-		+ "3. Set the value for 2.4 GHz radio basic rate \n"
-		+ "4. Set the value for 2.4 GHz radio operating standard \n"
-		+ "5. Set the value for 2.4 GHz radio transmit power \n"
-		+ "6. Set the value for 2.4 GHz radio status \n" + "7. Set the value for 2.4 GHz radio channel \n"
-		+ "8. Set the value for 2.4 GHz radio wireless channel \n"
-		+ "9. Set the value for 2.4 GHz radio operating channel bandwidth \n"
-		+ "10. Set the value for 2.4 GHz radio dfs enable \n"
-		+ "11. Set the value for 5 GHz radio extension channel \n"
-		+ "12. Set the value for 5 GHz radio beacon interval \n"
-		+ "13. Set the value for 5 GHz radio basic rate \n"
-		+ "14. Set the value for 5 GHz radio operating standard \n"
-		+ "15. Set the value for 5 GHz radio transmit power \n" + "16. Set the value for 5 GHz radio status \n"
-		+ "17. Set the value for 5 GHz radio channel \n"
-		+ "18. Set the value for 5 GHz radio wireless channel \n"
-		+ "19. Set the value for 5 GHz radio operating channel bandwidth \n"
-		+ "20. Set the value for 5 GHz radio dfs enable ");
-	LOGGER.info("POST-CONDITION " + postCondNumber
-		+ " : EXPECTED : MUST SET THE INITIAL VALUES FOR 2.4 & 5 GHZ RADIOS.");
-	LOGGER.info("#######################################################################################");
-	errorMessage = "FAILED TO SET THE INITIAL VALUES FOR 2.4 & 5 GHZ RADIOS";
-	BroadBandWebPaUtils.setTheWebParamForWifiRadios(device, tapEnv, initialMapValues);
-	wifiRadioValues = BroadBandWebPaUtils.executeAndGetListOfWebParameters(device, tapEnv,
-		BroadBandWebPaConstants.WEBPA_PARAMS_FOR_BOTH_RADIOS);
-	errorMessage = "Unable to cross verify the 2.4 & 5 GHz Radios values with 2.4 & 5 GHz Radios values.";
-	status = BroadBandWebPaUtils.verifyWebpaGetResponseValues(device, tapEnv, initialMapValues, wifiRadioValues);
-	if (status) {
-	    LOGGER.info(
-		    "POST-CONDITION " + postCondNumber + " : ACTUAL : SUCESSFULLY SET THE 2.4 & 5 GHZ RADIOS VALUES");
-	} else {
-	    LOGGER.error("POST-CONDITION " + postCondNumber + " : ACTUAL : " + errorMessage);
-	}
-    }
 
-    /**
-     * Post-Condition method to disable the bridge mode
-     * 
-     * @param tapEnv
-     *            {@link AutomaticsTapApi}
-     * @param device
-     *            {@link Dut}
-     * @param postConditionNumber
-     *            String to hold post condition number.
-     * @refactor Govardhan
-     */
-    public static void executePostConditionToDisableBirdgeMode(Dut device, AutomaticsTapApi tapEnv,
-	    int postConStepNumber) {
-	boolean status = false;
-	String errorMessage = null;
-	try {
-	    LOGGER.info("#######################################################################################");
-	    LOGGER.info("POST-CONDITION " + postConStepNumber
-		    + " : DESCRIPTION : SET AND VERIFY THE BRIDGE MODE STATUS AS DISABLED");
-	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : EXECUTE WEBPA COMMAND:"
-		    + BroadBandWebPaConstants.WEBPA_PARAM_BRIDGE_MODE_ENABLE);
-	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : BRIDGE MODE MUST BE DISABLED");
-	    LOGGER.info("#######################################################################################");
-	    errorMessage = "UNABLE TO DISABLE THE BRIDGE MODE ON GATEWAY DEVICE";
-	    status = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv,
-		    BroadBandWebPaConstants.WEBPA_PARAM_BRIDGE_MODE_ENABLE, BroadBandTestConstants.CONSTANT_0,
-		    BroadBandTestConstants.LAN_MANAGEMENT_MODE_ROUTER);
-	    if (status) {
-		status = false;
-		LOGGER.info("Mode changed to " + BroadBandTestConstants.LAN_MANAGEMENT_MODE_ROUTER);
-		LOGGER.info("Waiting for three minutes");
-		tapEnv.waitTill(BroadBandTestConstants.THREE_MINUTE_IN_MILLIS);
-		status = BroadBandWebPaUtils.verifyWebPaProcessIsUp(tapEnv, device, true);
-	    }
-	    if (status) {
-		LOGGER.info("POST-CONDITION " + postConStepNumber
-			+ " : ACTUAL : SUCCESSFULLY DISABLED THE BRIDGE MODE ON GATEWAY DEVICE");
-	    } else {
-		LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
-	    }
-	} catch (Exception e) {
-	    LOGGER.info(e.getMessage());
-	    LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + e.getMessage());
+	/**
+	 * Post-Condition method to set the initial values for 2.4 & 5 GHZ radio's
+	 * 
+	 * @param tapEnv           {@link AutomaticsTapApi}
+	 * @param device           {@link Dut}
+	 * @param postCondNumber   Pre condition number
+	 * @param initialMapValues Instance of {Map}
+	 */
+	public static void executePostConditionToSetTheDefaultValuesForBothRadios(Dut device, AutomaticsTapApi tapEnv,
+			int postCondNumber, Map<String, String> initialMapValues) throws TestException {
+		String errorMessage = null;
+		boolean status = false;
+		Map<String, String> wifiRadioValues = null;
+		/**
+		 * POST-CONDITION : SET THE INITIAL VALUES FOR 2.4 & 5 GHZ RADIO'S
+		 */
+		LOGGER.info("#######################################################################################");
+		LOGGER.info(
+				"POST-CONDITION " + postCondNumber + " : DESCRIPTION : SET VALUE FOR 2.4 & 5 GHZ RADIOS FROM DEVICE");
+		LOGGER.info("POST-CONDITION " + postCondNumber + " : ACTION : EXECUTE WEBPA COMMAND :\n "
+				+ "1. Set the value for 2.4 GHz radio extension channel \n"
+				+ "2. Set the value for 2.4 GHz radio beacon interval \n"
+				+ "3. Set the value for 2.4 GHz radio basic rate \n"
+				+ "4. Set the value for 2.4 GHz radio operating standard \n"
+				+ "5. Set the value for 2.4 GHz radio transmit power \n"
+				+ "6. Set the value for 2.4 GHz radio status \n" + "7. Set the value for 2.4 GHz radio channel \n"
+				+ "8. Set the value for 2.4 GHz radio wireless channel \n"
+				+ "9. Set the value for 2.4 GHz radio operating channel bandwidth \n"
+				+ "10. Set the value for 2.4 GHz radio dfs enable \n"
+				+ "11. Set the value for 5 GHz radio extension channel \n"
+				+ "12. Set the value for 5 GHz radio beacon interval \n"
+				+ "13. Set the value for 5 GHz radio basic rate \n"
+				+ "14. Set the value for 5 GHz radio operating standard \n"
+				+ "15. Set the value for 5 GHz radio transmit power \n" + "16. Set the value for 5 GHz radio status \n"
+				+ "17. Set the value for 5 GHz radio channel \n"
+				+ "18. Set the value for 5 GHz radio wireless channel \n"
+				+ "19. Set the value for 5 GHz radio operating channel bandwidth \n"
+				+ "20. Set the value for 5 GHz radio dfs enable ");
+		LOGGER.info("POST-CONDITION " + postCondNumber
+				+ " : EXPECTED : MUST SET THE INITIAL VALUES FOR 2.4 & 5 GHZ RADIOS.");
+		LOGGER.info("#######################################################################################");
+		errorMessage = "FAILED TO SET THE INITIAL VALUES FOR 2.4 & 5 GHZ RADIOS";
+		BroadBandWebPaUtils.setTheWebParamForWifiRadios(device, tapEnv, initialMapValues);
+		wifiRadioValues = BroadBandWebPaUtils.executeAndGetListOfWebParameters(device, tapEnv,
+				BroadBandWebPaConstants.WEBPA_PARAMS_FOR_BOTH_RADIOS);
+		errorMessage = "Unable to cross verify the 2.4 & 5 GHz Radios values with 2.4 & 5 GHz Radios values.";
+		status = BroadBandWebPaUtils.verifyWebpaGetResponseValues(device, tapEnv, initialMapValues, wifiRadioValues);
+		if (status) {
+			LOGGER.info(
+					"POST-CONDITION " + postCondNumber + " : ACTUAL : SUCESSFULLY SET THE 2.4 & 5 GHZ RADIOS VALUES");
+		} else {
+			LOGGER.error("POST-CONDITION " + postCondNumber + " : ACTUAL : " + errorMessage);
+		}
 	}
-    }
 
+	/**
+	 * Post-Condition method to disable the bridge mode
+	 * 
+	 * @param tapEnv              {@link AutomaticsTapApi}
+	 * @param device              {@link Dut}
+	 * @param postConditionNumber String to hold post condition number.
+	 * @refactor Govardhan
+	 */
+	public static void executePostConditionToDisableBirdgeMode(Dut device, AutomaticsTapApi tapEnv,
+			int postConStepNumber) {
+		boolean status = false;
+		String errorMessage = null;
+		try {
+			LOGGER.info("#######################################################################################");
+			LOGGER.info("POST-CONDITION " + postConStepNumber
+					+ " : DESCRIPTION : SET AND VERIFY THE BRIDGE MODE STATUS AS DISABLED");
+			LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : EXECUTE WEBPA COMMAND:"
+					+ BroadBandWebPaConstants.WEBPA_PARAM_BRIDGE_MODE_ENABLE);
+			LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : BRIDGE MODE MUST BE DISABLED");
+			LOGGER.info("#######################################################################################");
+			errorMessage = "UNABLE TO DISABLE THE BRIDGE MODE ON GATEWAY DEVICE";
+			status = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv,
+					BroadBandWebPaConstants.WEBPA_PARAM_BRIDGE_MODE_ENABLE, BroadBandTestConstants.CONSTANT_0,
+					BroadBandTestConstants.LAN_MANAGEMENT_MODE_ROUTER);
+			if (status) {
+				status = false;
+				LOGGER.info("Mode changed to " + BroadBandTestConstants.LAN_MANAGEMENT_MODE_ROUTER);
+				LOGGER.info("Waiting for three minutes");
+				tapEnv.waitTill(BroadBandTestConstants.THREE_MINUTE_IN_MILLIS);
+				status = BroadBandWebPaUtils.verifyWebPaProcessIsUp(tapEnv, device, true);
+			}
+			if (status) {
+				LOGGER.info("POST-CONDITION " + postConStepNumber
+						+ " : ACTUAL : SUCCESSFULLY DISABLED THE BRIDGE MODE ON GATEWAY DEVICE");
+			} else {
+				LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
+			}
+		} catch (Exception e) {
+			LOGGER.info(e.getMessage());
+			LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Post-Condition method to disconnect the connected clients
+	 * 
+	 * @param device                  {@link Dut}
+	 * @param deviceConnectedWith5Ghz Instance for device connected with 5 Ghz SSID
+	 * @refactor Alan_Bivera
+	 * 
+	 */
+	public static void executePostConditionToDisconnectClientsConnectedWith5Ghz(Dut device, AutomaticsTapApi tapEnv,
+			Dut deviceConnectedWith5Ghz, int postConStepNumber) throws TestException {
+		String errorMessage = null;
+		boolean status = false;
+		try {
+			/**
+			 * POST-CONDITION :DISCONNECTING THE WI-FI CLIENT CONNECTED WITH 5GHz SSID USING
+			 * WEBPA
+			 */
+			status = false;
+			errorMessage = null;
+			LOGGER.info("#######################################################################################");
+			LOGGER.info("POST-CONDITION " + postConStepNumber
+					+ " : DESCRIPTION : DISCONNECTING THE WI-FI CLIENT CONNECTED WITH 5GHz SSID ");
+			LOGGER.info("POST-CONDITION " + postConStepNumber
+					+ " : ACTION : EXECUTE COMMAND TO DISCONNECT THE CONNECTED CLIENT, FOR WINDOWS :netsh wlan disconnect ,FOR LINUX :nmcli con down id '<ssid>' ");
+			LOGGER.info("POST-CONDITION " + postConStepNumber
+					+ " : EXPTECTED : CONNECTED CLIENT DISCONNECTED SUCCESSFULLY FOR 5 GHZ SSID");
+			LOGGER.info("#######################################################################################");
+			if (deviceConnectedWith5Ghz != null) {
+				errorMessage = "UNABLE TO DISCONNECT CONNECTED CLIENT FOR 5 GHZ SSID. ";
+				try {
+					status = ConnectedNattedClientsUtils.disconnectSSID(deviceConnectedWith5Ghz, tapEnv,
+							BroadBandConnectedClientUtils.getSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv,
+									WiFiFrequencyBand.WIFI_BAND_5_GHZ));
+				} catch (Exception exception) {
+					errorMessage = errorMessage + exception.getMessage();
+					LOGGER.error(errorMessage);
+				}
+				if (status) {
+					LOGGER.info("POST-CONDITION " + postConStepNumber
+							+ " : ACTUAL : CONNECTED CLIENT DISCONNECTED SUCCESSFULLY FOR 5 GHZ SSID.");
+				} else {
+					LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL :" + errorMessage);
+				}
+				LOGGER.info("#######################################################################################");
+			} else {
+				LOGGER.info("POST-CONDITION " + postConStepNumber
+						+ " : ACTUAL : ALREADY CONNECTED CLIENT DISCONNECTED SUCCESSFULLY FOR 5 GHZ SSID.");
+			}
+		} catch (Exception exception) {
+			LOGGER.error(
+					"Execution error occurred while executing to disconnect client post conditions due to exception --> "
+							+ exception.getMessage());
+		}
+	}
+
+	/**
+	 * Post-Condition method to disconnect the connected clients for 2.4 GHz
+	 * 
+	 * @param device                  {@link Dut}
+	 * @param deviceConnectedWith2Ghz Instance for device connected with 2.4 Ghz
+	 *                                SSID
+	 * @refactor Alan_Bivera
+	 */
+	public static void executePostConditionToDisconnectClientsConnectedWith2Ghz(Dut device, AutomaticsTapApi tapEnv,
+			Dut deviceConnectedWith2Ghz, int postConStepNumber) throws TestException {
+		String errorMessage = null;
+		boolean status = false;
+		try {
+			/**
+			 * POST-CONDITION :DISCONNECTING THE WI-FI CLIENT CONNECTED WITH 5GHz SSID USING
+			 * WEBPA
+			 */
+			status = false;
+			errorMessage = null;
+			LOGGER.info("#######################################################################################");
+			LOGGER.info("POST-CONDITION " + postConStepNumber
+					+ " : DESCRIPTION : DISCONNECTING THE WI-FI CLIENT CONNECTED WITH 2GHz SSID ");
+			LOGGER.info("POST-CONDITION " + postConStepNumber
+					+ " : ACTION : EXECUTE COMMAND TO DISCONNECT THE CONNECTED CLIENT, FOR WINDOWS :netsh wlan disconnect ,FOR LINUX :nmcli con down id '<ssid>' ");
+			LOGGER.info("POST-CONDITION " + postConStepNumber
+					+ " : EXPTECTED : CONNECTED CLIENT DISCONNECTED SUCCESSFULLY FOR 2 GHZ SSID");
+			LOGGER.info("#######################################################################################");
+			if (deviceConnectedWith2Ghz != null) {
+				errorMessage = "UNABLE TO DISCONNECT CONNECTED CLIENT FOR 2 GHZ SSID. ";
+				try {
+					status = ConnectedNattedClientsUtils.disconnectSSID(deviceConnectedWith2Ghz, tapEnv,
+							BroadBandConnectedClientUtils.getSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv,
+									WiFiFrequencyBand.WIFI_BAND_2_GHZ));
+				} catch (Exception exception) {
+					errorMessage = errorMessage + exception.getMessage();
+					LOGGER.error(errorMessage);
+				}
+				if (status) {
+					LOGGER.info("POST-CONDITION " + postConStepNumber
+							+ " : ACTUAL : CONNECTED CLIENT DISCONNECTED SUCCESSFULLY FOR 2 GHZ SSID.");
+				} else {
+					LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL :" + errorMessage);
+				}
+				LOGGER.info("#######################################################################################");
+			} else {
+				LOGGER.info("POST-CONDITION " + postConStepNumber
+						+ " : ACTUAL : ALREADY CONNECTED CLIENT DISCONNECTED SUCCESSFULLY FOR 2 GHZ SSID.");
+			}
+		} catch (Exception exception) {
+			LOGGER.error(
+					"Execution error occurred while executing to disconnect client post conditions due to exception --> "
+							+ exception.getMessage());
+		}
+	}
 
 }

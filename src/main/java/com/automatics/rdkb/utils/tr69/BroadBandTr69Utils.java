@@ -432,4 +432,98 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 	LOGGER.debug("ENDING METHOD : validateCorrectAcsURL()");
 	return status;
     }
+    
+    /**
+     * This method will check and enable TR69 Support
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @return true if tr69 is in enabled state
+     * @refactor Govardhan
+     */
+    public static boolean checkAndEnableTr69Support(Dut device, AutomaticsTapApi tapEnv) {
+	LOGGER.info("TR69 is sometimes disabled from RFC.Hence checking and enabling TR69 , if it is disabled");
+	boolean tr69Status = false;
+	String response = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+		BroadBandWebPaConstants.WEBPA_PARAM_TR69_SUPPORT_ENABLE);
+	if (CommonMethods.isNotNull(response) && response.equalsIgnoreCase(BroadBandTestConstants.FALSE)) {
+	    LOGGER.info("TR69 is disabled from RFC.Hence enabling TR69");
+	    tr69Status = BroadBandWebPaUtils.setAndVerifyParameterValuesUsingWebPaorDmcli(device, tapEnv,
+		    BroadBandWebPaConstants.WEBPA_PARAM_TR69_SUPPORT_ENABLE, WebPaDataTypes.BOOLEAN.getValue(),
+		    BroadBandTestConstants.TRUE);
+	    tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+	} else if (CommonMethods.isNotNull(response) && response.equalsIgnoreCase(BroadBandTestConstants.TRUE)) {
+	    LOGGER.info("TR69 is in enabled state");
+	    tr69Status = true;
+	}
+
+	return tr69Status;
+    }
+    
+	/**
+     * Method to form username for Management Server
+     * 
+     * @param device
+     * 
+     * @return string
+	 * @refactor Athira
+     */
+
+    public static String[] getUserNameForManagementServer(Dut device) {
+
+	// stores username for Management server
+	String[] username = { "", "" };
+	// stores TR69 response
+	String response1 = "";
+	// stores TR69 response
+	String response2 = "";
+	
+	    	    
+	List<String> parameters1 = new ArrayList<String>();
+	parameters1.add(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_INFO_MANUFACTURER_OUI);    		
+	
+	List<String> parameters2 = new ArrayList<String>();
+	parameters2.add(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_DEVICE_INFO_PRODUCT_CLASS);  
+	
+	response1 = tapEnv.getTR69ParameterValues(device, parameters1);
+	LOGGER.info("response of getTR69ParameterValues" + response1);
+	response2 = tapEnv.getTR69ParameterValues(device, parameters2);
+	LOGGER.info("response of getTR69ParameterValues" + response2);
+
+
+	if (response1 != null && response2 != null) {
+
+	    username[0] = BroadBandCommonUtils.concatStringUsingStringBuffer(device.getSerialNumber(), "-",
+	    	response2, "-",
+	    	response1);
+	    LOGGER.info("response of getTR69ParameterValues" + username[0]);
+	    
+	    username[1] = BroadBandCommonUtils.concatStringUsingStringBuffer(
+	    	response1, "-",
+	    	response2, "-", device.getSerialNumber());
+	    LOGGER.info("response of getTR69ParameterValues" + username[1]);
+	}
+	return username;
+    }
+    
+    /**
+     * This method will set parameters to Array list for TR69 GET operation
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @return String List
+     * @author Sruthi Santhosh
+     */
+    public static List<String> getParameterForTr69Get(String paramName) {
+	LOGGER.info("Setting parameters to Array list for TR69 GET operation");
+
+	List<String> parameters1 = new ArrayList<String>();
+	parameters1.add(paramName);
+
+	return parameters1;
+    }
 }

@@ -145,7 +145,13 @@ public class BroadBandConnectedClientTestConstants {
     public static final String CMD_LINUX_NW_CONNECTION_USING_IPV4_IP = "curl -4 -f --interface <interfaceName> www.google.com | grep '200 OK'";
     
     /** Verify Wifi network connectivty using IPV6 address for linux client*/
-    public static final String CMD_LINUX_NW_CONNECTION_USING_IPV6_IP = "curl -6 -f --interface <interfaceName> www.google.com | grep '200 OK'";
+    public static final String CMD_LINUX_NW_CONNECTION_USING_IPV6_IP = "curl -6 -f --interface <interfaceName> www.google.com | grep '200 OK'";  
+  
+    /** Windows command to get Connection-specific DNS suffix */
+    public static final String WINDOWS_COMMAND_TO_GET_DNS_SUFFIX = "ipconfig |grep -i \"Connection-specific DNS suffix\" ";
+
+    /** Linux command to retrieve Connection-specific DNS suffix */
+    public static final String CMD_LINUX_TO_RETRIEVE_DNS_SUFFIX = "nmcli dev show | grep DOMAIN";
     
     /** Command constant to get wifi interface name */
     public static final String CMD_LINUX_GET_INTERFACE_NAME = "nmcli dev status | grep wifi";
@@ -173,5 +179,36 @@ public class BroadBandConnectedClientTestConstants {
 
     /** curl command in windows  to check connectivity using IPV4 address */
     public static final String COMMAND_CURL_WINDOWS_IPV6_ADDRESS = "curl -6 -v 'www.google.com' | grep '200 OK'";
+    
+    /** Windows command to get IP address */
+    public static final String WINDOWS_COMMAND_TO_GET_IP_ADDRESS = "ipconfig /all";
+    
+    /** Linux command to retrieve dns server ip in client */
+    public static final String CMD_LINUX_TO_RETRIEVE_DNS_SERVER_IPS = "nmcli dev show | grep DNS";
+    
+    /** Raspbian Linux OS */
+    public static final String OS_RASPBIAN_LINUX = "RASPBIAN LINUX";
+    
+    /** windows command to get the operating mode  */
+    public static final String WINDOWS_COMMAND_TO_GET_OPERATING_MODE = "netsh wlan show interface | grep \"Radio type\" ";
+    
+    /** windows command to get the wifi security mode */
+    public static final String WINDOWS_COMMAND_TO_GET_WIFI_SECURITY_MODE = "netsh wlan show networks | awk '/<ssid>/,/Encryption/' | grep Authentication";
+ 
+    /** Pattern to get security mode from 2 GHz client device */
+    public static final String PATTERN_GET_SECURITY_MODE_2GHZ_CLIENT_DEVICES = "Authentication\\s+:\\s+([\\w\\d-]*)";
+    
+    /** Constant for Security mode None */
+    public static final String SECURITY_ENCRYPTION_METHOD_AES = "AES";
+    
+    /** Pattern to get security mode from 5 GHz client device */
+    public static final String PATTERN_GET_SECURITY_MODE_5GHZ_CLIENT_DEVICES = "Authentication\\s+:\\s+([\\w\\d-]*)";
+    
+    /** Linux command to get the default address */
+    public static final String CMD_LINUX_DETAULT_GATEWAY_IP = "ip route | grep default";
+    
+    /** windows command to get the default address */
+    public static final String CMD_WIN_DETAULT_GATEWAY_IP = "ipconfig |grep -A 20 \"Ethernet adapter Ethernet\" |grep -i \"Default Gateway\"";
+    
 
 }

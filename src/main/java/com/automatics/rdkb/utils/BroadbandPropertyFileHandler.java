@@ -136,7 +136,7 @@ public class BroadbandPropertyFileHandler {
 	}
 	return operatingStandards;
     }
-    
+
     /**
      * This API will return specific partner values saved in propery file
      * 
@@ -481,7 +481,7 @@ public class BroadbandPropertyFileHandler {
     public static String getCodeDownloadUrl() {
 	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_DAC15_CDL_URL);
     }
-    
+
     /**
      * This API will get the supported txrate 5ghz
      * 
@@ -517,45 +517,48 @@ public class BroadbandPropertyFileHandler {
     public static String getSupportedTxRate2GhzForDevice() {
 	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.SUPPORTED_TX_RATE_2GHZ_FOR_DEVICE);
     }
-    
+
     /**
      * This API will check for device related to selfheal
      * 
      * @author Said Hisham
      */
     public static boolean isDeviceCheckForSelfHeal(Dut device) {
-	Boolean status =  Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
+	Boolean status = Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
 		BroadBandPropertyKeyConstants.PARTIAL_DEVICE_CHECK_SELF_HEAL));
 	if (status)
 	    return status;
 	else
 	    return false;
     }
-    
+
     public static String getPrivateWifiSsid() {
 	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PRIVATE_WIFI_SSID_BAND_STEERING);
     }
-    
+
     public static String getPrivateWifiPassPhrase() {
 	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PRIVATE_WIFI_PASSPHRASE_BAND_STEERING);
     }
-    
+
     /**
      * Utility method to get the backupfiles from properties
+     * 
      * @author yamini.s
      */
- 	public static String getSecureMountBackUpFiles() {		
- 		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.SECURE_MOUNT_BACKUP_FILES);		 
- 	}
- 	/**
- 	    * Utility method to get the ProxyXconfUrl from properties
- 	    * @author yamini.s
- 	    */
- 	public static String getProxyXconfUrl() {
- 		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_PROXY_XCONF_URL);	
- 		
- 	}
- 	
+    public static String getSecureMountBackUpFiles() {
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.SECURE_MOUNT_BACKUP_FILES);
+    }
+
+    /**
+     * Utility method to get the ProxyXconfUrl from properties
+     * 
+     * @author yamini.s
+     */
+    public static String getProxyXconfUrl() {
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_PROXY_XCONF_URL);
+
+    }
+
     /**
      * This API will return whether the led logs available
      * 
@@ -576,7 +579,7 @@ public class BroadbandPropertyFileHandler {
 	}
 	return status;
     }
-    
+
     /**
      * This API will return whether the led logs available for specific device model
      * 
@@ -597,42 +600,45 @@ public class BroadbandPropertyFileHandler {
 	}
 	return status;
     }
-    
-     	
- 	/**
- 	    * Utility method to get the PropKeyForLogUploadSettings from properties
- 	    * @author yamini.s
- 	    */
- 	public static String getPropKeyForLogUploadSettings() {
- 		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_FOR_LOG_UPLOAD_SETTINGS);
- 	}
- 	
- 	/**
- 	    * Utility method to get the ci xconf url for telemetry2.0 from properties
- 	    * @author yamini.s
- 	    */
- 	public static String getCIXconfUrlForTelemetry2() {
- 		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.CI_XCONF_URL_TELEMTRY_2);
- 	}
- 	
- 	/**
-	    * Utility method to get the PropKeyForBasicTelemetryProfile from properties
-	    * @author yamini.s
-	    */
-	public static String getPropKeyForBasicTelemetryProfile() {
-		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_FOR_BASIC_TELEMETRY_PROFILE);
-	}
-	
-	/**
-	    * Utility method to get the PropKeyForTelemetryProfile from properties
-	    * @author yamini.s
-	    */
 
-	public static String getPropKeyForTelemetryProfile() {
-		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_FOR_TELEMETRY_PROFILE);
-	}
-	
-	/**
+    /**
+     * Utility method to get the PropKeyForLogUploadSettings from properties
+     * 
+     * @author yamini.s
+     */
+    public static String getPropKeyForLogUploadSettings() {
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_FOR_LOG_UPLOAD_SETTINGS);
+    }
+
+    /**
+     * Utility method to get the ci xconf url for telemetry2.0 from properties
+     * 
+     * @author yamini.s
+     */
+    public static String getCIXconfUrlForTelemetry2() {
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.CI_XCONF_URL_TELEMTRY_2);
+    }
+
+    /**
+     * Utility method to get the PropKeyForBasicTelemetryProfile from properties
+     * 
+     * @author yamini.s
+     */
+    public static String getPropKeyForBasicTelemetryProfile() {
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_FOR_BASIC_TELEMETRY_PROFILE);
+    }
+
+    /**
+     * Utility method to get the PropKeyForTelemetryProfile from properties
+     * 
+     * @author yamini.s
+     */
+
+    public static String getPropKeyForTelemetryProfile() {
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_FOR_TELEMETRY_PROFILE);
+    }
+
+    /**
      * This API will get the invalid wifi password from the properties
      * 
      * @author Said Hisham
@@ -641,12 +647,12 @@ public class BroadbandPropertyFileHandler {
 	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.INVALID_WIFI_PASSWORD);
     }
 
-	public static String getEncryptedFileLocationBasedOnDeviceModel(Dut device) {
-		String fileLocation = BroadbandPropertyFileHandler.getAutomaticsPropsValueByResolvingPlatform(device,
-			BroadBandPropertyKeyConstants.PARTIAL_PROPERTY_KEY_FOR_FILE_LOCATION);
-		return fileLocation;
-	    }
-	
+    public static String getEncryptedFileLocationBasedOnDeviceModel(Dut device) {
+	String fileLocation = BroadbandPropertyFileHandler.getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.PARTIAL_PROPERTY_KEY_FOR_FILE_LOCATION);
+	return fileLocation;
+    }
+
     /**
      * This API will return whether the led logs available
      * 
@@ -667,7 +673,7 @@ public class BroadbandPropertyFileHandler {
 	}
 	return status;
     }
-    
+
     /**
      * This API will check for device related to selfheal02
      * 
@@ -677,7 +683,7 @@ public class BroadbandPropertyFileHandler {
 	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
 		BroadBandPropertyKeyConstants.PARTIAL_DEVICE_CHECK_SELF_HEAL_02));
     }
-    
+
     /**
      * This API will return whether the device support LimitBeacon
      * 
@@ -698,5 +704,127 @@ public class BroadbandPropertyFileHandler {
 	}
 	return status;
     }
+
+    /**
+     * This API will return partner values
+     * 
+     * @return Syndication partner values
+     * @author Athira
+     */
+    public static String getSyndicationPartnerIDValues() {
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_SYNDICATION_PARTNER_ID_LIST);
     }
 
+    /**
+     * This API will check for device related to upgradeStatusUsingSnmpCommand
+     * 
+     * @author Said Hisham
+     */
+    public static boolean isDeviceCheckForUpgradeStatusUsingSnmpCommand(Dut device) {
+	boolean status = false;
+	status = Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.PARTIAL_DEVICE_CHECK_UPGRADE_STATUS_SNMP_COMMAND));
+	return status;
+    }
+
+    /**
+     * This API will store the property of cert of rdk_manager snmpv3
+     * 
+     * @author yamini.s
+     */
+    public static String getPropertyKeyForRDKManagerSNMPV3() {
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.FILE_SNMPV3_CERT_RDK_MANAGER);
+    }
+
+    /**
+     * This API will store the property of cert of rdkb_snmpd snmpv3
+     * 
+     * @author yamini.s
+     */
+    public static String getPropertyKeyForRDKBSnmpdSNMPV3() {
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.FILE_SNMPV3_CERT_RDKB_SNMPD);
+    }
+
+    /**
+     * This API will get the corrupt image of same device class from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getCurruptImageForSameDeviceClass(Dut device) {
+	return getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.MAP_MODEL_CORRUPT_IMAGE_SAME_DEVICE_CLASS);
+    }
+
+    /**
+     * This API will get the corrupt image Information of same device class from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getCurruptImageForSameDeviceClassInfo(Dut device) {
+	return getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.MAP_MODEL_CORRUPT_IMAGE_SAME_DEVICE_CLASS_INFO);
+    }
+
+    /**
+     * This API will get the corrupt image of different device class from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getCurruptImageForDifferentDeviceClass(Dut device) {
+	return getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.MAP_MODEL_CORRUPT_IMAGE_DIFFERENT_DEVICE_CLASS);
+    }
+
+    /**
+     * This API will get the corrupt image Information of different device class from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getCurruptImageForDifferentDeviceClassInfo(Dut device) {
+	return getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.MAP_MODEL_CORRUPT_IMAGE_DIFFERENT_DEVICE_CLASS_INFO);
+    }
+
+    /**
+     * This API will get the models with corrupt image of same device class from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getCurruptImageWithPartialDownload(Dut device) {
+	return getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.MAP_MODEL_CORRUPT_IMAGE_PARTIAL_DOWNLOAD);
+    }
+
+    /**
+     * This API will get the models with corrupt image info of same device class from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getCurruptImageWithPartialDownloadInfo(Dut device) {
+	return getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.MAP_MODEL_CORRUPT_IMAGE_PARTIAL_DOWNLOAD_INFO);
+    }
+
+    /**
+     * This API will get the Xconf firmware location for corrupt images from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getXconfFirmwareLocationForCorruptImages() {
+	return AutomaticsTapApi
+		.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_XCONF_FIRMWARE_LOCATION_CORRUPT_IMAGES);
+    }
+
+    /**
+     * This API will check for specific device for negetive cdl tests
+     * 
+     * @author Said Hisham
+     */
+    public static boolean isDeviceCheckForNegetiveCdl(Dut device) {
+	boolean status = false;
+	status = Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.PARTIAL_DEVICE_CHECK_NEGETIVE_CDL));
+	return status;
+    }
+
+}

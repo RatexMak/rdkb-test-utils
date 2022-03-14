@@ -17,7 +17,10 @@
  */
 package com.automatics.rdkb.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -1246,6 +1249,61 @@ public class CommonUtils {
 	return status;
     }
 	   
+    /**
+     * Method to verify the box date & time
+     * 
+     * @param device
+     *            instance of {@link Dut}
+     * @param tapApi
+     *            instance of {@link AutomaticsTapApi}
+     * @return boolean true/false
+     */
 
+    public static boolean verifyBoxDate(Dut device, AutomaticsTapApi tapEnv, String response) {
+
+	boolean status = false;
+
+	try {
+
+	    if (response == null) {
+		return status;
+	    }
+
+	    // converting the response obtained to the date format
+	    SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+
+	    Date boxDate = formatter.parse(response);
+	    LOGGER.info("The box date is " + boxDate);
+	    tapEnv.waitTill(BroadBandTestConstants.TEN_SECOND_IN_MILLIS);
+
+	    Date systemDate = new Date();
+	    LOGGER.info("The system date is " + systemDate);
+
+	    LOGGER.info("The system total time : " + systemDate.getTime());
+	    LOGGER.info("The box total time : " + boxDate.getTime());
+	    long timeDiff = systemDate.getTime() - boxDate.getTime();
+
+	    LOGGER.info("The time difference is " + timeDiff);
+
+	    if (timeDiff > 0) {
+
+		// converting milliseconds to seconds
+		long diff = timeDiff / (60 * 1000);
+
+		// converting seconds to minutes so as to check the time
+		// difference in minutes
+		if (diff <= 5) {
+
+		    status = true;
+
+		}
+	    }
+
+	} catch (ParseException e) {
+	    e.printStackTrace();
+	}
+
+	return status;
+    }
     
 }

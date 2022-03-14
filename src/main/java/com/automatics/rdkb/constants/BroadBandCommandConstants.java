@@ -17,6 +17,9 @@
  */
 package com.automatics.rdkb.constants;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.automatics.tap.AutomaticsTapApi;
 
 public class BroadBandCommandConstants extends RDKBTestConstants {
@@ -32,6 +35,9 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command to remove the contents */
     public static final String CMD_RM_WITH_R_F_OPTION = "rm -rf ";
+
+    /** command for ipconfig */
+    public static final String COMMAND_IPCONFIG = "ipconfig";
 
     /** Ls command */
     public static String CMD_LS = "ls ";
@@ -316,13 +322,13 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Temporary file in nvram to store PARODUS log tail */
     public static final String FILE_PATH_NVRAM_PARODUS_TAIL = "/nvram/automation_PARODUStail.txt";
-    
+
     /** Command to tail PARODUSlog contents to nvram */
     public static final String CMD_GET_PARODUSLOGS_NVRAM = "tail -f /rdklogs/logs/PARODUSlog.txt.0 > /nvram/automation_PARODUStail.txt &";
-    
+
     /** Command to stop parodus service using systemctl */
     public static final String CMD_SYSTEMCTL_STOP_PARODUS = "systemctl stop parodus.service";
-    
+
     /** File path for storing custom parodus close reason */
     public static final String CMD_TEMP_PARODUS_CLOSE_REASON = "/tmp/parodus_close_reason.txt";
 
@@ -333,29 +339,29 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     /** Command to echo custom parodus close reason into temp file */
     public static final String CMD_ECHO_CUSTOM_PARODUS_REASON_INTO_FILE = "echo \"Closing from file\" > "
 	    + CMD_TEMP_PARODUS_CLOSE_REASON;
-    
+
     /** Command to start parodus using custom /tmp/parodusCmd.cmd file */
     public static final String CMD_START_CUSTOM_PARODUS_FROM_TMPCMD = "export LOG4C_RCPATH=/fss/gw/rdklogger; \\`cat /tmp/parodusCmd.cmd\\` \\&";
-    
+
     /** Data Only Mount /nvram */
     public static final String MOUNT_NVRAM = "/nvram/";
-    
+
     /** Data Only Mount /nvram2 */
     public static final String MOUNT_NVRAM2 = "/nvram2/";
-    
+
     /** Test Shell Script File Name */
     public static final String FILE_TEST_SHELL_SCRIPT = "rdkb10618.sh";
-    
+
     /** ECHO Command with -e Option */
     public static final String CMD_ECHO_E = "echo -e ";
-    
+
     /** chmod Command */
     public static final String CMD_CHMOD = "chmod ";
 
     /** rwx Permission to ALL Users */
     public static final String CHMOD_777_VALUE = "777 ";
 
- /** Command to initiate firmware schedule.sh file */
+    /** Command to initiate firmware schedule.sh file */
     public static final String FILE_FIRMWARE_SCHED_SH = "export PATH=$PATH:/bin:/sbin;export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/bin:/sbin;sh /etc/firmwareSched.sh";
 
     /** Command to retrieve Linux Kernel Version */
@@ -363,64 +369,64 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command to retrieve the host name and Linux version */
     public static final String CMD_LINUX_VERSION = " cat /proc/version";
-    
+
     /** Grep Xconf Current Model */
     public static final String XCONF_CURRENT_MODEL_ARM_CONSOLE_LOGS = "grep -i \"XCONF SCRIPT : MODEL\" /rdklogs/logs/ArmConsolelog.txt.0";
-    
+
     /** Grep Xconf Current Model in xconf.txt.0 */
     public static final String XCONF_CURRENT_MODEL = "grep -i \"XCONF SCRIPT\" /rdklogs/logs/Consolelog.txt.0";
-    
+
     /** Command constant to get Dropbear version of the device */
     public static final String CMD_GET_DROPBEAR_VERSION = "/usr/sbin/dropbear -V";
-    
+
     /** Command to get mounted status of the specific partition **/
     public static final String MOUNT_COMMAND = "mount | grep -w ";
-    
+
     /** Touch Command */
     public static final String CMD_TOUCH = "touch ";
-    
+
     /** Nslookup with path */
     public static final String CMD_NSLOOKUP_WITH_PATH_FOR_IPV6_ADDRESS = "nslookup -query=AAAA";
-    
+
     /** command to copy to nvram consolelog.txt */
     public static final String COMMAND_TO_COPY_TO_NVRAM_CONSOLELOG = "tail -f /rdklogs/logs/Consolelog.txt.0 > /tmp/Consolelog.txt &";
 
     /** Temporary file in tmp to store Consolelog */
     public static final String FILE_PATH_TMP_CONSOLE_LOG = "/tmp/Consolelog.txt";
-    
+
     /** command to grep the snmp reboot telemetry marker from nvram folder */
-   public static final String COMMAND_TO_GREP_REBOOT_TELEMETRY_MARKER = "grep -i \"RDKB_REBOOT: Reboot triggered by SNMP\" /rdklogs/logs/Consolelog.txt.0";
-  
-   /** Command to get process details of ccsp */
-   public static final String CMD_PS_GREP_CCSP = "ps | grep -i ccsp";
-   
-	/*** Command to get latest php version ***/
-	public static final String CMD_TO_GET_LATEST_PHP_VERSION = "php-cgi --version | head -n 1 | cut -d\" \" -f2";
-	
-	 /**
+    public static final String COMMAND_TO_GREP_REBOOT_TELEMETRY_MARKER = "grep -i \"RDKB_REBOOT: Reboot triggered by SNMP\" /rdklogs/logs/Consolelog.txt.0";
+
+    /** Command to get process details of ccsp */
+    public static final String CMD_PS_GREP_CCSP = "ps | grep -i ccsp";
+
+    /*** Command to get latest php version ***/
+    public static final String CMD_TO_GET_LATEST_PHP_VERSION = "php-cgi --version | head -n 1 | cut -d\" \" -f2";
+
+    /**
      * Command to check the difference between /nvram/syscfg.db and /opt/secure/data/syscfg.db files
      */
     public static final String CMD_CONFIG_SYSCFG_DIFFERENCE = "diff -q /nvram/syscfg.db /opt/secure/data/syscfg.db";
-    
+
     /** Command to check firewall level */
     public static final String CMD_CONFIG_FIREWALL_LEVEL = "syscfg get firewall_level";
-    
+
     /** Command to set High firewall level */
     public static final String CMD_CONFIG_SET_FIREWALL_LEVEL_HIGH = "syscfg set firewall_level High; syscfg commit";
 
     /** Command to set Low firewall level */
     public static final String CMD_CONFIG_SET_FIREWALL_LEVEL_LOW = "syscfg set firewall_level Low; syscfg commit";
-    
+
     /**
      * The constant holding command for seeing the process status of CCSPXDNSSSP process.
      */
     public static final String PS_COMMAND_FOR_CCSPXDNSSSP_PROCESS = "ps | grep CcspXdnsSsp";
-    
+
     /**
      * The constant holding command for seeing the process status of CcspHomeSecurity process.
      */
     public static final String PS_COMMAND_FOR_CCSPHOMESECURITY_PROCESS = "ps | grep CcspHomeSecurity";
-    
+
     /** File path for CUJO agent log file */
     public static final String LOG_FILE_AGENT = "/rdklogs/logs/agent.txt";
 
@@ -429,7 +435,7 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command to ge the yocto version */
     public static final String CMD_GREP_YOCTO_VER_FROM_VERSION_FILE = " grep \"YOCTO_VERSION[:=]\" /version.txt";
-    
+
     /** Command to retrieve Size of the wifihealth.txt file */
     public static final String CMD_WIFIHEALTH_FILE_SIZE = "ls -lrt /rdklogs/logs/ | grep wifihealth.txt | cut -c39-43";
 
@@ -438,28 +444,28 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command to retrieve TimeStamp from first column of aphealth.txt file */
     public static final String CMD_APHEALTH_TIMESTAMP_FROM_FIRST_COLUMN = "/usr/ccsp/wifi/aphealth.sh | sed -n 1p | cut -c1-21";
-    
+
     /** Command to folder path tmp **/
     public static final String FOLDER_PATH_TMP = "/tmp";
-    
+
     /** Command to make a file executable */
     public static final String CMD_MAKE_FILE_EXECUTABLE = "chmod a+x ";
-    
+
     /** Command diff /nvram/testfile /opt/secure/testfile */
     public static final String CMD_DIFF_NVRAM_OPT_SECURE_TESTFILE = "diff /nvram/testfile /opt/secure/testfile";
 
     /** Command to execute shell script */
     public static final String EXECUTE_STRESS_TEST_SHELL_SCRIPT = "sh /nvram/Stress_Test.sh";
-    
+
     /** File name result.txt */
     public static final String FILE_RESULT_TXT = "result.txt";
 
     /** cat result */
     public static final String CAT_TMP_RESULT = "cat /tmp/" + FILE_RESULT_TXT;
-    
+
     /** Constant for Directory Name tmp */
     public static final String DIRECTORY_TMP = "/tmp";
-    
+
     /** Log File for /tmp/syscfg.db */
     public static final String LOG_FILE_TMP_SYSCFG = "/tmp/syscfg.db";
 
@@ -477,19 +483,19 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command to disable SNMPV3 support */
     public static final String CMD_CONFIG_DISABLEV3SUPPORT = "syscfg set V3Support false; syscfg commit";
-    
+
     /** Command to get iptable */
     public static final String CMD_TO_GET_IPTABLE = "/usr/sbin/iptables-save";
 
     /** Command to clear dcmrfc log file */
     public static final String CMD_CLEAR_DCMRFC_LOG = "echo '' > /rdklogs/logs/dcmrfc.log";
-    
+
     /** Command to get CapDebug.log file */
     public static final String CMD_TO_GET_CAPDEBUG = "/rdklogs/logs/CapDebug.txt";
 
     /** command to Grep process details */
     public static final String CMD_GET_PROCESS_DETAILS = "ps | grep -nri <REPLACE> | grep -v grep";
-    
+
     /** File path for autovault wbpa_cfg.json */
     public static final String FILE_PATH_AUTOVAULT_WBPA_CFG_JSON = "cpefiles/rdkb/wbpa_cfg.json";
 
@@ -504,7 +510,7 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command cp */
     public static final String CMD_COPY = "cp ";
-    
+
     /** Command to tail PAMlog contents to nvram */
     public static final String CMD_GET_PAMLOGS_NVRAM = "tail -f /rdklogs/logs/PAMlog.txt.0 > /nvram/automation_PAMtail.txt &";
 
@@ -513,10 +519,10 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command to tail Consolelog contents to nvram */
     public static final String CMD_GET_CONSOLELOGS_NVRAM = "tail -f /rdklogs/logs/Consolelog.txt.0 > /nvram/automation_Consoletail.txt &";
-    
+
     /** Temporary file in nvram to store PAMlog log tail */
     public static final String FILE_PATH_NVRAM_PAM_TAIL = "/nvram/automation_PAMtail.txt";
-    
+
     /** Temporary file in nvram to store Console log tail */
     public static final String FILE_PATH_NVRAM_CONSOLE_TAIL = "/nvram/automation_Consoletail.txt";
 
@@ -525,10 +531,10 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command to get current epoch time */
     public static final String CMD_CURRENT_EPOCH_TIME = "date +%s";
-    
+
     /** Command to trigger firmware download for devices **/
-    public static final String SH_COMMAND_TO_TRIGGER_FIRMWARE_DOWNLOAD_DSL = "/bin/sh /<path>/dsl_triggerFirmwareDownload.sh";
-    
+    public static final String SH_COMMAND_TO_TRIGGER_FIRMWARE_DOWNLOAD_DSL = "/bin/sh /nvram/hub4_triggerFirmwareDownload.sh";
+
     /** Command to get sysevent status */
     public static final String CMD_SYSEVENT_GET = "sysevent get ";
 
@@ -555,29 +561,29 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command constant to grep for log strings in CPUPROCANALYZERlog.txt.0 */
     public static final String COMMAND_CPUPROCANALYZER_LOG_FILE = "/rdklogs/logs/CPUPROCANALYZERlog.txt.0";
-    
+
     /** Command to override S3 Amazon signing url */
     public static final String CMD_AMAZON_URL_OVERRIDE = "echo 'S3_AMAZON_SIGNING_URL=http://test' > "
 	    + FILE_NVRAM_COREDUMP_PROPERTIES;
 
     /** Command to Start PAM process */
     public static final String CMD_START_PANDM_PROCESS = "/usr/bin/CcspPandMSsp -subsys eRT";
-    
+
     /** Command Constants for brlan0 interface */
     public static final String CMD_BRLAN0_DOWN = "/sbin/ifconfig brlan0 down";
-    
+
     /** Command Constants for brlan0 interface status */
     public static final String CMD_BRLAN0_STATUS = "/sbin/ip a show brlan0";
-    
+
     /** Command to grep only process */
     public static final String CMD_TO_GREP_ONLY_PROCESS = " | grep -v grep";
-    
+
     /** Command to grep process using ps */
     public static final String CMD_PS_GREP = "ps | grep ";
-    
+
     /** File name for Atom journal Log.txt */
     public static final String FILE_ATOM_JOURNALLOG = "/rdklogs/logs/atom_journal_logs.txt.0";
-    
+
     /**
      * This API will get the TCPDUMP file_autovault from properties
      * 
@@ -586,46 +592,46 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static String getTCPDUMPFile() {
 	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.FILE_PATH_TCPDUMP);
     }
-    
+
     /** Command to provide write permission to tmp/tcpdump **/
     public static final String CMD_PERMISSION_TO_TCPDUMP = "chmod 755 /tmp/tcpdump";
-    
+
     /** Command to start tcpdump */
     public static final String CMD_TO_START_TCPDUMP_FOR_PORT_53_FOR_CISCO = "/tmp/tcpdump -i any -n udp port 53 &> /tmp/dummy.txt &";
 
     /** Command to start tcpdump */
     public static final String CMD_TO_START_TCPDUMP_FOR_PORT_53 = "/usr/sbin/tcpdump -i any -n udp port 53 &> /tmp/dummy.txt &";
-    
+
     /** Command to ping google 10 times */
     public static final String CMD_TO_PING_GOOGLE_COM = "ping6 -c 10 www.google.com";
-    
+
     /** Command to kill any process */
     public static final String CMD_TO_KILL_ANY_PROCESS = "killall ";
-    
+
     /** String to hold value - tcpdump */
     public static final String TCPDUMP = "tcpdump";
-    
+
     /** To use dummy file path inside device */
     public static final String DUMMY_FILE_PATH_IN_TMP = "/tmp/dummy.txt";
-    
+
     /** Source path to override resolv.dnsmasq file */
     public static final String FILE_RESOLV_DNSMASQ_SRC_PATH = "/etc/resolv.conf ";
-    
+
     /** String that stores url of google */
     public static final String URL_GOOGLE = "www.google.com";
-    
+
     /** Command to fetch dnsmasq service details using ps command */
     public static final String CMD_TO_FETCH_DNSMASQ_SERVICE_DETAILS = "ps | grep -i dnsmasq";
 
     /** Constant variable to store -o option which is used by dnsmasq service */
     public static final String STRING_CONST_HYPHEN_O = "-o";
-    
+
     /** Linux command to copy files */
     public static final String CMD_COPY_FILES = "cp";
-    
+
     /** Destination path to override resolv.dnsmasq file */
     public static final String FILE_RESOLV_DNSMASQ_DSTN_PATH = "/tmp/resolv.conf";
-    
+
     /** Command to delete all lines from file other than 1st line */
     public static final String CMD_TO_DEL_ALL_LINES_EXCEPT_FIRST = "sed -i '1\\!d' /tmp/resolv.conf";
 
@@ -637,42 +643,42 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** String to store the command for /sbin/mount-copybind **/
     public static String SBIN_MOUNT_COPYBIND = "/sbin/mount-copybind";
-    
+
     /** command to unmount specified file system */
     public static final String CMD_TO_UNMOUNT_FILE_SYSTEM = "umount -i";
-    
+
     /** Command to get downstream upstream from CMLog.txt.0 */
     public static final String CMD_TO_GET_UPSTREAM_DOWNSTREAM_LOG = "cat /rdklogs/logs/CMlog.txt.0 |grep -E \"Downstream|Upstream\"";
-    
+
     /** Process name to get the process for CcspServiceManager */
     public static final String PROCESS_NAME_CCSPSERVICEMANAGER = "CcspServiceManager";
-    
+
     /** Log filename for Serivce Manager Log */
     public static final String LOG_SERVICEMANAGERLOG = "ServiceManagerlog";
-    
+
     /** Library name for svcagent library */
     public static final String LIB_SVCAGENT = "libsvc_agt.so";
-    
+
     /** Command Constants for CCSP Service Manager Test */
 
     /** Library name for CcspServiceManagerBroadBand Library */
     public static final String LIB_CCSPSERVICEMANAGERBROADBAND = "ccsp-servicemanager-broadband";
-    
+
     /** Command to grep sleep process */
     public static final String CMD_PS_GREP_SLEEP = "ps | grep sleep";
-    
+
     /** Command to get ip6table */
     public static final String CMD_TO_GET_IPV6TABLE = "/usr/sbin/ip6tables-save";
-    
+
     /** Complete file path for ecfs.txt file */
     public static final String FILE_ECFS_TXT = " /opt/logs/ecfs.txt";
-    
+
     /** File path /dev/mmcblk0p7 */
     public static final String FILE_PATH_DEV_MMCBLK0P7 = "/dev/mmcblk0p7";
-    
+
     /** File path for ecfs.txt */
     public static final String FILE_PATH_ECFS_TXT = "/rdklogs/logs/ecfs.txt";
-    
+
     /** File path for Aggressive self heal */
     public static final String FILE_PATH_SELFHEAL_AGGRESSIVE_TXT = "/rdklogs/logs/SelfHealAggressive.txt";
 
@@ -708,7 +714,7 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command to get the dibbler client */
     public static final String CMD_DIBBLER_CLIENT = "/usr/sbin/dibbler-client ";
-    
+
     /** Command to get the ifconfig output and get the before line */
     public static final String CMD_IFNAME_USING_IFCONFIG = "/sbin/ifconfig | grep -B 1 -i ";
 
@@ -729,24 +735,24 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command NetCat connect local host */
     public static final String CMD_NC_LOCAL_HOST = "nc 127.0.0.1 7787";
-    
+
     /** WiFi Log File */
     public static final String LOCATION_FILE_WIFI_LOG_TXT_0 = "/rdklogs/logs/WiFilog.txt.0";
-    
+
     /** command to read a text file avoiding repeated lines */
     public static final String COMMAND_UNIQ = "uniq ";
-    
+
     /** command for crontab -1 */
     public static final String CRONTAB_EXECUTE_COMMAND = "crontab -l";
-    
+
     /** Log File for DCM Script */
     public static final String LOG_FILE_DCM_SCRIPT = "/rdklogs/logs/dcmscript.log";
-    
+
     /** ipconfig command to get 40 lines after the grep match */
     public static final String CMD_IPCONFIG_ALL_GREP_A40 = "ipconfig /all |grep -A 40 ";
-    
+
     /**
-     * Command for to grep Wifi Passphrase value from nvram not in secure path
+     * Command for to grep Wifi Passphrase value from nvram not in /nvram/secure/
      */
     public static final String CMD_WIFI_PASSWORD_NVRAM = "grep -rinI <REPLACE> /nvram/ | grep -v /[secure_path]";
 
@@ -755,39 +761,251 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command to start mesh service */
     public static final String CMD_SYSTEM_START_MESH_SERVICE = "systemctl start meshwifi.service";
-    
+
     /** Command Constants for ping -c 5 8.8.8.8 */
     public static final String CMD_PING_8_8_8_8 = "ping -c 5 8.8.8.8";
-    
+
     /** Command Constants for ip route with dir */
     public static final String CMD_SBIN_IP_ROUTE = "/sbin/ip route";
-    
+
     /** Command Constants for ip route */
     public static final String CMD_IP_ROUTE = "ip route";
 
     /** Command to folder nvram/BackUp tmp path **/
     public static final String PATH_FOR_BACK_UP_FILE = "/nvram/automation_BackUp<REPLACE>";
-    
+
     /** cat File name parodusCmd.cmd */
-    public static final String CAT_FILE_PARODUSCMD = "cat /tmp/parodusCmd.cmd";    
+    public static final String CAT_FILE_PARODUSCMD = "cat /tmp/parodusCmd.cmd";
 
     /** Command to check firmware schedule.sh file */
     public static final String FILE_ETC_FIRMWARE_SCHED_SH = "/etc/firmwareSched.sh";
-    
+
     /** Command to get the details from /rdklogs/logs/CPUInfo.txt.0 * */
     public static final String FILE_PATH_TO_GET_CPU_INFO = "/rdklogs/logs/CPUInfo.txt.0";
-    
+
     /** Command to get wan status */
-    public static final String GET_WAN_STATUS = "sysevent get wan-status";    
+    public static final String GET_WAN_STATUS = "sysevent get wan-status";
 
     /** Command to stop/start CcspTr069PaSsp process */
     public static final String CMD_SYSTEM_STOP_START_CCSPTR069PASSP = "systemctl <REPLACE> CcspTr069PaSsp";
-    
+
     /** Command to Verify the running status of TestAndDiag process */
     public static final String COMMAND_TO_LIST_TAD_FROM_RUNNING_PROCESSES = "ps | grep tad";
-    
+
     /** Command to Verify the resource moniter started file presence */
     public static final String COMMAND_TO_FIND_RESOURCE_MONITOR_STARTED = "ls /tmp/.resource_monitor_started";
 
+    /** command to Grep CcspWifiSsp process */
+    public static final String CMD_GET_WIFI_PROCESS = "ps | grep -i \"CcspWifiSsp\"";
+
+    /** command to Grep hostapd process */
+    public static final String CMD_GET_HOSTAPD_PROCESS = "ps -ww | grep -i \"hostapd\"";
+
+    /** String to hold dropbear_dss_host_key file name */
+    public static final String FILE_NAME_OF_DROPBEAR_DSS_KEY = "dropbear_dss_host_key";
+
+    /** String to hold dropbear_rsa_host_key file name */
+    public static final String FILE_NAME_OF_DROPBEAR_RSA_KEY = "dropbear_rsa_host_key";
+
+    /** String to hold id_dropbear file name */
+    public static final String FILE_NAME_OF_ID_DROPBEAR = "id_dropbear";
+
+    /** String to store the /etc/dropbear/ directory path */
+    public static final String FULL_PATH_OF_ETC_DROPBEAR_DIR = "/etc/dropbear/";
+
+    /** String to store the yav file used by dropbear process */
+    public static final String FILE_NAME_OF_YAV_FILE_USED_BY_DROPBEAR = "filjzumaq.yav";
+
+    /** String to store kep file used by dropbear process */
+    public static final String FILE_NAME_OF_KEP_FILE_USED_BY_DROPBEAR = "gelewumol.kep";
+
+    /** Command to execute ps -ww | grep */
+    public static final String CMD_PS_WW_GREP = "ps -ww | grep ";
+
+    /** File name for dropbear config1 */
+    public static final String FILE_DROP_CFG_1 = "dropcfg1";
+
+    /** File name for dropbear config2 */
+    public static final String FILE_DROP_CFG_2 = "dropcfg2";
+
+    /** Command to grep the dropbear running process */
+    public static final String PROCESS_NAME_DROPBEAR = "\"[d]ropbear\"";
+
+    /** Command for to grep mesh syscfg db value */
+    public static final String CMD_MESH_VALUE_SYSCFG_DB = "syscfg show| grep -i mesh";
+
+    /** TR-069 Log File Name */
+    public static final String LOG_FILE_TR69_TEXT = "/rdklogs/logs/TR69log.txt.*";
+
+    /** String variable dig */
+    public static final String CMD_DIG = "dig";
+
+    /** String variable wget */
+    public static final String CMD_WGET_HTTP = "wget ";
+
+    /** Command to ping */
+    public static final String CMD_PING_COUNT_TWO = "ping -c 2";
+
+    /** Command to list the ipset */
+    public static final String CMD_LIST_IPSET = "/usr/sbin/ipset list";
+
+    /** Command to flush ipset list */
+    public static final String CMD_FLUSH_IPSET_LIST = "/usr/sbin/ipset flush ip_blacklist";
+
+    /** Command to list ipset list */
+    public static final String CMD_LIST_IPSET_TABLE = "/usr/sbin/iptables -L | grep \"blacklist\"";
+
+    /** Command to drop ipset list */
+    public static final String CMD_DROP_IPSET_LIST = "/usr/sbin/iptables -I FORWARD -m set --match-set ip_blacklist dst -j DROP";
+
+    /** Command to add ipaddress to blacklist */
+    public static final String CMD_ADD_IP_TO_BLACKLIST = "/usr/sbin/ipset add ip_blacklist";
+
+    /** Command to create the blacklist in ipset */
+    public static final String CMD_CREATE_BLACKLIST_IPSET = "/usr/sbin/ipset create ip_blacklist hash:ip";
+
+    /** String variable to hold ipset version command */
+    public static final String CMD_IPSET_VERSION = "/usr/sbin/ipset -v";
+
+    /** Command to Retrieve ACS url from tr69 logs */
+    public static final String CMD_TO_GET_ACS_URL_TR69_LOGS = "cat /rdklogs/logs/TR69log.txt.0 | grep CcspManagementServer";
+
+    /** Command to get first column value from route table */
+    public static final String CMD_ROUTE_ROW_FIRST_COLUMN = "/sbin/route | awk '{print $1}'";
+
+    /** Default inet address pattern from log */
+    public static final String INET_V4_ADDRESS_PATTERN = "inet addr:\\s*(\\d+.\\d+.\\d+.\\d+)\\s*Bcast:(\\d+.\\d+.\\d+.\\d+)";
+
+    /** Constant to store AutoReboot.sh script */
+    public static final String AUTO_REBOOT_SH = "AutoReboot.sh";
+
+    /** Command to get SNMP enabled status IP table 10161 */
+    public static final String CMD_IPTABLES_SAVE_GREP_10161 = CMD_TO_GET_IPTABLE + " | grep 10161";
+
+    /** Command to renew IP in Windows client */
+    public static final String CMD_TO_RENEW_IP_IN_WINDOWS = "ipconfig /renew";
+
+    /** String to store port 10161 */
+    public static final String PORT_10161 = "10161";
+
+    /** String to store port 10163 */
+    public static final String PORT_10163 = "10163";
+
+    /** Command to get SNMP enabled status IP table 10161 */
+    public static final String CMD_IP6TABLES_SAVE_GREP_10161 = CMD_TO_GET_IPV6TABLE + " | grep " + PORT_10163;
+
+    /** String value Head */
+    public static final String CMD_HEAD = "head";
+
+    /** Argument for ls command */
+    public static final String CMD_TAG_FOR_LS = "-la";
+
+    /** Command to search 'GREP' */
+    public static final String CMD_GREP = "grep ";
+
+    /** File location for wifi monitor debug under /nvram directory */
+    public static final String FILE_WIFI_MON_DBG = "/nvram/wifiMonDbg";
+
+    /** Command to renew IP in Linux client */
+    public static final String CMD_TO_RENEW_IP_CLIENT_INTERFACE_IN_LINUX = "sudo dhclient -v <<INTERFACE>>";
+
+    /** File location for wifi monitor log under /tmp directory */
+    public static final String FILE_WIFI_MON = "/tmp/wifiMon";
+
+    /** Command to release IP in Linux client */
+    public static final String CMD_TO_RELEASE_IP_CLIENT_INTERFACE_IN_LINUX = "sudo dhclient -r <<INTERFACE>>";
+
+    /** Command to get bridgemode status */
+    public static final String GET_BRIDGE_STATUS = "sysevent get bridge_mode";
+
+    /** Command to get lan status */
+    public static final String GET_LAN_STATUS = "sysevent get lan-status";
+
+    /** Command to get ipv4_wan subnet */
+    public static final String GET_WAN_SUBNET = "sysevent get ipv4_wan_subnet";
+
+    /** Command to get ipv4 link */
+    public static final String GET_IPV4_LINK_STATUS = "sysevent get current_ipv4_link_state";
+
+    /** Command to ping erouter */
+    public static final String PING_EROUTER = "ping -c 2 -I erouter0 www.yahoo.com";
+
+    /** Command to show brctl */
+    public static final String BRCTL_SHOW = "/usr/sbin/brctl show";
+
+    /** Command Constants for ip route */
+    public static final String CMD_ROOT_IP_ROUTE = "/sbin/ip route";
+    
+    /** ifconfig command to check Voice Interface */
+    public static final String CMD_IFCONFIG_MTA0 = "/sbin/ifconfig mta0";
+
+    /** command to check dibbler client version */
+    public static final String CMD_DIBBLER_CLIENT_VERSION = "/usr/sbin/dibbler-client -version";
+    
+    /** command to check dibbler server version */
+    public static final String CMD_DIBBLER_SERVER_VERSION = "/usr/sbin/dibbler-server -version";
+    
+    /** Command to hold the filter */
+    public static final String CMD_NS_LOOKUP_OPEN_DNS_COM = "nslookup -type=txt which.opendns.com";
+    
+    /** Command to trigger reboot by hard lockup  */
+    public static final String CMD_FOR_HARD_LOCKUP = "/sbin/modprobe hard_lockup";
+    
+    /** Command to trigger reboot by soft lockup  */
+    public static final String CMD_FOR_SOFT_LOCKUP = "/sbin/modprobe soft_lockup";
+    
+    /** File path for /nvram/6/reset_reason.log */
+    public static final String FILE_PATH_RESET_REASON_LOG = "/nvram/6/reset_reason.log";
+    
+    /** File path for /rdklogs/logs/resetinfo.txt.0  */
+    
+    public static final String FILE_PATH_RESET_INFO_TXT = "/rdklogs/logs/resetinfo.txt.0";
+    
+	/** List of executable binaries */
+	public static final List<String> EXECUTABLE_BUSYBOX_UTILS = new ArrayList<String>() {
+		{
+			add("/usr/bin/du");
+			add("/bin/df");
+			add("/usr/bin/top -n -1");
+			add("/usr/bin/uptime");
+			add("/bin/touch");
+			//add("/bin/dmesg | head  -20");
+
+		}
+	};
+	
+    /** Command constant ls -l */
+    public static final String CMD_LS_L = "ls -l ";
+    
+    /** Process name busybox */
+    public static final String PROCESS_BUSY_BOX = "busybox.nosuid";
+    
+    /** Command to check whether tar is installed */
+    public static final String CMD_TAR_CHECK = "which tar";
+
+    /** Command group logs to tar in home path */
+    public static final String CMD_TO_TAR_RDKLOG_FILE = "tar -zcvf /nvram/<REPLACE> /rdklogs/logs/";
+
+    /** Command untar in given path */
+    public static final String CMD_TO_UNTAR_GIVEN_FILE = "tar -C <REPLACE> -xvf <<VALUE>>";
+
+    /** Command constant for create/make directory */
+    public static final String CMD_MKDIR = "mkdir ";
+    
+    /** Command to get ca-chain.cert.pem */
+    public static final String CMD_TO_GET_CA_CHAIN_CERT_PEM = "/usr/bin/openssl x509 -enddate -noout -in /tmp/lnf/certs/ca-chain.cert.pem";
+
+    /** Command to get radiussrv.cert.pem */
+    public static final String CMD_TO_GET_RADIUSSRV_CERT_PEM = "/usr/bin/openssl x509 -enddate -noout -in /tmp/lnf/certs/radiussrv.cert.pem";
+
+    /** Command to remove files/Directory */
+    public static final String CMD_TO_REMOVE = "rm -rf";
+    
+	/** Command to get value from dhclient conf file using grep */
+	public static final String CMD_DHCLIENT_GREP_VALUE = "cat /etc/dhcp/dhclient.conf | grep <<VALUE>>";
+	
+	/** Command to replace value in dhclient file */
+	public static final String CMD_TO_REPLACE_VALUE_DHCLIENT_CONF = "sed -i 's/<<VALUERETRIEVED>>/<<VALUEPARAMETER>>/g' /etc/dhcp/dhclient.conf";
+	
     
 }

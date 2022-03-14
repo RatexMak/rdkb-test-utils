@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.automatics.device.Dut;
 import com.automatics.enums.TR69ParamDataType;
+import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
 import com.automatics.rdkb.constants.WebPaParamConstants;
@@ -40,6 +41,7 @@ import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
 import com.automatics.rdkb.utils.DeviceModeHandler;
 import com.automatics.exceptions.TestException;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
+import com.automatics.rdkb.utils.CommonUtils;
 import com.automatics.rdkb.utils.tr69.BroadBandTr69Utils;
 
 /**
@@ -527,7 +529,6 @@ public class BroadBandFactoryResetUtils {
 
 	@Override
 	public String getDefaultValue(AutomaticsTapApi tapEnv, Dut device) {
-	    // RDKB-23732
 	    return BroadBandTestConstants.FALSE;
 	}
 
@@ -992,11 +993,11 @@ public class BroadBandFactoryResetUtils {
 	} else {
 	    String currentPartnerIdName = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
 		    BroadBandWebPaConstants.WEBPA_PARAM_FOR_SYNDICATION_PARTNER_ID);
-	    /*
-	     * valueToBeSet=currentPartnerIdName.equalsIgnoreCase(BroadBandTestConstants.COX_SYNDICATE_PARTNER_BUILD)?
-	     * BroadBandTestConstants.FALSE:BroadBandTestConstants.TRUE;
-	     */
-	    valueToBeSet = BroadBandTestConstants.TRUE;
+	    
+		valueToBeSet = (CommonMethods.isNotNull(currentPartnerIdName)
+				&& BroadBandCommonUtils.verifySpecificPartnerAvailability(currentPartnerIdName))
+						? BroadBandTestConstants.FALSE
+						: BroadBandTestConstants.TRUE;
 	}
 	LOGGER.debug("Inside method getValueToBeSet()");
 	return valueToBeSet;
@@ -1092,6 +1093,132 @@ public class BroadBandFactoryResetUtils {
 	LOGGER.info("BROAD BAND DEVICE FACTORY RESET (WEBPA) PERFORMED SUCCESSFULLY: " + result);
 	LOGGER.debug("ENDING METHOD performFactoryResetWebPaForWifi");
 	return result;
+    }
+    
+    /**
+     * Method to perform Factory Reset via Webpa and wait for device to come up
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi Object
+     * @param device
+     *            Dut instance
+     * @param factoryResetObject
+     *            Factory Reset Object
+     * @return true if Device goes for successful Factory Reset and comes up later
+     * @refactor Athira
+     */
+    public static boolean methodToPerformFactoryResetObjectAndDeviceToComeUp(AutomaticsTapApi tapEnv, Dut device,
+	    String factoryResetObject) {
+	LOGGER.debug("STARTING METHOD: methodToPerformFactoryResetAndDeviceToComeUp()");
+	// Variable declaration starts
+	boolean result = false;
+	String errorMessage = "";
+	// Variable declaration ends
+	try {
+	    if (CommonMethods.isAtomSyncAvailable(device, tapEnv) ) {
+		BroadBandCommonUtils.getAtomDeviceUptimeStatus(device, tapEnv);
+	    }
+	    if (performFactoryResetWebPa(tapEnv, device, factoryResetObject)) {
+		long startTime = System.currentTimeMillis();
+		long pollTime = BroadBandTestConstants.FIFTEEN_MINUTES_IN_MILLIS;
+		do {
+		    result = CommonMethods.isSTBAccessible(device);
+		} while (!result && (System.currentTimeMillis() - startTime) < pollTime && BroadBandCommonUtils
+			.hasWaitForDuration(tapEnv, BroadBandTestConstants.ONE_MINUTE_IN_MILLIS));
+	    }
+	} catch (Exception e) {
+	    errorMessage = "Exception occured while performing Factory Reset via Webpa." + errorMessage;
+	    LOGGER.error(errorMessage);
+	}
+	LOGGER.debug("ENDING METHOD: methodToPerformFactoryResetAndDeviceToComeUp");
+	return result;
+    }
+
+    /**
+     * Utility method to perform Factory Reset on the device using WebPA & then wait for the device to comeup.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param factoryResetObject
+     *            String Router,Wifi,MoCA,VoIP or Dect
+     * @return Boolean representing the result of the Factory Reset Operation.
+     * @refactor Athira
+     */
+    public static boolean performFactoryResetWebPa(AutomaticsTapApi tapEnv, Dut device, String factoryResetObject) {
+	LOGGER.debug("STARTING METHOD performFactoryResetWebPa");
+	// Variable declaration starts
+	boolean result = false;
+	String errorMessage = "";
+	// Variable declaration ends
+	try {
+	    result = BroadBandWiFiUtils.setWebPaParams(device, WebPaParamConstants.WEBPA_PARAM_FACTORY_RESET,
+		    factoryResetObject, BroadBandTestConstants.CONSTANT_0);
+	    if (result) {
+		LOGGER.info("Successfully executed webpa command for factory reset.Checking whether box rebooted.");
+		long startTime = 0L;
+		long pollTime = BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS;
+		startTime = System.currentTimeMillis();
+		do {
+		    result = !CommonMethods.isSTBAccessible(device);
+		} while ((System.currentTimeMillis() - startTime) < pollTime && !result && BroadBandCommonUtils
+			.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+		if (result) {
+		    LOGGER.info("BroadBand Device Factory Reset performed successfully.");
+		} else {
+		    LOGGER.error("BroadBand Device Factory Reset couldn't performed.Device didn't go for reboot.");
+		}
+	    } else {
+		LOGGER.error(
+			"Unable to perform Factory Reset via Webpa.Error happend while executing WebPa Get command.");
+	    }
+	} catch (Exception exception) {
+	    errorMessage = "Exception occured while performing Factory Reset." + exception.getMessage();
+	    LOGGER.error(errorMessage);
+	}
+	LOGGER.debug("ENDING METHOD performFactoryResetWebPa");
+	return result;
+    }
+    
+    /**
+     * Method to perform Reboot via Lockup methods and wait for device to come up
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi Object
+     * @param settop
+     *            Dut instance
+     * @param RebootMethod
+     *            Reboot methods
+     * @return true if Device goes for successful rebooted and comes up later
+     * @refactor Alan_Bivera
+     */
+    public static boolean methodToPerformRebootUsingKernelLockUP(AutomaticsTapApi tapEnv, Dut device,
+	    String RebootMethod ) {
+	LOGGER.debug("STARTING METHOD: methodToPerformRebootUsingKernelLockUP()");
+	// Variable declaration starts
+	boolean result = false;
+	boolean status = false;
+	String errorMessage = null;
+	// Variable declaration ends
+	try {
+		 CommonUtils.clearLogFile(tapEnv, device, BroadBandCommandConstants.FILE_PATH_RESET_REASON_LOG);
+		    tapEnv.executeCommandInSettopBox(device, RebootMethod);
+		    result = CommonMethods.isSTBRebooted(tapEnv, device, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS,
+		    		BroadBandTestConstants.CONSTANT_5);
+		    errorMessage = "Unable to reboot the device using" +RebootMethod+ "command";
+		    if (result) {
+			status = CommonMethods.isSTBAccessible(tapEnv, device, BroadBandTestConstants.ONE_MINUTE_IN_MILLIS, 8);
+			errorMessage = "Unable to verify that device is up & running ";
+			LOGGER.info(errorMessage);
+		  }
+	
+	} catch (Exception e) {
+	    errorMessage = "Exception occured while performing reboot via "+RebootMethod +" method ";
+	    LOGGER.error(errorMessage);
+	}
+	LOGGER.debug("ENDING METHOD: methodToPerformRebootUsingKernelLockUP");
+	return status;
     }
 
 }

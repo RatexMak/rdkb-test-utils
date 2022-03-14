@@ -157,5 +157,14 @@ public class BroadBandCdlConstants {
     
     /** TFTP XOCNF Rejection message */
     public static final String REJECTION_MESSAGE_FOR_XCONF_TFTP_DOWNLOAD_IN_RDKB = "Download from TFTP server not supported, check XCONF server configurations";
+    
+    /** Log Message CDL with the Current FW with Device Check */
+    public static final String LOG_MESSAGE_CDL_WITH_CURRENT_FW_DEVICE_CHECK = "\"Current FW is same, Ignoring request\"";
+    
+    /** The constant holding a log for http download completed status. */
+    public static final String LOG_MESSAGE_HTTP_SUCCESSFULLY_INSTALLED = "Successfully installed";
+    
+    /** The constant holding a log for http download completed status. */
+    public static final String LOG_MESSAGE_HTTP_DOWNLOAD_COMPLETED = "HTTP download COMPLETED with status : 200";
 
 }

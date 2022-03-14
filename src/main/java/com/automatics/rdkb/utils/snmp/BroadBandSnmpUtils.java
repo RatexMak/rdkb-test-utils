@@ -18,7 +18,10 @@
 package com.automatics.rdkb.utils.snmp;
 
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +32,8 @@ import org.slf4j.LoggerFactory;
 import com.automatics.constants.SnmpConstants;
 import com.automatics.device.Dut;
 import com.automatics.enums.ExecutionStatus;
+import com.automatics.error.GeneralError;
+import com.automatics.exceptions.FailedTransitionException;
 import com.automatics.exceptions.TestException;
 import com.automatics.providers.snmp.SnmpProvider;
 import com.automatics.providers.snmp.SnmpProviderFactory;
@@ -41,12 +46,14 @@ import com.automatics.rdkb.constants.BroadBandSnmpConstants.BROADBAND_WAREHOUSE_
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
 import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
 import com.automatics.rdkb.utils.CommonUtils;
+import com.automatics.rdkb.utils.DeviceModeHandler;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
 import com.automatics.snmp.SnmpCommand;
 import com.automatics.snmp.SnmpDataType;
 import com.automatics.snmp.SnmpParams;
 import com.automatics.snmp.SnmpProtocol;
 import com.automatics.tap.AutomaticsTapApi;
+import com.automatics.utils.AutomaticsPropertyUtility;
 import com.automatics.utils.BeanUtils;
 import com.automatics.utils.CommonMethods;
 
@@ -1639,5 +1646,257 @@ public class BroadBandSnmpUtils {
 	return status;
 
     }
+    
+    /**
+     * Method to validate smnpv3 cert output
+     * 
+     * @param input
+     *            Certificate data
+     * @return status
+     */
+    public static boolean validateSnmpv3Cert(String input) {
+	LOGGER.debug("STARTING METHOD: validateSnmpv3Cert");
+	boolean status = false;
+	Calendar calBefore = Calendar.getInstance();
+	Calendar calAfter = Calendar.getInstance();
+	SimpleDateFormat dateFormat = new SimpleDateFormat(BroadBandTestConstants.DATE_FORMAT_FOR_CERT);
+	String certSignature = null;
+	String notBeforeDate = null;
+	String notAfterDate = null;
+	try {
+	    certSignature = CommonMethods.patternFinder(input, BroadBandTestConstants.REGEX_TO_RETRIEVE_CERT_SIGNATURE);
+	    notBeforeDate = CommonMethods.patternFinder(input,
+		    BroadBandTestConstants.REGEX_TO_RETRIEVE_CERT_NOT_BEFORE_DATE);
+	    notAfterDate = CommonMethods.patternFinder(input,
+		    BroadBandTestConstants.REGEX_TO_RETRIEVE_CERT_NOT_AFTER_DATE);
+	    LOGGER.info("Certificate signature:" + certSignature);
+	    LOGGER.info("Not before date:" + notBeforeDate);
+	    LOGGER.info("Not after date:" + notAfterDate);
+	    if (CommonMethods.isNotNull(certSignature) && CommonMethods.isNotNull(notAfterDate)
+		    && CommonMethods.isNotNull(notBeforeDate)) {
+
+		calBefore.setTime(dateFormat.parse(notBeforeDate));
+		calAfter.setTime(dateFormat.parse(notAfterDate));
+		status = CommonUtils.patternSearchFromTargetString(certSignature,
+			BroadBandTestConstants.SNMPV3_CERT_SIGNATURE)
+			&& (calAfter.get(Calendar.YEAR) - calBefore.get(Calendar.YEAR) == 3);
+	    }
+	} catch (ParseException e) {
+	    LOGGER.error("Parse exception " + e.getMessage());
+	} catch (Exception e) {
+	    LOGGER.error("Exception caught while parsing output" + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: validateSnmpv3Cert");
+	return status;
+    }
+    
+    /**
+     * Method to perform snmpv3 walk query using ecm ip or estb ip
+     * 
+     * @param tapEnv
+     *            The {@link AutomaticsTapApi} instance
+     * @param device
+     *            The device on which snmp command queried
+     * @param oid
+     *            The OID or MIB name
+     * @return snmpwalk response
+     * 
+     * @author ArunKumar Jayachandran
+     */
+    public static String performSnmpWalkUsingSnmpV3(AutomaticsTapApi tapEnv, Dut device, String oid) {
+	LOGGER.debug("STARTING METHOD:: performSnmpWalkUsingSnmpV3");
+	String snmpOutput = null;
+	String snmpProtocol = null;
+	try {
+	    LOGGER.info("Changing snmp protocol from V2 to v3");
+	    String currentProtocol = System.getProperty("snmpVersion");
+	    LOGGER.info("Current protocol is: " + currentProtocol);
+	    System.setProperty("snmpVersion", SnmpProtocol.SNMP_V3.toString());
+	    snmpProtocol = System.getProperty("snmpVersion", SnmpProtocol.SNMP_V2.toString());
+	    LOGGER.info("Converted SNMP Protocol to: " + snmpProtocol + " for running this test case!");
+
+	    if (DeviceModeHandler.isFibreDevice(device) && !validateSnmpV3EcmIpApplicableModels(device)) {
+		snmpOutput = CommonMethods.snmpWalkOnEstb(tapEnv, device, oid);
+	    } else {
+		snmpOutput = snmpWalkOnEcm(tapEnv, device, oid);
+	    }
+	    int retryCount = 0;
+	    while (getRetries(snmpOutput, snmpProtocol, retryCount)) {
+		LOGGER.info("Retrying snmp .Retry count :" + retryCount);
+
+		if (DeviceModeHandler.isFibreDevice(device) && !validateSnmpV3EcmIpApplicableModels(device)) {
+		    snmpOutput = CommonMethods.snmpWalkOnEstb(tapEnv, device, oid);
+		} else {
+		    snmpOutput = snmpWalkOnEcm(tapEnv, device, oid);
+		}
+		retryCount++;
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception occurred while verifying the SNMP walk query using V3:" + e.getMessage());
+	} finally {
+	    LOGGER.info("Changing snmp protocol from V3 to v2");
+	    System.setProperty("snmpVersion", SnmpProtocol.SNMP_V2.toString());
+	    snmpProtocol = System.getProperty("snmpVersion", SnmpProtocol.SNMP_V2.toString());
+	    LOGGER.info("Converted SNMP protocol back to " + snmpProtocol + " after performing snmpv3 query");
+	}
+	LOGGER.debug("ENDING METHOD:: performSnmpWalkUsingSnmpV3");
+	return parseSnmpMibValueFromSnmpOutput(device, snmpOutput, oid);
+    }
+    
+    /**
+     * Method to validate ECM IP based on device model
+     * 
+     * @param device
+     *            Dut instance
+     * @return status - Return true
+     */
+    public static boolean validateSnmpV3EcmIpApplicableModels(Dut device) {
+	LOGGER.debug("STARTING METHOD: validateSnmpV3EcmIpApplicableModels");
+	boolean isSnmpv3EcmApplicable = false;
+	String snmpv3EcmApplicableModels = AutomaticsPropertyUtility.getProperty("snmpv3.ecm.applicable.models");
+	LOGGER.info("snmpv3EcmApplicableModels: " + snmpv3EcmApplicableModels);
+	if (snmpv3EcmApplicableModels.contains(device.getModel())) {
+	    isSnmpv3EcmApplicable = true;
+	}
+	LOGGER.debug("ENDING METHOD:: validateSnmpV3EcmIpApplicableModels");
+	return isSnmpv3EcmApplicable;
+    }
+    
+    /**
+     * Method to parse the snmp response
+     * 
+     * @param device
+     *            The device on which snmp command queried
+     * @param snmpOutput
+     *            Snmp response
+     * @param mib
+     *            The OID or MIB name
+     * @return parsed output
+     */
+    public static String parseSnmpMibValueFromSnmpOutput(Dut device, String snmpOutput, String mib) {
+	String snmpResult = null;
+	String[] requiredValues = snmpOutput.split("=");
+	if (requiredValues.length > 0) {
+	    snmpResult = requiredValues[requiredValues.length - 1];
+	    if (CommonMethods.isNotNull(snmpResult)) {
+		snmpResult = snmpResult.replaceAll("\"", "").trim();
+	    }
+
+	    return snmpResult;
+	} else {
+	    throw new FailedTransitionException(GeneralError.SNMP_COMPARISON_FAILURE,
+		    "SNMP command not executed properly : snmp output is = " + snmpOutput);
+	}
+    }
+    
+    /**
+     * Method for snmpv3 set
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param device
+     *            Dut instance
+     * @param oid
+     *            String mib or oid
+     * @param dataType
+     *            String datatype
+     * @param value
+     *            String value to be set
+     * @param tableIndex
+     *            String index for mib
+     * @return String parsedoutput
+     */
+    public static String performSnmpSetUsingSnmpV3(AutomaticsTapApi tapEnv, Dut device, String oid,
+	    SnmpDataType dataType, String value) {
+	LOGGER.debug("STARTING METHOD:: performSnmpWalkUsingSnmpV3");
+	String snmpOutput = null;
+	String snmpProtocol = null;
+	try {
+	    LOGGER.info("Changing snmp protocol from V2 to v3");
+	    String currentProtocol = System.getProperty("snmpVersion");
+	    LOGGER.info("Current protocol is: " + currentProtocol);
+	    System.setProperty("snmpVersion", SnmpProtocol.SNMP_V3.toString());
+	    snmpProtocol = System.getProperty("snmpVersion", SnmpProtocol.SNMP_V2.toString());
+	    LOGGER.info("Converted SNMP Protocol to: " + snmpProtocol + " for running this test case!");
+	    if (DeviceModeHandler.isFibreDevice(device) && !validateSnmpV3EcmIpApplicableModels(device)) {
+		snmpOutput = snmpSetOnEstb(tapEnv, device, oid, dataType, value);
+	    } else {
+		snmpOutput = snmpSetOnEcm_V3(tapEnv, device, oid, dataType, value);
+	    }
+	    int retryCount = 0;
+	    while (getRetries(snmpOutput, snmpProtocol, retryCount)) {
+		LOGGER.info("Retrying snmp .Retry count :" + retryCount);
+
+		if (DeviceModeHandler.isFibreDevice(device) && !validateSnmpV3EcmIpApplicableModels(device)) {
+		    snmpOutput = snmpSetOnEstb(tapEnv, device, oid, dataType, value);
+		} else {
+		    snmpOutput = snmpSetOnEcm_V3(tapEnv, device, oid, dataType, value);
+		}
+		retryCount++;
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception occurred while verifying the SNMP walk query using V3:" + e.getMessage());
+	} finally {
+	    LOGGER.info("Changing snmp protocol from V3 to v2");
+	    System.setProperty("snmpVersion", SnmpProtocol.SNMP_V2.toString());
+	    snmpProtocol = System.getProperty("snmpVersion", SnmpProtocol.SNMP_V2.toString());
+	    LOGGER.info("Converted SNMP protocol back to " + snmpProtocol + " after performing snmpv3 query");
+	}
+	LOGGER.debug("ENDING METHOD:: performSnmpWalkUsingSnmpV3");
+	return parseSnmpMibValueFromSnmpOutput(device, snmpOutput, oid);
+    }
+    
+    /**
+     * Utility method to execute SNMP get with table index on ECM side.
+     * 
+     * @param AutomaticsTapApi
+     *            The {@link AutomaticsTapApi} instance.
+     * @param device
+     *            The device to be queried.
+     * @param mibOrOid
+     *            The MIB or OID need to be queried.
+     * @param tableIndex
+     *            The table index.
+     * @return Command output.
+     */
+    public static String snmpSetOnEstb(AutomaticsTapApi tapEnv, Dut device, String mibOrOid, SnmpDataType datatype,
+	    String value) {
+
+	String result = null;
+	SnmpParams snmpParam = null;
+	String snmpProtocol = System.setProperty(SnmpConstants.SYSTEM_PARAM_SNMP_VERSION,
+		SnmpProtocol.SNMP_V2.toString());
+	LOGGER.info("Current SNMP protocol: " + snmpProtocol);
+
+	snmpParam = new SnmpParams();
+	snmpParam.setSnmpCommand(SnmpCommand.SET);
+	snmpParam.setSnmpCommunity("CUSTOM");
+	snmpParam.setMibOid(mibOrOid.trim());
+	snmpParam.setCommandOption("-t 10 ");
+	snmpParam.setCommandOption("-OQ -v 3 -u docsisManager");
+	snmpParam.setDataType(datatype);
+	snmpParam.setValue(value);
+	snmpParam.setIpAddress(CommonUtils.getIPAddress(device));
+
+	result = tapEnv.executeSnmpCommand(device, snmpParam);
+
+	for (int retryCount = 0; getRetries(result, snmpProtocol, retryCount); ++retryCount) {
+	    LOGGER.info("Retrying snmp .Retry count :" + retryCount);
+	    snmpParam = new SnmpParams();
+	    snmpParam.setSnmpCommand(SnmpCommand.SET);
+	    snmpParam.setSnmpCommunity("CUSTOM");
+	    snmpParam.setMibOid(mibOrOid.trim());
+	    snmpParam.setCommandOption("-t 10 ");
+	    snmpParam.setCommandOption("-OQ -v 3 -u docsisManager");
+	    snmpParam.setDataType(datatype);
+	    snmpParam.setValue(value);
+	    snmpParam.setIpAddress(CommonUtils.getIPAddress(device));
+
+	    result = tapEnv.executeSnmpCommand(device, snmpParam);
+	}
+	return result;
+    }
+
+
 
 }

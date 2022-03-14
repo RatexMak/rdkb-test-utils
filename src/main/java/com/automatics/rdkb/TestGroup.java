@@ -44,5 +44,8 @@ public class TestGroup {
     
     /** Test group for UI. */
     public static final String UI = "ui";
+    
+    /** Test Category for NTP test **/
+    public static final String NTP = "NTP";
 
 }

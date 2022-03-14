@@ -1,9 +1,27 @@
+/*
+ * Copyright 2021 Comcast Cable Communications Management, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 package com.automatics.rdkb.utils.selfheal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automatics.constants.AutomaticsConstants;
+import com.automatics.constants.SnmpConstants;
 import com.automatics.core.DeviceProcess;
 import com.automatics.device.Dut;
 import com.automatics.enums.ProcessRestartOption;
@@ -107,227 +125,347 @@ public class BroadBandSelfHealUtils {
 		LOGGER.debug("ENDING METHOD : enableOrDisableDiagnosticModeUsingWebpaParams");
 		return status;
 	}
-	
-    /**
-     * Method to initiate process crash and verify process restarted status
-     * 
-     * @param device
-     *            Dut instance
-     * @param tapEnv
-     *            {@link AutomaticsTapApi}
-     * @param stbProcess
-     *            - Process name
-     * @return true if process crash in successfully initiated
-     * 
-     * @author Sumathi Gunasekaran
-     * @refactor Athira
-     */
-    public static boolean initiateProcessCrashAndVerifyProcessRestartedStatus(Dut device, AutomaticsTapApi tapEnv,
-	    StbProcess stbProcess) {
-	LOGGER.debug("STARTING METHOD : InitiateProcessCrashAndVerifyProcessRestartedStatus");
-	// Variable to store process ID
-	String processId = null;
-	// Instance for settop crash utils
-	final SettopCrashUtils settopCrashUtils = new SettopCrashUtils();
-	// boolean variable to store status
-	boolean status = false;
-	// Variable to store command response
-	String response = null;
-	// Variable to store error message
-	String errorMessage = null;
-	DeviceProcess pardouseProcess = new DeviceProcess();
-	pardouseProcess.setProcessName(stbProcess.getProcessName());
-	
-	try {
 
-	    processId = CommonMethods.getPidOfProcess(device, tapEnv, stbProcess.getProcessName());
+	/**
+	 * Method to initiate process crash and verify process restarted status
+	 * 
+	 * @param device     Dut instance
+	 * @param tapEnv     {@link AutomaticsTapApi}
+	 * @param stbProcess - Process name
+	 * @return true if process crash in successfully initiated
+	 * 
+	 * @author Sumathi Gunasekaran
+	 * @refactor Athira
+	 */
+	public static boolean initiateProcessCrashAndVerifyProcessRestartedStatus(Dut device, AutomaticsTapApi tapEnv,
+			StbProcess stbProcess) {
+		LOGGER.debug("STARTING METHOD : InitiateProcessCrashAndVerifyProcessRestartedStatus");
+		// Variable to store process ID
+		String processId = null;
+		// Instance for settop crash utils
+		final SettopCrashUtils settopCrashUtils = new SettopCrashUtils();
+		// boolean variable to store status
+		boolean status = false;
+		// Variable to store command response
+		String response = null;
+		// Variable to store error message
+		String errorMessage = null;
+		DeviceProcess pardouseProcess = new DeviceProcess();
+		pardouseProcess.setProcessName(stbProcess.getProcessName());
 
-	    if (CommonMethods.isNull(processId) && CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
-		// retrieve the PID form ATOM
+		try {
 
-		processId = BroadBandCommonUtils.getPidOfProcessFromAtomConsole(device, tapEnv, pardouseProcess.getProcessName());
+			processId = CommonMethods.getPidOfProcess(device, tapEnv, stbProcess.getProcessName());
 
-		if (CommonMethods.isNotNull(processId)) {
-		    LOGGER.info("SUCCESSFULLY RETRIEVED PROCESS ID FOR " + stbProcess.getProcessName() + " PROCESS is :"+processId);
+			if (CommonMethods.isNull(processId) && CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
+				// retrieve the PID form ATOM
 
-		} else {
-		    errorMessage = "Not able to retrieve process ID for " + stbProcess.getProcessName()
-			    + " process either from ARM/ATOM console";
-		    LOGGER.error(errorMessage);
-		    throw new TestException(errorMessage);
-		}
+				processId = BroadBandCommonUtils.getPidOfProcessFromAtomConsole(device, tapEnv,
+						pardouseProcess.getProcessName());
 
-	    } else if (CommonMethods.isNull(processId)) {
-		errorMessage = "Not able to get the process ID for " + stbProcess.getProcessName()
-			+ " process from ARM console";
-		LOGGER.error(errorMessage);
-		throw new TestException(errorMessage);
-	    } else {
-		LOGGER.info("SUCCESSFULLY RETRIEVED PROCESS ID FOR " + stbProcess.getProcessName() + " PROCESS");
-	    }
+				if (CommonMethods.isNotNull(processId)) {
+					LOGGER.info("SUCCESSFULLY RETRIEVED PROCESS ID FOR " + stbProcess.getProcessName() + " PROCESS is :"
+							+ processId);
 
-	    // Self heal action will not restarted CR process after crash. instead it will reboot the device
-	    // So only kill the current process id
-	    if (stbProcess.getProcessName().equalsIgnoreCase(StbProcess.CCSP_CR.getProcessName())) {
+				} else {
+					errorMessage = "Not able to retrieve process ID for " + stbProcess.getProcessName()
+							+ " process either from ARM/ATOM console";
+					LOGGER.error(errorMessage);
+					throw new TestException(errorMessage);
+				}
 
-		if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
-		    response = tapEnv.executeCommandOnAtom(device,
-			    ProcessRestartOption.KILL_11.getCommand() + processId);
-		} else {
-		    response = tapEnv.executeCommandUsingSsh(device,
-			    ProcessRestartOption.KILL_11.getCommand() + processId);
-		}
-		LOGGER.info("Obtained response for process " + stbProcess.getProcessName() + "kill" + response);
-		status = CommonMethods.isNull(response);
-	    } else {
-		// Self heal action will restart the process after crash (other than CR process).
-		// So verify process restarted status after crash
-		status = restartProcess(device, tapEnv, ProcessRestartOption.KILL_11, stbProcess, processId);
-	    }
-
-	} catch (Exception exeception) {
-	    throw new TestException(exeception.getMessage());
-	}
-	LOGGER.debug("ENDING METHOD : InitiateProcessCrashAndVerifyProcessRestartedStatus");
-	return status;
-    }
-    
-    /**
-     * Method to restart the process
-     * 
-     * @param device
-     *            Dut instance
-     * @param tapEnv
-     *            {@link AutomaticsTapApi}
-     * @param option
-     *            Restart option
-     * @param stbProcess
-     *            - Process name
-     * @param processId
-     *            Process id to to killed
-     * @return true if process restarted successfully
-     * 
-     * @author sgnana010c
-     * 
-     */
-    public static boolean restartProcess(Dut device, AutomaticsTapApi tapEnv, ProcessRestartOption option,
-	    StbProcess processName, String processId) {
-	LOGGER.debug("STARTING METHOD : restartProcess");
-	// Receiver restart status
-	boolean restartStatus = false;
-	// loop count
-	final int loopCount = 5;
-	// New process id
-	String newProcessId = null;
-	// command to execute
-	String command = null;
-	String errorMessage = null;
-
-	try {
-	    if (option != null && CommonMethods.isNotNull(processId)) {
-
-		command = option.getCommand() + processId;
-
-		// kill the current running process
-		tapEnv.executeCommandInSettopBox(device, command);
-
-		for (int i = 0; i < loopCount; i++) {
-
-		    // get the new process id
-		    newProcessId = CommonMethods.getPidOfProcess(device, tapEnv, processName.getProcessName());
-
-		    if (CommonMethods.isNotNull(newProcessId)) {
-
-			if (processId.equals(newProcessId)) {
-			    LOGGER.info("Unable to restart '" + processName + "' process. Retrying ...!!");
+			} else if (CommonMethods.isNull(processId)) {
+				errorMessage = "Not able to get the process ID for " + stbProcess.getProcessName()
+						+ " process from ARM console";
+				LOGGER.error(errorMessage);
+				throw new TestException(errorMessage);
 			} else {
-			    LOGGER.info("Successfully restarted '" + processName + "' process.");
-			    restartStatus = true;
-			    break;
+				LOGGER.info("SUCCESSFULLY RETRIEVED PROCESS ID FOR " + stbProcess.getProcessName() + " PROCESS");
 			}
-		    } else {
-			LOGGER.info(processName.getProcessName()
-				+ " is not started after crash...waiting for 3 more minutes!!!!");
-			tapEnv.waitTill(AutomaticsConstants.THREE_MINUTES);
-		    }
+
+			// Self heal action will not restarted CR process after crash. instead it will
+			// reboot the device
+			// So only kill the current process id
+			if (stbProcess.getProcessName().equalsIgnoreCase(StbProcess.CCSP_CR.getProcessName())) {
+
+				if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
+					response = tapEnv.executeCommandOnAtom(device,
+							ProcessRestartOption.KILL_11.getCommand() + processId);
+				} else {
+					response = tapEnv.executeCommandUsingSsh(device,
+							ProcessRestartOption.KILL_11.getCommand() + processId);
+				}
+				LOGGER.info("Obtained response for process " + stbProcess.getProcessName() + "kill" + response);
+				status = CommonMethods.isNull(response);
+			} else {
+				// Self heal action will restart the process after crash (other than CR
+				// process).
+				// So verify process restarted status after crash
+				status = restartProcess(device, tapEnv, ProcessRestartOption.KILL_11, stbProcess, processId);
+			}
+
+		} catch (Exception exeception) {
+			throw new TestException(exeception.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD : InitiateProcessCrashAndVerifyProcessRestartedStatus");
+		return status;
+	}
+
+	/**
+	 * Method to restart the process
+	 * 
+	 * @param device     Dut instance
+	 * @param tapEnv     {@link AutomaticsTapApi}
+	 * @param option     Restart option
+	 * @param stbProcess - Process name
+	 * @param processId  Process id to to killed
+	 * @return true if process restarted successfully
+	 * 
+	 * @author sgnana010c
+	 * 
+	 */
+	public static boolean restartProcess(Dut device, AutomaticsTapApi tapEnv, ProcessRestartOption option,
+			StbProcess processName, String processId) {
+		LOGGER.debug("STARTING METHOD : restartProcess");
+		// Receiver restart status
+		boolean restartStatus = false;
+		// loop count
+		final int loopCount = 5;
+		// New process id
+		String newProcessId = null;
+		// command to execute
+		String command = null;
+		String errorMessage = null;
+
+		try {
+			if (option != null && CommonMethods.isNotNull(processId)) {
+
+				command = option.getCommand() + processId;
+
+				// kill the current running process
+				tapEnv.executeCommandInSettopBox(device, command);
+
+				for (int i = 0; i < loopCount; i++) {
+
+					// get the new process id
+					newProcessId = CommonMethods.getPidOfProcess(device, tapEnv, processName.getProcessName());
+
+					if (CommonMethods.isNotNull(newProcessId)) {
+
+						if (processId.equals(newProcessId)) {
+							LOGGER.info("Unable to restart '" + processName + "' process. Retrying ...!!");
+						} else {
+							LOGGER.info("Successfully restarted '" + processName + "' process.");
+							restartStatus = true;
+							break;
+						}
+					} else {
+						LOGGER.info(processName.getProcessName()
+								+ " is not started after crash...waiting for 3 more minutes!!!!");
+						tapEnv.waitTill(AutomaticsConstants.THREE_MINUTES);
+					}
+
+				}
+			} else {
+				LOGGER.error("Obtained process id/Process restart option is null for process crash !!!  ");
+			}
+		} catch (Exception exception) {
+			errorMessage = "Exception occured during restart process " + processName.getProcessName() + " : "
+					+ exception.getMessage();
+			LOGGER.error(errorMessage);
+		}
+
+		if (!restartStatus) {
+			errorMessage = "Self Heal action is not restarting the " + processName.getProcessName()
+					+ " process even after 15 minutes of " + processName.getProcessName() + " process crash ";
+			LOGGER.error(errorMessage);
+			throw new TestException(errorMessage);
+		}
+		LOGGER.debug("ENDING METHOD : restartProcess");
+		return restartStatus;
+
+	}
+
+	/**
+	 * Method for setting precondition for self heal crash scenarios
+	 */
+	public static boolean executePreconditionForSelfHealTestScenario(Dut settop, AutomaticsTapApi tapEnv) {
+
+		boolean status = false;
+		String response = null;
+		boolean snmpstatus = false;
+		/*
+		 * we need to use web pa command else we can use the snmp command .The following
+		 * command verifies if the device is DSL device or not.
+		 */
+
+		boolean isDSLDevice = DeviceModeHandler.isDSLDevice(settop);
+		if ((isDSLDevice || CommonMethods.isRunningEthwanMode())) {
+
+			/*
+			 * status = BroadBandWiFiUtils.setWebPaParams(settop,
+			 * BroadBandWebPaConstants.USAGE_COMPUTE_WINDOW,
+			 * BroadBandTestConstants.STRING_VALUE_TWO,
+			 * WebPaDataTypes.UNSIGNED_INT.getValue());
+			 */
+			// unit
+			status = BroadBandWebPaUtils.setAndVerifyParameterValuesUsingWebPaorDmcli(settop, tapEnv,
+					BroadBandWebPaConstants.USAGE_COMPUTE_WINDOW, BroadBandTestConstants.CONSTANT_2,
+					BroadBandTestConstants.STRING_CONSTANT_3);
+
+		} else {
+
+			if (BroadbandPropertyFileHandler.isDeviceCheckForSelfHeal2(settop)) {
+				BroadBandWebPaUtils.setVerifyWebPAInPolledDuration(settop, tapEnv,
+						BroadBandWebPaConstants.WEBPA_PARAM_AGGRESSIVE_SELFHEAL_INTERVAL,
+						BroadBandTestConstants.CONSTANT_2, BroadBandTestConstants.STRING_CONSTANT_2,
+						BroadBandTestConstants.ONE_MINUTE_IN_MILLIS, BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS);
+			}
+			long startTime = System.currentTimeMillis();
+			do {
+				response = BroadBandSnmpUtils.retrieveSnmpSetOutputWithDefaultIndexOnRdkDevices(settop, tapEnv,
+						BroadBandSnmpMib.ECM_SELFHEAL_RESOURCE_USAGE_COMPUTER_WINDOW.getOid(), SnmpDataType.INTEGER,
+						BroadBandTestConstants.STRING_CONSTANT_3);
+				snmpstatus = BroadBandSnmpUtils.hasNoSNMPErrorOnResponse(tapEnv, settop, response);
+			} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TEN_MINUTE_IN_MILLIS
+					&& !snmpstatus
+					&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+
+			if (CommonMethods.isNotNull(response)) {
+
+				status = response.equalsIgnoreCase(BroadBandTestConstants.STRING_CONSTANT_3);
+
+			}
 
 		}
-	    } else {
-		LOGGER.error("Obtained process id/Process restart option is null for process crash !!!  ");
-	    }
-	} catch (Exception exception) {
-	    errorMessage = "Exception occured during restart process " + processName.getProcessName() + " : "
-		    + exception.getMessage();
-	    LOGGER.error(errorMessage);
+
+		if (!status) {
+			LOGGER.error("Failed to set the precondition for self heal crash scenario verification");
+		}
+
+		return status;
 	}
 
-	if (!restartStatus) {
-	    errorMessage = "Self Heal action is not restarting the " + processName.getProcessName()
-		    + " process even after 15 minutes of " + processName.getProcessName() + " process crash ";
-	    LOGGER.error(errorMessage);
-	    throw new TestException(errorMessage);
+	/**
+	 * Method to enable/disable diagnostic mode using snmp mib
+	 * 
+	 * @param device             {@link Dut}
+	 * @param tapEnv             {@link AutomaticsTapApi}
+	 * @param diagnosticModeFlag diagnosticModeFlag
+	 * @return true if diagnosticMode changed as per falg value
+	 * 
+	 * @author Gnanaprakasham
+	 * 
+	 */
+	public static boolean enableOrDisableDiagnosticModeUsingSnmpMib(Dut device, AutomaticsTapApi tapEnv, String value) {
+		LOGGER.debug("STARTING METHOD : enableOrDisableDiagnosticModeUsingSnmpMib");
+		// Variable to store execution status
+		boolean status = false;
+		String errorMessage = null;
+		String mode = value.equals(BroadBandTestConstants.STRING_VALUE_ONE) ? BroadBandTestConstants.STRING_ENABLE
+				: BroadBandTestConstants.STRING_DISABLE;
+
+		errorMessage = "Not able to " + mode + " diagnostic mode using snmp mib \".1.3.6.1.4.1.17270.44.1.1.12.0\" ";
+		String response = BroadBandSnmpUtils.retrieveSnmpSetOutputWithDefaultIndexOnRdkDevices(device, tapEnv,
+				BroadBandSnmpMib.ECM_DIAGNOSTIC_MODE.getOid(), SnmpDataType.INTEGER, value);
+
+		if (CommonMethods.isNotNull(response) && !response.contains(SnmpConstants.NO_SUCH_OID_RESPONSE)) {
+			LOGGER.info("Obtained response for snmp set for diagnostic mode : " + response);
+			status = response.equalsIgnoreCase(value);
+
+			if (!status) {
+				errorMessage = "Not able to " + mode
+						+ " diagnostic mode using snmp mib. expected response for snmp set :" + value
+						+ " But actual value : " + response;
+				throw new TestException(errorMessage);
+			}
+		} else {
+			errorMessage = "Obtained null response/No such oid for " + mode
+					+ " dignostic mode using snmp mib .1.3.6.1.4.1.17270.44.1.1.12.0 ";
+			LOGGER.error(errorMessage);
+			throw new TestException(errorMessage);
+		}
+
+		LOGGER.debug("ENDING METHOD : enableOrDisableDiagnosticModeUsingSnmpMib");
+		return status;
 	}
-	LOGGER.debug("ENDING METHOD : restartProcess");
-	return restartStatus;
 
-    }
-    
-    /**
-     * Method for setting precondition for self heal crash scenarios
-     */
-    public static boolean executePreconditionForSelfHealTestScenario(Dut settop, AutomaticsTapApi tapEnv) {
+	/**
+	 * Method to verify log upload frequency value using SNMP mib
+	 * 
+	 * @param device        {@link Dut}
+	 * @param tapEnv        {@link AutomaticsTapApi}
+	 * @param expectedValue expected vale for snmp get
+	 * 
+	 * @return true if snmp query returns expected value
+	 * @author gnanaprakasham.s
+	 */
+	public static boolean verifyLogUploadFrequencyUsingSnmpMib(Dut device, AutomaticsTapApi tapEnv,
+			String expectedValue) {
 
-	boolean status = false;
-	String response = null;
-	boolean snmpstatus = false;
-	/*
-	 * we need to use web pa command else we can use the snmp
-	 * command .The following command verifies if the device is DSL device or not.
+		LOGGER.debug("STARTING METHOD: verifyLogUploadFrequencyUsingSnmpMib()");
+
+		String errorMessage = null;
+		String response = null;
+		boolean status = false;
+		response = BroadBandSnmpUtils.executeSnmpGetOnRdkDevices(tapEnv, device,
+				BroadBandSnmpMib.ECM_LOG_UPLOAD_FREQUENCY.getOid());
+		LOGGER.info("Obtained response for SNMP execution to get log upload frequency value : " + response);
+
+		if (CommonMethods.isNotNull(response) && !response.contains(BroadBandTestConstants.NO_SUCH_INSTANCE)
+				&& !response.contains(BroadBandTestConstants.NO_SUCH_OBJECT_AVAILABLE)) {
+			LOGGER.info("OBTAINED LOG UPLOAD FREQUENCY VALUE FOR SNMP QUERY IS  : " + response);
+			status = response.equalsIgnoreCase(expectedValue);
+
+			if (!status) {
+				errorMessage = "Expected response for snmp query should be " + expectedValue + " But obtained value : "
+						+ response;
+				LOGGER.error(errorMessage);
+				throw new TestException(errorMessage);
+			}
+		} else {
+			errorMessage = "Obtained null response/No such oid exists during SNMP execution to get log upload frequency value ";
+			LOGGER.error(errorMessage);
+			throw new TestException(errorMessage);
+		}
+		LOGGER.debug("ENDING METHOD: verifyLogUploadFrequencyUsingSnmpMib()");
+		return status;
+
+	}
+
+	/**
+	 * Method to configure log upload frequency using snmp mib
+	 * 
+	 * @param device {@link Dut}
+	 * @param tapEnv {@link AutomaticsTapApi}
+	 * @param value  value to be set
+	 * @return true if snmp set successful
+	 * 
+	 * @author Gnanaprakasham
+	 * 
 	 */
 
-	boolean isDSLDevice = DeviceModeHandler.isDSLDevice(settop);
-	if ((isDSLDevice || CommonMethods.isRunningEthwanMode())) {
+	public static boolean configureLogUploadFrequencyUsingSnmpMib(Dut device, AutomaticsTapApi tapEnv, String value) {
+		LOGGER.debug("STARTING METHOD : configureLogUploadFrequencyUsingSnmpMib");
+		// Variable to store execution status
+		boolean status = false;
+		String errorMessage = null;
+		String response = null;
 
-	    /*
-	     * status = BroadBandWiFiUtils.setWebPaParams(settop, BroadBandWebPaConstants.USAGE_COMPUTE_WINDOW,
-	     * BroadBandTestConstants.STRING_VALUE_TWO, WebPaDataTypes.UNSIGNED_INT.getValue());
-	     */
-	    // unit
-	    status = BroadBandWebPaUtils.setAndVerifyParameterValuesUsingWebPaorDmcli(settop, tapEnv,
-		    BroadBandWebPaConstants.USAGE_COMPUTE_WINDOW, BroadBandTestConstants.CONSTANT_2,
-		    BroadBandTestConstants.STRING_CONSTANT_3);
+		response = BroadBandSnmpUtils.retrieveSnmpSetOutputWithDefaultIndexOnRdkDevices(device, tapEnv,
+				BroadBandSnmpMib.ECM_LOG_UPLOAD_FREQUENCY.getOid(), SnmpDataType.UNSIGNED_INTEGER, value);
 
-	} else {
+		if (CommonMethods.isNotNull(response) && !response.contains(SnmpConstants.NO_SUCH_OID_RESPONSE)) {
+			LOGGER.info("Obtained response for snmp set for log upload frequency : " + response);
+			status = response.equalsIgnoreCase(value);
+			LOGGER.info(" SUCCESSFULLY CONFIGURED LOG UPLOAD FREQUENCY USING SNMP MIB : " + status);
+		} else {
+			errorMessage = "Obtained null response/No such oid exists during SNMP execution for configure log upload frequency ";
+			LOGGER.error(errorMessage);
+			throw new TestException(errorMessage);
+		}
 
-	    if (BroadbandPropertyFileHandler.isDeviceCheckForSelfHeal2(settop)) {
-		BroadBandWebPaUtils.setVerifyWebPAInPolledDuration(settop, tapEnv,
-			BroadBandWebPaConstants.WEBPA_PARAM_AGGRESSIVE_SELFHEAL_INTERVAL,
-			BroadBandTestConstants.CONSTANT_2, BroadBandTestConstants.STRING_CONSTANT_2,
-			BroadBandTestConstants.ONE_MINUTE_IN_MILLIS, BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS);
-	    }
-	    long startTime = System.currentTimeMillis();
-	    do {
-		response = BroadBandSnmpUtils.retrieveSnmpSetOutputWithDefaultIndexOnRdkDevices(settop, tapEnv,
-			BroadBandSnmpMib.ECM_SELFHEAL_RESOURCE_USAGE_COMPUTER_WINDOW.getOid(), SnmpDataType.INTEGER,
-			BroadBandTestConstants.STRING_CONSTANT_3);
-		snmpstatus = BroadBandSnmpUtils.hasNoSNMPErrorOnResponse(tapEnv, settop, response);
-	    } while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TEN_MINUTE_IN_MILLIS
-		    && !snmpstatus
-		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
-
-
-	    if (CommonMethods.isNotNull(response)) {
-
-		status = response.equalsIgnoreCase(BroadBandTestConstants.STRING_CONSTANT_3);
-
-	    }
-
+		LOGGER.debug("ENDING METHOD : configureLogUploadFrequencyUsingSnmpMib");
+		return status;
 	}
-
-	if (!status) {
-	    LOGGER.error("Failed to set the precondition for self heal crash scenario verification");
-	}
-
-	return status;
-    }
 }

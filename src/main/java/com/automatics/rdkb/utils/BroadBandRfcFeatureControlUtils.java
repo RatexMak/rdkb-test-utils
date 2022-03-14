@@ -823,20 +823,20 @@ public class BroadBandRfcFeatureControlUtils {
 
 	LOGGER.debug("STARTING METHOD: BroadBandRfcFeatureControlUtils.enableOrDisableFeatureByRFC");
 	String proxyXconfUrl = AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PROXY_XCONF_RFC_URL);
-	LOGGER.info("proxyXconfUrl is " + proxyXconfUrl);// ADDED
+	LOGGER.info("proxyXconfUrl is " + proxyXconfUrl);
 	boolean status = false;
 	String response = null;
 	try {
 	    if (BroadBandRfcFeatureControlUtils.enableOrDisableFeatureInProxyXconf(tapEnv, device, featureName,
 		    enableOrDisableFlag)) {
-		LOGGER.info("in (BroadBandRfcFeatureControlUtils.enableOrDisableFeatureInProxyXconf ");// ADDED
+		LOGGER.info("in (BroadBandRfcFeatureControlUtils.enableOrDisableFeatureInProxyXconf ");
 		if (BroadBandRfcFeatureControlUtils.copyRfcPropertiesFromEtcToNVRAM(device, tapEnv)) {
-		    LOGGER.info("in (copyRfcPropertiesFromEtcToNVRAM ");// ADDED
+		    LOGGER.info("in (copyRfcPropertiesFromEtcToNVRAM ");
 		    status = CommonMethods.copyAndUpdateRfcPropertiesNewXconfUrl(device, tapEnv, proxyXconfUrl);
-		    LOGGER.info("status in copyRfcPropertiesFromEtcToNVRAM " + status);// ADDED
+		    LOGGER.info("status in copyRfcPropertiesFromEtcToNVRAM " + status);
 		    tapEnv.executeCommandUsingSsh(device, CMD_CLEAR_HASH_VALUE);
 		    status = CommonUtils.rebootAndWaitForIpAcquisition(tapEnv, device);
-		    LOGGER.info("status CommonUtils.rebootAndWaitForIpAcquisition " + status);// ADDED
+		    LOGGER.info("status CommonUtils.rebootAndWaitForIpAcquisition " + status);
 		} else {
 		    throw new TestException("Error faced while copying dcm properties file from etc to nvram folder");
 		}

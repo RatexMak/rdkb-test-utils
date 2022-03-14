@@ -33,8 +33,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automatics.constants.AutomaticsConstants;
+import com.automatics.device.Device;
 import com.automatics.device.Dut;
 import com.automatics.exceptions.TestException;
+import com.automatics.rdkb.BroadBandResultObject;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
@@ -688,5 +690,422 @@ public class BroadBandPreConditionUtils {
 		    + " : FAILED : " + errorMessage);
 	}
     }
+    
+	/**
+	 * Pre-Condition method to check that device has syndication partner Id
+	 * 
+	 * @param device        instance of{@link Dut}
+	 * @param tapEnv        instance of {@link AutomaticsTapApi}
+	 * @param preCondNumber Pre condition number
+	 * @refactor Athira
+	 */
+	public static void executePreConditionToCheckSyndicationPartnerOnDevice(Dut device, AutomaticsTapApi tapEnv,
+			int preConStepNumber) throws TestException {
+		String errorMessage = null;
+		boolean status = false;
+		LOGGER.info("#######################################################################################");
+		LOGGER.info("PRE-CONDITION " + preConStepNumber + ": DESCRIPTION : Verify the gateway has syndication partner");
+		LOGGER.info(
+				"PRE-CONDITION " + preConStepNumber + ": ACTION : Execute webpa command to get Syndication Partner");
+		LOGGER.info(
+				"PRE-CONDITION " + preConStepNumber + ": EXPECTED : PartnerId retrived should be syndication partner.");
+		LOGGER.info("#######################################################################################");
+		errorMessage = "Failed to verify the syndication partner for the device";
+		status = BroadBandCommonUtils.isPartnerNameIsSyndication(tapEnv, device);
+		if (status) {
+			LOGGER.info("PRE-CONDITION " + preConStepNumber
+					+ ": ACTUAL :Sucessfully verified that the Device has syndication Partner");
+		} else {
+			LOGGER.error("PRE-CONDITION " + preConStepNumber + ": ACTUAL : Device doest not have syndication partner");
+			throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + errorMessage);
+		}
+	}
+	
+	/**
+	 * Pre-Condition method to perform Factory reset and reactivate the device .
+	 * 
+	 * @param device {@link Dut}
+	 * @refactor Alan_Bivera
+	 */
+	public static void executePreConditionToFactoryResetAndReacitivateDevice(Dut device, AutomaticsTapApi tapEnv,
+			int preConStepNumber, boolean isReactivated) throws TestException {
+		String errorMessage = null;
+		boolean status = false;
+		/**
+		 * PRE-CONDITION :Factory Reset
+		 */
+		LOGGER.info("#######################################################################################");
+		LOGGER.info("PRE-CONDITION " + preConStepNumber + " : DESCRIPTION : PERFORM FACTORY RESET ON THE DEVICE.");
+		LOGGER.info("PRE-CONDITION " + preConStepNumber + " : ACTION : PERFORM FACTORY RESET USING WEBPA.");
+		LOGGER.info("PRE-CONDITION " + preConStepNumber + " : EXPTECTED : DEVICE MUST UNDERGO FACTORY RESET.");
+		LOGGER.info("#######################################################################################");
+		errorMessage = "UNABLE TO PERFORM WIFI FACTORY RESET OPERATION ON THE DEVICE. HENCE BLOCKING THE EXECUTION.";
+		if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
+			BroadBandCommonUtils.getAtomDeviceUptimeStatus(device, tapEnv);
+		}
+		status = BroadBandCommonUtils.performFactoryResetWebPaByPassingTriggerTime(tapEnv, device,
+				BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS);
+		if (status) {
+			LOGGER.info("PRE-CONDITION " + preConStepNumber + " : ACTUAL : FACTORY RESET SUCCESSFULLY PERFORMED.");
+		} else {
+			LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL : " + errorMessage);
+			throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION : " + preConStepNumber
+					+ " FAILED : " + errorMessage);
+		}
+		/**
+		 * PRE-CONDITION 2 :WebPA Process Status
+		 */
+		preConStepNumber++;
+		errorMessage = null;
+		status = false;
+		LOGGER.info("#######################################################################################");
+		LOGGER.info("PRE-CONDITION " + preConStepNumber + " : DESCRIPTION : REACTIVATE THE ROUTER DEVICE");
+		LOGGER.info("PRE-CONDITION " + preConStepNumber
+				+ " : ACTION : SET VALUES TO 2.4GHz AND 5GHz - PRIVATE SSID AND PASSWORD");
+		LOGGER.info("PRE-CONDITION " + preConStepNumber
+				+ " : EXPECTED : THE ROUTER DEVICE SHOULD BE REACTIVATED SUCCESSFULLY");
+		LOGGER.info("#######################################################################################");
+		errorMessage = "FAILED TO REACTIVATE THE ROUTER DEVICE";
+		status = false;
+		try {
+			BroadBandWiFiUtils.reactivateDeviceUsingWebpaOrSnmp(tapEnv, device);
+			status = true;
+			isReactivated = status;
+		} catch (TestException e) {
+			errorMessage = e.getMessage();
+		}
+		if (status) {
+			LOGGER.info("PRE-CONDITION " + preConStepNumber + " : ACTUAL: THE ROUTER DEVICE REACTIVATED SUCCESSFULLY.");
+		} else {
+			LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL: " + errorMessage);
+			throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION : " + preConStepNumber
+					+ " FAILED : " + errorMessage);
+		}
+	}
+	
+	/**
+	 * Pre-Condition method to get the dhcp ipv4 values using webpa .
+	 * 
+	 * <li></li>
+	 * <li>Get the default Ipv4 SubnetMask Address</li>
+	 * <li>Get the default Ipv4 BeginAddress Address</li>
+	 * <li>Get the default Ipv4 EndingAddress Address</li>
+	 * <li>Get the default Ipv4 DhcpLeaseTime Address</li>
+	 * 
+	 * @param tapEnv {@link AutomaticsTapApi}
+	 * @param device {@link Dut}
+	 * @return defaultDchpIpv4ValuesMap Its return the key and pair value for
+	 *         default dhcp v4 values
+	 * @refactor Govardhan
+	 */
+	public static HashMap<String, String> executePreconditionToGetTheDefaultDchpIpv4Values(Dut device,
+			AutomaticsTapApi tapEnv) {
+		HashMap<String, String> defaultDchpIpv4ValuesMap = new HashMap<String, String>();
+		try {
+			defaultDchpIpv4ValuesMap.put(BroadBandTestConstants.DEFAULT_IPV4_SUBNET_MASK,
+					tapEnv.executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAM_LAN_IPv4_SUBNET_MASK));
+			defaultDchpIpv4ValuesMap.put(BroadBandTestConstants.DEFAULT_DHCPV4_BEGIN_ADDRESS,
+					tapEnv.executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_DHCP_MINADDRESS));
+			defaultDchpIpv4ValuesMap.put(BroadBandTestConstants.DEFAULT_DHCPV4_ENDING_ADDRESS,
+					tapEnv.executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_DHCP_MAXADDRESS));
+			defaultDchpIpv4ValuesMap.put(BroadBandTestConstants.DEFAULT_DHCPLEASE_TIME,
+					tapEnv.executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_DHCP_LEASETIME));
+		} catch (Exception exec) {
+			LOGGER.error("Failed to get the default DHCP IPv4 Values" + exec.getMessage());
+			throw new TestException(
+					BroadBandTestConstants.PRE_CONDITION_ERROR + "FAILED TO GET THE DEFAULT DHCP IPV4 VALUES");
+		}
+		return defaultDchpIpv4ValuesMap;
+	}
 
+	/**
+	 * Precondition to validate Wifi client IPv4,Ipv6 ,connectivity status for
+	 * 2.4GHZ OR 5GHZ
+	 * <ol>
+	 * <li>1 : OBTAIN A WIFI CLIENT ASSOSIATED WITH THE GATEWAY</li>
+	 * <li>2 : VERIFY THE CORRECT IPV4 ADDRESS FOR LAN CLIENT</li>
+	 * <li>3 : VERIFY THE CORRECT IPV4 ADDRESS FOR LAN CLIENT</li>
+	 * <li>4 : VERIFY THE INTERNET CONNECTIVITY IN THE CONNECTED LAN CLIENT USING
+	 * IPV4 INTERFACE</li>
+	 * <li>5 : VERIFY THE INTERNET CONNECTIVITY IN THE CONNECTED LAN CLIENT USING
+	 * IPV6 INTERFACE</li>
+	 * </ol>
+	 * 
+	 * @param device   {@link Dut}
+	 * @param tapEnv   instance of {@link AutomaticsTapApi}
+	 * @param wifiBand If band is '2.4GHZ',It will connect the client with 2.4GHz
+	 *                 SSID If band is '5GHZ',It will connect the client with 5GHz
+	 *                 SSID If band is '2.4GHZ OR 5GHZ',It will connect the client
+	 *                 with 2.4GHz SSID OR 5GHz SSID
+	 * 
+	 * @return deviceConnectedWithEthernet instance of connected device
+	 * @refactor Alan_Bivera
+	 * 
+	 */
+	public static Dut executePreConditionToVerifyWiFiClientStatus(Dut device, AutomaticsTapApi tapEnv, String wifiBand)
+			throws TestException {
+		String errorMessage = "";
+		boolean status = false;
+		Dut deviceConnected = null;
+
+		BroadBandResultObject result = null; // stores test result and error
+		/**
+		 * PRECONDITION 1 : OBTAIN A WIFI CLIENT ASSOSIATED WITH THE GATEWAY
+		 */
+		LOGGER.info("#######################################################################################");
+		LOGGER.info("PRE-CONDITION 1 : DESCRIPTION : OBTAIN A WIFI CLIENT ASSOSIATED WITH THE GATEWAY");
+		LOGGER.info("PRE-CONDITION 1 : ACTION : OBTAIN A WIFI CLIENT ASSOSIATED WITH THE GATEWAY");
+		LOGGER.info("PRE-CONDITION 1 : EXPECTED : THE CONNECTION MUST BE SUCCESSFUL");
+		LOGGER.info("#######################################################################################");
+		errorMessage = "FAILED TO OBTAIN A WIFI CLIENT ASSOSIATED WITH THE GATEWAY";
+		try {
+			if (wifiBand.equalsIgnoreCase(BroadBandTestConstants.BAND_2_4GHZ)) {
+				deviceConnected = BroadBandConnectedClientUtils
+						.get2GhzWiFiCapableClientDeviceAndConnectToAssociated2GhzSsid(device, tapEnv);
+			} else if (wifiBand.equalsIgnoreCase(BroadBandTestConstants.BAND_5GHZ)) {
+				deviceConnected = BroadBandConnectedClientUtils
+						.get5GhzWiFiCapableClientDeviceAndConnectToAssociated5GhzSsid(device, tapEnv);
+			} else {
+				deviceConnected = BroadBandConnectedClientUtils
+						.get2GhzOr5GhzWiFiCapableClientDeviceAndConnectToCorrespondingSsid(device, tapEnv);
+			}
+		} catch (TestException exception) {
+			errorMessage = exception.getMessage();
+			LOGGER.error(errorMessage);
+		}
+		status = (null != deviceConnected);
+		if (status) {
+			LOGGER.info("PRE-CONDITION 1 : ACTUAL : OBTAINED A WIFI CLIENT ASSOSIATED WITH THE GATEWAY SUCCESSFULLY.");
+		} else {
+			LOGGER.error("PRE-CONDITION 1 : ACTUAL : " + errorMessage);
+			throw new TestException(
+					BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION 1 : FAILED : " + errorMessage);
+		}
+
+		/**
+		 * PRECONDITION 2 : VERIFY THE CORRECT IPV4 ADDRESS FOR LAN CLIENT
+		 */
+		status = false;
+		LOGGER.info("#####################################################################################");
+		LOGGER.info("PRE-CONDITION 2 : DESCRIPTION :VERIFY THE CORRECT IPV4 ADDRESS FOR WIFI CLIENT");
+		LOGGER.info(
+				"PRE-CONDITION 2 : ACTION : EXECUTE COMMAND, WINDOWS : ipconfig |grep -A 10 'Wireless adapter Wi-Fi' |grep -i 'IPv4 Address' or LINUX : ifconfig | grep 'inet' or ON THE CONNECTED CLIENT");
+		LOGGER.info("PRE-CONDITION 2 : EXPECTED : IT SHOULD RETURN THE CORRECT IPV4 ADDRESS FOR WIFI CLIENT ");
+		LOGGER.info("#####################################################################################");
+		errorMessage = "UNABLE TO GET THE CORRECT IPV4 ADDRESS FROM CLIENT  ";
+		status = BroadBandConnectedClientUtils.verifyIpv4AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(
+				((Device) deviceConnected).getOsType(), deviceConnected, tapEnv);
+		if (status) {
+			LOGGER.info("PRE-CONDITION 2 : ACTUAL : SUCCESSFYLLY VERIFIED CORRECT IPV4 ADDRESS FROM WIFI CLIENT ");
+		} else {
+			LOGGER.error("PRE-CONDITION 2 : ACTUAL : " + errorMessage);
+			throw new TestException(
+					BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION 2 : FAILED : " + errorMessage);
+		}
+		/**
+		 * PRECONDITION 3 : VERIFY THE CORRECT IPV6 ADDRESS FOR WIFI CLIENT
+		 */
+		status = false;
+		LOGGER.info("#####################################################################################");
+		LOGGER.info("PRE-CONDITION 3 : DESCRIPTION :VERIFY THE CORRECT IPV4 ADDRESS FOR WIFI CLIENT");
+		LOGGER.info(
+				"PRE-CONDITION 3 : ACTION : EXECUTE COMMAND, WINDOWS : ipconfig |grep -A 10 'Wireless adapter Wi-Fi' |grep -i 'IPv6 Address' or LINUX : ifconfig | grep 'inet6' or ON THE CONNECTED CLIENT");
+		LOGGER.info("PRE-CONDITION 3 : EXPECTED : IT SHOULD RETURN THE CORRECT IPV6 ADDRESS FOR WIFI CLIENT ");
+		LOGGER.info("#####################################################################################");
+		errorMessage = "UNABLE TO GET THE CORRECT IPV6 ADDRESS FROM CLIENT  ";
+		status = BroadBandConnectedClientUtils.verifyIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(
+				((Device) deviceConnected).getOsType(), deviceConnected, tapEnv);
+		if (status) {
+			LOGGER.info("PRE-CONDITION 3 : ACTUAL : SUCCESSFYLLY VERIFIED CORRECT IPV6 ADDRESS FROM LAN CLIENT ");
+		} else {
+			LOGGER.error("PRE-CONDITION 3 : ACTUAL : " + errorMessage);
+			throw new TestException(
+					BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION 3 : FAILED : " + errorMessage);
+		}
+
+		/**
+		 * PRECONDITION 4 : VERIFY THE INTERNET CONNECTIVITY IN THE WIFI CLIENT
+		 * INTERFACE USING IPV4 .
+		 */
+		status = false;
+		LOGGER.info("#######################################################################################");
+		LOGGER.info(
+				"PRE-CONDITION 4 : DESCRIPTION : VERIFY THE INTERNET CONNECTIVITY IN THE CONNECTED WIFI CLIENT USING IPV4 INTERFACE");
+		LOGGER.info(
+				"PRE-CONDITION 4 : ACTION : EXECUTE COMMAND, WINDOWS : curl -4 -v 'www.google.com'  | grep '200 OK' OR ping -4 -n 5 google.com, LINUX : curl -4 -f --interface <interfaceName> www.google.com | grep '200 OK' OR ping -4 -n 5 google.com ON THE CONNECTED LAN CLIENT");
+		LOGGER.info("PRE-CONDITION 4 : EXPECTED : THE INTERNET CONNECTIVITY MUST BE AVAILABLE INTERFACE USING IPV4 ");
+		LOGGER.info("#######################################################################################");
+		errorMessage = "NOT ABLE TO ACCESS THE SITE 'www.google.com' FROM WIFI CLIENT WITH USING IPV4";
+		long startTime = System.currentTimeMillis();
+		do {
+			result = BroadBandConnectedClientUtils.verifyInternetIsAccessibleInConnectedClientUsingCurl(tapEnv,
+					deviceConnected,
+					BroadBandTestConstants.URL_HTTPS + BroadBandTestConstants.STRING_GOOGLE_HOST_ADDRESS,
+					BroadBandTestConstants.IP_VERSION4);
+			status = result.isStatus();
+			errorMessage = result.getErrorMessage();
+		} while (!status && (System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS
+				&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+		if (!status) {
+			errorMessage = "PIGN OPERATION FAILED TO ACCESS THE SITE 'www.google.com' USING IPV4 ";
+			status = ConnectedNattedClientsUtils.verifyPingConnectionForIpv4AndIpv6(deviceConnected, tapEnv,
+					BroadBandTestConstants.PING_TO_GOOGLE, BroadBandTestConstants.IP_VERSION4);
+		}
+		if (status) {
+			LOGGER.info(
+					"PRE-CONDITION 4 : ACTUAL : CONNECTED WIFI CLIENT HAS INTERNET CONNECTIVITY USING IPV4 INTERFACE");
+		} else {
+			LOGGER.error("PRE-CONDITION 4 : ACTUAL : " + errorMessage);
+			throw new TestException(
+					BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION 4 : FAILED : " + errorMessage);
+		}
+
+		/**
+		 * PRECONDITION 5 : VERIFY THE INTERNET CONNECTIVITY IN THE WIFI CLIENT
+		 * INTERFACE USING IPV6 .
+		 */
+		status = false;
+		LOGGER.info("#######################################################################################");
+		LOGGER.info(
+				"PRE-CONDITION 5 : DESCRIPTION : VERIFY THE INTERNET CONNECTIVITY IN THE CONNECTED WIFI CLIENT USING IPV6 INTERFACE");
+		LOGGER.info(
+				"PRE-CONDITION 5 : ACTION : EXECUTE COMMAND, WINDOWS : curl -4 -v 'www.google.com'  | grep '200 OK' OR ping -4 -n 5 google.com, LINUX : curl -4 -f --interface <interfaceName> www.google.com | grep '200 OK' OR ping -4 -n 5 google.com ON THE CONNECTED LAN CLIENT");
+		LOGGER.info("PRE-CONDITION 5 : EXPECTED : THE INTERNET CONNECTIVITY MUST BE AVAILABLE INTERFACE USING IPV6 ");
+		LOGGER.info("#######################################################################################");
+		errorMessage = "NOT ABLE TO ACCESS THE SITE 'www.google.com' FROM WIFI CLIENT WITH USING IPV6";
+		if (DeviceModeHandler.isFibreDevice(device)) {
+			LOGGER.info(
+					"PRE-CONDITION 5 : ACTUAL : IPV6 INTERNET CONNECTIVITY VERIFICATION NOT APPLICABLE FOR PACE DEVICES");
+		} else {
+			startTime = System.currentTimeMillis();
+			do {
+				result = BroadBandConnectedClientUtils.verifyInternetIsAccessibleInConnectedClientUsingCurl(tapEnv,
+						deviceConnected,
+						BroadBandTestConstants.URL_HTTPS + BroadBandTestConstants.STRING_GOOGLE_HOST_ADDRESS,
+						BroadBandTestConstants.IP_VERSION6);
+				status = result.isStatus();
+				errorMessage = result.getErrorMessage();
+			} while (!status && (System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS
+					&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+			if (!status) {
+				errorMessage = "PIGN OPERATION FAILED TO ACCESS THE SITE 'www.google.com' USING IPV6 ";
+				status = ConnectedNattedClientsUtils.verifyPingConnectionForIpv4AndIpv6(deviceConnected, tapEnv,
+						BroadBandTestConstants.PING_TO_GOOGLE, BroadBandTestConstants.IP_VERSION6);
+			}
+			if (status) {
+				LOGGER.info(
+						"PRE-CONDITION 5 : ACTUAL : CONNECTED WIFI CLIENT HAS INTERNET CONNECTIVITY USING IPV6 INTERFACE");
+			} else {
+				LOGGER.error("PRE-CONDITION 5 : ACTUAL : " + errorMessage);
+				throw new TestException(
+						BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION 5 : FAILED : " + errorMessage);
+			}
+		}
+		return deviceConnected;
+	}
+
+	/**
+	 * Pre-Condition method to verify the below condition in Ethernet connected
+	 * Client .
+	 * 
+	 * <li>PRE-CONDITION 1 : Verify Ethernet client is connected with Gateway</li>
+	 * <li>PRE-CONDITION 2 : Verify IPv4 is assigned on the Ethernet client</li>
+	 * <li>PRE-CONDITION 3 : Verify IPv6 is assigned on the Ethernet client</li>
+	 * <li>PRE-CONDITION 4 : Verify Internet is accessible by using Interface IPv4
+	 * on the Ethernet client</li>
+	 * <li>PRE-CONDITION 5 : Verify Internet is accessible by using Interface IPv6
+	 * on the Ethernet client</li>
+	 * <li>PRE-CONDITION 6 : Verify the gateway Ip address</li>
+	 * 
+	 * @param device {@link Dut}
+	 * @param tapEnv instance of {@link AutomaticsTapApi}
+	 * @return deviceConnectedWithEthernet instance of connected device
+	 * 
+	 */
+	public static Dut executePreConditionToVerifyLanClientStatus(Dut device, AutomaticsTapApi tapEnv)
+			throws TestException {
+		String errorMessage = "";
+		boolean status = false;
+
+		Dut deviceConnectedWithEthernet = executePreConditionToVerifyLanClientStatus(device, tapEnv,
+				BroadBandTestConstants.CONSTANT_1);
+		/**
+		 * PRECONDITION 6 : VERIFY THE GATEWAY ADDRESS IN LAN CLIENT
+		 */
+
+		status = false;
+		LOGGER.info("#######################################################################################");
+		LOGGER.info("PRE-CONDITION 2 : DESCRIPTION : VERIFY THE GATEWAY ADDRESS IN LAN CLIENT");
+		LOGGER.info(
+				"PRE-CONDITION 2 : ACTION : EXECUTE COMMAND, WINDOWS : ipconfig |grep -A 10 \"Wireless LAN adapter Wi-Fi\" |grep -i \"Default Gateway\", LINUX : ifconfig wlan0 |grep -i \"Default Gateway\" ON THE CONNECTED LAN CLIENT");
+		LOGGER.info("PRE-CONDITION 2 : EXPECTED : MUST RETURN THE DEFAULT GATEWAY ADDRESS ");
+		LOGGER.info("#######################################################################################");
+		errorMessage = "UNABLE TO VERIFY THE DEFAULT GATEWAY IP ADDRESS ON CONNECTED LAN CLIENT";
+		status = BroadBandConnectedClientUtils.verifyDefaultGatewayAddressInConnectedClient(device,
+				deviceConnectedWithEthernet, tapEnv);
+		if (status) {
+			LOGGER.info("PRE-CONDITION 2 : ACTUAL :  DEFAULT GATEWAY IP ADDRESS IS VERIFED SUCCESSFULLY IN LAN CLENT");
+		} else {
+			LOGGER.error("PRE-CONDITION 2 : ACTUAL : " + errorMessage);
+			throw new TestException(
+					BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION 2 : FAILED : " + errorMessage);
+		}
+
+		return deviceConnectedWithEthernet;
+	}
+	
+	/**
+	 * Precondition to connect to Ethernet client, Validate IPv4, Ipv6, connectivity
+	 * status for both IPs's.
+	 * <ol>
+	 * <li>1 : OBTAIN A ETHERNET CLIENT ASSOSIATED WITH THE GATEWAY</li>
+	 * <li>2 : VERIFY THE CORRECT IPV4 ADDRESS FOR LAN CLIENT</li>
+	 * <li>3 : VERIFY THE CORRECT IPV6 ADDRESS FOR LAN CLIENT</li>
+	 * <li>4 : VERIFY THE INTERNET CONNECTIVITY IN THE CONNECTED LAN CLIENT USING
+	 * IPV4 INTERFACE</li>
+	 * <li>5 : VERIFY THE INTERNET CONNECTIVITY IN THE CONNECTED LAN CLIENT USING
+	 * IPV6 INTERFACE</li>
+	 * </ol>
+	 * 
+	 * @param device             {@link Dut}
+	 * @param tapEnv             instance of {@link AutomaticsTapApi}
+	 * @param preConditionNumber Pre condition number
+	 * @return deviceConnectedWithEthernet instance of connected device
+	 * 
+	 */
+	public static Dut executePreConditionToVerifyLanClientStatus(Dut device, AutomaticsTapApi tapEnv,
+			int preConditionNumber) throws TestException {
+		String errorMessage = null;
+		boolean status = false;
+		Dut deviceConnectedWithEthernet = null;
+		BroadBandResultObject result = null; // stores test result and error
+
+		/**
+		 * PRECONDITION 1 : OBTAIN A ETHERNET CLIENT ASSOSIATED WITH THE GATEWAY
+		 */
+		LOGGER.info("#######################################################################################");
+		LOGGER.info("PRE-CONDITION " + preConditionNumber
+				+ " : DESCRIPTION : OBTAIN A ETHERNET CLIENT ASSOSIATED WITH THE GATEWAY");
+		LOGGER.info("PRE-CONDITION " + preConditionNumber
+				+ " : ACTION : OBTAIN A ETHERNET CLIENT ASSOSIATED WITH THE GATEWAY");
+		LOGGER.info("PRE-CONDITION " + preConditionNumber + " : EXPTECTED : THE CONNECTION MUST BE SUCCESSFUL");
+		LOGGER.info("#######################################################################################");
+		errorMessage = "FAILED TO OBTAIN A ETHERNET CLIENT ASSOSIATED WITH THE GATEWAY";
+		try {
+			deviceConnectedWithEthernet = BroadBandConnectedClientUtils.getEthernetConnectedClient(tapEnv, device);
+		} catch (TestException exception) {
+			errorMessage = exception.getMessage();
+			LOGGER.error(errorMessage);
+		}
+		status = (null != deviceConnectedWithEthernet);
+		if (status) {
+			LOGGER.info("PRE-CONDITION " + preConditionNumber
+					+ " : ACTUAL : OBTAINED A ETHERNET CLIENT ASSOSIATED WITH THE GATEWAY SUCCESSFULLY.");
+		} else {
+			LOGGER.error("PRE-CONDITION " + preConditionNumber + " : ACTUAL : " + errorMessage);
+			throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION " + preConditionNumber
+					+ " : FAILED : " + errorMessage);
+		}
+		return deviceConnectedWithEthernet;
+	}
 }

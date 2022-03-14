@@ -27,11 +27,14 @@ import org.slf4j.LoggerFactory;
 import com.automatics.device.Dut;
 import com.automatics.exceptions.TestException;
 import com.automatics.rdkb.constants.BroadBandCdlConstants;
+import com.automatics.rdkb.constants.BroadBandCommandConstants;
+import com.automatics.rdkb.constants.BroadBandPropertyKeyConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
 import com.automatics.rdkb.constants.RDKBTestConstants;
 import com.automatics.rdkb.constants.WebPaParamConstants.WebPaDataTypes;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
+import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
 import com.automatics.rdkb.utils.CommonUtils;
 import com.automatics.rdkb.utils.DeviceModeHandler;
 import com.automatics.rdkb.utils.snmp.BroadBandSnmpUtils;
@@ -96,7 +99,6 @@ public class BroadBandCodeDownloadUtils {
 
 	buildNameToUse = buildNameToBeTriggerred + BroadBandTestConstants.BINARY_BUILD_IMAGE_EXTENSION;
 
-
 	WebPaParameter setCdlServerUrl = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 		BroadBandWebPaConstants.WEBPA_PARAM_Device_DeviceInfo_X_RDKCENTRAL_COM_FirmwareDownloadURL,
 		cdlServerUrl, WebPaDataTypes.STRING.getValue());
@@ -106,13 +108,12 @@ public class BroadBandCodeDownloadUtils {
 	WebPaParameter initiateCodeDownload = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 		BroadBandCdlConstants.WEBPA_PARAM_TRIGGER_CDL, RDKBTestConstants.TRUE,
 		WebPaDataTypes.BOOLEAN.getValue());
-	
-	LOGGER.info("initiateCodeDownload MSg "+initiateCodeDownload.getMessage());
-	LOGGER.info("initiateCodeDownload DataType "+initiateCodeDownload.getDataType());
-	LOGGER.info("initiateCodeDownload Name "+initiateCodeDownload.getName());
-	LOGGER.info("initiateCodeDownload Parameter "+initiateCodeDownload.getParameterCount());
-	LOGGER.info("initiateCodeDownload String "+initiateCodeDownload.toString());
 
+	LOGGER.info("initiateCodeDownload MSg " + initiateCodeDownload.getMessage());
+	LOGGER.info("initiateCodeDownload DataType " + initiateCodeDownload.getDataType());
+	LOGGER.info("initiateCodeDownload Name " + initiateCodeDownload.getName());
+	LOGGER.info("initiateCodeDownload Parameter " + initiateCodeDownload.getParameterCount());
+	LOGGER.info("initiateCodeDownload String " + initiateCodeDownload.toString());
 
 	List<WebPaParameter> webPaParameters = new ArrayList<WebPaParameter>();
 
@@ -125,8 +126,8 @@ public class BroadBandCodeDownloadUtils {
 
 	// Set the required parameter with corresponding values for code download
 	Map<String, String> serverResponse = tapEnv.executeMultipleWebPaSetCommands(device, webPaParameters);
-	
-	LOGGER.info("serverResponse is : "+serverResponse);
+
+	LOGGER.info("serverResponse is : " + serverResponse);
 
 	// Verify webpa params set status
 	for (Map.Entry<String, String> entry : serverResponse.entrySet()) {
@@ -182,8 +183,7 @@ public class BroadBandCodeDownloadUtils {
 			    "Firmware upgrade is in progress. Hence wait for few minutes to complete firmware upgrade");
 
 		    LOGGER.info("Log response in PAM file is - " + tapEnv.executeCommandUsingSsh(device,
-			    (DeviceModeHandler.isFibreDevice(device))
-				    ? "tail -f /rdklogs/logs/EPONAGENTlog.txt.0"
+			    (DeviceModeHandler.isFibreDevice(device)) ? "tail -f /rdklogs/logs/EPONAGENTlog.txt.0"
 				    : "tail -f /rdklogs/logs/CMlog.txt.0"));
 		}
 
@@ -230,7 +230,8 @@ public class BroadBandCodeDownloadUtils {
 	    LOGGER.error(testException.getMessage());
 	}
 	try {
-	    // In case the HTTP TR-181 CDL Fails, then trigger CDL using TFTP Docsis SNMP Command.
+	    // In case the HTTP TR-181 CDL Fails, then trigger CDL using TFTP Docsis SNMP
+	    // Command.
 	    if (!isTrigggered) {
 		LOGGER.error("HTTP TR-181 CDL FAILED; HENCE GOING TO TRIGGER CDL WITH TFTP DOCSIS SNMP COMMANDS.");
 		isTrigggered = FirmwareDownloadUtils.triggerAndWaitForTftpCodeDownloadUsingDocsisSnmpCommand(tapEnv,
@@ -463,4 +464,271 @@ public class BroadBandCodeDownloadUtils {
 	return imageVersion;
     }
 
+    /**
+     * Perform HTTP,TFTP and SNMP CDL using webpa parameters
+     * 
+     * @param device
+     *            device to be verified
+     * @param tapApi
+     *            AutomaticsTapApi instance
+     * @param initialFirmwareVersion
+     *            initialFirmwareVersion .
+     * 
+     * @return true if device is loaded with latest build
+     * @refactor Said Hisham
+     * 
+     */
+    public static boolean triggerLatestCodeDownload(Dut device, AutomaticsTapApi tapEnv,
+	    String initialFirmwareVersion) {
+	boolean isTriggered = false;
+	try {
+	    isTriggered = FirmwareDownloadUtils.getLatestAvailableImageAndTriggerCdl(tapEnv, device,
+		    initialFirmwareVersion);
+	} catch (TestException testException) {
+	    // Log & Suppress the Exception
+	    LOGGER.error(testException.getMessage());
+	}
+	try {
+	    // In case the HTTP TR-181 CDL Fails, then trigger CDL using TFTP Docsis SNMP
+	    // Command.
+
+	    if (!isTriggered) {
+
+		String latestImageNameToUpgrade = tapEnv.getLatestBuildImageVersionForCdlTrigger(device, false);
+		LOGGER.info("LATEST FIRMWARE VERSION: " + latestImageNameToUpgrade);
+		if (CommonMethods.isNull(latestImageNameToUpgrade)) {
+		    LOGGER.info(
+			    " GA image obtained from deployed version service is null. Hence getting the image from property file ");
+		    latestImageNameToUpgrade = BroadbandPropertyFileHandler.getAutomaticsPropsValueByResolvingPlatform(
+			    device, BroadBandPropertyKeyConstants.PARTIAL_PROPERTY_KEY_FOR_GA_IMAGE);
+		    LOGGER.info("Latest Firmware version from property file: " + latestImageNameToUpgrade);
+		}
+
+		LOGGER.error("HTTP TR-181 CDL FAILED; HENCE GOING TO TRIGGER CDL WITH TFTP DOCSIS SNMP COMMANDS.");
+		isTriggered = FirmwareDownloadUtils.triggerAndWaitForTftpCodeDownloadUsingDocsisSnmpCommand(tapEnv,
+			device, latestImageNameToUpgrade + BroadBandCdlConstants.BIN_EXTENSION, false);
+	    }
+	} catch (TestException testException) {
+	    // Log & Suppress the Exception
+	    LOGGER.error(testException.getMessage());
+	}
+	return isTriggered;
+    }
+
+    /**
+     * Verifies the upgrade status MIB is returning "inProgress" during CDL using SNMP command.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi} instance.
+     * @param device
+     *            The set-top box where the command to be executed.
+     * 
+     * @return true if the Upgrade status is "inProgress", false otherwise.
+     * @refactor Said Hisham
+     */
+    public static boolean isUpgradeStatusInProgressUsingSnmpCommand(AutomaticsTapApi tapEnv, Dut device) {
+	LOGGER.debug("STARING METHOD : isUpgradeStatusInProgressUsingSnmpCommand");
+	// Variable declaration Starts
+	boolean inprogress = false;
+	// Variable declaration Ends
+	long startTime = 0;
+	String searchResponse = null;
+	String mibOid = BroadBandSnmpMib.ECM_DOCS_DEV_SW_OPER_STATUS_WITHOUT_INDEX.getOid() + AutomaticsConstants.DOT
+		+ BroadBandTestConstants.STRING_VALUE_ZERO;
+	for (int iteration = 0; iteration < 10; iteration++) {
+	    String snmpResponse = BroadBandSnmpUtils.snmpGetOnEcm(tapEnv, device, mibOid);
+	    LOGGER.info("SNMP RESPONSE FOR UPGRADE STATUS:" + snmpResponse);
+	    if (snmpResponse.equalsIgnoreCase(CodeDownloadStatus.IN_PROGRESS.getStatus())
+		    || snmpResponse.equals(BroadBandTestConstants.STRING_VALUE_ONE)
+		    || snmpResponse.equals(BroadBandTestConstants.STRING_VALUE_FIVE)) {
+		startTime = System.currentTimeMillis();
+		do {
+		    searchResponse = BroadBandCommonUtils.searchLogFiles(tapEnv, device,
+			    BroadbandPropertyFileHandler.isDeviceCheckForUpgradeStatusUsingSnmpCommand(device)
+				    || CommonMethods.isAtomSyncAvailable(device, tapEnv)
+					    ? BroadBandCdlConstants.LOG_MESSAGE_CDL_WITH_CURRENT_FW_DEVICE_CHECK
+					    : BroadBandCdlConstants.LOG_MESSAGE_CDL_WITH_CURRENT_FW,
+			    BroadbandPropertyFileHandler.isDeviceCheckForUpgradeStatusUsingSnmpCommand(device)
+				    || CommonMethods.isAtomSyncAvailable(device, tapEnv)
+					    ? BroadBandCommandConstants.LOG_FILE_SEC_CONSOLE
+					    : BroadBandCdlConstants.CM_LOG_TXT_0);
+		    inprogress = !CommonMethods.isNotNull(searchResponse);
+		} while (inprogress
+			&& (System.currentTimeMillis() - startTime) < BroadBandTestConstants.TWO_MINUTE_IN_MILLIS
+			&& BroadBandCommonUtils.hasWaitForDuration(tapEnv,
+				BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+		break;
+	    } else if (snmpResponse.equals(BroadBandTestConstants.STRING_VALUE_4)) {
+		inprogress = false;
+		break;
+	    } else {
+		LOGGER.info("MIB message for box upgrade status : " + snmpResponse);
+		tapEnv.waitTill(AutomaticsConstants.THIRTY_SECOND_IN_MILLIS);
+		continue;
+	    }
+	}
+	LOGGER.debug("ENDING METHOD : isUpgradeStatusInProgressUsingSnmpCommand");
+	return inprogress;
+    }
+    
+    /**
+     * Method to load device with give firmware name as input using Xconf device commands
+     * 
+     * @param device
+     *            device to be verified
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param buildImageName
+     *            Build name to be loaded in device
+     * 
+     * @author Sumathi Gunasekaran
+     */
+    public static boolean upgradeDeviceWithGivenFirmwareVersion(Dut device, AutomaticsTapApi tapEnv,
+	    String buildImageName) {
+
+	// Variable to store firmware upgrade status
+	boolean status = false;
+	// Variable to store error message
+	String errorMessage = null;
+
+	try {
+
+	    String currentImageName = FirmwareDownloadUtils.getCurrentFirmwareFileNameForCdl(tapEnv, device);
+
+	    LOGGER.info("REQUESTED IMAGE NAME FOR CODE DOWNLOAD  : " + buildImageName);
+	    LOGGER.info("CURRENT BUILD IMAGE VERSION BEFORE TRIGGERING CDL : " + currentImageName);
+
+	    // Configure RDKB device for Xconf cdl
+	    if (CommonMethods.isNotNull(currentImageName) && CommonMethods.isNotNull(buildImageName)) {
+
+		if (!currentImageName.equalsIgnoreCase(buildImageName)) {
+
+		    // Verify whether the requested image is available or not in CDL server
+		    // if It is not available it will copy from s3 server to CDL server the check the status
+		    status = BroadBandCodeDownloadUtils.verifyImageAvailabilityInCDLServer(device, tapEnv,
+			    buildImageName);
+
+		    if (status) {
+
+			LOGGER.info("SUCCESSFULLY VERIFIED REQUESTED BUILD IS AVAILABILE IN CDL SERVER");
+
+			/**
+			 * Perform CDL using backdoor CDL mechanism For validation purpose we are creating one text file
+			 * in /nvram and storing all the cdl logs
+			 * 
+			 * Finally after completion of cdl we need to make sure user created file is deleted.
+			 */
+			// BroadBandCodeDownloadUtils.performRdkbHttpCodeDownloadUsingXconfDeviceCommand(device, tapEnv,
+			// buildImageName);
+
+			// Wait for 8 minutes and verify whether device is updated with GA build
+			status = BroadBandCodeDownloadUtils.waitAndVerifyImageNameAfterCDL(device, tapEnv,
+				buildImageName);
+
+		    } else {
+			errorMessage = "Requested in not available in CDL server or Not able to copy image from s3 server to CDL server..So not able to load device with GA build";
+			LOGGER.error(errorMessage);
+			throw new TestException(errorMessage);
+
+		    }
+
+		} else {
+		    LOGGER.info("CURRENT RUNNING IMAGE AND REQUESTED IMAGE FOR CDL ARE SAME..SO SKIPPING CDL !!!");
+		}
+
+	    } else {
+		errorMessage = "Obtained null response..Not able to get the current build version details before triggering CDL !!!";
+		LOGGER.error(errorMessage);
+	    }
+
+	} catch (Exception exception) {
+	    errorMessage = "Exception occurred during snmp execution : " + exception.getMessage();
+	    LOGGER.error(errorMessage);
+	} finally {
+	    // Delete user defined text file in nvram after completion of cdl
+	    tapEnv.executeCommandUsingSsh(device, RDKBTestConstants.CMD_REMOVE_DIR_FORCEFULLY
+		    + RDKBTestConstants.SINGLE_SPACE_CHARACTER + BroadBandTestConstants.FILE_TO_STORE_CDL_LOGS);
+	}
+
+	return status;
+    }
+    
+    /**
+     * Method to verify Firmware image availability in CDL server
+     * 
+     * if image is not available it will copy from s3 server to CDL server
+     * 
+     * @param device
+     *            device to be verified
+     * @return true, if image is available in CDL server
+     * @author Sumathi Gunasekaran
+     */
+
+    public static boolean verifyImageAvailabilityInCDLServer(Dut device, AutomaticsTapApi tapEnv,
+	    String buildNameToBeTriggerred) {
+
+	LOGGER.debug("STARING METHOD : 'verifyImageAvailabilityInCDLServer'");
+	// Variable to store execution status
+	boolean status = false;
+	String errorMessage = null;
+	try {
+
+	    LOGGER.info("Verify whether obtained GA build is available or not in CDL server");
+	    // verify image availability in CDL server
+	    // if image is not available in CDL server copy image from S3 server to CDL server and verify status
+	    LOGGER.info("Requested GA build availability in CDL server : " + status);
+
+	} catch (Exception exception) {
+	    errorMessage = "Exception occured while checking image availability: " + exception.getMessage();
+	    LOGGER.error(errorMessage);
+	    throw new TestException(errorMessage);
+	}
+	LOGGER.debug("ENDING METHOD : 'verifyImageAvailabilityInCDLServer'");
+	return status;
+    }
+    
+    /**
+     * Wait for 5 minutes and verify download completed status
+     * 
+     * then reboot if code download is success
+     * 
+     * @param device
+     *            device to be verified
+     * @param tapApi
+     *            AutomaticsTapApi instance
+     * @param tapApi
+     *            AutomaticsTapApi instance
+     * @author Sumathi Gunasekaran
+     */
+    public static boolean waitAndVerifyImageNameAfterCDL(Dut device, AutomaticsTapApi tapEnv,
+	    String buildNameToBeTriggerred) {
+
+	LOGGER.debug("STARTING METHOD : 'waitAndVerifyImageNameAfterCDL'");
+	boolean status = false;
+
+	String response = tapEnv.executeCommandUsingSsh(device, RDKBTestConstants.CAT_COMMAND
+		+ RDKBTestConstants.SINGLE_SPACE_CHARACTER + BroadBandTestConstants.FILE_TO_STORE_CDL_LOGS);
+
+	if (CommonMethods.isNotNull(response)
+		&& (response.contains(BroadBandCdlConstants.LOG_MESSAGE_HTTP_DOWNLOAD_COMPLETED)
+			|| response.contains(BroadBandCdlConstants.LOG_MESSAGE_HTTP_SUCCESSFULLY_INSTALLED))) {
+
+	    tapEnv.reboot(device);
+
+	    CommonMethods.waitForEstbIpAcquisition(tapEnv, device);
+	    status = CodeDownloadUtils.verifyImageVersionFromVersionText(tapEnv, device, buildNameToBeTriggerred);
+	    if (!status) {
+		LOGGER.info(
+			"Device is not loaded with requested build. So verify firmware upgrade with another reboot");
+		CommonMethods.rebootAndWaitForIpAccusition(device, tapEnv);
+		status = CodeDownloadUtils.verifyImageVersionFromVersionText(tapEnv, device, buildNameToBeTriggerred);
+	    }
+	    LOGGER.info("Is Device loaded with requested build : " + status);
+	} else {
+	    LOGGER.error("HTTP CDL using Xconf device commands failed !!!!");
+	}
+	LOGGER.debug("ENDING METHOD : 'waitAndVerifyImageNameAfterCDL'");
+
+	return status;
+    }
 }

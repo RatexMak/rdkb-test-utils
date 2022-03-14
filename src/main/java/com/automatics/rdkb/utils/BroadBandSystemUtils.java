@@ -17,6 +17,8 @@
  */
 package com.automatics.rdkb.utils;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -647,4 +649,101 @@ public class BroadBandSystemUtils {
 	return result;
     }
 
+    /**
+     * Utility method to verify the log messages on given log file from Arm Console .
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi} Reference
+     * @param device
+     *            {@link Dut} to be validated
+     * @param deviceDateTime
+     *            Timestamp from Device
+     * @return Boolean representing the result of verification of Log file.
+     * @Refactor Sruthi Santhosh
+     */
+    public static boolean verifyArmConsoleLog(AutomaticsTapApi tapEnv, Dut device, String searchText,
+	    String logFileName, String deviceDateTime) {
+	LOGGER.debug("ENTERING METHOD verifyArmConsoleLogForPollingTime");
+	// stores the test status
+	boolean result = false;
+	LOGGER.info("verifying the arm console logs for a polling Duration");
+	StringBuffer command = new StringBuffer();
+	command.append(BroadBandTestConstants.GREP_COMMAND);
+	command.append(searchText);
+	command.append(BroadBandTestConstants.SINGLE_SPACE_CHARACTER);
+	command.append(logFileName);
+	command.append(BroadBandTestConstants.SYMBOL_PIPE);
+	command.append(BroadBandTestConstants.CMD_TAIL_1);
+	String response = tapEnv.executeCommandUsingSsh(device, command.toString());
+	LOGGER.info("FROM ARM CONSOLE RESPONSE :" + response);
+	if (CommonMethods.isNotNull(response) && response.contains(searchText.replace("\"", ""))) {
+	    result = BroadBandCommonUtils.verifyLogUsingTimeStamp(deviceDateTime, response);
+	   	}
+
+	LOGGER.info("VERIFYING ARM CONSOLE LOGS" + result);
+	LOGGER.debug("ENDING METHOD verifyArmConsoleLog");
+	return result;
+    }
+    
+    /**
+     * Utility method to rerieve ip address and domain name for the url from phishtank site
+     * 
+     * @param CclientDevice
+     *            {@link Dut} to be validated
+     * 
+     * @param tapEnv
+     * 			{@value AutomaticsTapApi}
+     * 
+     * @return String array
+     * 
+     * @author Sumathi Gunasekaran
+     * @refactor Athira
+     */
+    public static String[] retrieveIPAddressAndDomainName(Dut clientDevice, AutomaticsTapApi tapEnv,
+	    String phishTankUrl) {
+	LOGGER.debug("STARTING METHOD: retrieveIPAddressAndDomainName");
+	String commandToExecute = null;
+	String response = null;
+	String pingResponseArray[] = null;
+	String nsLookupDomainName = null;
+	String nsLookupIpAddress = null;
+	String[] domainNameAndIpAddress = new String[BroadBandTestConstants.CONSTANT_2];
+	LOGGER.info("URL Retrieved from Phishtank website is:" + phishTankUrl);
+	URL domainName = null;
+	try {
+	    domainName = new java.net.URL(phishTankUrl);
+	    if (null != domainName) {
+		LOGGER.info("URL Host Name is:" + domainName.getHost());
+		commandToExecute = BroadBandCommonUtils.concatStringUsingStringBuffer(
+			BroadBandTestConstants.STRING_NS_LOOKUP, AutomaticsConstants.SINGLE_SPACE_CHARACTER,
+			domainName.getHost());
+		response = tapEnv.executeCommandOnOneIPClients(clientDevice, commandToExecute);
+		if (CommonMethods.isNotNull(response)
+			&& (CommonUtils.isGivenStringAvailableInCommandOutput(response,
+				BroadBandTestConstants.STRING_NAME_COLON))
+			&& (CommonUtils.isGivenStringAvailableInCommandOutput(response,
+				BroadBandTestConstants.STRING_ADDRESS_COLON))) {
+		    pingResponseArray = response.split(BroadBandTestConstants.STRING_ANSWER_COLON);
+		    if (CommonMethods.isNotNull(pingResponseArray[BroadBandTestConstants.CONSTANT_1])) {
+			nsLookupIpAddress = CommonMethods.patternFinder(
+				pingResponseArray[BroadBandTestConstants.CONSTANT_1],
+				BroadBandTestConstants.REGEX_STRING_ADDRESS_AND_IPV4_ADDRESS);
+			nsLookupDomainName = CommonMethods.patternFinder(
+				pingResponseArray[BroadBandTestConstants.CONSTANT_1],
+				BroadBandTestConstants.REGEX_STRING_NAME_AND_HOST_NAME);
+			LOGGER.info("IpAddress: " + nsLookupIpAddress + "\n DomainName: " + nsLookupDomainName);
+			if (CommonMethods.isNotNull(nsLookupIpAddress) && CommonMethods.isNotNull(nsLookupDomainName)) {
+			    domainNameAndIpAddress[BroadBandTestConstants.CONSTANT_0] = nsLookupIpAddress;
+			    domainNameAndIpAddress[BroadBandTestConstants.CONSTANT_1] = nsLookupDomainName;
+			}
+		    }
+		}
+	    }
+	} catch (MalformedURLException e) {
+	    LOGGER.error("Exception found::::>>>>" + e.getMessage(), e);
+	}
+	LOGGER.debug("ENDING METHOD: retrieveIPAddressAndDomainName");
+	return domainNameAndIpAddress;
+    }
+    
 }

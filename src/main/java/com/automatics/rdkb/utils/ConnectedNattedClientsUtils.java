@@ -52,6 +52,7 @@ import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.BroadBandConnectedClientTestConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandTraceConstants;
+import com.automatics.rdkb.constants.RDKBTestConstants;
 import com.automatics.rdkb.utils.wifi.BroadBandWiFiUtils;
 import com.automatics.rdkb.utils.wifi.BroadBandWifiWhixUtils;
 import com.automatics.tap.AutomaticsTapApi;
@@ -1126,266 +1127,536 @@ public class ConnectedNattedClientsUtils {
 	public static boolean connectToSSID(Dut device, AutomaticsTapApi tapEnv, String ssid, String password) {
 		return connectToSSID(device, tapEnv, ssid, password, false);
 	}
-	
-    /**
-     * This method execute commands on provided settop , based on its OS type and model , to connect to given SSID and
-     * get execution time the provided security mode for connection
-     * 
-     * @param clientSettop
-     *            Settop object
-     * @param tapEnv
-     *            Tap environment
-     * @param ssid
-     *            SSID to connect to
-     * @param password
-     *            Password for connecting to SSID
-     * @param securityMode
-     *            Security mode for conenction.By default, conenction mode is WPA2PSK and encryption is AES.If user want
-     *            open conenction,the string to be provided for this field is "open"
-     * @param isSsidHidden
-     *            true, if SSID to connect is hidden.
-     * @return time difference before and after wifi connection
-     * @refactor Athira
-     */
-    public static long connectToSSIDForPerfTest(Dut device, Dut clientDevice, AutomaticsTapApi tapEnv, String ssid,
-	    String password, String securityMode, boolean isSsidHidden) {
-	long timeOfConnection = 0;
-	Device tapDevice = (Device) clientDevice;
-	
-	if (tapDevice.isLinux()) {
-	    timeOfConnection = connectToLinuxForPerfTest(device, clientDevice, tapEnv, ssid, password);
-	} else if (tapDevice.isWindows()) {
-	    timeOfConnection = connectToWindowsForPerfTest(device, clientDevice, tapEnv, ssid, password, securityMode,
-		    isSsidHidden);
-	} else if (tapDevice.isRaspbianLinux()) {
-	    // TODO inserted by rohinic [Nov 8, 2017 11:15:42 AM]
-	}
-	return timeOfConnection;
-    }
-    
-    /**
-     * 
-     * This method executes commands on provided settop , based on its OS type and model , to connect to given SSID and
-     * get execution time
-     * 
-     * @param clientDevice
-     *            Dut object
-     * @param tapEnv
-     *            Tap environment
-     * @param ssid
-     *            SSID to connect to
-     * @param password
-     *            Password for connecting to SSID
-     * @param isSsidHidden
-     *            true, if SSID to connect is hidden.
-     * @return time difference before and after wifi connection
-     * @refactor Athira
-     */
-    public static long connectToSSIDForPerfTest(Dut device, Dut clientDevice, AutomaticsTapApi tapEnv, String ssid,
-	    String password, boolean isSsidHidden) {
-	long timeOfConnection = 0;
-	Device tapDevice = (Device) clientDevice;
-	if (tapDevice.isLinux()) {
-	    timeOfConnection = connectToLinuxForPerfTest(device, clientDevice, tapEnv, ssid, password);
-	} else if (tapDevice.isWindows()) {
-	    timeOfConnection = connectToWindowsForPerfTest(device, clientDevice, tapEnv, ssid, password, null,
-		    isSsidHidden);
-	} else if (tapDevice.isRaspbianLinux()) {
-	    // TODO inserted by rohinic [Nov 8, 2017 11:15:42 AM]
-	}
-	return timeOfConnection;
-    }
-    
-    /**
-     * 
-     * This method connects the LINUX device to wifi by specifying the ssid and password
-     * 
-     * @param clientDevice
-     *            Dut object
-     * @param tapEnv
-     *            Tap environment
-     * @param ssid
-     *            SSID to connect to
-     * @param password
-     *            Password for connecting to SSID
-     * @return time difference before and after wifi connection
-     */
-    private static long connectToLinuxForPerfTest(Dut device, Dut clientDevice, AutomaticsTapApi tapEnv, String ssid,
-	    String passwordwifi) {
-	String command = "";
-	long startTime;
-	long endTime = 0;
-	long averageTime = 0;
-	String response = "";
-	startTime = System.currentTimeMillis();
-	String gatewayIp = null;
-	Device tapDevice = (Device) clientDevice;
-	String host = tapDevice.getNatAddress();
-	String username = tapDevice.getUsername();
-	String password = tapDevice.getPassword();
-	String port = tapDevice.getNatPort();
-	SshConnection sshConnection = null;
-	gatewayIp = BroadBandWiFiUtils.getGatewayIpOfDevice(device);
 
-	String[] commandToConnect = { CONNECT_LINUX.replaceAll("<ssid>", ssid).replaceAll("<password>", passwordwifi) };
-	String[] commandToPing = { BroadBandTestConstants.STRING_PING_TO_LINUX.replace("<IPADDRESS>", gatewayIp) };
+	/**
+	 * This method execute commands on provided settop , based on its OS type and
+	 * model , to connect to given SSID and get execution time the provided security
+	 * mode for connection
+	 * 
+	 * @param clientSettop Settop object
+	 * @param tapEnv       Tap environment
+	 * @param ssid         SSID to connect to
+	 * @param password     Password for connecting to SSID
+	 * @param securityMode Security mode for conenction.By default, conenction mode
+	 *                     is WPA2PSK and encryption is AES.If user want open
+	 *                     conenction,the string to be provided for this field is
+	 *                     "open"
+	 * @param isSsidHidden true, if SSID to connect is hidden.
+	 * @return time difference before and after wifi connection
+	 * @refactor Athira
+	 */
+	public static long connectToSSIDForPerfTest(Dut device, Dut clientDevice, AutomaticsTapApi tapEnv, String ssid,
+			String password, String securityMode, boolean isSsidHidden) {
+		long timeOfConnection = 0;
+		Device tapDevice = (Device) clientDevice;
 
-	try {
-	    StringBuffer commandString = new StringBuffer();
-	    commandString.append(commandToConnect[0]);
-	    String formattedCommands = commandString.toString();
-	    sshConnection = new SshConnection(host, Integer.parseInt(port), username, password);
-	    startTime = System.currentTimeMillis();
-	    sshConnection.send(formattedCommands, 1000);
-	    response = sshConnection.getSettopResponse();
-	    LOGGER.info("[SSH EXECUTION] : Executed command " + formattedCommands
-		    + " on connected client setup : Mac Address [" + clientDevice.getHostMacAddress() + "] IP Address ["
-		    + host + "] and Port Number [" + port + "]" + "\n[SSH EXECUTION] : Result - \n" + response);
-	    if (CommonMethods.isNotNull(response) && response.contains(CONNECT_LINUX_SUCCESS_MESSAGE)) {
-		commandString = new StringBuffer();
-		commandString.append(commandToPing[0]);
-		formattedCommands = commandString.toString();
-		sshConnection.send(formattedCommands, 1000);
-		response = sshConnection.getSettopResponse();
-		endTime = System.currentTimeMillis();
-		LOGGER.info("[SSH EXECUTION] : Executed command " + formattedCommands
-			+ " on connected client setup : Mac Address [" + clientDevice.getHostMacAddress()
-			+ "] IP Address [" + host + "] and Port Number [" + port + "]"
-			+ "\n[SSH EXECUTION] : Result - \n" + response);
-		if ((response.contains(BroadBandTestConstants.STRING_LINUX_PING_RESPONSE))
-			&& CommonMethods.isNotNull(response)) {
-		    LOGGER.info("END CAPTURING TIME");
-		    averageTime = endTime - startTime;
-		} else {
-		    LOGGER.error("Ping statistics response from device is greater than 0% loss");
+		if (tapDevice.isLinux()) {
+			timeOfConnection = connectToLinuxForPerfTest(device, clientDevice, tapEnv, ssid, password);
+		} else if (tapDevice.isWindows()) {
+			timeOfConnection = connectToWindowsForPerfTest(device, clientDevice, tapEnv, ssid, password, securityMode,
+					isSsidHidden);
 		}
-	    }
-
-	} catch (Exception e) {
-	    LOGGER.error("[SSH FAILED] : " + host + ":" + port + e.getMessage());
-	    LOGGER.error("[SSH FAILED] : " + host + ":" + port + " Looks like this device is not properly configured");
-	} finally {
-	    if (null != sshConnection) {
-		sshConnection.disconnect();
-	    }
-	}
-	String connectStatus = CONNECT_STATUS_COMMAND_LINUX.replaceAll("<ssid>", ssid);
-	String output = tapEnv.executeCommandOnOneIPClients(clientDevice, connectStatus);
-	command = DISCONNECT_LINUX.replaceAll("<ssid>", ssid + " " + output);
-	response = tapEnv.executeCommandOnOneIPClients(clientDevice, command);
-	if (CommonMethods.isNotNull(response) && response.contains(DISCONNECT_LINUX_SUCCESS_MESSAGE)) {
-	    LOGGER.info("Dissconnected from WIFI SSID successfully");
+		return timeOfConnection;
 	}
 
-	return averageTime;
-    }
-    
-    /**
-     * 
-     * This method connects the WINDOWS device to wifi by specifying the ssid and password
-     * 
-     * @param clientDevice
-     *            Dut object
-     * @param tapEnv
-     *            Tap environment
-     * @param ssid
-     *            SSID to connect to
-     * @param password
-     *            Password for connecting to SSID
-     * @param securityMode
-     *            Security mode with which connection has to be established.
-     * @param isSsidHidden
-     *            true, if SSID to connect is Hidden.
-     * @return status of connection
-     * @refactor Athira
-     */
-    private static long connectToWindowsForPerfTest(Dut device, Dut clientDevice, AutomaticsTapApi tapEnv, String ssid,
-	    String passwordone, String securityMode, boolean isSsidHidden) {
-	String gatewayIp;
-	boolean proceedToConnect = true;
-	long endTime = 0;
-	long connectionTime = 0;
-	long startTime = 0;
-	String response = "";
-	String pingLoss = null;
-	Device tapDevice = (Device) clientDevice;
-	// Retriving Connected client values
-	String host = tapDevice.getNatAddress();
-	String username = tapDevice.getUsername();
-	String password = tapDevice.getPassword();
-	String port = tapDevice.getNatPort();
-	SshConnection sshConnection = null;
-	// Adding Profile to Connected client
-	if (isProfileAvailable(clientDevice, tapEnv, ssid)) {
-	    LOGGER.info("[TEST LOG] : Creating profile with ssid & password....");
-	    proceedToConnect = addWifiProfileAndConnect(clientDevice, tapEnv, ssid, passwordone, securityMode,
-		    isSsidHidden);
+	/**
+	 * 
+	 * This method executes commands on provided settop , based on its OS type and
+	 * model , to connect to given SSID and get execution time
+	 * 
+	 * @param clientDevice Dut object
+	 * @param tapEnv       Tap environment
+	 * @param ssid         SSID to connect to
+	 * @param password     Password for connecting to SSID
+	 * @param isSsidHidden true, if SSID to connect is hidden.
+	 * @return time difference before and after wifi connection
+	 * @refactor Athira
+	 */
+	public static long connectToSSIDForPerfTest(Dut device, Dut clientDevice, AutomaticsTapApi tapEnv, String ssid,
+			String password, boolean isSsidHidden) {
+		long timeOfConnection = 0;
+		Device tapDevice = (Device) clientDevice;
+		if (tapDevice.isLinux()) {
+			timeOfConnection = connectToLinuxForPerfTest(device, clientDevice, tapEnv, ssid, password);
+		} else if (tapDevice.isWindows()) {
+			timeOfConnection = connectToWindowsForPerfTest(device, clientDevice, tapEnv, ssid, password, null,
+					isSsidHidden);
+		}
+		return timeOfConnection;
 	}
-	// Retrieving Gateway IP
-	gatewayIp = BroadBandWiFiUtils.getGatewayIpOfDevice(device);
-	if (proceedToConnect) {
-	    String commandToConnect = CONNECT_PROFILE_WINDOWS.replaceAll("<ssid>", ssid);
-	    String commandToPing = BroadBandTestConstants.STRING_PING_TO_WINDOWS.replace("<IPADDRESS>", gatewayIp);
-	    try {
-		// Executing command'netsh wlan connect profile=<ssid>' in Connected client
-		sshConnection = new SshConnection(host, Integer.parseInt(port), username, password);
+
+	/**
+	 * 
+	 * This method connects the LINUX device to wifi by specifying the ssid and
+	 * password
+	 * 
+	 * @param clientDevice Dut object
+	 * @param tapEnv       Tap environment
+	 * @param ssid         SSID to connect to
+	 * @param password     Password for connecting to SSID
+	 * @return time difference before and after wifi connection
+	 */
+	private static long connectToLinuxForPerfTest(Dut device, Dut clientDevice, AutomaticsTapApi tapEnv, String ssid,
+			String passwordwifi) {
+		String command = "";
+		long startTime;
+		long endTime = 0;
+		long averageTime = 0;
+		String response = "";
 		startTime = System.currentTimeMillis();
-		sshConnection.send(commandToConnect, 1000);
-		response = sshConnection.getDefaultResponse();
-		LOGGER.info("[SSH EXECUTION] : Executed command " + commandToConnect
-			+ " on connected client setup : Mac Address [" + clientDevice.getHostMacAddress()
-			+ "] IP Address [" + host + "] and Port Number [" + port + "]"
-			+ "\n[SSH EXECUTION] : Result - \n" + response);
-		if (CommonMethods.isNotNull(response) && BroadBandCommonUtils.patternSearchFromTargetString(response,
-			CONNECT_WINDOWS_SUCCESS_MESSAGE)) {
-		    // Executing command'ping ' in connecting client
-		    sshConnection.send(commandToPing, 1000);
-		    response = sshConnection.getDefaultResponse();
-		    endTime = System.currentTimeMillis();
-		    LOGGER.info("[SSH EXECUTION] : Executed command " + commandToPing
-			    + " on connected client setup : Mac Address [" + clientDevice.getHostMacAddress()
-			    + "] IP Address [" + host + "] and Port Number [" + port + "]"
-			    + "\n[SSH EXECUTION] : Result - \n" + response);
-		    try {
-			// Retrieving ping percentage from response
-			pingLoss = CommonMethods
-				.patternFinderToReturnAllMatchedString(response,
-					BroadBandConnectedClientTestConstants.PATTERN_MATCHER_PING_RESPONSE_WINDOWS)
-				.get(BroadBandTestConstants.CONSTANT_3);
-			if (CommonMethods.isNotNull(pingLoss) && pingLoss.equals(BroadBandTestConstants.STRING_ZERO)) {
-			    LOGGER.info("END CAPTURING TIME");
-			    connectionTime = endTime - startTime;
-			} else {
-			    LOGGER.error("Ping statistics response from device is greater than 0% loss ; LOSS = "
-				    + pingLoss);
+		String gatewayIp = null;
+		Device tapDevice = (Device) clientDevice;
+		String host = tapDevice.getNatAddress();
+		String username = tapDevice.getUsername();
+		String password = tapDevice.getPassword();
+		String port = tapDevice.getNatPort();
+		SshConnection sshConnection = null;
+		gatewayIp = BroadBandWiFiUtils.getGatewayIpOfDevice(device);
+
+		String[] commandToConnect = { CONNECT_LINUX.replaceAll("<ssid>", ssid).replaceAll("<password>", passwordwifi) };
+		String[] commandToPing = { BroadBandTestConstants.STRING_PING_TO_LINUX.replace("<IPADDRESS>", gatewayIp) };
+
+		try {
+			StringBuffer commandString = new StringBuffer();
+			commandString.append(commandToConnect[0]);
+			String formattedCommands = commandString.toString();
+			sshConnection = new SshConnection(host, Integer.parseInt(port), username, password);
+			startTime = System.currentTimeMillis();
+			sshConnection.send(formattedCommands, 1000);
+			response = sshConnection.getSettopResponse();
+			LOGGER.info("[SSH EXECUTION] : Executed command " + formattedCommands
+					+ " on connected client setup : Mac Address [" + clientDevice.getHostMacAddress() + "] IP Address ["
+					+ host + "] and Port Number [" + port + "]" + "\n[SSH EXECUTION] : Result - \n" + response);
+			if (CommonMethods.isNotNull(response) && response.contains(CONNECT_LINUX_SUCCESS_MESSAGE)) {
+				commandString = new StringBuffer();
+				commandString.append(commandToPing[0]);
+				formattedCommands = commandString.toString();
+				sshConnection.send(formattedCommands, 1000);
+				response = sshConnection.getSettopResponse();
+				endTime = System.currentTimeMillis();
+				LOGGER.info("[SSH EXECUTION] : Executed command " + formattedCommands
+						+ " on connected client setup : Mac Address [" + clientDevice.getHostMacAddress()
+						+ "] IP Address [" + host + "] and Port Number [" + port + "]"
+						+ "\n[SSH EXECUTION] : Result - \n" + response);
+				if ((response.contains(BroadBandTestConstants.STRING_LINUX_PING_RESPONSE))
+						&& CommonMethods.isNotNull(response)) {
+					LOGGER.info("END CAPTURING TIME");
+					averageTime = endTime - startTime;
+				} else {
+					LOGGER.error("Ping statistics response from device is greater than 0% loss");
+				}
 			}
-		    } catch (IndexOutOfBoundsException exception) {
-			// If ping failure Pattern cant retrieve pattern group throws IndexOutOfBoundsException
-			LOGGER.error("Ping failure in connected client RESPONSE :\n" + response);
-		    } catch (Exception exception) {
-			LOGGER.error(
-				"Exception caught while executing ping in Connected client " + exception.getMessage());
-		    }
+
+		} catch (Exception e) {
+			LOGGER.error("[SSH FAILED] : " + host + ":" + port + e.getMessage());
+			LOGGER.error("[SSH FAILED] : " + host + ":" + port + " Looks like this device is not properly configured");
+		} finally {
+			if (null != sshConnection) {
+				sshConnection.disconnect();
+			}
+		}
+		String connectStatus = CONNECT_STATUS_COMMAND_LINUX.replaceAll("<ssid>", ssid);
+		String output = tapEnv.executeCommandOnOneIPClients(clientDevice, connectStatus);
+		command = DISCONNECT_LINUX.replaceAll("<ssid>", ssid + " " + output);
+		response = tapEnv.executeCommandOnOneIPClients(clientDevice, command);
+		if (CommonMethods.isNotNull(response) && response.contains(DISCONNECT_LINUX_SUCCESS_MESSAGE)) {
+			LOGGER.info("Dissconnected from WIFI SSID successfully");
 		}
 
-	    } catch (Exception e) {
-		LOGGER.error("[SSH FAILED] : " + host + ":" + port + e.getMessage());
-		LOGGER.error(
-			"[SSH FAILED] : " + host + ":" + port + " Looks like this device is not properly configured");
-	    } finally {
-		if (null != sshConnection) {
-		    sshConnection.disconnect();
-		}
-	    }
-	    LOGGER.info("[TEST LOG] : Disconnecting conenctivitty with ssid" + ssid);
-
-	    response = tapEnv.executeCommandOnOneIPClients(clientDevice, DISCONNECT_WINDOWS);
-	    if (CommonMethods.isNotNull(response) && response.contains(DISCONNECT_WINDOWS_SUCCESS_MESSAGE)) {
-		LOGGER.info("Dissconnected from WIFI SSID successfully");
-	    }
+		return averageTime;
 	}
-	return connectionTime;
 
-    }
-    
+	/**
+	 * 
+	 * This method connects the WINDOWS device to wifi by specifying the ssid and
+	 * password
+	 * 
+	 * @param clientDevice Dut object
+	 * @param tapEnv       Tap environment
+	 * @param ssid         SSID to connect to
+	 * @param password     Password for connecting to SSID
+	 * @param securityMode Security mode with which connection has to be
+	 *                     established.
+	 * @param isSsidHidden true, if SSID to connect is Hidden.
+	 * @return status of connection
+	 * @refactor Athira
+	 */
+	private static long connectToWindowsForPerfTest(Dut device, Dut clientDevice, AutomaticsTapApi tapEnv, String ssid,
+			String passwordone, String securityMode, boolean isSsidHidden) {
+		String gatewayIp;
+		boolean proceedToConnect = true;
+		long endTime = 0;
+		long connectionTime = 0;
+		long startTime = 0;
+		String response = "";
+		String pingLoss = null;
+		Device tapDevice = (Device) clientDevice;
+		// Retriving Connected client values
+		String host = tapDevice.getNatAddress();
+		String username = tapDevice.getUsername();
+		String password = tapDevice.getPassword();
+		String port = tapDevice.getNatPort();
+		SshConnection sshConnection = null;
+		// Adding Profile to Connected client
+		if (isProfileAvailable(clientDevice, tapEnv, ssid)) {
+			LOGGER.info("[TEST LOG] : Creating profile with ssid & password....");
+			proceedToConnect = addWifiProfileAndConnect(clientDevice, tapEnv, ssid, passwordone, securityMode,
+					isSsidHidden);
+		}
+		// Retrieving Gateway IP
+		gatewayIp = BroadBandWiFiUtils.getGatewayIpOfDevice(device);
+		if (proceedToConnect) {
+			String commandToConnect = CONNECT_PROFILE_WINDOWS.replaceAll("<ssid>", ssid);
+			String commandToPing = BroadBandTestConstants.STRING_PING_TO_WINDOWS.replace("<IPADDRESS>", gatewayIp);
+			try {
+				// Executing command'netsh wlan connect profile=<ssid>' in Connected client
+				sshConnection = new SshConnection(host, Integer.parseInt(port), username, password);
+				startTime = System.currentTimeMillis();
+				sshConnection.send(commandToConnect, 1000);
+				response = sshConnection.getDefaultResponse();
+				LOGGER.info("[SSH EXECUTION] : Executed command " + commandToConnect
+						+ " on connected client setup : Mac Address [" + clientDevice.getHostMacAddress()
+						+ "] IP Address [" + host + "] and Port Number [" + port + "]"
+						+ "\n[SSH EXECUTION] : Result - \n" + response);
+				if (CommonMethods.isNotNull(response) && BroadBandCommonUtils.patternSearchFromTargetString(response,
+						CONNECT_WINDOWS_SUCCESS_MESSAGE)) {
+					// Executing command'ping ' in connecting client
+					sshConnection.send(commandToPing, 1000);
+					response = sshConnection.getDefaultResponse();
+					endTime = System.currentTimeMillis();
+					LOGGER.info("[SSH EXECUTION] : Executed command " + commandToPing
+							+ " on connected client setup : Mac Address [" + clientDevice.getHostMacAddress()
+							+ "] IP Address [" + host + "] and Port Number [" + port + "]"
+							+ "\n[SSH EXECUTION] : Result - \n" + response);
+					try {
+						// Retrieving ping percentage from response
+						pingLoss = CommonMethods
+								.patternFinderToReturnAllMatchedString(response,
+										BroadBandConnectedClientTestConstants.PATTERN_MATCHER_PING_RESPONSE_WINDOWS)
+								.get(BroadBandTestConstants.CONSTANT_3);
+						if (CommonMethods.isNotNull(pingLoss) && pingLoss.equals(BroadBandTestConstants.STRING_ZERO)) {
+							LOGGER.info("END CAPTURING TIME");
+							connectionTime = endTime - startTime;
+						} else {
+							LOGGER.error("Ping statistics response from device is greater than 0% loss ; LOSS = "
+									+ pingLoss);
+						}
+					} catch (IndexOutOfBoundsException exception) {
+						// If ping failure Pattern cant retrieve pattern group throws
+						// IndexOutOfBoundsException
+						LOGGER.error("Ping failure in connected client RESPONSE :\n" + response);
+					} catch (Exception exception) {
+						LOGGER.error(
+								"Exception caught while executing ping in Connected client " + exception.getMessage());
+					}
+				}
+
+			} catch (Exception e) {
+				LOGGER.error("[SSH FAILED] : " + host + ":" + port + e.getMessage());
+				LOGGER.error(
+						"[SSH FAILED] : " + host + ":" + port + " Looks like this device is not properly configured");
+			} finally {
+				if (null != sshConnection) {
+					sshConnection.disconnect();
+				}
+			}
+			LOGGER.info("[TEST LOG] : Disconnecting conenctivitty with ssid" + ssid);
+
+			response = tapEnv.executeCommandOnOneIPClients(clientDevice, DISCONNECT_WINDOWS);
+			if (CommonMethods.isNotNull(response) && response.contains(DISCONNECT_WINDOWS_SUCCESS_MESSAGE)) {
+				LOGGER.info("Dissconnected from WIFI SSID successfully");
+			}
+		}
+		return connectionTime;
+
+	}
+
+	/**
+	 * 
+	 * This method disconnects wifi from an SSID.
+	 * 
+	 * @param device Dut object
+	 * @param tapEnv AutomaticsTapApi environment
+	 * @param ssid   SSID to connect to
+	 * @return returns status of operation
+	 * @refactor Govardhan
+	 */
+	public static boolean disconnectSSID(Dut device, AutomaticsTapApi tapEnv, String ssid) {
+		boolean retrunStatus = false;
+		Device ecastDevice = (Device) device;
+		if (ecastDevice.isLinux()) {
+			String connectStatus = CONNECT_STATUS_COMMAND_LINUX.replaceAll("<ssid>", ssid);
+			String output = tapEnv.executeCommandOnOneIPClients(device, connectStatus);
+			String command = DISCONNECT_LINUX.replaceAll("<ssid>", ssid + " " + output);
+			String response = tapEnv.executeCommandOnOneIPClients(device, command);
+			if (CommonMethods.isNotNull(response) && response.contains(DISCONNECT_LINUX_SUCCESS_MESSAGE)) {
+				retrunStatus = true;
+			}
+		} else if (ecastDevice.isWindows()) {
+			LOGGER.info("[TEST LOG] : Disconnecting conenctivitty with ssid" + ssid);
+			String response = tapEnv.executeCommandOnOneIPClients(device, DISCONNECT_WINDOWS);
+			if (CommonMethods.isNotNull(response) && response.contains(DISCONNECT_WINDOWS_SUCCESS_MESSAGE)) {
+				retrunStatus = true;
+			}
+		}
+		return retrunStatus;
+	}
+
+	/**
+	 * 
+	 * This method is to verify ping command execution on the WiFi Client Device.
+	 * 
+	 * @param wifiClientDevice {@link Dut}
+	 * @param tapEnv           {@link AutomaticsTapApi}
+	 * @param ipAddress        String representing the IP Address.
+	 * @return returns status of operation
+	 * @refactor Alan_Bivera
+	 */
+	public static boolean verifyPingConnection(Dut wifiClientDevice, AutomaticsTapApi tapEnv, String ipAddress) {
+		LOGGER.debug("STARTING METHOD : verifyPingConnection()");
+		boolean result = false;
+		Device ecastSettop = (Device) wifiClientDevice;
+		LOGGER.info("OS TYPE OF THE WIFI CLIENT: " + ecastSettop.getOsType());
+		String pingCommand = ecastSettop.isLinux()
+				? (CommonMethods.isIpv6Address(ipAddress) ? BroadBandCommandConstants.CMD_PING_LINUX_IPV6
+						: BroadBandCommandConstants.CMD_PING_LINUX)
+				: BroadBandCommandConstants.CMD_PING_WINDOWS;
+		LOGGER.info("Ping Command: " + pingCommand);
+		LOGGER.info("BroadBandCommonUtils.concatStringUsingStringBuffer(pingCommand, ipAddress) is: "
+				+ BroadBandCommonUtils.concatStringUsingStringBuffer(pingCommand, ipAddress));
+		String response = tapEnv.executeCommandOnOneIPClients(wifiClientDevice,
+				BroadBandCommonUtils.concatStringUsingStringBuffer(pingCommand, ipAddress));
+		LOGGER.info("response is: " + response);
+
+		if (CommonMethods.isNotNull(response) && !validatePingResponse(response)) {
+			response = ecastSettop.isLinux() || ecastSettop.isMacOS()
+					? BroadBandCommonUtils.patternFinderMatchPositionBased(response,
+							ecastSettop.isLinux()
+									? BroadBandConnectedClientTestConstants.PATTERN_MATCHER_PING_RESPONSE_LINUX
+									: BroadBandConnectedClientTestConstants.PATTERN_MATCHER_PING_RESPONSE_MAC,
+							BroadBandTestConstants.CONSTANT_3)
+					: BroadBandCommonUtils.patternFinderMatchPositionBased(response,
+							BroadBandConnectedClientTestConstants.PATTERN_MATCHER_PING_RESPONSE_WINDOWS,
+							BroadBandTestConstants.CONSTANT_4);
+			if (CommonMethods.isNotNull(response)) {
+				try {
+					int iActualValue = Integer.parseInt(response);
+					result = iActualValue != BroadBandTestConstants.PERCENTAGE_VALUE_HUNDRED;
+				} catch (NumberFormatException numberFormatException) {
+					// Log & Suppress the Exception
+					LOGGER.error(numberFormatException.getMessage());
+				}
+			}
+		}
+		LOGGER.debug("ENDING METHOD : verifyPingConnection()");
+		return result;
+	}
+
+	/**
+	 * 
+	 * This method verifies the wifi connect/disconnect status to/from an SSID.
+	 * 
+	 * @param device                  Dut object
+	 * @param tapEnv                  Tap environment
+	 * @param ssid                    SSID to connect to
+	 * @param shouldVerifyConnectStat boolean parameter indication whether to cehck
+	 *                                for connect status or disconnect status.True
+	 *                                corresponds to connectStatus
+	 * @return returns status of operation
+	 * @refactor Athira
+	 */
+	public static boolean verifyWifiConnectionStatus(Dut device, AutomaticsTapApi tapEnv, String ssid,
+			boolean shouldVerifyConnectStat) {
+		boolean retrunStatus = false;
+		Device connDevice = (Device) device;
+		LOGGER.info("[TEST LOG] : Verifying conenctivitty with ssid " + ssid);
+		if (connDevice.isLinux()) {
+			String response = tapEnv.executeCommandOnOneIPClients(connDevice, VERIFY_CONNECT_LINUX);
+			if (CommonMethods.isNotNull(response) && response.contains(VERIFY_CONNECT_LINUX_MESSAGE)) {
+				if (shouldVerifyConnectStat) {
+					retrunStatus = true;
+				}
+			} else {
+				if (!shouldVerifyConnectStat) {
+					retrunStatus = true;
+				}
+			}
+		} else if (connDevice.isWindows()) {
+			String response = tapEnv.executeCommandOnOneIPClients(connDevice,
+					CMD_WINDOWS_WIFI_INTERFACE_CONNECTION_STATUS);
+			String connectionString = CommonMethods.patternFinder(response, PATTERN_WIFI_INTERFACE_CONNECTION_STATUS);
+			if (shouldVerifyConnectStat) {
+				retrunStatus = CommonMethods.isNotNull(connectionString)
+						&& WIFI_INTERFACE_CONNECTION_STATUS.equalsIgnoreCase(connectionString.trim());
+			} else {
+				retrunStatus = CommonMethods.isNull(connectionString) || (CommonMethods.isNotNull(connectionString)
+						&& !WIFI_INTERFACE_CONNECTION_STATUS.equalsIgnoreCase(connectionString.trim()));
+			}
+		}
+		return retrunStatus;
+	}
+	
+	/**
+	 * 
+	 * This method is to verify network connectivity using IPV4 or IPV6 address
+	 * 
+	 * 
+	 * @param tapEnv      {@link AutomaticsTapApi}
+	 * @param device      {@link Dut}
+	 * @param IPV4Address boolean parameter indication to conenct with IPV4 address
+	 *                    if passed as true and IPV6 address if passed as false
+	 * @return returns status of operation
+	 */
+	public static boolean verifyNetworkConnection(Dut device, AutomaticsTapApi tapEnv, boolean IPV4Address) {
+		boolean status = false;
+		Device ecastDevice = (Device) device;
+		String response = null;
+		LOGGER.info("OS Type of the client obtained is: " + ecastDevice.getOsType());
+		LOGGER.debug("STARTING METHOD : verifyNetworkConnection()");
+		if (ecastDevice.isLinux()) {
+			LOGGER.info("Getting wifi connection interface Name for linux client");
+			String interfaceName = getWiFiInterfaceNameForLinuxClients(tapEnv, device);
+			if (CommonMethods.isNotNull(interfaceName)) {
+				LOGGER.info("Successful retrieved the wifi connection interface name for linux client, "
+						+ "checking n/w connectivity");
+				response = IPV4Address
+						? tapEnv.executeCommandOnOneIPClients(ecastDevice,
+								BroadBandConnectedClientTestConstants.CMD_LINUX_NW_CONNECTION_USING_IPV4_IP
+										.replaceAll("<interfaceName>", interfaceName))
+						: tapEnv.executeCommandOnOneIPClients(ecastDevice,
+								BroadBandConnectedClientTestConstants.CMD_LINUX_NW_CONNECTION_USING_IPV6_IP
+										.replaceAll("<interfaceName>", interfaceName));
+				status = CommonMethods.isNotNull(response);
+			} else {
+				LOGGER.error("Failed to retrieve the Wifi Connection Interface Name using command "
+						+ "'nmcli dev status | grep wifi'");
+			}
+		} else if (ecastDevice.isWindows()) {
+			LOGGER.info("Checking network connectivity for the windows client");
+			response = tapEnv.executeCommandOnOneIPClients(ecastDevice,
+					BroadBandConnectedClientTestConstants.CMD_WINDOWS_NW_CONNECTION);
+			status = (CommonMethods.isNotNull(response)
+					&& (CommonUtils.patternSearchFromTargetString(response, "bytes=")
+							|| CommonUtils.patternSearchFromTargetString(response, "time=")));
+		}
+		LOGGER.debug("ENDING METHOD : verifyNetworkConnection()");
+		return status;
+	}
+	
+	/**
+	 * 
+	 * This method is to get WiFi Interface Name for linux clients
+	 * 
+	 * @param clientDevice Dut object
+	 * @param tapEnv       AutomaticsTapApi environment
+	 * 
+	 * @return returns interfaceName
+	 * @refactor Govardhan
+	 */
+	public static String getWiFiInterfaceNameForLinuxClients(AutomaticsTapApi tapEnv, Dut clientDevice) {
+		String interfaceName = null;
+		String response = null;
+		Device ecastDevice = (Device) clientDevice;
+		LOGGER.debug("STARTING METHOD : getWiFiInterfaceNameForLinuxClients()");
+		if (ecastDevice.isLinux()) {
+			response = tapEnv.executeCommandOnOneIPClients(ecastDevice,
+					BroadBandConnectedClientTestConstants.CMD_LINUX_GET_INTERFACE_NAME);
+			if (CommonMethods.isNotNull(response)) {
+				response = response.replaceAll(BroadBandTestConstants.PATTERN_MATCHER_FOR_MULTIPLE_SPACES,
+						RDKBTestConstants.BLANK);
+				interfaceName = CommonMethods.patternFinder(response,
+						BroadBandTestConstants.PATTERN_MATCHER_WIFI_INTERFACE_CONN_CLIENT_LINUX).trim();
+				LOGGER.info("Interface name obtained is : " + interfaceName);
+			}
+		}
+		LOGGER.debug("ENDING METHOD : getWiFiInterfaceNameForLinuxClients()");
+		return interfaceName;
+	}
+	
+	/**
+	 * 
+	 * This method is to retrieve the average time taken to ping the given host.
+	 * 
+	 * @param tapEnv           {@link AutomaticsTapApi}
+	 * @param wifiClientDevice {@link Dut}
+	 * @param host             String representing the host to which ping needs to
+	 *                         be performed.
+	 * 
+	 * @return Integer representing the Average Time from the Ping Response.
+	 * @refactor Govardhan
+	 * 
+	 */
+	public static int getPingResponseAvgTime(Dut wifiClientDevice, AutomaticsTapApi tapEnv, String host) {
+		LOGGER.debug("STARTING METHOD : getPingResponseAvgTime()");
+		int iPingResponseAvgTime = 0;
+		Device ecastDevice = (Device) wifiClientDevice;
+		LOGGER.info("OS TYPE OF THE WIFI CLIENT: " + ecastDevice.getOsType());
+		String pingCommand = ecastDevice.isLinux() ? BroadBandCommandConstants.CMD_PING_LINUX
+				: BroadBandCommandConstants.CMD_PING_WINDOWS;
+		String response = tapEnv.executeCommandOnOneIPClients(wifiClientDevice,
+				BroadBandCommonUtils.concatStringUsingStringBuffer(pingCommand,
+						BroadBandConnectedClientTestConstants.CMD_PING_PACKET_SIZE_OPTION, host));
+		if (CommonMethods.isNotNull(response)) {
+			String avgTime = CommonMethods.patternFinder(response,
+					BroadBandTestConstants.PATTERN_MATCHER_PING_RESPONSE_AVG_TIME);
+			try {
+				iPingResponseAvgTime = Integer.parseInt(avgTime);
+			} catch (NumberFormatException numberFormatException) {
+				// Log & Suppress the Exception
+				LOGGER.error(numberFormatException.getMessage());
+			}
+		}
+		LOGGER.info("PING RESPONSE AVG TIME: " + iPingResponseAvgTime);
+		LOGGER.debug("ENDING METHOD : getPingResponseAvgTime()");
+		return iPingResponseAvgTime;
+	}
+	
+	/**
+	 * 
+	 * This method verifies the wifi connect/disconnect status to/from an SSID.
+	 * 
+	 * @param device                  Dut object
+	 * @param tapEnv                  AutomaticsTapApi environment
+	 * @param ssid                    SSID to connect to
+	 * @param shouldVerifyConnectStat boolean parameter indication whether to cehck
+	 *                                for connect status or disconnect status.True
+	 *                                corresponds to connectStatus
+	 * @return returns status of operation
+	 * @refactor Govardhan
+	 */
+	public static boolean verifyConnectToSSID(Dut device, AutomaticsTapApi tapEnv, String ssid,
+			boolean shouldVerifyConnectStat) {
+		boolean retrunStatus = false;
+		Device ecastDevice = (Device) device;
+		LOGGER.info("[TEST LOG] : Verifying conenctivitty with ssid " + ssid);
+		if (ecastDevice.isLinux()) {
+			String response = tapEnv.executeCommandOnOneIPClients(ecastDevice, VERIFY_CONNECT_LINUX);
+			if (CommonMethods.isNotNull(response) && response.contains(VERIFY_CONNECT_LINUX_MESSAGE)) {
+				if (shouldVerifyConnectStat) {
+					retrunStatus = true;
+				}
+			} else {
+				if (!shouldVerifyConnectStat) {
+					retrunStatus = true;
+				}
+			}
+		} else if (ecastDevice.isWindows()) {
+			String response = tapEnv.executeCommandOnOneIPClients(ecastDevice, VERIFY_CONNECT_WINDOWS);
+			if (CommonMethods.isNotNull(response)) {
+				if (shouldVerifyConnectStat) {
+					retrunStatus = true;
+				}
+			} else {
+				if (!shouldVerifyConnectStat) {
+					retrunStatus = true;
+				}
+			}
+		} else if (ecastDevice.isRaspbianLinux()) {
+			
+		}
+		return retrunStatus;
+	}
+
+
+
 }

@@ -305,8 +305,6 @@ public class BroadBandWebPaUtils {
 		} while ((System.currentTimeMillis() - startTime) < maxDuration
 				&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, pollDuration));
 		// Checking for null value of parameter
-		/* result = CommonMethods.isNotNull(response); */
-		/* if (result) { */
 		// Comparing obtained value with value to be set
 		result = CommonMethods.isNotNull(response) && response.equalsIgnoreCase(valueToBePassed);
 		if (result) {
@@ -343,7 +341,6 @@ public class BroadBandWebPaUtils {
 						&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, pollDuration));
 			}
 		}
-		/* } */
 		LOGGER.debug("EXITING : setVerifyWebPAInPolledDuration");
 		return result;
 	}

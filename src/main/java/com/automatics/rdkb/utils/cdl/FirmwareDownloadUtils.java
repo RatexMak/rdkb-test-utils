@@ -979,8 +979,8 @@ public class FirmwareDownloadUtils {
      * 
      * @param tapEnv
      *            instance of {@link AutomaticsTapApi}
-     * @param settop
-     *            instance of {@link Settop}
+     * @param device
+     *            instance of {@link Dut}
      */
     public static void deleteXconfUlrOverrideConfigurationFile(AutomaticsTapApi tapEnv, Dut device) {
 	/** Create Empty /nvram/XconfUrlOverride */
@@ -1430,7 +1430,7 @@ public class FirmwareDownloadUtils {
     }
 
     /**
-     * Method to trigger code download using dsl_triggerFirmwareDownload.sh script file
+     * Method to trigger code download using hub4_triggerFirmwareDownload.sh script file
      * 
      * @param tapEnv
      *            instance of {@link AutomaticsTapApi}

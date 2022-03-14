@@ -27,5 +27,11 @@ public class TR69ParamConstants {
     
     /** TR-069 Parameter for device software version. */
     public static final String TR69_PARAM_SOFTWARE_VERSION = "Device.DeviceInfo.SoftwareVersion";
+    
+    /** TR-069 Parameter to get radio channel for 2.4 GHz band */
+    public static final String TR69_PARAM_CHANNEL_NUMBER_2GHZ = "Device.WiFi.Radio.10000.Channel";
+    
+    /**TR69 parameter for 'Device.X_COMCAST-COM_Xcalibur.Client.xconfCheckNow' . */
+    public static final String TR69_XCONF_CHECK_NOW = "Device.X_COMCAST-COM_Xcalibur.Client.xconfCheckNow";
 
 }

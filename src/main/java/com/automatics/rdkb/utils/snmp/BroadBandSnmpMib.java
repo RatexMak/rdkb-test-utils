@@ -31,6 +31,14 @@ public enum BroadBandSnmpMib {
     ECM_DOCS_IF_CM_CMTS_MAC_ADDRESS("docsIfCmCmtsAddress", "1.3.6.1.2.1.10.127.1.2.1.1.1"),
     ECM_DOCS_DEV_CURRENT_SOFTWARE_VERSION("docsDevSwCurrentVers", "1.3.6.1.2.1.69.1.3.5.0"),
     ECM_SERVER_TRANSPORT_PROTOCOL("docsDevSwServerTransportProtocol", "1.3.6.1.2.1.69.1.3.8.0"),
+    ECM_SERVER_TRANSPORT_PROTOCOL_WITHOUT_INDEX("docsDevSwServerTransportProtocol", "1.3.6.1.2.1.69.1.3.8"),
+    ECM_DOCS_DEV_SW_FILE_NAME_WITHOUT_INDEX("docsdevSwFilename", ".1.3.6.1.2.1.69.1.3.2"),
+    ECM_SERVER_ADDRESS_TYPE_CDL_WITHOUT_INDEX("docsDevSwServerAddressType", "1.3.6.1.2.1.69.1.3.6"),
+    ECM_DOCS_DEVSW_ADMIN_STATAUS_WITHOUT_INDEX("docsDevSwAdminStatus", ".1.3.6.1.2.1.69.1.3.3"),
+    ECM_DOCS_DEV_SW_OPER_STATUS_WITHOUT_INDEX("docsDevOperStatus", "1.3.6.1.2.1.69.1.3.4"),
+    ECM_DOCS_DEV_SW_SERVER_ADDRESS_WITHOUT_INDEX("docsDevSwServerAddres", "1.3.6.1.2.1.69.1.3.7"),
+    ECM_FWUPGRADE_AND_FACTORYRESET_WITHOUT_INDEX("rdkbRgDeviceFWupdateAndFactoryReset",".1.3.6.1.4.1.17270.50.2.1.1.1008"),
+    ECM_DOCS_DEV_CURRENT_SOFTWARE_VERSION_WITHOUT_INDEX("docsDevSwCurrentVers", "1.3.6.1.2.1.69.1.3.5"),
     ECM_DOCS_DEV_SW_FILE_NAME("docsdevSwFilename", ".1.3.6.1.2.1.69.1.3.2.0"),
     ECM_SERVER_ADDRESS_TYPE_CDL("docsDevSwServerAddressType", "1.3.6.1.2.1.69.1.3.6.0"),
     ECM_DOCS_DEVSW_ADMIN_STATAUS("docsDevSwAdminStatus", ".1.3.6.1.2.1.69.1.3.3.0"),
@@ -83,6 +91,7 @@ public enum BroadBandSnmpMib {
     ECM_FWUPGRADE_AND_FACTORYRESET("rdkbRgDeviceFWupdateAndFactoryReset","1.3.6.1.4.1.17270.50.2.1.1.1008."),
     ECM_DOCS_DEV_START_CODE_DOWNLOAD("docsDevStartCodeDownload", "1.3.6.1.2.1.69.1.3.3.0"),
     ESTB_SYS_UP_TIME("sysUpTime", ".1.3.6.1.2.1.1.3"),
+    ESTB_RDKB_RUNNING("factoryResetDevice", "1.3.6.1.4.1.17270.50.2.1.1.1006"),
     WIFI_APPLY_SETTINGS("applySettings",".1.3.6.1.4.1.17270.50.2.2.1001"),
 	
     /** OIDs for geting device serial number. */
@@ -140,6 +149,8 @@ public enum BroadBandSnmpMib {
     FACTORY_RESET_DEVICE("FactoryReset","1.3.6.1.4.1.17270.50.2.1.1.1002"),
     ECM_STATIC_WAN_IPV4("rdkbRgDeviceConfigStaticIp", ".1.3.6.1.4.1.17270.50.2.1.4.6", "0"),																							
     ECM_DOCS_DEV_SW_IPV4_SERVER_ADDRESS("docsDevSwipv4ServerAddres", "1.3.6.1.2.1.69.1.3.1"),
+    ECM_DIAGNOSTIC_MODE("diagnosticMode", ".1.3.6.1.4.1.17270.44.1.1.12.0"),
+    ECM_LOG_UPLOAD_FREQUENCY("logUploadFrequency", ".1.3.6.1.4.1.17270.44.1.1.13.0"),
     ECM_BAND_STEERING("rdkbRgDot11BandSteeringEnable",".1.3.6.1.4.1.17270.50.2.2.8.2","0");
     
     private String mibName;

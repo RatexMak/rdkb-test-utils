@@ -648,5 +648,92 @@ public class BroadBandTraceConstants extends RDKBTraceConstants{
     /** Trace Constant for Management Frame Power Control Change */
     public static final String LOG_MESSAGE_MGMT_FRAME_POWER_CONTROL = "X_RDKCENTRAL-COM_ManagementFramePowerControl:";
     
+    /** Log Message WebpaLog for Old firmware version */
+    public static final String LOG_MESSAGE_OLD_FIRMWARE = "oldFirmwareVer :";
+    
+    /** Log Message WebpaLog for current firmware version */
+    public static final String LOG_MESSAGE_CURRENT_FIRMWARE = "cur_firmware_ver value :";    
+    
+    /** Log Message for NTP server Enable TR181 param */
+    public static final String LOG_MESSAGE_DEVICE_TIME_ENABLE = "\""
+ 	    + BroadBandTestConstants.LOG_STRING_ENABLING_NETWORK_TIME + "\"";
+    
+    /** Log message for FactoryReset:CosaDmlDcSetFactoryReset Restoring WiFi to factory defaults in PAMlog.txt.0 */
+    public static final String LOG_MESSAGE_FACTORY_RESET_WIFI = "\"FactoryReset:resetWiFi Restoring WiFi to factory defaults\"";
 
+    /** SNMP Log Message to check the set param */
+    public static final String SNMP_LOG_MESSAGE_SET_CALLED_FOR_PARAM = "SNMP SET called for param";
+    
+    /** SNMP Log Message to check the get param */
+    public static final String SNMP_LOG_MESSAGE_GET_CALLED_FOR_PARAM = "SNMP GET called for param";
+    
+    /** Log Message for HTTP 200 Success Message */
+    public static final String HTTP_SUCCESS_CODE = "200 OK";
+    
+    /** Log Message for HTTP 302 Found Message */
+    public static final String HTTP_FOUND_302_MESSAGE = "302 Found";    
+
+    /** Log Message for connection time out */
+    public static final String CONNECTION_TIMED_OUT = "connection timed out";
+    
+    /** Log Messafe for 100 % packet loss */
+    public static final String PACKET_LOSS_HUNDRED_PERCENT = "100% packet loss";    
+    
+    /** Log message for blacklist */
+    public static final String LOG_MESSAGE_BLACKLIST = "ip_blacklist";    
+
+    /** Log Message for ipset version */
+    public static final String LOG_MESSAGE_IPSET_VERSION = "ipset v6.38, protocol version: 6";
+    
+    /** Log message for DNS Suffix Name */
+    public static final String DNS_Suffix_Name_Hijack = "utopia.net";
+    
+    /** Log message for switch to udhcpc set */
+    public static final String LOG_MESSAGE_DHCPCLIENT_V4 = "dhcpclient_v4";
+    
+    /** Log message for switch to dibbler set */
+    public static final String LOG_MESSAGE_DHCPCLIENT_V6 = "dhcpclient_v6";
+    
+    /** Log message for AutoReboot enabled value */
+    public static final String LOG_MESSAGE_AUTO_PARAM_ENABLE_VALUE_1 = "AutoReboot Set param Enable value 1";
+    
+    /** Log message for auto reboot schedule when AutoReboot is enabled */
+    public static final String LOG_MESSAGE_AUTO_REBOOT_SCHEDULE_ENABLED = "sh /etc/ScheduleAutoReboot.sh 10 1&";
+    
+    /** Log message for AutoReboot disabled value */
+    public static final String LOG_MESSAGE_AUTO_PARAM_ENABLE_VALUE_0 = "AutoReboot Set param Enable value 0";
+    
+    /** Log message for auto reboot schedule when AutoReboot is disabled */
+    public static final String LOG_MESSAGE_AUTO_REBOOT_SCHEDULE_DISABLED = "sh /etc/ScheduleAutoReboot.sh 0 0&";
+    
+    /** Log Message wifi reconnect */
+    public static final String LOG_MESSAGE_WIFI_RECONNECT = "WIFI_RECONNECT_2";
+    
+    /** Log Message connected */
+    public static final String LOG_MESSAGE_CONNECTED = "connected";
+    
+    /** Log Message in  /rdklogs/logs/xconf.txt.0 for rReboot aborted by user */
+    public static final String LOG_MESSAGE_ABORT_REBOOT_USER = "XCONF SCRIPT : Reboot aborted by user";
+    
+    /** Log message for Reboot cause */
+    public static final String LOG_MESSAGE_REBOOT_CAUSE = "\"reboot_cause\"";
+    
+    /** Log message for Reboot reason in reset and reason logs triggered through kernel */
+    public static final String LOG_MESSAGE_REBOOT_REASON_KERNEL = "reboot_cause->[kernel-panic]";
+    
+    /** Log message for Reboot type in reset and reason logs triggered through kernel */
+    public static final String LOG_MESSAGE_REBOOT_TYPE_KERNEL = "reboot_type->[host_watchdog_timer_reset]";
+    
+    /** Log message for Bordcom SRAM debug */
+    public static final String LOG_MESSAGE_SRAM_DUMP = "\"Broadcom SRAM debug dump\"";
+    
+    /** Log message for Bordcom SRAM debug dump start info */
+    public static final String LOG_MESSAGE_SRAM_DUMP_START = "Broadcom SRAM debug dump start";
+    
+    /** Log message for Bordcom SRAM debug dump end info */
+    public static final String LOG_MESSAGE_SRAM_DUMP_END = "Broadcom SRAM debug dump end";
+    
+    /** Log message for Bordcom SRAM debug */
+    public static final String LOG_MESSAGE_PREVIOUS_OOPS_DUMP = "\"PREVIOUS_KERNEL_OOPS_DUMP\"";
+    
 }

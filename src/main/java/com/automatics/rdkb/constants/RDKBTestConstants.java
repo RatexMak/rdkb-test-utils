@@ -262,4 +262,7 @@ public class RDKBTestConstants {
     /** CAT command. */
     public static final String CAT_COMMAND = "cat ";
     
+    public static final String STRING_CONNECTION_STATUS = "SUCCESS";
+    
+    public static final String LOG_FILE_FOR_CRASHES_RDKB = "/rdklogs/logs/core_log.txt";
 }

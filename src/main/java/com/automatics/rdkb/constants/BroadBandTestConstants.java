@@ -37,6 +37,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	/** Constant to hold value string Auto */
 	public static final String STRING_AUTO = "Auto";
 
+	/** String value for response Timout **/
+	public static final String TIME_OUT_RESPONSE = "Timeout";
+
 	/** String value for Wi-Fi */
 	public static final String WIFI = "Wi-Fi";
 
@@ -66,9 +69,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	/** Constant for number 10 */
 	public static final int CONSTANT_10 = 10;
-	
-    /** Constant for number 12 */
-    public static final int CONSTANT_12 = 12;
+
+	/** Constant for number 12 */
+	public static final int CONSTANT_12 = 12;
 
 	/** Constant to integer value 25 */
 	public static final int CONSTANT_25 = 25;
@@ -83,22 +86,22 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final int CONSTANT_13 = 13;
 
 	/** Constant for number 16 */
-	public static final int CONSTANT_16 = 16;	
-	
-    /** Constant to integer value 26 */
-    public static final int CONSTANT_26 = 26;
-    
-    /** Constant to integer value 32 */
-    public static final int CONSTANT_32 = 32;
-    
-    /** Constant to integer value 40 */
-    public static final int CONSTANT_40 = 40;
+	public static final int CONSTANT_16 = 16;
+
+	/** Constant to integer value 26 */
+	public static final int CONSTANT_26 = 26;
+
+	/** Constant to integer value 32 */
+	public static final int CONSTANT_32 = 32;
+
+	/** Constant to integer value 40 */
+	public static final int CONSTANT_40 = 40;
 
 	/** Constant for number 1000 */
 	public static final int CONSTANT_1000 = 1000;
-	
-    /** Constant for number -3 */
-    public static final int CONSTANT_NEGATIVE_3 = -3;
+
+	/** Constant for number -3 */
+	public static final int CONSTANT_NEGATIVE_3 = -3;
 
 	/** Integer value 5 */
 	public static final Integer INTEGER_VALUE_5 = 5;
@@ -111,9 +114,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	/** String constant 3 */
 	public static final String STRING_CONSTANT_3 = "3";
-	
-    /** Constant to integer value 34 */
-    public static final int CONSTANT_34 = 34;
+
+	/** Constant to integer value 34 */
+	public static final int CONSTANT_34 = 34;
 
 	/** String value 2 */
 	public static final String STRING_VALUE_TWO = "2";
@@ -144,11 +147,11 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	/** String to store value 18 */
 	public static final String STRING_VALUE_18 = "18";
 	/** String to store value 19 */
-	public static final String STRING_VALUE_19 = "19";	
-    /** String value 30 */
-    public static final String STRING_30 = "30";
-    /** constant to hold string value 400 */
-    public static final String STRING_400 = "400";
+	public static final String STRING_VALUE_19 = "19";
+	/** String value 30 */
+	public static final String STRING_30 = "30";
+	/** constant to hold string value 400 */
+	public static final String STRING_400 = "400";
 
 	/** Constant to hold 153 */
 	public static final String CONSTANT_153 = "153";
@@ -171,10 +174,10 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String STRING_TEST_1 = "Test1";
 
 	/** String value Test2 */
-	public static final String STRING_TEST_2 = "Test2";	
-    
-    /** constant to hold string value 1470 */
-    public static final String STRING_1470 = "1470";
+	public static final String STRING_TEST_2 = "Test2";
+
+	/** constant to hold string value 1470 */
+	public static final String STRING_1470 = "1470";
 
 	/** Field descriptor wait for 2 seconds */
 	public static final long TWO_SECOND_IN_MILLIS = 2000L;
@@ -254,6 +257,12 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	/** Constant to hold facebook.com */
 	public static final String NSLOOKUP_FOR_FACEBOOK = "facebook.com";
 
+	/** String to store Not Applicable */
+	public static final String NOTAPPLICABLE_VALUE = "Not Applicable";
+
+	/** Time value for DHCP lease time */
+	public static final String STRING_LEASE_TIME_VALUE = "120";
+
 	/**
 	 * Constant to hold the value to set firewall IPv4 & IPv6 to 'Custom Security'
 	 */
@@ -276,6 +285,12 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	 * /rdklogs/logs/MeshAgentLog.txt.0
 	 */
 	public static final String COMMAND_TO_READ_WIFIMESH_SERVICE_ENABLE_LOGS = "cat /rdklogs/logs/MeshAgentLog.txt.0 | grep -i \"enabled\"";
+
+	/**
+	 * Command to get address of the interface. Replace the <REPLACE> with interface
+	 * name
+	 */
+	public static final String GET_MAC_FROM_INTERFACE_IN_LINUX = "cat /sys/class/net/<REPLACE>/address";
 
 	/**
 	 * System property to identify whether WebPA connectivity broken or not.
@@ -433,24 +448,24 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	/** The partial property key for xconf ipv4 firmware location. */
 	public static final String PROP_KEY_XCONF_FIRMWARE_LOCATION_DAC15 = "xconf.firmware.location.";
-	
-    /** The property key for pamSearchLog message  */
-    public static final String PROP_KEY_PAMSEARCHLOG = "pamSearchLog.device."; 
-    
-    /** The property key for pamSearchLog message  */
-    public static final String PROP_KEY_PAMSEARCHALERT = "pamLog.alert."; 
-    
-    /** The property key for pamSearchLog FR message */
-    public static final String PROP_KEY_PAMLOG_FR = "pamLog.device.fr.";      
-       
-    /** The property key for pamSearchLog message */
-    public static final String PROP_KEY_PAMLOG = "pamLog.device.";  
-    
-    /** The property key for pamSearchLog message before FR */
-    public static final String PROP_KEY_PAMLOG_BFR = "pamLog.device.bfr.";
-    
-    /** The property key for pamSearchLog message post reboot */
-    public static final String PROP_KEY_PAMLOG_POSTREBOOT = "pamLog.device.postreboot.";
+
+	/** The property key for pamSearchLog message */
+	public static final String PROP_KEY_PAMSEARCHLOG = "pamSearchLog.device.";
+
+	/** The property key for pamSearchLog message */
+	public static final String PROP_KEY_PAMSEARCHALERT = "pamLog.alert.";
+
+	/** The property key for pamSearchLog FR message */
+	public static final String PROP_KEY_PAMLOG_FR = "pamLog.device.fr.";
+
+	/** The property key for pamSearchLog message */
+	public static final String PROP_KEY_PAMLOG = "pamLog.device.";
+
+	/** The property key for pamSearchLog message before FR */
+	public static final String PROP_KEY_PAMLOG_BFR = "pamLog.device.bfr.";
+
+	/** The property key for pamSearchLog message post reboot */
+	public static final String PROP_KEY_PAMLOG_POSTREBOOT = "pamLog.device.postreboot.";
 
 	/** Constant to hold the invalid firmware location */
 	public static final String INVALID_FIRMWARE_LOCATION = "https://tbddummy.com/invalid/Images/";
@@ -479,9 +494,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	/** reboot reason for CM_variant_change */
 	public static final String REBOOT_REASON_CM_VARIANT_CHANGE = "CM_variant_change";
 
-	/** partner id for cox */
-	public static final String PARTNER_ID_COX = "cox";
-
 	/** WiFi region code USI */
 	public static final String WIFI_POWER_LEVEL_USI = "USI";
 
@@ -490,6 +502,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	/** Simple Data Format - Data/Time in Log Messages */
 	public static final String TIMESTAMP_FORMAT_LOG_MESSAGE = "yyMMdd-HH:mm:ss";
+
+	/** String regex to get ip address from ifconfig value */
+	public static final String STRING_REGEX_ADDR = "addr:";
 
 	/**
 	 * Map with Warehouse Wireless sequence OIDs and corresponding SNMP Data type
@@ -948,7 +963,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	/** Constant to hold DHCP end IP address */
 	public static final String DHCP_END_IP_ADDRESS_DEFAULT = "192.168.0.253";
-
 
 	/** Constant to get RFC value from rfc_configdata.txt */
 	public static final String COMMAND_TO_RFC_VALUE_CONFIG_FILE = "cat /tmp/rfc_configdata.txt";
@@ -1938,10 +1952,10 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String DEFAULT_FIRMWARE_UPGRADE_MAINTENANCE_WINDOW_END_TIME = "14400";
 
 	/** Test constant for Global Dns IPv4 default value */
-	public static final String STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE = " ";
+	public static final String STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE = "";
 
-	/** Test constant for Global Dns IPv6 default value  */
-	public static final String STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE = " ";
+	/** Test constant for Global Dns IPv6 default value */
+	public static final String STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE = "";
 
 	/** Constant for DSCPMarkPolicy */
 	public static final String DSCP_MARK_POLICY = "44";
@@ -2347,7 +2361,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String SNMPV3_DH_KICK_START_SECURITY_NUMBER_3 = "";
 	/** snmpv3 dk kickstart security number 4 */
 	public static final String SNMPV3_DH_KICK_START_SECURITY_NUMBER_4 = "";
-
 	/** snmpv3 dk kickstart security Name 1 */
 	public static final String SNMPV3_DH_KICK_START_SECURITY_NAME_1 = "docsismanager";
 
@@ -2409,16 +2422,16 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String RDKLOGS_LOGS_WEBPA_TXT_0 = "/rdklogs/logs/WEBPAlog.txt.0";
 
 	/** string for holding dummy first mac address for XDNS */
-	public static final String VALUE_MACADDRESS_FIRST_XDNS = " ";
+	public static final String VALUE_MACADDRESS_FIRST_XDNS = "";
 
 	/** string for holding dummy second mac address for XDNS */
-	public static final String VALUE_MACADDRESS_SECOND_XDNS = " ";
+	public static final String VALUE_MACADDRESS_SECOND_XDNS = "";
 
 	/**
 	 * Test constant for applying Dns ovverride at client MAC level IPv4 level three
 	 * primaryvalue
 	 */
-	public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = " ";
+	public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = "";
 
 	/**
 	 * Test constant for applying Dns ovverride at client MAC level IPv6 level three
@@ -2488,6 +2501,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 		}
 
 	}
+
+	/** Possible channel list of Radio 1 */
+	public static final String PROP_KEY_POSSIBLE_CHANNELLIST_RADIO_ONE = "possible.channellist.radio1";
 
 	/** Property key to retrieve prod xconf URL from stb.properties */
 	public static final String PROP_KEY_PROD_XCONF_TELEMETRY_VER2 = "default.xconf.telemetry2.url";
@@ -3067,13 +3083,13 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	 * Test constant for applying Dns ovverride at client MAC level IPv4 level one
 	 * primary value
 	 */
-	public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = " ";
+	public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = "";
 
 	/**
 	 * Test constant for applying Dns ovverride at client MAC level IPv6 level one
-	 * primary value 
+	 * primary value
 	 */
-	public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = " ";
+	public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = "";
 
 	/**
 	 * The constant holding command for seeing the process status of CCSPXDNSSSP
@@ -3376,12 +3392,12 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String PATTERN_PROCESS_DNSMASQ = "(\\d+) +\\w+ +.* dnsmasq";
 
 	/** invalid dns server */
-	public static final String INVALID_DNS_SERVER = "";
+	public static final String INVALID_DNS_SERVER = "2001:558:feed::10";
 	/** String value 10 */
 	public static final String STRING_10 = "10";
 
 	/** dns server 2 */
-	public static final String DNS_SERVER_2 = "";
+	public static final String DNS_SERVER_2 = "2001:558:feed::2";
 
 	/** String variable to store webpa error message */
 	public static final String WEBPA_ERROR_UNSUPPORTED_NAME_SPACE = "Error unsupported namespace";
@@ -3409,6 +3425,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	/** Constant to hold udhcpc error message */
 	public static final String UDHCPC_ERROR_MESSAGE = "\"/etc/udhcpc.script: line\"";
+
+	/** regex to retrieve ipconfig ipv6 address */
+	public static final String PATTERN_TO_RETRIVE_IPV6_ADDRESS_FROM_IPCONFIG = ".*IPv6 Address. . . . . . . . . . . :\\s+(([0-9a-f]{1,4}:){7}([0-9a-f]{1,4})).*";
 
 	/** Constant to hold pattern matcher for downstream lock message */
 	public static final String PATTERN_MATCH_DOWNSTREAM_LOCK = "\\d+-\\d+:\\d+:\\d+.\\d+.*Downstream\\sis\\sLocked";
@@ -3448,10 +3467,10 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	public static final String TR181_PARAM_CM_IPV6 = "Device.DeviceInfo.X_COMCAST-COM_CM_IP";
 
-	/** Property key for Public WiFi Primary End point IP */
+	/** Property key for Xfinity WiFi Primary End point IP */
 	public static final String PROP_KEY_PRIMARY_ENDPOINT_IP = "xfinity.gre.tunnel.primary.remote.endpoint.ip";
 
-	/** Property key for Public WiFi Secondary End point IP */
+	/** Property key for Xfinity WiFi Secondary End point IP */
 	public static final String PROP_KEY_SECONDARY_ENDPOINT_IP = "xfinity.gre.tunnel.secondary.remote.endpoint.ip";
 
 	/** int value to store five hundred and twenty */
@@ -3500,6 +3519,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	/** String to invalid argument */
 	public static final String TEXT_INVALID_ARGUMENT = "Invalid argument";
+
+	/** Constant to hold default Subnet mask value */
+	public static final String DEFAULT_IPV4_SUBNET_MASK = "DEFAULT_IPV4_SUBNET_MASK";
 
 	/** Asterisk. */
 	public static final String ASTERISK = "*";
@@ -3637,434 +3659,951 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	/** Three minutes in milli seconds. */
 	public static final long FOUR_MINUTES = 4 * 60 * 1000;
-	
-    /** Constant to hold wifi log error message */
-    public static final String CONSTANT_WIFI_ERROR_MESSAGE = "Failed to get parameter value of";
-    
-    /** String for NAME */
-    public static String STRING_NAME = "name";
-    
-    /** Constant for holding String 'Not Applicable' */
-    public static final String STRING_NOT_APPLICABLE = "NotApplicable";
-    
+
+	/** Constant to hold wifi log error message */
+	public static final String CONSTANT_WIFI_ERROR_MESSAGE = "Failed to get parameter value of";
+
+	/** String for NAME */
+	public static String STRING_NAME = "name";
+
+	/** Constant for holding String 'Not Applicable' */
+	public static final String STRING_NOT_APPLICABLE = "NotApplicable";
+
 	/** Temporary file name to store initial ipv4 table rules */
 	public static final String FILE_NAME_TO_STORE_INITIAL_IPV4_TABLE_RULES = "/tmp/ipv4tableinitial";
-	
+
 	/** Temporary file name to store initial ipv6 table rules */
 	public static final String FILE_NAME_TO_STORE_INITIAL_IPV6_TABLE_RULES = "/tmp/ipv6tableinitial";
-	
-    /** command to save ipv4 table rules */
-    public static final String COMMAND_TO_SAVE_IPV4_TABLE_RULES = "/usr/sbin/iptables-save";
 
-    /** command to save ipv6 table rules */
-    public static final String COMMAND_TO_SAVE_IPV6_TABLE_RULES = "/usr/sbin/ip6tables-save";
-    
-    
-    /** Temporary file name to store final ipv4 table rules */
-    public static final String FILE_NAME_TO_STORE_FINAL_IPV4_TABLE_RULES = "/tmp/ipv4tablefinal";
+	/** command to save ipv4 table rules */
+	public static final String COMMAND_TO_SAVE_IPV4_TABLE_RULES = "/usr/sbin/iptables-save";
 
-    /** Temporary file name to store final ipv6 table rules */
-    public static final String FILE_NAME_TO_STORE_FINAL_IPV6_TABLE_RULES = "/tmp/ipv6tablefinal";
-    
-    /** String to store ping response in linux */
-    public static final String STRING_LINUX_PING_RESPONSE = "0% packet loss";
-    
-    /** String command for ping to linux */
-    public static final String STRING_PING_TO_LINUX = "ping -c 4 <IPADDRESS>";
+	/** command to save ipv6 table rules */
+	public static final String COMMAND_TO_SAVE_IPV6_TABLE_RULES = "/usr/sbin/ip6tables-save";
 
-    /** String for business calss gateway IP */
-    public static final String STRING_BUSINESS_CLASS_GATEWAYIP = "";
-    
-    /** String for residential class gateway ip */
-    public static final String STRING_RESIDENTIAL_CLASS_GATEWAYIP = "";
-    
-    /** String command for ping to windows */
-    public static final String STRING_PING_TO_WINDOWS = "ping <IPADDRESS>";
-    
-    /** String containing values of Device Operational Mode - Ethernet */
-    public static final String STRING_DEVICE_OPERATIONAL_MODE_ETHERNET = "Ethernet";    
-    
-    /** String containing values of Device Operational Mode - DOCSIS */
-    public static final String STRING_DEVICE_OPERATIONAL_MODE_DOCSIS = "DOCSIS";
-    
-    /** The partial property key for Firmware downpoad script */
-    public static final String PROP_KEY_FIRMWARE_DOWNLOAD_SCRIPT = "firmware.downlod.script.";
-    
-    /** Command to get peridic firmware check details from rfc_config data **/
-    public static final String CMD_GET_PERIODIC_FIRMWARE_CHECK_VALUE_RFC_CONFIG_FILE = "cat /tmp/rfc_configdata.txt | grep -i \"periodic\"";
+	/** Temporary file name to store final ipv4 table rules */
+	public static final String FILE_NAME_TO_STORE_FINAL_IPV4_TABLE_RULES = "/tmp/ipv4tablefinal";
 
-    /** pattern to get peridic firmware check details from rfc_config data **/
-    public static final String PATTERN_GET_PERIODIC_FIRMWARE_CHECK_VALUE_RFC_CONFIG_FILE = "tr181.Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.PeriodicFWCheck.Enable\\W+(\\w+)";
+	/** Temporary file name to store final ipv6 table rules */
+	public static final String FILE_NAME_TO_STORE_FINAL_IPV6_TABLE_RULES = "/tmp/ipv6tablefinal";
 
-	/** Key to get the xfinity wifi value to be set  */
-    public static String KEY_FOR_PUBLIC_WIFI_WHITELISTING = "rdkb.whitelist.publicwifivalue";
-    
-    /** The property key for device status. */
-    public static final String DEVICE_STATUS = "device.status.";
-    
-    /** Regex for getting the MaxResetCount */
-    public static final String PATTERN_TO_GET_MAX_RESET_COUNT = "tr181.Device.SelfHeal.X_RDKCENTRAL-COM_MaxResetCount#~(\\w+)";
-    
-    /** String to check telemetry marker for memory usage from the log */
-    public static final String STRING_MEM = "mem";
-    
-    /** String to check telemetry marker for cpu usage from the log */
-    public static final String STRING_CPU = "cpu";
-    
-    /** String File path /nvram/DCMresponse.txt */
-    public static final String FILE_NVRAM_DCMRESPONSE = "/nvram/DCMresponse.txt";
-        
-    /**
-     * The constant holding command for seeing the process status of CCSP process
-     */
-    public static final String PS_COMMAND_FOR_CCSP_PROCESS = "ps | grep -i \"[Cc|S]sp\"";
-    
-    /** The array list of Ccsp Components to test telemetry data for CPU and Memory Usage mentioned in RTAUTO-16170 */
-    public static final List<String> LIST_OF_PROCESS_FOR_CPU_MEM = new ArrayList<String>() {
-	{
-	    add("CcspCMAgentSsp");
-	    add("CcspPandMSsp");
-	    add("CcspHomeSecurity");
-	    add("CcspMoCA");
-	    add("CcspTandDSsp");
-	    add("CcspXdnsSsp");
-	    add("CcspEthAgent");
-	    add("CcspLMLite");
-	    add("PsmSsp");
-	}
-    };
-    
-    /** utility script in cron job list for telemetry **/
-    public static final String DCA_UTILITY_SH = "sh /lib/rdk/dca_utility.sh";
+	/** String to store ping response in linux */
+	public static final String STRING_LINUX_PING_RESPONSE = "0% packet loss";
 
-    /** Constant to hold command to get the static WAN IP from the device */
-    public static final String COMMAND_TO_GET_STATIC_WAN_IP = "cat /etc/ripd.conf|grep network|tail -1|sed 's/.* //g'|sed 's/ *\\/.*//'";
-    
-    /** String regex to get ethernet connected client ipv4 from ifconfig */
-    public static final String STRING_REGEX_TO_GET_ETHERNET_IPV4 = "inet[\\sa-zA-Z:|\\s]*(\\d+\\.\\d+\\.\\d+\\.\\d+).*cast.*[\\s+:](\\d+\\.\\d+\\.\\d+\\.\\d+)";
-    
-    /** String value IPAddress to get ip address from ipconfig */
-    public static final String STRING_IP_4_ADDRESS = "IPv4 Address";
+	/** String command for ping to linux */
+	public static final String STRING_PING_TO_LINUX = "ping -c 4 <IPADDRESS>";
 
-    /** String value PhysAddress to get mac from ipconfig */
-    public static final String STRING_PHYSICAL_ADDRESS = "Physical Address";
+	/** String for business calss gateway IP */
+	public static final String STRING_BUSINESS_CLASS_GATEWAYIP = "";
 
-    /** String regex to get IP and MAC address from ipconfig for given interface name */
-    public static final String STRING_REGEX_IP_MAC = "[.\\s]*:\\s*([\\d.-a-zA-Z]+)";
+	/** String for residential class gateway ip */
+	public static final String STRING_RESIDENTIAL_CLASS_GATEWAYIP = "";
 
-    /** String regex for new line */
-    public static final String STRING_REGEX_PATTERN_NEW_LINE = "\\r\\n";
-    
-    /** String regex to get raspian linux ethernet connected client ipv4 from ifconfig */
-    public static final String STRING_REGEX_TO_GET_RASPIAN_ETHERNET_IPV4 = "inet[(\\s+.*:)|(\\s+)](\\d+.\\d+.\\d+.\\d+).*netmask.*";
-    
-    /** String for Change SSID NAME of 2.4GHZ Wifi */
-    public static final String TWO_GHZ_SSID_NAME_CHANGE = "2.4GHZ_WiFi";
+	/** String command for ping to windows */
+	public static final String STRING_PING_TO_WINDOWS = "ping <IPADDRESS>";
 
-    /** String for Change SSID NAME of 5GHZ Wifi */
-    public static final String FIVE_GHZ_SSID_NAME_CHANGE = "5GHZ_WiFi";    
+	/** String containing values of Device Operational Mode - Ethernet */
+	public static final String STRING_DEVICE_OPERATIONAL_MODE_ETHERNET = "Ethernet";
 
-    /** String for Folder name */
-    public static final String TEMPORARY_FOLDER = "test";    
+	/** String containing values of Device Operational Mode - DOCSIS */
+	public static final String STRING_DEVICE_OPERATIONAL_MODE_DOCSIS = "DOCSIS";
 
-    /** Log for CDL started condition */
-    public static final String LOG_CDL_STARTED = "### httpdownload started ###";
-    
-    /** Pattern for verifying the dev proto kernel scope link src . */
-    public static final String PATTERN_DEV_PROTO_KERNEL_SCOPE_LINK = "dev\\s+\\S+\\s+proto\\s+kernel\\s+scope\\s+link\\s+ src\\s+(\\d+\\.\\d+\\.\\d+\\.\\d)";
-  
-    /** Pattern for verifying the dev scope link */
-    public static final String PATTERN_DEV_SCOPE_LINK = "dev\\s+\\S+\\s+scope\\s+link";
-    
-    /** Pattern for verifying the dev default interface . */
-    public static final String PATTERN_DEFAULT_DEV_IP = "default\\s+via\\s+(\\d+\\.\\d+\\.\\d+\\.\\d)\\s+dev";
-    
-    /** String DHCP min address for business class devices */
-    public static final String STRING_DHCP_MIN_ADDRESS_BUSSI = "";
-    
-    /** String DHCP min address for residential class devices */
-    public static final String STRING_DHCP_MIN_ADDRESS = "";
-    
-    /** String constant for All */
-    public static final String STRING_ALL = "All";
+	/** The partial property key for Firmware downpoad script */
+	public static final String PROP_KEY_FIRMWARE_DOWNLOAD_SCRIPT = "firmware.downlod.script.";
 
-    /** String value for Operating mode n */
-    public static final String OPERATING_MODE_N = "n";
+	/** Command to get peridic firmware check details from rfc_config data **/
+	public static final String CMD_GET_PERIODIC_FIRMWARE_CHECK_VALUE_RFC_CONFIG_FILE = "cat /tmp/rfc_configdata.txt | grep -i \"periodic\"";
 
-    /** String value for 25 */
-    public static final String STRING_VALUE_TWENTY_FIVE = "25";
-    
-    /** Constant for Extension channel value */
-    public static final String EXTENSION_CHANNEL_VALUE = "AboveControlChannel";
-    
-    /** Constant to hold channel value as 11 */
-    public static final String RADIO_CHANNEL_11 = "11";
-    
-    /** Constant to hold filename Harvesterlog.txt.0 */
-    public static final String FILE_NAME_HARVESTER = "Harvesterlog.txt.0";
-    
-    /** The property key for device status. */
-    public static final String DEVICE_NA = "device.na.";    
-    
-    /** Constant to hold the following file names */
-    public static final String FILE_NAME_LM = "LM.txt.0";
-    
-    /** String for PARODUSlog.txt.0 */
-    public static final String STRING_PARODUS_LOG = "PARODUSlog.txt.0";    
-    
-    /** Twenty five in milliseconds representation. */
-    public static final long TWENTYFIVE_MINUTES_IN_MILLS = 25 * 60 * ONE_SECOND_IN_MILLIS;
-    
-    /** String regex to get parodus boot time from command cat /tmp/parodusCmd.cmd */
-    public static final String STRING_REGEX_PARODUS_BOOT_TIME = "--boot-time=(.*)\\s+--hw";    
-	
+	/** pattern to get peridic firmware check details from rfc_config data **/
+	public static final String PATTERN_GET_PERIODIC_FIRMWARE_CHECK_VALUE_RFC_CONFIG_FILE = "tr181.Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.PeriodicFWCheck.Enable\\W+(\\w+)";
+
+	/** Key to get the xfinity wifi value to be set */
+	public static String KEY_FOR_PUBLIC_WIFI_WHITELISTING = "rdkb.whitelist.publicwifivalue";
+
+	/** The property key for device status. */
+	public static final String DEVICE_STATUS = "device.status.";
+
+	/** Regex for getting the MaxResetCount */
+	public static final String PATTERN_TO_GET_MAX_RESET_COUNT = "tr181.Device.SelfHeal.X_RDKCENTRAL-COM_MaxResetCount#~(\\w+)";
+
+	/** String to check telemetry marker for memory usage from the log */
+	public static final String STRING_MEM = "mem";
+
+	/** String to check telemetry marker for cpu usage from the log */
+	public static final String STRING_CPU = "cpu";
+
+	/** String File path /nvram/DCMresponse.txt */
+	public static final String FILE_NVRAM_DCMRESPONSE = "/nvram/DCMresponse.txt";
+
+	/**
+	 * The constant holding command for seeing the process status of CCSP process
+	 */
+	public static final String PS_COMMAND_FOR_CCSP_PROCESS = "ps | grep -i \"[Cc|S]sp\"";
+
+	/**
+	 * The array list of Ccsp Components to test telemetry data for CPU and Memory usage 
+	 */
+	public static final List<String> LIST_OF_PROCESS_FOR_CPU_MEM = new ArrayList<String>() {
+		{
+			add("CcspCMAgentSsp");
+			add("CcspPandMSsp");
+			add("CcspHomeSecurity");
+			add("CcspMoCA");
+			add("CcspTandDSsp");
+			add("CcspXdnsSsp");
+			add("CcspEthAgent");
+			add("CcspLMLite");
+			add("PsmSsp");
+		}
+	};
+
+	/** utility script in cron job list for telemetry **/
+	public static final String DCA_UTILITY_SH = "sh /lib/rdk/dca_utility.sh";
+
+	/** Constant to hold command to get the static WAN IP from the device */
+	public static final String COMMAND_TO_GET_STATIC_WAN_IP = "cat /etc/ripd.conf|grep network|tail -1|sed 's/.* //g'|sed 's/ *\\/.*//'";
+
+	/** String regex to get ethernet connected client ipv4 from ifconfig */
+	public static final String STRING_REGEX_TO_GET_ETHERNET_IPV4 = "inet[\\sa-zA-Z:|\\s]*(\\d+\\.\\d+\\.\\d+\\.\\d+).*cast.*[\\s+:](\\d+\\.\\d+\\.\\d+\\.\\d+)";
+
+	/** String value IPAddress to get ip address from ipconfig */
+	public static final String STRING_IP_4_ADDRESS = "IPv4 Address";
+
+	/** String value PhysAddress to get mac from ipconfig */
+	public static final String STRING_PHYSICAL_ADDRESS = "Physical Address";
+
+	/**
+	 * String regex to get IP and MAC address from ipconfig for given interface name
+	 */
+	public static final String STRING_REGEX_IP_MAC = "[.\\s]*:\\s*([\\d.-a-zA-Z]+)";
+
+	/** String regex for new line */
+	public static final String STRING_REGEX_PATTERN_NEW_LINE = "\\r\\n";
+
+	/**
+	 * String regex to get raspian linux ethernet connected client ipv4 from
+	 * ifconfig
+	 */
+	public static final String STRING_REGEX_TO_GET_RASPIAN_ETHERNET_IPV4 = "inet[(\\s+.*:)|(\\s+)](\\d+.\\d+.\\d+.\\d+).*netmask.*";
+
+	/** String for Change SSID NAME of 2.4GHZ Wifi */
+	public static final String TWO_GHZ_SSID_NAME_CHANGE = "2.4GHZ_WiFi";
+
+	/** String for Change SSID NAME of 5GHZ Wifi */
+	public static final String FIVE_GHZ_SSID_NAME_CHANGE = "5GHZ_WiFi";
+
+	/** String for Folder name */
+	public static final String TEMPORARY_FOLDER = "test";
+
+	/** Log for CDL started condition */
+	public static final String LOG_CDL_STARTED = "### httpdownload started ###";
+
+	/** Pattern for verifying the dev proto kernel scope link src . */
+	public static final String PATTERN_DEV_PROTO_KERNEL_SCOPE_LINK = "dev\\s+\\S+\\s+proto\\s+kernel\\s+scope\\s+link\\s+ src\\s+(\\d+\\.\\d+\\.\\d+\\.\\d)";
+
+	/** Pattern for verifying the dev scope link */
+	public static final String PATTERN_DEV_SCOPE_LINK = "dev\\s+\\S+\\s+scope\\s+link";
+
+	/** Pattern for verifying the dev default interface . */
+	public static final String PATTERN_DEFAULT_DEV_IP = "default\\s+via\\s+(\\d+\\.\\d+\\.\\d+\\.\\d)\\s+dev";
+
+	/** String DHCP min address for business class devices */
+	public static final String STRING_DHCP_MIN_ADDRESS_BUSSI = "";
+
+	/** String DHCP min address for residential class devices */
+	public static final String STRING_DHCP_MIN_ADDRESS = "";
+
+	/** String constant for All */
+	public static final String STRING_ALL = "All";
+
+	/** String value for Operating mode n */
+	public static final String OPERATING_MODE_N = "n";
+
+	/** String value for 25 */
+	public static final String STRING_VALUE_TWENTY_FIVE = "25";
+
+	/** Constant for Extension channel value */
+	public static final String EXTENSION_CHANNEL_VALUE = "AboveControlChannel";
+
+	/** Constant to hold channel value as 11 */
+	public static final String RADIO_CHANNEL_11 = "11";
+
+	/** Constant to hold filename Harvesterlog.txt.0 */
+	public static final String FILE_NAME_HARVESTER = "Harvesterlog.txt.0";
+
+	/** The property key for device status. */
+	public static final String DEVICE_NA = "device.na.";
+
+	/** Constant to hold the following file names */
+	public static final String FILE_NAME_LM = "LM.txt.0";
+
+	/** String for PARODUSlog.txt.0 */
+	public static final String STRING_PARODUS_LOG = "PARODUSlog.txt.0";
+
+	/** Twenty five in milliseconds representation. */
+	public static final long TWENTYFIVE_MINUTES_IN_MILLS = 25 * 60 * ONE_SECOND_IN_MILLIS;
+
+	/**
+	 * String regex to get parodus boot time from command cat /tmp/parodusCmd.cmd
+	 */
+	public static final String STRING_REGEX_PARODUS_BOOT_TIME = "--boot-time=(.*)\\s+--hw";
+
 	/** Command to get epoch time in milli second. */
-    public static final String CMD_EPOCH_TIME_IN_MILLI = "date +%s000";
-    
-    /** String backup */
-    public static final String STRING_BACKUP = "BackUp";
-    
-    /** String regex to check parodus --boot-time-retry-wait=(.*) from command cat /tmp/parodusCmd.cmd */
-    public static final String STRING_REGEX_PARODUS_BOOT_TIME_RETRY = "--boot-time-retry-wait=(.*)";
-    
-    /** Constant to integer value 38 */
-    public static final int CONSTANT_38 = 38;
-    
-    /** Constant to hold string  1000 */
-    public static final String STRING_CONSTANT_1000 = "1000";     
-    
-    /** String constant to hold value 10000 */
-    public static final String STRING_10000 = "10000";
-    
-    /** String constant to hold value 15000 */
-    public static final String STRING_15000 = "15000";
-    
-    /** Constant to hold Not applicable message for business class devices */
-    public static final String NA_MSG_FOR_BUSINESS_CLASS_DEVICES = "Test Step Not Applicable for Business class devices";    
+	public static final String CMD_EPOCH_TIME_IN_MILLI = "date +%s000";
 
-    /** Constant for hold string 5000 */
-    public static final String STRING_CONSTANT_5000 = "5000";
-    
-    /** Constant to hold plan ID of wifi blaster */
-    public static final String STRING_BLASTER_PLANID = "";
-    
-    /** Constant to sample destination mac for wifi blaster */
-    public static final String STRING_BLASTER_DESTMAC = "";
-    
-    /** Constant to hold Not applicable message for Commercial devices */
-    public static final String NA_MSG_FOR_COMMERCIAL_DEVICES = "Test Step Not Applicable for Commercial class devices";
- 
-    /** Consatnt to hold Step ID values for wifi balster */
-    public static final List<String> WIFI_BLASTER_STEPID_VALUES = new ArrayList<String>() {
-	{
-	    add("1");
-	    add("9");
-	    add("16");
-	    add("31");
+	/** String backup */
+	public static final String STRING_BACKUP = "BackUp";
+
+	/**
+	 * String regex to check parodus --boot-time-retry-wait=(.*) from command cat
+	 * /tmp/parodusCmd.cmd
+	 */
+	public static final String STRING_REGEX_PARODUS_BOOT_TIME_RETRY = "--boot-time-retry-wait=(.*)";
+
+	/** Constant to integer value 38 */
+	public static final int CONSTANT_38 = 38;
+
+	/** Constant to hold string 1000 */
+	public static final String STRING_CONSTANT_1000 = "1000";
+
+	/** String constant to hold value 10000 */
+	public static final String STRING_10000 = "10000";
+
+	/** String constant to hold value 15000 */
+	public static final String STRING_15000 = "15000";
+
+	/** Constant to hold Not applicable message for business class devices */
+	public static final String NA_MSG_FOR_BUSINESS_CLASS_DEVICES = "Test Step Not Applicable for Business class devices";
+
+	/** Constant for hold string 5000 */
+	public static final String STRING_CONSTANT_5000 = "5000";
+
+	/** Constant to hold plan ID of wifi blaster */
+	public static final String STRING_BLASTER_PLANID = "";
+
+	/** Constant to sample destination mac for wifi blaster */
+	public static final String STRING_BLASTER_DESTMAC = "";
+
+	/** Constant to hold Not applicable message for Commercial devices */
+	public static final String NA_MSG_FOR_COMMERCIAL_DEVICES = "Test Step Not Applicable for Commercial class devices";
+
+	/** Consatnt to hold Step ID values for wifi balster */
+	public static final List<String> WIFI_BLASTER_STEPID_VALUES = new ArrayList<String>() {
+		{
+			add("1");
+			add("9");
+			add("16");
+			add("31");
+		}
+	};
+
+	/** constant integer value 45 */
+	public static final int CONSTANT_45 = 45;
+
+	/** string variable to store invalid url for dns ping test */
+	public static final String STRING_DNS_PING_INVALID_URL = "www.oopsinvalid.com";
+
+	/** command for enable connectivity test corrective action */
+	public static final String CMD_ENABLED_CONNECTIVITY_TEST_CORRECTIVE_ACTION = "#syscfg set ConnTest_CorrectiveAction true;#syscfg commit";
+
+	/** command to get DNS ping failure logs */
+	public static final String CMD_GET_DNS_PING_FAILURE_LOGS = "cat /nvram/automation_sample.txt | grep -i \"RDKB_REBOOT\"";
+
+	/** String variable to store dns ping failure self heal logs */
+	public static final String STRING_DNS_PING_FAILURE_SELF_HEAL_LOG = "Reset router due to PING connectivity test failure";
+
+	/** Default inet6 address pattern from log */
+	public static final String INET_V6_ADDRESS_LINK_PATTERN = "inet6 addr:\\s*([\\w+:]*\\w+)\\/\\d+\\s*Scope:Link";
+
+	/** String value 15 */
+	public static final String STRING_VALUE_FIFTEEN = "15";
+
+	/** String constant value for Operating bandwidth 20 MHz */
+	public static final String OPERATING_BANDWIDTH_20_MMZ = "20MHz";
+
+	/** String constant value for Operating bandwidth 40 MHz */
+	public static final String OPERATING_BANDWIDTH_40_MMZ = "40MHz";
+
+	/** WebPa Parameter for admin page url */
+	public static final String WEBPA_PARAM_LAN_IP_ADDRESS = "Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanIPAddress";
+
+	/** Constant to string for checking LAN IP address in system defaults file */
+	public static final String STRING_LAN_IP_ADDR = "lan_ipaddr=";
+
+	/**
+	 * Constant to string for checking DHCP start address in system defaults file
+	 */
+	public static final String STRING_DHCP_START_ADDR = "dhcp_start=";
+
+	/** Constant to string for checking DHCP end address in system defaults file */
+	public static final String STRING_DHCP_END_ADDR = "dhcp_end=";
+
+	/** File path for system defaults file */
+	public static final String FILE_SYSTEM_DEFAULTS = " /etc/utopia/system_defaults";
+
+	/** String value for Regular expression (.*) */
+	public static final String REG_EXPRESSION_DOT_STAR = "(.*)";
+
+	/** Valid Gateway local Ip in setting Gateway Ip */
+	public static final String TEST_GATEWAY_LOCAL_IP_1 = "";
+
+	/** Valid Gateway local DHCP Start address in setting Gateway Ip */
+	public static final String TEST_GATEWAY_LOCAL_DHCP_START_ADDR = "";
+
+	/** Valid Gateway local DHCP Start address in setting Gateway Ip */
+	public static final String TEST_GATEWAY_LOCAL_DHCP_END_ADDR = "";
+
+	/** Telescope Rest API URL. */
+	public static final String TELESCOPIC_REST_API_URL = "telescopic.rest.api.url";
+
+	/** WebPA parameter for Device ManagementServer */
+	public static final String WEBPA_PARAM_DEVICE_MANAGEMENTSERVER = "Device.ManagementServer.";
+
+	/** Holds error message when command not found */
+	public static final String CMD_NOT_FOUND = "command not found";
+
+	/** Holds the string commercial */
+	public static final String COMMERCIAL = "commercial";
+
+	/** Constant for holding string FAILED */
+	public static final String STRING_FAILED = "FAILED";
+
+	/**
+	 * String constant to hold pattern to find telemetry endpoint enable status form
+	 * response
+	 */
+	public static final String PATTERN_TO_FIND_TELEMETRY_ENDPOINT_ENABLE = "RFC:  updated for Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.TelemetryEndpoint.Enable from value old=(\\w*)";
+
+	/**
+	 * String constant to hold pattern to grep telemetry endpoint enable status from
+	 * response
+	 */
+	public static final String PATTERN_TO_GREP_TELEMETRY_ENDPOINT_ENABLE = "RFC:  updated for Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.TelemetryEndpoint.Enable from value old";
+
+	/** String constant to store TR069 support */
+	public static final String TR069_SUPPORT = "TR069support";
+
+	/** File path for TR69log.txt */
+	public static final String RDKLOGS_LOGS_TR69LOG_TXT_0 = "/rdklogs/logs/TR69log.txt.0";
+
+	/** Log message for ACS request complete */
+	public static final String ACS_REQUEST_COMPLETE = "ACS Request has completed with status code 0";
+
+	/** String to store process name CcspTr069PaSsp */
+	public static final String PROCESS_NAME_CCSPTR069PASSP = "CcspTr069PaSsp";
+
+	/** String for expected TR69 cert location */
+	public static final String STRING_EXPECTED_TR69_CERTLOCATION = "/etc/cacert.pem";
+
+	/** Default certiticate location from property */
+	public static final String PROP_KEY_TR69_CORRECT_ACS_URL = "correct.acs.url";
+
+	/** Default ACS url from property */
+	public static final String PROP_KEY_TR69_DEFAULT_ACS_URL = "default.acs.url";
+
+	/** Constant for number 9 */
+	public static final int CONSTANT_9 = 9;
+
+	/** command to make cpu usage 100% */
+	public static final String COMMAND_TO_MAKE_CPU_USAGE_HUNDRED_PERCENT = "yes > /dev/null &";
+
+	/** String variable to store cpu usage 100% */
+	public static final String STRING_CPU_USAGE_100_PERCENT = "CPU usage is 100";
+
+	/**
+	 * String variable to store Avg CPU usage after 5 minutes of CPU Avg monitor
+	 * window as 100%
+	 */
+	public static final String STRING_AVG_CPU_AVG_MONITOR_WINDOW = "RDKB_SELFHEAL : Avg CPU usage after 5 minutes of CPU Avg monitor window is 100";
+
+	/** String variable to store top five task in device */
+	public static final String STRING_TOP_FIVE_TASK = "RDKB_SELFHEAL : Top 5 tasks running on device";
+
+	/** pattern to validate message format from selfheal.txt.0 **/
+	public static final String PATTERN_TO_VALIDATE_MSG_FROMAT_FROM_SELFHEAL = "((\\s+\\w+,\\s+\\d{0,3}%,)+(\\s+\\w+,\\s+\\d{0,3}%))";
+
+	/** Constant to hold regex to get the top 5 process running in device */
+	public static final String REGEX_TOP_FIVE_PROCESS = "RDKB_SELFHEAL : Top 5 tasks running on device\r?\n(.*)\r?\n(.*)\r?\n(.*)\r?\n(.*)\r?\n(.*)";
+
+	/**
+	 * Default value of webpa
+	 * Device.WiFi.X_RDKCENTRAL-COM_BandSteering.BandSetting.2.PhyRateThreshold
+	 */
+	public static final String WEBPA_DEFAULT_VALUE_BAND_STEERING_PHY_THRESHOLD_5GHZ = "6000";
+
+	/** value to be set for PhyThreshold in band steering */
+	public static final String BAND_STEERING_PHY_THRESHOLD_VALUE = "40";
+
+	/**
+	 * Default value of webpa
+	 * Device.WiFi.X_RDKCENTRAL-COM_BandSteering.BandSetting.1.PhyRateThreshold
+	 */
+	public static final String WEBPA_DEFAULT_VALUE_BAND_STEERING_PHY_THRESHOLD_2GHZ = "50000";
+
+	/**
+	 * Test value of webpa
+	 * Device.WiFi.X_RDKCENTRAL-COM_BandSteering.BandSetting.1.IdleInactiveTime
+	 */
+	public static final String TEST_VALUE_IDLE_INACTIVE_TIME_2GHZ = "11";
+
+	/**
+	 * Test value of webpa
+	 * Device.WiFi.X_RDKCENTRAL-COM_BandSteering.BandSetting.2.IdleInactiveTime
+	 */
+	public static final String TEST_VALUE_IDLE_INACTIVE_TIME_5GHZ = "13";
+
+	/**
+	 * Test value of webpa Device.WiFi.X_RDKCENTRAL-COM_BandSteering.BandSetting.1.
+	 * OverloadInactiveTime
+	 */
+	public static final String TEST_VALUE_OVERLOAD_INACTIVE_TIME_2GHZ = "12";
+
+	/**
+	 * Test value of webpa Device.WiFi.X_RDKCENTRAL-COM_BandSteering.BandSetting.2.
+	 * OverloadInactiveTime
+	 */
+	public static final String TEST_VALUE_OVERLOAD_INACTIVE_TIME_5GHZ = "14";
+
+	/** Constant to hold MAC Address for WIFI Client MacAddress parameter */
+	public static final String WIFI_CLIENT_MAC_ADDRESS_WIFICLIENT = "";
+
+	/** Constant to hold Null MAC address without delimeter */
+	public static final String NULL_MAC_ADDRESS_WITHOUT_DELIMETER = "000000000000";
+
+	/** Constant to hold WiFiClient Schema type */
+	public static final String WIFICLIENT_SCHEMA_TYPE = "WifiSingleClient.avsc";
+
+	/**
+	 * enum variable to store the band steering parameter to check in lbd.conf
+	 */
+	public enum BAND_STEERING_PARAM {
+		BAND_STEERING_PARAM_IDLE_INACTIVE_TIME, BAND_STEERING_PARAM_OVERLOAD_INACTIVE_TIME, BAND_STEERING_PARAM_APGROUP;
 	}
-    };
-    
-    /** constant integer value 45 */
-    public static final int CONSTANT_45 = 45;
-    
-    /** string variable to store invalid url for dns ping test */
-    public static final String STRING_DNS_PING_INVALID_URL = "www.oopsinvalid.com";
-    
-    /** command for enable connectivity test corrective action */
-    public static final String CMD_ENABLED_CONNECTIVITY_TEST_CORRECTIVE_ACTION = "#syscfg set ConnTest_CorrectiveAction true;#syscfg commit";
 
-    /** command to get DNS ping failure logs */
-    public static final String CMD_GET_DNS_PING_FAILURE_LOGS = "cat /nvram/automation_sample.txt | grep -i \"RDKB_REBOOT\"";
+	/** Command to check the IdleInactiveTimein lbd.conf */
+	public static final String CMD_LBD_IDLE_INACTIVE = "InactIdleThreshold";
 
-    /** String variable to store dns ping failure self heal logs */
-    public static final String STRING_DNS_PING_FAILURE_SELF_HEAL_LOG = "Reset router due to PING connectivity test failure";
+	/** Command to check the OverloadInactiveTimein lbd.conf */
+	public static final String CMD_LBD_OVERLOAD_INACTIVE = "InactOverloadThreshold";
 
-    /** Default inet6 address pattern from log */
-    public static final String INET_V6_ADDRESS_LINK_PATTERN = "inet6 addr:\\s*([\\w+:]*\\w+)\\/\\d+\\s*Scope:Link";
-    
-    /** String value 15 */
-    public static final String STRING_VALUE_FIFTEEN = "15";    
+	/** Command to check the IdleInactiveTimein cfg */
+	public static final String CMD_CFG_IDLE_INACTIVE = "/sbin/cfg -s | grep BS_IS_NORM_INACT_TIMEOUT";
 
-    /** String constant value for Operating bandwidth 20 MHz */
-    public static final String OPERATING_BANDWIDTH_20_MMZ = "20MHz";
-    
-    /** String constant value for Operating bandwidth 40 MHz */
-    public static final String OPERATING_BANDWIDTH_40_MMZ = "40MHz";
-    
-    /** WebPa Parameter for admin page url */
-    public static final String WEBPA_PARAM_LAN_IP_ADDRESS = "Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanIPAddress";
+	/** Command to check the OverloadInactiveTimein cfg */
+	public static final String CMD_CFG_OVERLOAD_INACTIVE = "/sbin/cfg -s | grep BS_IS_OVERLOAD_INACT_TIMEOUT";
 
-    /** Constant to string for checking LAN IP address in system defaults file */
-    public static final String STRING_LAN_IP_ADDR = "lan_ipaddr=";
-    
-    /** Constant to string for checking DHCP start address in system defaults file */
-    public static final String STRING_DHCP_START_ADDR = "dhcp_start=";
+	/** Command to get the contents of lbd.conf */
+	public static final String CMD_CAT_LBD = "cat /tmp/lbd.conf";
 
-    /** Constant to string for checking DHCP end address in system defaults file */
-    public static final String STRING_DHCP_END_ADDR = "dhcp_end=";    
+	/** Command to check the 2g params in lbd.conf */
+	public static final String STRING_LBD_HEADING_2G_PARAMS = "[WLANIF2G]";
 
-    /** File path for system defaults file */
-    public static final String FILE_SYSTEM_DEFAULTS = " /etc/utopia/system_defaults";
-    
-    /** String value for Regular expression (.*) */
-    public static final String REG_EXPRESSION_DOT_STAR = "(.*)";
-    
-    /** Valid Gateway local Ip in setting Gateway Ip */
-    public static final String TEST_GATEWAY_LOCAL_IP_1 = "";
+	/** Command to check the 5g params in lbd.conf */
+	public static final String STRING_LBD_HEADING_5G_PARAMS = "[WLANIF5G]";
 
-    /** Valid Gateway local DHCP Start address in setting Gateway Ip */
-    public static final String TEST_GATEWAY_LOCAL_DHCP_START_ADDR = "";
+	/** Command to check the STDAB lbd.conf */
+	public static final String STRING_LBD_STADB_PARAMS = "[STADB]";
 
-    /** Valid Gateway local DHCP Start address in setting Gateway Ip */
-    public static final String TEST_GATEWAY_LOCAL_DHCP_END_ADDR = "";
-    
-    /** Telescope Rest API URL. */
-    public static final String TELESCOPIC_REST_API_URL = "telescopic.rest.api.url";
-    
-    /** WebPA parameter for Device ManagementServer */
-    public static final String WEBPA_PARAM_DEVICE_MANAGEMENTSERVER = "Device.ManagementServer.";
-    
-    /** Holds error message when command not found */
-    public static final String CMD_NOT_FOUND = "command not found";
+	/**
+	 * Command to get ip from ifconfig for the given interface. Replace the
+	 * <REPLACE> with interface name
+	 */
+	public static final String GET_IP_OF_INTERFACE_FROM_IFCONFIG = "/sbin/ifconfig <REPLACE> |grep 'inet '|awk '{print $2}'";
 
-    /** Holds the string commercial */
-    public static final String COMMERCIAL = "commercial";
-    
-    /** Constant for holding string FAILED */
-    public static final String STRING_FAILED = "FAILED";    
-    
-    /** String constant to hold pattern to find telemetry endpoint enable status form response */
-    public static final String PATTERN_TO_FIND_TELEMETRY_ENDPOINT_ENABLE = "RFC:  updated for Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.TelemetryEndpoint.Enable from value old=(\\w*)";
+	/**
+	 * Simple Data Format - System Date and Time retrieved by executing date command
+	 */
+	public static final String SYSTEM_DATE_TIME_FORMAT_RETRIEVED = "E MMM dd HH:mm:ss zzz yyyy";
 
-    /** String constant to hold pattern to grep telemetry endpoint enable status from response */
-    public static final String PATTERN_TO_GREP_TELEMETRY_ENDPOINT_ENABLE = "RFC:  updated for Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.TelemetryEndpoint.Enable from value old";
+	/** Pattern Matcher to retrieve the resource usage */
+	public static final String COMMAND_TO_RETRIEVE_RESOURCE_USAGE = "grep -i \"RDKB_SELFHEAL : CPU usage is \" /rdklogs/logs/SelfHeal.txt.0";
 
-    /** String constant to store TR069 support */
-    public static final String TR069_SUPPORT = "TR069support";
-    
-    /** File path for TR69log.txt */
-    public static final String RDKLOGS_LOGS_TR69LOG_TXT_0 = "/rdklogs/logs/TR69log.txt.0";    
-    
-    /** Log message for ACS request complete */
-    public static final String ACS_REQUEST_COMPLETE = "ACS Request has completed with status code 0";
-    
-    /** String to store process name CcspTr069PaSsp */
-    public static final String PROCESS_NAME_CCSPTR069PASSP = "CcspTr069PaSsp";
-    
-    /** String for expected TR69 cert location */
-    public static final String STRING_EXPECTED_TR69_CERTLOCATION = "/etc/cacert.pem";
-    
-    /** Default certiticate location from property */
-    public static final String PROP_KEY_TR69_CORRECT_ACS_URL = "correct.acs.url";
-    
-    /** Default ACS url from property */
-    public static final String PROP_KEY_TR69_DEFAULT_ACS_URL = "default.acs.url";
-    
-    /** Constant for number 9 */
-    public static final int CONSTANT_9 = 9;
+	/** Constant to hold regex for matching CPU RESOURCE USAGE TIME FORMAT */
+	public static final String PATTERN_MATCH_FOR_TIME_FORMAT = "at\\s+timestamp\\s+\\d{4}:\\d{2}:\\d{2}:(\\d{2}:\\d{2}:\\d{2})";
 
-    /** command to make cpu usage 100% */
-    public static final String COMMAND_TO_MAKE_CPU_USAGE_HUNDRED_PERCENT = "yes > /dev/null &";
-    
-    /** String variable to store cpu usage 100% */
-    public static final String STRING_CPU_USAGE_100_PERCENT = "CPU usage is 100";
-    
-    /** String variable to store Avg CPU usage after 5 minutes of CPU Avg monitor window as 100% */
-    public static final String STRING_AVG_CPU_AVG_MONITOR_WINDOW = "RDKB_SELFHEAL : Avg CPU usage after 5 minutes of CPU Avg monitor window is 100";
+	/** String value for -150 */
+	public static final String STRING_VALUE_MINUS_ONE_FIFFY = "-150";
 
-    /** String variable to store top five task in device */
-    public static final String STRING_TOP_FIVE_TASK = "RDKB_SELFHEAL : Top 5 tasks running on device";
+	/** pattern to verify the TAD process */
+	public static final String PATTERN_TO_GET_TAD_RUNNING_STATUS = "(/usr/ccsp/tad)";
 
-    /** pattern to validate message format from selfheal.txt.0 **/
-    public static final String PATTERN_TO_VALIDATE_MSG_FROMAT_FROM_SELFHEAL = "((\\s+\\w+,\\s+\\d{0,3}%,)+(\\s+\\w+,\\s+\\d{0,3}%))";
+	/** Integer value 4 */
+	public static final Integer INTEGER_VALUE_4 = 4;
 
-    /** Constant to hold regex to get the top 5 process running in device */
-    public static final String REGEX_TOP_FIVE_PROCESS = "RDKB_SELFHEAL : Top 5 tasks running on device\r?\n(.*)\r?\n(.*)\r?\n(.*)\r?\n(.*)\r?\n(.*)";
+	/** Constant to hold spot single colon followed by space for LSA */
+	public static final String COLON_AND_SPACE = ": ";
+
+	/** resolv.conf partition file name **/
+	public static final String RESOLV_CONF_PARTITION = "\"resolv.conf\"";
+
+	/** String variable to store resolv.conf partition * */
+	public static final String STRING_PARTITION_RESOLV_CONF = "/resolv.conf";
+
+	/** pattern to get read write permission for resolv.conf * */
+	public static final String PATTERN_GET_READ_WRITE_PERMISSION_RESOLV_CONF_PARTITION = "\\/resolv.conf.*[(](rw)[)]?";
+
+	/** Constant holding the location of resolv.conf file. */
+	public static final String RESOLVE_DOT_CONF_FILE = "/etc/resolv.conf";
+
+	/** pattern to get ipv4 or ipv6 server address **/
+	/** Adapted from https://github.com/ecoinomist/utils-pack which is **/
+	/** Copyright (c) 2020 Ecoinomist **/
+	/** Licensed under the MIT License **/
+	public static final String PATTERN_GET_IPV4_OR_IPV6_SERVER_ADDRESS = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\\-]*[A-Za-z0-9])$|^\\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:)))(%.+)?\\s*$";
+
+	/** pattern to get namespace server address * */
+	public static final String PATTERN_GET_NAMESPACE_SERVER_ADDRESS = "nameserver (\\w+[.|:]\\w+[.|:]\\w+[.|:][\\w+|:]+)";
+
+	/** interface name to brlan0 */
+	public static final String INTERFACE_NAME_BRLAN0 = "brlan0";
+
+	/** Verifying IPv6 address in the interface */
+	public static final String INET_V6_ADDRESS_PATTERN_ALTERNATE = "inet6 addr:\\s*(\\w+::\\w+:\\w+:\\w+:\\w+)\\/\\d+\\s*Scope:[A-Za-z]*";
+
+	/** String to store ping response in windows */
+	public static final String STRING_WINDOWS_PING_RESPONSE = "Lost = 0";
+
+	/** Pattern Matcher to retrieve the Pid of wifi process */
+	public static final String PATTERN_MATCHER_TO_GET_WIFI_PROCESS_PID = "(\\d+)\\sroot";
+
+	/** Log string to validate the param value Device.Time.Enable as true */
+	public static final String LOG_STRING_ENABLING_NETWORK_TIME = "Enabling Network Time Sync";
+
+	/** Log string to validate the param value Device.Time.NtpServerUrl as true */
+	public static final String LOG_STRING_SETTING_NTPSERVER = "Setting NTPServer as ";
+
+	/** Constant to hold the command for uptime */
+	public static final String CMD_DATE = "date";
+
+	/** Simple Data Format - System Date and Time to set */
+	public static final String SYSTEM_DATE_TIME_FORMAT_TO_SET = "HH:mm:ss";
+
+	/** String to hold dropbear process */
+	public static final String STRING_DROPBEAR_PROCESSOR = "dropbear";
+
+	/** Constant for number 14 */
+	public static final int CONSTANT_14 = 14;
+
+	/** Constant to store the telephone line status as up(2) */
+	public static final String SNMP_RESPONSE_FOR_TEL_LINE_STATUS_UP = "up";
+
+	/** MeshAgent Log File Name */
+	public static final String LOG_FILE_MESHAGENT = "/rdklogs/logs/MeshAgentLog.txt.0";
+
+	/** Constant to hold Mesh syscfg db output */
+	public static final String MESH_SYSCFG_DB_OP = "mesh_enable=";
+
+	/** The property key for partner ID Names */
+	public static final String PROP_KEY_PARTNER_ID_LIST = "partner.id.list";
+
+	/**
+	 * System property isWebPA which will determine whether the tr69 parameter needs
+	 * to be run through WebPA or tr-069
+	 */
+	public static final String SYSTEM_PROPERTY_ISWEBPA = "isWebPA";
+
+	/** file to store the logs for cdl using xconf device commands */
+	public static final String FILE_TO_STORE_CDL_LOGS = "/nvram/xconf.txt.0";
+
+	/** Constant for update status loop count. */
+	public static final int ESTB_SW_UPDATE_STATUS_LOOP_COUNT = 20;
+
+	/** Constant to hold configured Textures Cache Limit */
+	public static final int CONFIGURED_TEXTURES_CACHE_LIMIT_IN_MB = 40;
+
+	/** String variable blacklist */
+	public static final String STRING_BLACKLIST = "blacklist";
+
+	/** Test constant for phish tank sites in stb.properties file */
+	public static final String PROP_KEY_PHISH_TANK_SITES = "phish.tank.urls";
+
+	/** Regex for getting the acs url */
+	public static final String PATTERN_TO_GET_ACS_URL = "ManagementServerURLID_PSM:\\s+(.*)\\s";
+
+	/** Constant to hold the Management Server URL */
+	public static final String MANAGEMENT_SERVER_URL = AutomaticsPropertyUtility
+			.getProperty(BroadBandTestConstants.PROP_KEY_TR69_CORRECT_ACS_URL);
+
+	/** Constant to hold URL of wikipedia */
+	public static final String URL_WIKIPEDIA = "https://www.wikipedia.org";
+
+	/**
+	 * The array list containing phished sites from
+	 * https://www.phishtank.com/phish_archive.php?page=0 page with valid phish and
+	 * online
+	 * 
+	 */
+	public static final List<String> LIST_OF_PHISHED_WEBSITES = new ArrayList<String>() {
+		{
+			String url = AutomaticsPropertyUtility.getProperty(BroadBandTestConstants.PROP_KEY_PHISH_TANK_SITES);
+			List<String> listOfSites = Arrays.asList(url.split(","));
+			for (String site : listOfSites) {
+				add(site);
+			}
+		}
+	};
+
+	/** String regex to get ethernet connected client ipv4 from ifconfig */
+	public static final String STRING_REGEX_TO_GET_ETHERNET_IPV6 = ".*inet6[a-z:\\s](([0-9a-f]{1,4}:){7}([0-9a-f]{1,4}))[\0-9]*\\s.*";
+
+	/** REGEX for String Address and IPv4 Address */
+	public static final String REGEX_STRING_ADDRESS_AND_IPV4_ADDRESS = "Address: +(\\d+\\.\\d+\\.\\d+\\.\\d+)";
+
+	/** REGEX for String Name and host name */
+	public static final String REGEX_STRING_NAME_AND_HOST_NAME = "Name:\\s+(\\S+)";
+
+	/** Test constant for string 'nslookup' */
+	public static final String STRING_NS_LOOKUP = "nslookup";
+
+	/** String Variable to store Name and colon */
+	public static final String STRING_NAME_COLON = "Name:";
+
+	/** String Variable to store Address and colon */
+	public static final String STRING_ADDRESS_COLON = "Address:";
+
+	/** String Variable to hold answer */
+	public static final String STRING_ANSWER_COLON = "answer:";
+
+	/** Constant to hold string that needs to append for setting 2.4 GHZ SSID */
+	public static final String APPEND_STRING_FOR_24_GHZ_SSID_NAME_CHANGE = "24GHZ_private_";
+
+	/** Constant to hold string that needs to append for setting 5 GHZ SSID */
+	public static final String APPEND_STRING_FOR_5_GHZ_SSID_NAME_CHANGE = "5GHZ_private_";
+
+	/** Command to get ip from ifconfig for the given interface */
+	public static final String GET_GATEWAY_IP_FROM_IFCONFIG = "/sbin/ifconfig brlan0|grep \"inet addr\"|grep -oE \"\\b([0-9]{1,3}\\.){3}[0-9]{1,3}\\b\"|head -n 1";
+
+	/** Substring to be checked for PROD Builds */
+	public static final String PROD_BUILD_SUBSTRING = "_prod_";
+
+	/** Sample Password for testing */
+	public static final String TEST_SSID_PASSWORD = "password123";
+
+	/** Constant for 2.4GHZ OR 5GHZ band */
+	public static final String BAND_2_4GHZ_OR_5GHZ = "2.4GHZ OR 5GHZ";
+
+	/** Time value for DHCP lease time */
+	public static final String STRING_LEASE_TIME_DEFAULT_VALUE = "604800";
+
+	/** String to store the device comment */
+	public static final String STRING_DEVICE_COMMENT = "reserved Ip test";
+
+	/** Constant to hold URL of HTTPS site: https://www.facebook.com */
+	public static final String URL_HTTPS_FACEBOOK = "https://www.facebook.com/";
+
+	/** String to store value of dhcp switch script */
+	public static final String DHCP_SWITCH_SCRIPT = "dhcpswitch.sh";
+
+	/** String to store process name udhcpc */
+	public static final String PROCESS_NAME_UDHCPC = "udhcpc";
+
+	/** The constant holding a command to ifconfig erouter. */
+	public static final String IFCONFIG_EROUTER = "/sbin/ifconfig erouter0";
+
+	/** String value for 100 */
+	public static final String STRING_VALUE_ONE_HUNDRED = "100";
+
+	/** Constant to hold Not applicable message for residential class devices */
+	public static final String NA_MSG_FOR_DSL_DEVICES = "Test Step Not Applicable for DSL devices";
+
+	/** String value for MAC_ADDRESS */
+	public static final String MAC_ADDRESS = "MACAddress";
+
+	/** String value for DeviceName */
+	public static final String DEVICE_NAME = "DeviceName";
+
+	/** Constant for mac Filter as Deny */
+	public static final String MAC_FILTER_DENY = "Deny";
+
+	/** String value for Connected_Device */
+	public static final String CONNECTED_DEVICE = "Connected_Device";
+
+	/** Constant for mac Filter as Allow */
+	public static final String MAC_FILTER_ALLOW = "Allow";
+
+	/** command to get log upload details */
+	public static final String CMD_GET_LOG_UPLOAD_DETAILS = "cat /nvram/automation_test.txt | grep -i \"CURL_CMD\"";
+
+	/** System command to get ping data block size */
+	public static final String CMD_GET_PING_DATA_BLOCK_SIZE = "cat /opt/secure/data/syscfg.db  | grep selfheal_ping_DataBlockSize";
+
+	/** pattern to get ping data block size */
+	public static final String PATTERN_GET_PING_DATA_BLOCK_SIZE = "selfheal_ping_DataBlockSize=(\\d+)";
+
+	/** pattern to get log upload details */
+	public static final String PATTERN_GET_LOG_UPLOAD_TIMING = "\\d+-(\\d+:\\d+:\\d+).\\d+ [d]?[c]?[a]?[:]?[ ]?CURL_CMD";
+
+	/** String to store File path to snmp certs */
+	public static final String FILE_LOCATION_SNMP_CERTS = "/etc/ssl/certs/snmp/tls/certs/";
+
+	/** String - regex to retrieve not before date in cert */
+	public static final String REGEX_TO_RETRIEVE_CERT_NOT_BEFORE_DATE = "Not Before:\\s*(.*)";
+
+	/** String - regex to retrieve not after date in cert */
+	public static final String REGEX_TO_RETRIEVE_CERT_NOT_AFTER_DATE = "Not After :\\s*(.*)";
+
+	/** String to store snmpv3 cert encryption */
+	public static final String SNMPV3_CERT_SIGNATURE = "sha256WithRSAEncryption";
+
+	/** String to store prop snmpv3.auth.mechanis */
+	public static final String SNMPV3_AUTH_MECHANISM = "snmpv3.auth.mechanism";
+
+	/** String snmpv3 auth type SHA1 */
+	public static final String SNMPV3_AUTH_SHA1 = "SHA1";
+
+	/** String to store format of cert */
+	public static final String DATE_FORMAT_FOR_CERT = "MMM dd HH:mm:ss yyyy z";
+
+	/** String - regex to retrieve signature in cert */
+	public static final String REGEX_TO_RETRIEVE_CERT_SIGNATURE = "Signature Algorithm:\\s*(.*)";
+
+	/** String snmpv3 auth type SHA256 */
+	public static final String SNMPV3_AUTH_SHA256 = "SHA256";
+
+	/** String value 180 */
+	public static final String STRING_180 = "180";
+
+	/** String for executable file */
+	public static final String TEMPORARY_EXECUTABLE_FILE = "test.sh";
+
+	/** String for File with full permissions */
+	public static final String FULL_FILE_PERMISSIONS_FOR_FILE = "rwxrwxrwx";
+
+	/** Process name hostapd */
+	public static final String PROCESS_NAME_HOSTAPD = "hostapd";
+
+	/** String value 300 */
+	public static final String STRING_300 = "300";
+
+	/**
+	 * Pattern to get the mac address of client device from /tmp/wifiMon log file
+	 */
+	public static final String PATTERN_CONNECTED_DEVICE_MAC = "Device:(\\w+:\\w+:\\w+:\\w+:\\w+:\\w+) connected on ap:1";
+
+	/** Linux command to remove any files. */
+	public static final String CMD_REMOVE_FORCEFULLY = "rm -f ";
+
+	/** Constant to hold default begining address value */
+	public static final String DEFAULT_DHCPV4_BEGIN_ADDRESS = "DEFAULT_DHCPV4_BEGIN_ADDRESS";
+
+	/** Constant to hold default begining address value */
+	public static final String DEFAULT_DHCPV4_ENDING_ADDRESS = "DEFAULT_DHCPV4_ENDING_ADDRESS";
+
+	/** Constant to hold default dhcp lease time */
+	public static final String DEFAULT_DHCPLEASE_TIME = "DEFAULT_DHCPLEASE_TIME";
+
+	/** String for <<INTERFACE>> */
+	public static final String STRING_INTERFACE_TO_REPLACE = "<<INTERFACE>>";
+
+	/** Constant to hold commands for ssh and telnet */
+	public enum sshTelnetCommandExpectedOutput {
+
+		LINUX_COMMANDS("ssh -o ConnectTimeout=10 admin@<REPLACE>", "timeout 10 telnet <REPLACE>",
+				"port 22: Connection timed out", ""),
+		WINDOWS_COMMANDS("ssh admin@<REPLACE>", "telnet <REPLACE>", "port 22: Connection timed out", "");
+
+		String sshCommand;
+		String telnetCommand;
+		String expectedSsh;
+		String expectedTelnet;
+
+		public String getSshCommandWithIp(String ip) {
+			return sshCommand.replace(BroadBandTestConstants.STRING_REPLACE, ip);
+		}
+
+		public String getTelnetCommandWithIp(String ip) {
+			return telnetCommand.replace(BroadBandTestConstants.STRING_REPLACE, ip);
+		}
+
+		public String getExpectedSsh() {
+			return expectedSsh;
+		}
+
+		public String getExpectedTelnet() {
+			return expectedTelnet;
+		}
+
+		sshTelnetCommandExpectedOutput(String sshCommand, String telnetCommand, String expectedSsh,
+				String expectedTelnet) {
+			this.sshCommand = sshCommand;
+			this.telnetCommand = telnetCommand;
+			this.expectedSsh = expectedSsh;
+			this.expectedTelnet = expectedTelnet;
+		}
+
+	}
+
+	/** Constant to Not_Applicable value to verify Fan Rotor status */
+	public static final String STRING_FAN_NOT_APPLICABLE_ROTOR = "Not_Applicable";
+
+	/** Log for CDL started condition */
+	public static final String LOG_CDL_COMPLETED = "### httpdownload completed ###";
+
+	/** Log for CDL started condition */
+	public static final String LOG_CDL_SUCCESSFUL = "HTTP download Successful";
+
+	/** The constant holds the WebPA success code */
+	public static final int SUCCESS_CODE = 200;
+
+	/** String to Verirfy the firmware downlaod Failed status */
+	public static final String STRING_FIRMWARE_DOWNLOAD_FAILED = "Failed";
+
+	/** String to Verirfy the firmware downlaod completed status */
+	public static final String STRING_FIRMWARE_DOWNLOAD_COMPLETED = "Completed";
+
+	/** Command tot remove waiting for reboot flag **/
+	public static final String CMD_REMOVE_WAITING_REBOOT_FLAG = "rm -rf /tmp/.waitingreboot";
+
+	/** String to store Not Applicable */
+	public static final String NOT_APPLICABLE_VALUE = "Not Applicable";
+
+	/** STRING to RESET OID */
+	public static final String STRING_MTA_RESET_OID = "1.3.6.1.2.1.140.1.1.1";
+
+	/** Constant for mac Filter as Allow-All */
+	public static final String MAC_FILTER_ALLOW_ALL = "Allow-ALL";
+
+	public static final String PROP_KEY_DIBBLER_VERSION = "current.dibbler.version";
+
+	/** String value to store dibbler pattern */
+	public static final String PATTER_DIBBLER_VERSION = "DHCPv6, version (\\S+)\\s+";
+
+	/** String variable to store disable */
+	public static final String STRING_DISABLE = "Disable";
+
+	public static final String STRING_UP = "up";
+
+	/** Constant for ssid frequency both band */
+	public static final String SSID_FREQ_BOTH_BAND = "BOTH";
+	
+    /** Default response for IP address */
+    public static final String NS_LOOKUP_GLOBAL_DNS_RESPONSE = "I am not an OpenDNS resolver";
     
-    /** Default value of webpa Device.WiFi.X_RDKCENTRAL-COM_BandSteering.BandSetting.2.PhyRateThreshold */
-    public static final String WEBPA_DEFAULT_VALUE_BAND_STEERING_PHY_THRESHOLD_5GHZ = "6000";
+    /** Test constant for string 'DNS request timed out' error message */
+    public static final String STRING_DNS_REQUEST_TIMED_OUT_ERROR_MESSAGE = "DNS request timed out";
     
-    /** value to be set for PhyThreshold in band steering */
-    public static final String BAND_STEERING_PHY_THRESHOLD_VALUE = "40";
+    /** Default nslookup response pattern .ash */
+    public static final String PATTERN_STRING_DOT_ASH = ".ash";
+
+    /** Default nslookup response pattern .nyc */
+    public static final String PATTERN_STRING_DOT_NYC = ".nyc";
     
-    /** Default value of webpa Device.WiFi.X_RDKCENTRAL-COM_BandSteering.BandSetting.1.PhyRateThreshold */
-    public static final String WEBPA_DEFAULT_VALUE_BAND_STEERING_PHY_THRESHOLD_2GHZ = "50000";
+    /** Constant to hold the DNS resolver1 IP 208.67.222.222 */
+    public static final String NS_LOOKUP_IP_208_67_222_222 = "208.67.222.222";
+
+    /** Constant to hold the DNS resolver2 IP 208.67.220.220 */
+    public static final String NS_LOOKUP_IP_208_67_220_220 = "208.67.220.220";
+
+    /** Constant to hold the DNS resolver3 IP 208.67.222.220 */
+    public static final String NS_LOOKUP_IP_208_67_222_220 = "208.67.222.220";
+
+    /** Constant to hold the DNS resolver4 IP 208.67.220.222 */
+    public static final String NS_LOOKUP_IP_208_67_220_222 = "208.67.220.222";
     
-    /** Test value of webpa Device.WiFi.X_RDKCENTRAL-COM_BandSteering.BandSetting.1.IdleInactiveTime */
-    public static final String TEST_VALUE_IDLE_INACTIVE_TIME_2GHZ = "11";
+    /** Constant to hold the DNS resolver1 domain name */
+    public static final String SERVER_NAME_208_67_222_222 = "resolver1.opendns.com";
+
+    /** Constant to hold the DNS resolver2 domain name */
+    public static final String SERVER_NAME_208_67_220_220 = "resolver2.opendns.com";
+
+    /** Constant to hold the DNS resolver3 domain name */
+    public static final String SERVER_NAME_208_67_222_220 = "resolver3.opendns.com";
+
+    /** Constant to hold the DNS resolver5 domain name */
+    public static final String SERVER_NAME_208_67_220_222 = "resolver4.opendns.com";
     
-    /** Test value of webpa Device.WiFi.X_RDKCENTRAL-COM_BandSteering.BandSetting.2.IdleInactiveTime */
-    public static final String TEST_VALUE_IDLE_INACTIVE_TIME_5GHZ = "13";
+    /** Constant for reboot priority forced */
+    public static final String FW_DWN_PRIORITY_FORCED = "forced";
     
-    /** Test value of webpa Device.WiFi.X_RDKCENTRAL-COM_BandSteering.BandSetting.1. OverloadInactiveTime */
-    public static final String TEST_VALUE_OVERLOAD_INACTIVE_TIME_2GHZ = "12";
+    /** Expected string in log file after kernel crash */
+    public static final String STRING_KERNEL_DUMP_END = "PREVIOUS_KERNEL_OOPS_DUMP_END";
     
-    /** Test value of webpa Device.WiFi.X_RDKCENTRAL-COM_BandSteering.BandSetting.2. OverloadInactiveTime */
-    public static final String TEST_VALUE_OVERLOAD_INACTIVE_TIME_5GHZ = "14";
-    
-    /** Constant to hold MAC Address for WIFI Client MacAddress parameter */
-    public static final String WIFI_CLIENT_MAC_ADDRESS_WIFICLIENT = "";
-    
-    /** Constant to hold Null MAC address without delimeter */
-    public static final String NULL_MAC_ADDRESS_WITHOUT_DELIMETER = "000000000000";
-    
-    /** Constant to hold WiFiClient Schema type */
-    public static final String WIFICLIENT_SCHEMA_TYPE = "WifiSingleClient.avsc";
-    
+    /** Constant to hold regex to check channel list from webpa for Atom */
+    public static final String PATTERN_MATCHER_24_GHZ_CHANNEL_ATOM = "\\d+-\\d+";
+
+    /** Constant to hold regex to check the channel list from webpa */
+    public static final String PATTERN_MATCHER_CHANNEL_LIST_WITH_COMMA = "[0-9]+(,[0-9]+)+";
     
     /**
-     * enum variable to store the band steering parameter to check in lbd.conf
+     * String to store pattern matcher for channel select of 2.4 GHZ retrieved from XFI & web GUI
      */
-    public enum BAND_STEERING_PARAM {
-	BAND_STEERING_PARAM_IDLE_INACTIVE_TIME,
-	BAND_STEERING_PARAM_OVERLOAD_INACTIVE_TIME,
-	BAND_STEERING_PARAM_APGROUP;
-    }
-    
-    /** Command to check the IdleInactiveTimein lbd.conf */
-    public static final String CMD_LBD_IDLE_INACTIVE = "InactIdleThreshold";
-    
-    /** Command to check the OverloadInactiveTimein lbd.conf */
-    public static final String CMD_LBD_OVERLOAD_INACTIVE = "InactOverloadThreshold";
-    
-    /** Command to check the IdleInactiveTimein cfg */
-    public static final String CMD_CFG_IDLE_INACTIVE = "/sbin/cfg -s | grep BS_IS_NORM_INACT_TIMEOUT";
+    public static final String PATTER_MATCHER_FOR_CHANNEL_SELECT_OF_2GHZ_PRIVATE_WIFI = "^(-1|[1-9]|10|11)$";
 
-    /** Command to check the OverloadInactiveTimein cfg */
-    public static final String CMD_CFG_OVERLOAD_INACTIVE = "/sbin/cfg -s | grep BS_IS_OVERLOAD_INACT_TIMEOUT";
+    /**
+     * String to store pattern matcher for channel select of 5 GHZ retrieved from XFI & web GUI
+     */
+    public static final String PATTER_MATCHER_FOR_CHANNEL_SELECT_OF_5GHZ_PRIVATE_WIFI = "^(-1|36|40|44|48|52|56|60|64|100|104|108|112|116|120|124|128|132|136|140|144|149|153|157|161)$";
     
-    /** Command to get the contents of lbd.conf */
-    public static final String CMD_CAT_LBD = "cat /tmp/lbd.conf";
+    /** folder path of tmp file */
+    public static final String FOLDER_TMP = "tmp";
     
-    /** Command to check the 2g params in lbd.conf */
-    public static final String STRING_LBD_HEADING_2G_PARAMS = "[WLANIF2G]";
+    /** String to identify tar path */
+    public static final String PATH_TO_TAR = "/bin/tar";
+    
+    /** String for tar file */
+    public static final String TAR_TEMPORARY_FILE = "sample.tar.gz";
+    
+    /** String read only file system */
+    public static final String TEXT_RO_FILE_SYSTEM = "Read-only file system";
+    
+    /** property to get ca-chain.cert.pem */
+    public static final String PROP_KEY_GET_CA_CHAIN_CERT_PEM = "rdkb.ca.chain.cert.pem";
+    
+    /** property to get radiussrv.cert.pem */
+    public static final String PROP_KEY_GET_RADIUSSRV_CERT_PEM = "rdkb.radiussrv.cert.pem";
+    
+    /** String gmail.com */
+    public static final String NSLOOKUP_FOR_GMAIL = "gmail.com";
+    
+    /** String amazon.com */
+    public static final String NSLOOKUP_FOR_AMAZON = "amazon.com";
+    
+    /** String opendns.com */
+    public static final String NSLOOKUP_FOR_OPENDNS = "opendns.com";
+    
+    /** String Ip adress of Open dns 8.8.8.8 */
+    public static final String STRING_OPEN_DNS_IP_8 = "8.8.8.8";
 
-    /** Command to check the 5g params in lbd.conf */
-    public static final String STRING_LBD_HEADING_5G_PARAMS = "[WLANIF5G]";
+    /** String Ip adress of Open dns 2a02:c7a:601:a::5000 for DSL */
+    public static final String STRING_OPEN_DNS_IP_DSL = "2a02:c7a:601:a::5000";
     
-    /** Command to check the STDAB lbd.conf */
-    public static final String STRING_LBD_STADB_PARAMS = "[STADB]";
+    /** String Ip adress of Open dns 75.75.76.76 */
+    public static final String STRING_OPEN_DNS_IP_75_76 = "75.75.76.76";
     
-    /** Simple Data Format - System Date and Time retrieved by executing date command */
-    public static final String SYSTEM_DATE_TIME_FORMAT_RETRIEVED = "E MMM dd HH:mm:ss zzz yyyy";
+    /** String Ip adress of opendns.com 208.67.222.222 */
+    public static final String STRING_OPEN_DNS_IP_222 = "208.67.222.222";
     
-    /** Pattern Matcher to retrieve the resource usage */
-    public static final String COMMAND_TO_RETRIEVE_RESOURCE_USAGE = "grep -i \"RDKB_SELFHEAL : CPU usage is \" /rdklogs/logs/SelfHeal.txt.0";
+    /** String yahoo.com */
+    public static final String NSLOOKUP_FOR_YAHOO = "yahoo.com";
     
-    /** Constant to hold regex for matching CPU RESOURCE USAGE TIME FORMAT */
-    public static final String PATTERN_MATCH_FOR_TIME_FORMAT = "at\\s+timestamp\\s+\\d{4}:\\d{2}:\\d{2}:(\\d{2}:\\d{2}:\\d{2})";
+    /** String Ip adress of opendns.com 208.67.220.220 */
+    public static final String STRING_OPEN_DNS_IP_220 = "208.67.220.220";
     
-    /** String value for -150 */
-    public static final String STRING_VALUE_MINUS_ONE_FIFFY = "-150";
+    /** String comcast.com */
+    public static final String NSLOOKUP_FOR_COMCAST = "comcast.com";
     
-    /** pattern to verify the TAD process */
-    public static final String PATTERN_TO_GET_TAD_RUNNING_STATUS = "(/usr/ccsp/tad)";
+    /** String cisco.com */
+    public static final String NSLOOKUP_FOR_CISCO = "cisco.com";
     
-    /** Integer value 4 */
-    public static final Integer INTEGER_VALUE_4 = 4;
+    /** String Ip adress of opendns.com 208.67.222.220 */
+    public static final String STRING_OPEN_DNS_IP_222_220 = "208.67.222.220";
     
-	/** Constant to hold spot single colon followed by space for LSA */
-    public static final String COLON_AND_SPACE = ": ";
-
+    /** String Ip adress of opendns.com 208.67.220.222 */
+    public static final String STRING_OPEN_DNS_IP_220_222 = "208.67.220.222";
+    
+    /** String retry */
+    public static final String STRING_RETRY = "retry";
+    
+    /** String valueretrieved to replace */
+    public static final String STRING_VALUERETRIEVED_TO_REPLACE = "<<VALUERETRIEVED>>";
+    
+    /** String valueparamter to replace */
+    public static final String STRING_VALUEPARAMETER_TO_REPLACE = "<<VALUEPARAMETER>>";
+    
+    /** String timeout with value 20 */
+    public static final String STRING_TIMEOUT_WITH_VALUE_20 = "timeout 20";
+    
+    /** String retry with value 20 */
+    public static final String STRING_RETRY_WITH_VALUE_20 = "retry 20";
     
 }

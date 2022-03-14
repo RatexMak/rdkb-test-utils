@@ -18,17 +18,19 @@
 package com.automatics.rdkb;
 
 public class BroadBandTestGroup extends TestGroup{
-    /**
-     * IP Multi cast Test Group.
-     */
+    /** IP Multi cast Test Group.*/
     public static final String IP_MULTI_CAST = "multicast";
     
     /** Test Group for self heal **/
     public static final String SELF_HEAL = "selfheal";
     
-    /**
-     * Reboot Test Group.
-     */
+    /** Reboot Test Group. */
     public static final String REBOOT = "reboot";
+    
+    /** Test group for verifying Tr69 API */
+    public static final String TR69 = "tr69";
+    
+    /** Test Group for Vulnerability **/
+    public static final String WIFI_SECURITY = "wifisecurity";
     
 }

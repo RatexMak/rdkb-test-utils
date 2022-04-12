@@ -457,7 +457,7 @@ public class BroadBandPreConditionUtils {
 	    LOGGER.info("Waiting for 90 seconds after disabling mesh and auto channel...");
 	    tapEnv.waitTill(
 		    BroadBandTestConstants.ONE_MINUTE_IN_MILLIS + BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
-	    LOGGER.info("PRE-CONDITION 1 : ACTUAL : SUCCESSFULLY ENABLED THE SECURED XFINITY WIFI ON GATEWAY DEVICE ");
+	    LOGGER.info("PRE-CONDITION 1 : ACTUAL : SUCCESSFULLY ENABLED THE SECURED PUBLIC WIFI ON GATEWAY DEVICE ");
 	} else {
 	    LOGGER.error("PRE-CONDITION 1 : ACTUAL : " + errorMessage);
 	    throw new TestException(
@@ -975,7 +975,7 @@ public class BroadBandPreConditionUtils {
 		errorMessage = "NOT ABLE TO ACCESS THE SITE 'www.google.com' FROM WIFI CLIENT WITH USING IPV6";
 		if (DeviceModeHandler.isFibreDevice(device)) {
 			LOGGER.info(
-					"PRE-CONDITION 5 : ACTUAL : IPV6 INTERNET CONNECTIVITY VERIFICATION NOT APPLICABLE FOR PACE DEVICES");
+					"PRE-CONDITION 5 : ACTUAL : IPV6 INTERNET CONNECTIVITY VERIFICATION NOT APPLICABLE FOR fibre DEVICES");
 		} else {
 			startTime = System.currentTimeMillis();
 			do {
@@ -1003,6 +1003,7 @@ public class BroadBandPreConditionUtils {
 		}
 		return deviceConnected;
 	}
+
 
 	/**
 	 * Pre-Condition method to verify the below condition in Ethernet connected
@@ -1108,4 +1109,153 @@ public class BroadBandPreConditionUtils {
 		}
 		return deviceConnectedWithEthernet;
 	}
+	
+	/**
+     * Pre-Condition method to used to enable the TR69 Configuration
+     * 
+     * @param device
+     *            {@link Settop}
+     * @param tapEnv
+     *            {@link ECatsTapApi}
+     * @param preCondNumber
+     *            Pre condition number
+     *            
+     * @refactor yamini.s
+     * 
+     */
+    public static void executePreConditionToEnableTR69Configuration(Dut device, AutomaticsTapApi tapEnv,
+	    int preConStepNumber) throws TestException {
+	String errorMessage = null;
+	boolean status = false;
+	LOGGER.info("#######################################################################################");
+	LOGGER.info("PRE-CONDITION " + preConStepNumber + " : DESCRIPTION : Enable the TR69 configuration");
+	LOGGER.info("PRE-CONDITION " + preConStepNumber + " : ACTION : Set "
+		+ BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_ENABLECWMP + " as TRUE.");
+	LOGGER.info("PRE-CONDITION " + preConStepNumber
+		+ " : EXPTECTED : Enable the TR69 configuration configuration should be success");
+	LOGGER.info("#######################################################################################");
+	errorMessage = device.getModel() + " is not a syndication partner device ";
+	status = BroadBandCommonUtils.verifySyndicatePartnerIdOnDevice(device, tapEnv);
+	if (status) {
+	    status = false;
+	    errorMessage = "Failed to Enable the TR69 configuration";
+	    try {
+		status = BroadBandCommonUtils.getWebPaValueAndVerify(device, tapEnv,
+			BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_ENABLECWMP,
+			BroadBandTestConstants.TRUE);
+		LOGGER.info("GET DEVICE_MANAGEMENTSERVER_ENABLECWMP :" + status);
+	    } catch (Exception exception) {
+		LOGGER.error(errorMessage + " : " + exception.getMessage());
+	    }
+	    try {
+		if (!status) {
+		    LOGGER.info("TRYING TO SET DEVICE_MANAGEMENTSERVER_ENABLECWMP :" + status);
+		    status = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv,
+			    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_ENABLECWMP,
+			    WebPaDataTypes.BOOLEAN.getValue(), BroadBandTestConstants.TRUE)
+			    && CommonMethods.isNotNull(BroadBandCommonUtils.searchLogFiles(tapEnv, device,
+				    BroadBandTestConstants.ACS_REQUEST_COMPLETE,
+				    BroadBandTestConstants.RDKLOGS_LOGS_TR69LOG_TXT_0,
+				    BroadBandTestConstants.THREE_MINUTE_IN_MILLIS,
+				    BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+		}
+	    } catch (Exception exception) {
+		LOGGER.error(errorMessage + " : " + exception.getMessage());
+	    }
+	}
+	if (status) {
+	    LOGGER.info("PRE-CONDITION " + preConStepNumber
+		    + " : ACTUAL : TR69 configuration configuration enabled successfully.");
+	} else {
+	    LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL : " + errorMessage);
+	    throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION " + preConStepNumber
+		    + " : FAILED : " + errorMessage);
+	}
+    }
+
+    /**
+     * pre-Condition method to verify the default radio status
+     * 
+     * @param device
+     *            {@link Dut}
+     * 
+     * @refactor yamini.s
+     */
+    public static void executePreConditionToVerifyRadioStatus(Dut device, AutomaticsTapApi tapEnv, int preConStepNumber)
+	    throws TestException {
+	String errorMessage = null;
+	boolean status = false;
+	/**
+	 * PRECONDITION 1 :Enable Private 2.4 GHz SSID via WebPA
+	 */
+	errorMessage = null;
+	status = false;
+	LOGGER.info("#######################################################################################");
+	LOGGER.info("PRE-CONDITION " + preConStepNumber
+		+ " : DESCRIPTION : SET AND VERIFY WHETHER PRIVATE 2.4 GHZ SSID 'DEVICE.WIFI.SSID.10001.ENABLE' IS ENABLED ");
+	LOGGER.info("PRE-CONDITION " + preConStepNumber
+		+ " : ACTION : SET AND VERIFY WHETHER PRIVATE 2.4 GHZ SSID 'DEVICE.WIFI.SSID.10001.ENABLE' IS ENABLED USING WEBPA ");
+	LOGGER.info("PRE-CONDITION " + preConStepNumber
+		+ " : EXPTECTED : DEVICE SHOULD BE ENABLED WITH PRIVATE 2.4 GHZ SSID AND RESPONSE SHOULD BE TRUE");
+	LOGGER.info("#######################################################################################");
+	errorMessage = "NOT ABLE TO ENABLE THE 2.4GHZ PRIVATE SSID ON THIS DEVICE - HENCE BLOCKING THE EXECUTION.";
+	try {
+	    status = BroadBandCommonUtils.getWebPaValueAndVerify(device, tapEnv,
+		    BroadBandWebPaConstants.WEBPA_PARAM_WIFI_2_4_RADIO_ENABLE, BroadBandTestConstants.TRUE);
+	} catch (TestException exception) {
+	    status = false;
+	    LOGGER.error(errorMessage + " : " + exception.getMessage());
+	}
+	if (!status) {
+	    errorMessage = "UNABLE TO SET THE 2.4 GHZ RADIO STATUS AS 'TRUE'.";
+	    status = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv,
+		    BroadBandWebPaConstants.WEBPA_PARAM_WIFI_2_4_RADIO_ENABLE, BroadBandTestConstants.CONSTANT_3,
+		    BroadBandTestConstants.TRUE);
+	}
+	if (status) {
+	    LOGGER.info("PRE-CONDITION " + preConStepNumber
+		    + " : ACTUAL : PRIVATE 2.4 GHZ SSID ENABLED IN GATEWAY DEVICE.");
+	} else {
+	    LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL : " + errorMessage);
+	    throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION : " + preConStepNumber
+		    + " FAILED : " + errorMessage);
+	}
+	LOGGER.info("#######################################################################################");
+	/**
+	 * PRECONDITION :Enable Private 5 GHz SSID via WebPA
+	 */
+	preConStepNumber++;
+	errorMessage = null;
+	status = false;
+	LOGGER.info("#######################################################################################");
+	LOGGER.info("PRE-CONDITION " + preConStepNumber
+		+ " : DESCRIPTION : SET AND VERIFY WHETHER PRIVATE 5 GHZ SSID 'DEVICE.WIFI.SSID.10101.ENABLE' IS ENABLED ");
+	LOGGER.info("PRE-CONDITION " + preConStepNumber
+		+ " : ACTION : SET AND VERIFY WHETHER PRIVATE 5 GHZ SSID 'DEVICE.WIFI.SSID.10101.ENABLE' IS ENABLED USING WEBPA ");
+	LOGGER.info("PRE-CONDITION " + preConStepNumber
+		+ " : EXPTECTED : DEVICE SHOULD BE ENABLED WITH PRIVATE 5 GHZ SSID AND RESPONSE SHOULD BE TRUE");
+	LOGGER.info("#######################################################################################");
+	errorMessage = "NOT ABLE TO ENABLE THE 5GHZ PRIVATE SSID ON THIS DEVICE - HENCE BLOCKING THE EXECUTION.";
+	try {
+	    status = BroadBandCommonUtils.getWebPaValueAndVerify(device, tapEnv,
+		    BroadBandWebPaConstants.WEBPA_PARAM_WIFI_5_RADIO_ENABLE, BroadBandTestConstants.TRUE);
+	} catch (TestException exception) {
+	    status = false;
+	    LOGGER.error(errorMessage + " : " + exception.getMessage());
+	}
+	if (!status) {
+	    errorMessage = "UNABLE TO SET THE 5 GHZ RADIO STATUS AS 'TRUE'.";
+	    status = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv,
+		    BroadBandWebPaConstants.WEBPA_PARAM_WIFI_5_RADIO_ENABLE, BroadBandTestConstants.CONSTANT_3,
+		    BroadBandTestConstants.TRUE);
+	}
+	if (status) {
+	    LOGGER.info(
+		    "PRE-CONDITION " + preConStepNumber + " : ACTUAL : PRIVATE 5 GHZ SSID ENABLED IN GATEWAY DEVICE.");
+	} else {
+	    LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL : " + errorMessage);
+	    throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION : " + preConStepNumber
+		    + " FAILED : " + errorMessage);
+	}
+    }
 }

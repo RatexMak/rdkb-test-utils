@@ -405,15 +405,15 @@ public class BroadBandPostConditionUtils {
 					+ " : DESCRIPTION : VERIFY THE XFINITYWIFI STATUS IS DISABLED");
 			LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : EXECUTE WEBPA COMMAND:"
 					+ BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI);
-			LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : XFINITY WIFI MUST BE DISABLED");
+			LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : PUBLIC WIFI MUST BE DISABLED");
 			LOGGER.info("#######################################################################################");
-			errorMessage = "UNABLE TO DISABLE THE XFINITY WIFI ON GATEWAY DEVICE";
+			errorMessage = "UNABLE TO DISABLE THE PUBLIC WIFI ON GATEWAY DEVICE";
 			status = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv,
 					BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI, BroadBandTestConstants.CONSTANT_3,
 					BroadBandTestConstants.FALSE);
 			if (status) {
 				LOGGER.info("POST-CONDITION " + postConStepNumber
-						+ " : ACTUAL : SUCCESSFULLY DISABLED THE XFINITY WIFI ON GATEWAY DEVICE");
+						+ " : ACTUAL : SUCCESSFULLY DISABLED THE PUBLIC WIFI ON GATEWAY DEVICE");
 			} else {
 				LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
 			}
@@ -494,8 +494,8 @@ public class BroadBandPostConditionUtils {
 		String errorMessage = null;
 		try {
 			LOGGER.info("#######################################################################################");
-			LOGGER.info("POST-CONDITION " + postConStepNumber
-					+ " : DESCRIPTION : VERIFY THE PUBLICWIFI STATUS IS ENABLED");
+			LOGGER.info(
+					"POST-CONDITION " + postConStepNumber + " : DESCRIPTION : VERIFY THE PUBLICWIFI STATUS IS ENABLED");
 			LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : EXECUTE WEBPA COMMAND:"
 					+ BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI);
 			LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : PUBLIC WIFI MUST BE ENABLED");
@@ -1105,5 +1105,121 @@ public class BroadBandPostConditionUtils {
 							+ exception.getMessage());
 		}
 	}
+
+	/**
+	 * Common step for executing post-conditions. ie., to disable the XDNS feature
+	 * 
+	 * @param device
+	 * @param testCaseId
+	 * @Refactor Sruthi Santhosh
+	 */
+	public static void executePostConditionForXdns(Dut device, AutomaticsTapApi tapEnv, boolean reactiveRouter)
+			throws TestException {
+		try {
+			// boolean variable to store the status
+			boolean status = false;
+			// Error message
+			String errorMessage = null;
+			LOGGER.info("################### STARTING POST-CONFIGURATIONS ###################");
+			LOGGER.info("#######################################################################################");
+			LOGGER.info(
+					"POST-CONDITION 1 : DESCRIPTION : Disable and verify the XDNS feature using webpa param 'Device.DeviceInfo.X_RDKCENTRAL-COM_EnableXDNS'");
+			LOGGER.info(
+					"POST-CONDITION 1 : ACTION : Disable XDNS feature using webpa param Device.DeviceInfo.X_RDKCENTRAL-COM_EnableXDNS");
+			LOGGER.info(
+					"POST-CONDITION 1 : EXPECTED : XDNS feature should be disabled using webpa param 'Device.DeviceInfo.X_RDKCENTRAL-COM_EnableXDNS'");
+			LOGGER.info("#######################################################################################");
+			String response = tapEnv.executeWebPaCommand(device,
+					BroadBandWebPaConstants.WEBPA_PARAM_TO_GET_XDNS_FEATURE_STATUS);
+			if (CommonMethods.isNotNull(response)
+					&& CommonUtils.patternSearchFromTargetString(response, AutomaticsConstants.TRUE)) {
+				// Error message
+				errorMessage = "Failed to disable the XDNS feature using webpa param 'Device.DeviceInfo.X_RDKCENTRAL-COM_EnableXDNS'";
+				status = BroadBandWebPaUtils.setVerifyWebPAInPolledDuration(device, tapEnv,
+						BroadBandWebPaConstants.WEBPA_PARAM_TO_GET_XDNS_FEATURE_STATUS, AutomaticsConstants.CONSTANT_3,
+						AutomaticsConstants.FALSE, AutomaticsConstants.THREE_MINUTES,
+						BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+				LOGGER.info("POST-CONDITION 1  - ACTUAL: " + (status
+						? "XDNS feature disabled sucessfully using webpa param 'Device.DeviceInfo.X_RDKCENTRAL-COM_EnableXDNS'"
+						: errorMessage));
+			} else {
+				LOGGER.info("POST-CONDITION 1  - ACTUAL: XDNS override feature is already in disabled state.");
+			}
+			if (reactiveRouter) {
+				LOGGER.info("#######################################################################################");
+				LOGGER.info("POST-CONDITION 2 : DESCRIPTION : Reactivate the router device after factory reset");
+				LOGGER.info("POST-CONDITION 2 : ACTION : Set values to 2.4GHz and 5GHz - Private SSID and Password");
+				LOGGER.info("POST-CONDITION 2 : EXPECTED : The device should be Reactivated successfully");
+				LOGGER.info("#######################################################################################");
+				errorMessage = "Failed to reactivate device after factory reset";
+				status = false;
+				try {
+					BroadBandWiFiUtils.reactivateDeviceUsingWebpaOrSnmp(tapEnv, device);
+					status = true;
+				} catch (TestException e) {
+					errorMessage = e.getMessage();
+				}
+				LOGGER.info("POST-CONDITION 2 - ACTUAL: "
+						+ (status ? "The device Reactivated successfully." : errorMessage));
+			}
+		} catch (Exception exception) {
+			LOGGER.error("Execution error occurred while executing post conditions due to exception --> "
+					+ exception.getMessage());
+		}
+	}
+	
+	/**
+     * Post-Condition method to used to disable the TR69 Configuration
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapEnv
+     *            {@link ECatsTapApi}
+     * @param postConStepNumber
+     *            Post condition number
+     * 
+     * @refactor yamini.s
+     */
+    public static void postConditionToDisableTR069Configuration(Dut device, AutomaticsTapApi tapEnv,
+	    int postConStepNumber) {
+	String errorMessage = null;
+	boolean status = false;
+	/**
+	 * POST-CONDITION : Disable the TR69 configuration
+	 */
+	LOGGER.info("#######################################################################################");
+	LOGGER.info("POST-CONDITION " + postConStepNumber + " : DESCRIPTION : Disable the TR69 configuration");
+	LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : Set "
+		+ BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_ENABLECWMP + " as FALSE.");
+	LOGGER.info("POST-CONDITION " + postConStepNumber
+		+ " : EXPTECTED : Disable the TR69 configuration configuration should be success");
+	LOGGER.info("#######################################################################################");
+	errorMessage = "Failed to Disable the TR69 configuration";
+	try {
+	    status = BroadBandCommonUtils.getWebPaValueAndVerify(device, tapEnv,
+		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_ENABLECWMP,
+		    BroadBandTestConstants.FALSE);
+	    LOGGER.info("GET DEVICE_MANAGEMENTSERVER_ENABLECWMP :" + status);
+	} catch (Exception exception) {
+	    LOGGER.error(errorMessage + " : " + exception.getMessage());
+	}
+	try {
+	    if (!status) {
+		LOGGER.info("TRYING TO SET DEVICE_MANAGEMENTSERVER_ENABLECWMP :" + status);
+		status = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv,
+			BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_ENABLECWMP,
+			WebPaDataTypes.BOOLEAN.getValue(), BroadBandTestConstants.FALSE);
+	    }
+	} catch (Exception exception) {
+	    LOGGER.error(errorMessage + " : " + exception.getMessage());
+	}
+	if (status) {
+	    LOGGER.info("POST-CONDITION " + postConStepNumber
+		    + " : ACTUAL : TR69 configuration configuration disabled successfully.");
+	} else {
+	    LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
+	}
+    }
+
 
 }

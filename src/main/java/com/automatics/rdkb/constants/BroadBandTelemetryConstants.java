@@ -49,4 +49,10 @@ public class BroadBandTelemetryConstants {
     /** Command for verifying cron settings using crontab - For atom sync available devices */
     public static final String CMD_CRONTAB_IS_ATOM_SYNC_AVAILABLE = "crontab -c /tmp/cron/ -l | grep dca";
     
+    /** Endpoint for telemetry should include a single 30 second timeout */
+    public static final String ENDPOINT_TIMEOUT = "connect-timeout 30 -m 30";
+    
+    /** Telemetry marker for WIFI_MAC_COUNT_TELEMETRY_MARKER */
+    public static final String WIFI_MAC_COUNT_TELEMETRY_MARKER = "Total_2G_clients_split";
+    
 }

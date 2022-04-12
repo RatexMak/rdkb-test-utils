@@ -38,6 +38,7 @@ import com.automatics.exceptions.TestException;
 import com.automatics.providers.tr69.Parameter;
 import com.automatics.rdkb.BroadBandResultObject;
 import com.automatics.rdkb.WiFiSsidConfigStatus;
+import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.BroadBandConnectedClientTestConstants;
 import com.automatics.rdkb.constants.BroadBandPropertyKeyConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
@@ -869,7 +870,7 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 				BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID_ENABLE_STATUS, status);
 		LOGGER.info("Public WiFi status for 5GHz: " + publicWifi5GhzStatus);
 		if (!publicWifi5GhzStatus) {
-			errorMessage += "Failed to verify the status of XFinity WiFi for 5Ghz. Expected : " + status + "; Actual : "
+			errorMessage += "Failed to verify the status of public WiFi for 5Ghz. Expected : " + status + "; Actual : "
 					+ publicWifi5GhzStatus + errorMessage;
 		}
 		if (!DeviceModeHandler.isBusinessClassDevice(device)) {
@@ -1657,7 +1658,7 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 			LOGGER.info("**********************************************************************************");
 			errorMessage = "NOT ABLE TO ACCESS THE SITE 'www.google.com' FROM LAN CLIENT WITH USING IPV6";
 			if (isSystemdPlatforms) {
-				LOGGER.info("STEP : ACTUAL : IPV6 INTERNET CONNECTIVITY VERIFICATION NOT APPLICABLE FOR PACE DEVICES");
+				LOGGER.info("STEP : ACTUAL : IPV6 INTERNET CONNECTIVITY VERIFICATION NOT APPLICABLE FOR fibre DEVICES");
 				LOGGER.info("**********************************************************************************");
 				tapEnv.updateExecutionForAllStatus(device, testId, step, ExecutionStatus.NOT_APPLICABLE,
 						BroadBandTestConstants.NOTAPPLICABLE_VALUE, false);
@@ -1902,4 +1903,301 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 	return result;
     }
 
+    /**
+     * 
+     * Verify the telemetry markers for WIFI
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param band
+     *            {@link WiFiFrequencyBand}
+     * @param logMessage
+     *            expected log message
+     * @return true if markers matches pattern
+     */
+    public static boolean verifyTelemetryMarkers(Dut device, String accessPointNumber, String logMessage,
+	    String pattern) {
+	LOGGER.debug("STARTING METHOD: verifyTelemetryMarkers()");
+	boolean status = false;
+	String response = null;
+	String searchLogMessage = BroadBandCommonUtils.concatStringUsingStringBuffer(logMessage, accessPointNumber,
+		AutomaticsConstants.COLON);
+	try {
+	    String pattenMatcher = BroadBandCommonUtils.concatStringUsingStringBuffer(searchLogMessage, pattern);
+	    String command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND,
+		    BroadBandTestConstants.TEXT_DOUBLE_QUOTE, searchLogMessage,
+		    BroadBandTestConstants.TEXT_DOUBLE_QUOTE, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+		    BroadBandCommandConstants.LOCATION_WIFI_HEALTH_LOG, BroadBandTestConstants.SYMBOL_PIPE,
+		    BroadBandTestConstants.CMD_TAIL_1);
+	    long startTime = System.currentTimeMillis();
+	    do {
+		response = BroadBandCommonUtils.executeCommandInAtomConsoleIfAtomIsPresentElseInArm(device, tapEnv,
+			command);
+		status = CommonMethods.isNotNull(response) && CommonMethods.patternMatcher(response, pattenMatcher);
+	    } while (!status && (System.currentTimeMillis() - startTime) < BroadBandTestConstants.SIX_MINUTE_IN_MILLIS
+		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while verifying telemetry marker :" + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: verifyTelemetryMarkers()");
+	return status;
+    }
+    
+    /**
+     * Method to enable disable wifi stats
+     * 
+     * @param device
+     * @param tapEnv
+     * @param setValue
+     * @return
+     * @refactor Athira
+     */
+
+    public static boolean enableDisableWifiStats(Dut device, AutomaticsTapApi tapEnv, String setValue) {
+	boolean setResult = false;
+	List<WebPaParameter> webPaParameters = new ArrayList<WebPaParameter>();
+	Map<String, String> webpaResponse = null;
+	webPaParameters.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_STATS_ENABLE, setValue,
+		BroadBandTestConstants.CONSTANT_3));
+	webpaResponse = tapEnv.executeMultipleWebPaSetCommands(device, webPaParameters);
+	setResult = null != webpaResponse && !webpaResponse.isEmpty()
+		&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
+			BroadBandTestConstants.SUCCESS_TXT,
+			webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_STATS_ENABLE));
+	return setResult;
+    }
+    
+    /**
+     * 
+     * Method to change the wifi channel numbers in 2.4 Ghz and 5 Ghz to a value other that their current value
+     * 
+     * All the possi
+     * 
+     * @param Dut
+     *            device
+     * @param WiFiFrequencyBand
+     *            wifiBand - frequency band whose channel number has to be changed
+     * 
+     * @return selected channel number
+     * 
+     * 
+     *         Make sure that you disable auto channel by setting Device.WiFi.Radio.10000.AutoChannelEnable ,
+     *         Device.WiFi.Radio.10100.AutoChannelEnable to false
+     * 
+     *         Get the current values for channel numbers in test script and update wifi channel parameters those values
+     *         ain finally script
+     * 
+     *         in the finally block of your script
+     * @refactor Govardhan
+     * 
+     */
+    public static String changePrivateWifiChannelToNonDefaultRandomValue(Dut device, AutomaticsTapApi tapEnv,
+	    WiFiFrequencyBand wifiBand) throws TestException {
+
+	LOGGER.debug("STARTING METHOD: changePrivateWifiChannelToRandomValueOtherThanCurrentValue");
+	boolean status = false;
+	String[] possibleChannels = null;
+	String currentChannelNumber = null;
+	String selectedChannelNumber = null;
+
+	Map<WiFiFrequencyBand, String> autoChannelEnableWebpaParams = new HashMap<WiFiFrequencyBand, String>();
+	autoChannelEnableWebpaParams.put(WiFiFrequencyBand.WIFI_BAND_2_GHZ,
+		BroadBandWebPaConstants.WEBPA_PARAM_FOR_WIFI_AUTOCHANNELENABLE_STATUS_2GHZ);
+	autoChannelEnableWebpaParams.put(WiFiFrequencyBand.WIFI_BAND_5_GHZ,
+		BroadBandWebPaConstants.WEBPA_PARAM_FOR_WIFI_AUTOCHANNELENABLE_STATUS_5GHZ);
+
+	Map<WiFiFrequencyBand, String> webPaPrameterToGetEnabledWifiChannel = new HashMap<WiFiFrequencyBand, String>();
+	webPaPrameterToGetEnabledWifiChannel.put(WiFiFrequencyBand.WIFI_BAND_2_GHZ,
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_CHANNEL_IN_2GHZ);
+	webPaPrameterToGetEnabledWifiChannel.put(WiFiFrequencyBand.WIFI_BAND_5_GHZ,
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_CHANNEL_IN_5GHZ);
+
+	// Disabling AutoChannel enable
+	status = BroadBandWebPaUtils.verifyWebPaValueAfterDuration(device, tapEnv,
+		autoChannelEnableWebpaParams.get(wifiBand), WebPaDataTypes.BOOLEAN.getValue(), RDKBTestConstants.FALSE,
+		RDKBTestConstants.ONE_MINUTE_IN_MILLIS);
+	if (status) {
+
+	    status = false;
+	    // getting the list of possible channels
+	    possibleChannels = getPossibleChannelList(device, tapEnv, wifiBand);
+	    LOGGER.info(
+		    "Possible Channels for Device model -" + device.getModel() + " is " + possibleChannels.toString());
+	    currentChannelNumber = tapEnv.executeWebPaCommand(device,
+		    webPaPrameterToGetEnabledWifiChannel.get(wifiBand));
+	    LOGGER.info("CurrentChannelNumber in " + wifiBand + " " + currentChannelNumber);
+
+	    if (CommonMethods.isNotNull(currentChannelNumber)) {
+		// Selecting a channel number other than the current channel number
+		for (String temp : possibleChannels) {
+		    if (!(temp.equalsIgnoreCase(currentChannelNumber))) {
+			selectedChannelNumber = temp;
+			break;
+		    }
+		}
+	    } else {
+		LOGGER.error("current channel number is obtained as null for parameter "
+			+ webPaPrameterToGetEnabledWifiChannel.get(wifiBand));
+		throw new TestException("current channel number is obtained as null for parameter "
+			+ webPaPrameterToGetEnabledWifiChannel.get(wifiBand));
+	    }
+
+	} else {
+	    LOGGER.error("unable to set" + autoChannelEnableWebpaParams.get(wifiBand) + "to false");
+	    throw new TestException("failed in disabling auto channel enable feature by setting"
+		    + autoChannelEnableWebpaParams.get(wifiBand) + " to false");
+	}
+	LOGGER.info("Selected Channel number in " + wifiBand + " " + selectedChannelNumber);
+	status = BroadBandWebPaUtils.verifyWebPaValueAfterDuration(device, tapEnv,
+		webPaPrameterToGetEnabledWifiChannel.get(wifiBand), WebPaDataTypes.INTEGER.getValue(),
+		selectedChannelNumber, RDKBTestConstants.ONE_MINUTE_IN_MILLIS);
+	/*
+	 * tapEnv.setWebPaParams(device, autoChannelEnableWebpaParams.get(wifiBand), XreTestConstants.TRUE,
+	 * WebPaDataTypes.BOOLEAN.getValue());
+	 */
+	if (status) {
+	    LOGGER.debug("ENDING METHOD: changePrivateWifiChannelToRandomValueOtherThanCurrentValue");
+	    return selectedChannelNumber;
+	} else {
+	    LOGGER.error("unable to set " + webPaPrameterToGetEnabledWifiChannel.get(wifiBand) + " with value "
+		    + selectedChannelNumber);
+	    throw new TestException("unable to set " + webPaPrameterToGetEnabledWifiChannel.get(wifiBand)
+		    + " with value " + selectedChannelNumber);
+	}
+    }
+    
+
+    /**
+     * Method to get list of possible channels in a wifi frequency band using webpa
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut} @ param wifiFrequencyBand wifiBand
+     * 
+     * @ return String[] PossibleChannels in a particular frequency band
+     * @refactor Govardhan
+     */
+    public static String[] getPossibleChannelList(Dut device, AutomaticsTapApi tapEnv, WiFiFrequencyBand wifiBand) {
+
+	LOGGER.debug("STARTING METHOD : getPossibleChannelList () ");
+	String[] possibleChannelList = null;
+	String possibleChannels = null;
+	if (wifiBand.getValue().equals((WiFiFrequencyBand.WIFI_BAND_2_GHZ.getValue()))) {
+
+	    possibleChannels = AutomaticsTapApi
+		    .getSTBPropsValue(BroadBandTestConstants.KEY_FOR_2GHZ_WIFI_POSSIBLE_CHANNELS);
+	    LOGGER.info("Obtained channel list for 2.4 GHz : " + possibleChannels);
+	} else {
+	    possibleChannels = BroadbandPropertyFileHandler.getPossibleChannelList5GHZ(device);
+	    LOGGER.info("Obtained channel list for 5 GHz  : " + possibleChannels);
+	}
+
+	if (CommonMethods.isNotNull(possibleChannels)) {
+	    possibleChannelList = possibleChannels.split(BroadBandTestConstants.COMMA);
+	} else {
+	    throw new TestException("Obtained NULL response for possible channel list for model " + device.getModel()
+		    + " from stb.properties file");
+	}
+
+	LOGGER.debug("ENDING METHOD : getPossibleChannelList () ");
+	return possibleChannelList;
+    }
+    
+    
+    /**
+     * Test step method used to connect the private wifi for given GHz frequency band
+     * 
+     * @param device
+     *            instance of{@link Dut}
+     * @param testCaseId
+     *            Test case ID
+     * @param deviceToConnect
+     *            Device to connect the WiFi
+     * @param wifiBand
+     *            Frequency band to connect the wifi
+     * @param stepNumber
+     *            Step Number
+     * 
+     * @refactor yamini.s
+     */
+    public static void executeTestStepToConnectPrivateWiFi(Dut device, String testCaseId, Dut deviceToConnect,
+	    String wifiBand, int stepNumber) {
+	/**
+	 * STEP : CONNECT THE CLIENT INTO GIVEN GHZ PRIVATE SSID AND VERIFY CONNECTION STATUS
+	 */
+	String stepNum = "S" + stepNumber;
+	boolean status = false;
+	String errorMessage = null;
+	LOGGER.info("***************************************************************************************");
+	LOGGER.info(
+		"STEP " + stepNumber + " : DESCRIPTION : CONNECT A CLIENT TO THE PRIVATE WIFI " + wifiBand + " SSID.");
+	LOGGER.info("STEP " + stepNumber + " : ACTION : CONNECT TO " + wifiBand
+		+ " PRIVATE WIFI USING BELOW COMMANDS : FOR LINUX :nmcli dev wifi connect <ssid> FOR WINDOWS: netsh wlan connect ssid=<ssid>");
+	LOGGER.info("STEP " + stepNumber + " : EXPECTED : CONNECTION SHOULD BE SUCCESSFUL FOR CLIENT WITH " + wifiBand
+		+ " PRIVATE WIFI SSID ");
+	LOGGER.info("***************************************************************************************");
+	errorMessage = "PRIVATE WIFI CONNECTION FAILED FOR " + wifiBand + " SSID IN CLIENT";
+	status = ConnectedNattedClientsUtils.connectToSSID(deviceToConnect, tapEnv,
+		BroadBandConnectedClientUtils.getSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv,
+			wifiBand.equalsIgnoreCase(BroadBandTestConstants.BAND_2_4GHZ)
+				? WiFiFrequencyBand.WIFI_BAND_2_GHZ
+				: WiFiFrequencyBand.WIFI_BAND_5_GHZ),
+		BroadBandConnectedClientUtils.getSsidPassphraseFromGatewayUsingWebPaOrDmcli(device, tapEnv,
+			wifiBand.equalsIgnoreCase(BroadBandTestConstants.BAND_2_4GHZ)
+				? WiFiFrequencyBand.WIFI_BAND_2_GHZ
+				: WiFiFrequencyBand.WIFI_BAND_5_GHZ));
+	if (status) {
+	    LOGGER.info("STEP " + stepNumber + " : ACTUAL : SUCCESSFYLLY CONNECTED THE CLIENT WITH " + wifiBand
+		    + " GHZ PRIVATE SSID.");
+	} else {
+	    LOGGER.error("STEP " + stepNumber + " : ACTUAL : " + errorMessage);
+	}
+	LOGGER.info("***************************************************************************************");
+	tapEnv.updateExecutionStatus(device, testCaseId, stepNum, status, errorMessage, true);
+    }
+
+    /**
+     * Scan the client device for the networks available and return whether the device is visible with poll duration
+     * when the 2.4/5 Ghz radio is enabled/disabled
+     * 
+     * @param Dut
+     *            device
+     * @param tapEnv
+     *            {@link AutomaticsTapApi} Reference
+     * @param clientSettop
+     *            Connected client device device instance
+     * @param wifiBand
+     *            The value of 2.4/5 GHz band
+     * @param isRadioEnabled
+     *            Status of radio 2.4/5 GHz band is enable/disabled
+     * @param pollDuration
+     *            poll duration
+     * @return true if SSID is visible/invisible in client device based on isRadioEnabled
+     * 
+     * @refactor yamini.s
+     */
+    public static boolean scanAndVerifyVisibleSsidFromWiFiConnectedClientDeviceWithPollDuration(Dut device,
+	    AutomaticsTapApi tapEnv, Dut clientSettop, WiFiFrequencyBand wifiBand, boolean isRadioEnabled,
+	    long pollDuration) {
+	LOGGER.debug("STARTING METHOD: scanAndVerifyVisibleSsidFromWiFiConnectedClientDeviceWithPollDuration");
+	boolean status = false;
+	String ssidName = BroadBandConnectedClientUtils.getSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv,
+		wifiBand);
+	long startTime = System.currentTimeMillis();
+	do {
+	    if (isRadioEnabled) {
+		status = BroadBandConnectedClientUtils
+			.scanAndVerifyVisibleSsidFromWiFiConnectedClientDevice(clientSettop, ssidName, tapEnv);
+	    } else {
+		status = !BroadBandConnectedClientUtils
+			.scanAndVerifyVisibleSsidFromWiFiConnectedClientDevice(clientSettop, ssidName, tapEnv);
+	    }
+	    LOGGER.info("Visible Ssid " + wifiBand + " Status:" + status);
+	} while ((System.currentTimeMillis() - startTime) < pollDuration && !status
+		&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+	LOGGER.debug("ENDING METHOD: scanAndVerifyVisibleSsidFromWiFiConnectedClientDeviceWithPollDuration");
+	return status;
+    }
 }

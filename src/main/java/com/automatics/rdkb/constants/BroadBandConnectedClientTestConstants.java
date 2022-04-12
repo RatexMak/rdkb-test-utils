@@ -209,6 +209,37 @@ public class BroadBandConnectedClientTestConstants {
     
     /** windows command to get the default address */
     public static final String CMD_WIN_DETAULT_GATEWAY_IP = "ipconfig |grep -A 20 \"Ethernet adapter Ethernet\" |grep -i \"Default Gateway\"";
-    
 
+    /** Flag for IIS service start */
+    public static final Boolean IIS_START_FLAG = true;
+    
+    /** Command for validate IIS service status */
+    public static final String CMD_TO_CHECK_ISS_STATUS = "iisreset /status";
+    
+    /** Pattern to match ping response from active status for iis */
+    public static final String PATTERN_TO_CHECK_IIS_RUNNING_STATUS = "Running";
+
+    /** Pattern to match ping response from stop iss service */
+    public static final String PATTERN_TO_CHECK_IIS_STOP_STATUS = "stopped";
+    
+    /** Command for start IIS service */
+    public static final String CMD_ISS_START = "iisreset /start";
+    
+    /** Command for stop IIS service */
+    public static final String CMD_ISS_STOP = "iisreset /stop";
+    
+    /** Command to get home dir */
+    public static final String CMD_HOME_FILE_PATH = "echo $HOME";
+    
+    /** The constant holds the mac address */
+    public static final String LOG_PARAM_MAC_ADDRESS = "MacAddress is (\\w+:\\w+:\\w+:\\w+:\\w+:\\w+)";
+    
+    /** The constant holds the connected client type wifi */
+    public static final String LOG_PARAM_CLIENT_TYPE_WIFI = "RDKB_CONNECTED_CLIENTS: Client type is WiFi,";
+    
+    /** The constant holds the connected client type ethernet */
+    public static final String LOG_PARAM_CLIENT_TYPE_ETHERNET = "RDKB_CONNECTED_CLIENTS: Client type is Ethernet,";
+    
+    /** String variable to store connection type Ethernet */
+    public static final String CLIENT_DEVICE_CONNECTION_TYPE_ETHERNET = "Ethernet";
 }

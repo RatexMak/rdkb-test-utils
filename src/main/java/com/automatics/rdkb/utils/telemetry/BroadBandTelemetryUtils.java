@@ -768,4 +768,43 @@ public class BroadBandTelemetryUtils {
 	return status;
     }
     
+    /**
+     * Utility method that configures the telemetry profile for uploading details to Splunk
+     * 
+     * @param device
+     * 
+     * @author divya.rs
+     * @refcator yamini.s
+     */
+    public static void configureTelemetryProfiles(Dut device, AutomaticsTapApi tapEnv, boolean basicScenario)
+	    throws TestException {
+	int status = copyAndUpdateDcmProperties(device, tapEnv);
+
+	boolean configurationStatus = false;
+
+	String errorMessage = null;
+	// updating the test case based on the return value from the helper
+	// method
+	if (0 == status) {
+	    errorMessage = "The box doesn't contain /etc/dcm.properties file!!!! The test case requires that the box has the file";
+	} else if (2 == status) {
+	    errorMessage = "Successfuly copied /etc/dcm.properties to /nvram folder, But Failed to update the LOG UPLOAD url!!!!";
+	} else {
+
+	    // sending data to the proxy dcm server before initiating the
+	    // Advanced Telemety MoCA verification test
+	    int response = postDataToProxyDcmServer(device, tapEnv, false, basicScenario);
+	    configurationStatus = (response == 200);
+	    errorMessage = "Status of posting telemetry profile to proxy DCM Server. Actual: " + response
+		    + "Expected: 200";
+	}
+
+	if (false == configurationStatus) {
+	    throw new TestException(errorMessage);
+	}
+
+	LOGGER.info("Error Message while configuring Telemetry details : " + errorMessage);
+    }
+
+    
 }

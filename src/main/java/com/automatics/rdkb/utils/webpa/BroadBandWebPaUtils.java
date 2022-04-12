@@ -3692,5 +3692,46 @@ public class BroadBandWebPaUtils {
 	LOGGER.debug("ENDING METHOD: verifyWiFiClientDataModelPersistence()");
 	return areWifiClientParamspersistent;
     }
-   
+    
+    /**
+     * Method to change the boolean webpa parameter to a value other than it's current value
+     * 
+     * i,e toggling the parameter values
+     * 
+     * @ param Settop device @ param String parameter - webpa parameter whose value is to be updated
+     * 
+     * @ return String updated value on success null on failure.
+     * 
+     * @refactor Govardhan
+     */
+    public static String toggleBooleanWebpaParameterValue(Dut device, String parameter, AutomaticsTapApi tapEnv)
+	    throws TestException {
+	LOGGER.debug("STARTING METHOD : changeBooleanWebpaParameterToValueOtherThanCurrenValue");
+	String currentValue = null;
+	String updatedValue = null;
+	boolean status = false;
+
+	currentValue = tapEnv.executeWebPaCommand(device, parameter);
+
+	if (CommonMethods.isNotNull(currentValue)) {
+	    if (currentValue.equalsIgnoreCase(RDKBTestConstants.TRUE))
+		updatedValue = RDKBTestConstants.FALSE;
+	    else
+		updatedValue = RDKBTestConstants.TRUE;
+
+	    status = BroadBandWebPaUtils.verifyWebPaValueAfterDuration(device, tapEnv, parameter,
+		    WebPaDataTypes.BOOLEAN.getValue(), updatedValue, RDKBTestConstants.ONE_MINUTE_IN_MILLIS);
+	} else {
+	    LOGGER.error("Null response Obtained for the current value of parameter " + parameter);
+	    throw new TestException("Null response Obtained for the current value of parameter " + parameter);
+	}
+
+	if (status) {
+	    LOGGER.debug("EXITING METHOD: changeBooleanWebpaParameterToValueOtherThanCurrenValue");
+	    return updatedValue;
+	} else
+	    throw new TestException(
+		    "unable to change the value of webpa parameter " + parameter + "to value " + updatedValue);
+
+    }
 }

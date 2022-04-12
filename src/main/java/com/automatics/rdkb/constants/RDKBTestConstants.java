@@ -264,5 +264,14 @@ public class RDKBTestConstants {
     
     public static final String STRING_CONNECTION_STATUS = "SUCCESS";
     
+   
     public static final String LOG_FILE_FOR_CRASHES_RDKB = "/rdklogs/logs/core_log.txt";
+    
+    /** Thirty Seconds in MILLIS */
+    public static final long THIRTY_SECOND_IN_MILLIS = 30000L;
+    
+    public static final String PATTERN_GET_NEWLINE_SPACE = "\\s|\\r\\n|\\r|\\n";
+    
+    /** String for Kill the SDV Agent * */
+    public static final String SDV_AGENT_KILL_PROCESS = "kill -11";
 }

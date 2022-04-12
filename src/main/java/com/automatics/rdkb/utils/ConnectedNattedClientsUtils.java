@@ -1657,6 +1657,57 @@ public class ConnectedNattedClientsUtils {
 		return retrunStatus;
 	}
 
+	/**
+	 * 
+	 * This method is to verify ping command execution for a particular duration on
+	 * the Connected Client Device.
+	 * 
+	 * @param connectedClientDevice {@link Dut}
+	 * @param tapEnv                {@link AutomaticsTapApi}
+	 * @param ipAddress             String representing the IP Address
+	 * @param durationInSeconds     String which gives the Ping Count
+	 * @return returns status of operation
+	 * @refactor Govardhan
+	 */
+	public static boolean verifyPingConnection(Dut connectedClientDevice, AutomaticsTapApi tapEnv, String ipAddress,
+			String durationInSeconds) {
+		LOGGER.debug("STARTING METHOD : verifyPingConnection()");
+		boolean result = false;
+		Device ecastSettop = (Device) connectedClientDevice;
+		LOGGER.info("OS TYPE OF THE WIFI CLIENT: " + ecastSettop.getOsType());
+		String pingCommand = ecastSettop.isLinux() || ecastSettop.isRaspbianLinux()
+				? (CommonMethods.isIpv6Address(ipAddress) ? BroadBandCommandConstants.CMD_PING_FOR_LINUX_IPV6
+						: BroadBandCommandConstants.CMD_PING_FOR_LINUX)
+				: BroadBandCommandConstants.CMD_PING_FOR_WINDOWS;
+		LOGGER.info("PING Command: " + pingCommand + " " + durationInSeconds + " " + ipAddress);
+		String[] commands = new String[] { BroadBandCommonUtils.concatStringUsingStringBuffer(pingCommand,
+				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, durationInSeconds,
+				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, ipAddress) };
 
+		String response = tapEnv.executeCommandOnOneIPClients(connectedClientDevice, commands,
+				(Integer.parseInt(durationInSeconds) + BroadBandTestConstants.FIFTY_SECONDS)
+						* BroadBandTestConstants.SECONDS_TO_MILLISECONDS);
+		if (CommonMethods.isNotNull(response)) {
+			response = ecastSettop.isWindows()
+					? BroadBandCommonUtils.patternFinderMatchPositionBased(response,
+							BroadBandConnectedClientTestConstants.PATTERN_MATCHER_PING_RESPONSE_WINDOWS,
+							BroadBandTestConstants.CONSTANT_4)
+					: BroadBandCommonUtils.patternFinderMatchPositionBased(response,
+							BroadBandConnectedClientTestConstants.PATTERN_MATCHER_PING_RESPONSE_LINUX,
+							BroadBandTestConstants.CONSTANT_3);
+		}
+		if (CommonMethods.isNotNull(response)) {
+			try {
+				int iActualValue = Integer.parseInt(response);
+				result = iActualValue != BroadBandTestConstants.PERCENTAGE_VALUE_HUNDRED;
+			} catch (NumberFormatException numberFormatException) {
+				// Log & Suppress the Exception
+				LOGGER.error(numberFormatException.getMessage());
+			}
+		}
+		LOGGER.debug("ENDING METHOD : verifyPingConnection()");
+		return result;
+
+	}
 
 }

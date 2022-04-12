@@ -406,15 +406,15 @@ public class BroadBandRegressionQuickTestUtils {
 	}
 
 	/*
-	 * Setting the RDK-B Wi-Fi parameters like Private SSID, Public/xfinity SSID(open, secure), etc.
+	 * Setting the RDK-B Wi-Fi parameters like Private SSID, Public/public SSID(open, secure), etc.
 	 */
 	LOGGER.info(
-		"Configuring RDK-B Wi-Fi  parameters like Private SSID, Public/xfinity SSID(open, secure), etc.");
+		"Configuring RDK-B Wi-Fi  parameters like Private SSID, Public/public SSID(open, secure), etc.");
 	boolean isConfigured = BroadBandWebPaUtils.setMultipleParametersUsingWebPaOrDmcli(device, tapEnv,
 		wifiComponents);
 	if (!isConfigured) {
 	    LOGGER.error(
-		    "Unable to configure RDK-B Wi-Fi  parameters like Private SSID, Public/xfinity SSID(open, secure), etc.");
+		    "Unable to configure RDK-B Wi-Fi  parameters like Private SSID, Public/public SSID(open, secure), etc.");
 	}
 
 	/*
@@ -422,7 +422,7 @@ public class BroadBandRegressionQuickTestUtils {
 	 */
 	tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
 
-	// xfinity WiFi enable should be executed after configuring all parameters.
+	// public WiFi enable should be executed after configuring all parameters.
 	    isConfigured = BroadBandWebPaUtils.setParameterValuesUsingWebPaOrDmcli(device, tapEnv,
 		    BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI, WebPaDataTypes.BOOLEAN.getValue(),
 		    BroadBandTestConstants.TRUE);

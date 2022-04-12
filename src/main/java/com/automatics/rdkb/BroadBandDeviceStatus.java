@@ -55,16 +55,16 @@ public class BroadBandDeviceStatus {
 	private boolean privateWiFi5GhzStatus;
 
 	/**
-	 * xfinity Wi-Fi 2.4 GHz(open) SSID status.
+	 * public Wi-Fi 2.4 GHz(open) SSID status.
 	 */
 	private boolean xfinityWiFi2GhzOpenStatus;
 	/**
-	 * xfinity Wi-Fi 5 GHz(open) SSID status.
+	 * public Wi-Fi 5 GHz(open) SSID status.
 	 */
 	private boolean xfinityWiFi5GhzOpenStatus;
 
 	/**
-	 * xfinity Wi-Fi 5 GHz(secure) SSID status.
+	 * public Wi-Fi 5 GHz(secure) SSID status.
 	 */
 	private boolean xfinityWiFi5GhzSecureStatus;
 

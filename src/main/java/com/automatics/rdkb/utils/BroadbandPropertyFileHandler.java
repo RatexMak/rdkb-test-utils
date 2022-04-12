@@ -313,6 +313,27 @@ public class BroadbandPropertyFileHandler {
     public static String getSSIDPassword() {
 	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.TEST_SSID_PASSWORD);
     }
+    
+    /**
+     * This API will return whether the led logs available
+     * 
+     * @author Athira
+     */
+    public static Boolean isSpecificDevice(Dut device) {
+	Boolean status = false;
+	String model = null;
+	try {
+	    model = BroadbandPropertyFileHandler.getAutomaticsPropsValueByResolvingPlatform(device,
+		    BroadBandPropertyKeyConstants.PROP_KEY_SPECIFIC_DEVICE);
+
+	    if (CommonMethods.isNotNull(model)) {
+		status = true;
+	    }
+	} catch (Exception e) {
+	    LOGGER.info("No device specific value found");
+	}
+	return status;
+    }
 
     /**
      * This API will get the dnsmasq version for devices from properties
@@ -826,5 +847,174 @@ public class BroadbandPropertyFileHandler {
 		BroadBandPropertyKeyConstants.PARTIAL_DEVICE_CHECK_NEGETIVE_CDL));
 	return status;
     }
+
+    /**
+     * This API will get the Security banner from properties
+     * 
+     * @author Govardhan
+     */
+    public static String getSSHBanner() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_STB_SECURITY_BANNERS);
+    }
+
+    /**
+     * This API will give the 5GHZ Possible channels
+     * 
+     * @author Govardhan
+     */
+    public static String getPossibleChannelList5GHZ(Dut device) {
+	return getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.KEY_FOR_5GHZ_WIFI_POSSIBLE_CHANNELS);
+    }
+
+    /**
+     * This API will get the new STBRTL Url from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getNewStbRtlUrl() {
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.NEW_STBRTL_URL);
+    }
+
+    /**
+     * This API will get the old STBRTL Url from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getOldStbRtlUrl() {
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.OLD_STBRTL_URL);
+    }
+
+    /**
+     * This API will get the interface names
+     * 
+     * @author Said Hisham
+     */
+    public static String getInterfaceNames(Dut device) {
+	String status = getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.PROP_KEY_INTERFACE_NAMES);
+	return status;
+    }
+
+    /**
+     * This API will get the interface values
+     * 
+     * @author Said Hisham
+     */
+    public static String getInterfaceValues(Dut device) {
+	String status = getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.PROP_KEY_INTERFACE_VALUES);
+	return status;
+    }
+
+    /**
+     * This API will get the radio name for for specific device for 2.4ghz from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getRadioName24BasedOnModel(Dut device) {
+	return getAutomaticsPropsValueByResolvingPlatform(device, BroadBandPropertyKeyConstants.RADIO_NAME_24GHZ_CHECK);
+    }
+
+    /**
+     * This API will get the radio name for for specific device for 5ghz from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getRadioName5BasedOnModel(Dut device) {
+	return getAutomaticsPropsValueByResolvingPlatform(device, BroadBandPropertyKeyConstants.RADIO_NAME_5GHZ_CHECK);
+    }
+    
+    /**
+     * This API will check the device type to return the expected value
+     * 
+     * @author yamini.s
+     */
+    public static boolean isDeviceCheckToReturnExpectedValue1(Dut device) {
+    	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
+        		BroadBandPropertyKeyConstants.DEVICE_CHECK_VALUE1));
+    }
+    
+    /**
+     * This API will check the device type to return the expected value
+     * 
+     * @author yamini.s
+     */
+    public static boolean isDeviceCheckToReturnExpectedValue2(Dut device) {
+    	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
+        		BroadBandPropertyKeyConstants.DEVICE_CHECK_VALUE2));
+    }
+
+    /**
+     * This API will check the device type to return the expected value
+     * 
+     * @author yamini.s
+     */
+    public static boolean isDeviceCheckToReturnExpectedValue3(Dut device) {
+    	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
+        		BroadBandPropertyKeyConstants.DEVICE_CHECK_VALUE3));
+    }
+    
+    /**
+     * This API will get the value for NTPD client
+     * 
+     * @author yamini.s
+     */
+    public static String getPropertyKeyForNTPDClient1() {
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROCESS_NTPD_CLIENT1);
+
+    }
+    
+    /**
+     * This API will get the value for NTPD client
+     * 
+     * @author yamini.s
+     */
+    public static String getPropertyKeyForNTPDClient2() {
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROCESS_NTPD_CLIENT2);
+    }
+    
+    /**
+     * This API will check for specific device for acceptance criteria
+     * 
+     * @author yamini.s
+     */
+    public static boolean getStatusForPartialDeviceCheckX(Dut device) {
+	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.PARTIAL_DEVICE_CHECK_ACCEPTANCE_CRITERIA));
+    }
+
+    /**
+     * This API will check for specific device for acceptance criteria
+     * 
+     * @author yamini.s
+     */
+    public static boolean getStatusForPartialDeviceCheck(Dut device) {
+	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.PARTIAL_DEVICE_CHECK_ACCEPTANCE));
+    }
+    
+    /**
+     * This API will get the value for level one block site address
+     * 
+     * @author yamini.s
+     */
+    public static String getPropertyKeyForlevelOneBlockAddress() {
+	return AutomaticsTapApi
+		.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_DNS_BLOCK_ADDRESS_FOR_LEVEL_ONE_SITE);
+    }
+
+    /**
+     * This API will get the value for level one site host address
+     * 
+     * @author yamini.s
+     */
+    public static String getPropertyKeyForlevelOneSiteHostAddress() {
+	return AutomaticsTapApi
+		.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_HOST_ADDRESS_FOR_LEVEL_ONE_SITE);
+    }
+
+
+
 
 }

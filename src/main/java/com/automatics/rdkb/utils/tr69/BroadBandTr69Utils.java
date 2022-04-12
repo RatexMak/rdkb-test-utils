@@ -526,4 +526,125 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 
 	return parameters1;
     }
+    
+    /**
+     * This method will set parameters to Array list for TR69 SET operation
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @return Parameter List
+     * @author Sruthi Santhosh
+     */
+    public static List<Parameter> setParameterForTr69Set(Dut device, String dataType, String paramName,
+	    String paramValue) {
+	LOGGER.info("Setting parameters to Array list for TR69 SET operation");
+
+	Parameter setParam = new Parameter();
+	setParam.setDataType(dataType);
+	setParam.setParamName(paramName);
+	setParam.setParamValue(paramValue);
+
+	List<Parameter> parameters = new ArrayList<Parameter>();
+	parameters.add(setParam);
+
+	return parameters;
+    }
+    
+    /**
+	 * Method to validate the possible channels list of WiFi radios
+	 * 
+	 * @param possibleChannels
+	 *            The possible channels list of radios
+	 * 
+	 * @return boolean
+	 * @refactor yamini.s
+	 */
+
+	public static boolean validatePossibleChannels(String possibleChannels) {
+
+		boolean validationResult = false;
+
+			// This part of the logic is applicable where the possible channels response is like "1-11"
+			if (possibleChannels.contains(BroadBandTestConstants.SYMBOL_HYPHEN)) {
+				validationResult = CommonMethods.patternMatcher(possibleChannels,BroadBandTestConstants.PATTERN_MATCHER_POSSIBLE_CHANNELS_HYPHEN);
+			}
+				// This part is applicable where the possible channels response is like "36,40,44,48,149,153,157,161"
+			else if (possibleChannels.contains(BroadBandTestConstants.CHARACTER_COMMA)) {
+				validationResult = CommonMethods.patternMatcher(possibleChannels,BroadBandTestConstants.PATTERN_MATCHER_POSSIBLE_CHANNELS_COMMA);
+			}
+	
+		return validationResult;
+	}
+	
+	/**
+	 * Method to validate the channels in use
+	 * 
+	 * @param possibleChannelsRange
+	 *            The possible channels list of radios
+	 * 
+	 * @param channelsInUse
+	 *            The channels currently in use
+	 * 
+	 * @return boolean
+	 * 
+	 * @refactor yamini.s
+	 */
+	public static boolean checkForValueInRange(String possibleChannelsRange, String channelsInUse) {
+
+		boolean validationResult = false;
+
+		try {
+			//The channels in could be multiple channels like this "1,5,6" or a single channel like this "5"
+			if (CommonMethods.isNotNull(possibleChannelsRange) && CommonMethods.isNotNull(channelsInUse)) {
+
+				// This part of the logic is applicable where the possible channels response is like "1-11"
+				if (possibleChannelsRange.contains(BroadBandTestConstants.SYMBOL_HYPHEN)) {
+					String[] splitRange = possibleChannelsRange.split(BroadBandTestConstants.SYMBOL_HYPHEN);
+					if (splitRange != null && splitRange.length == BroadBandTestConstants.CONSTANT_2) {
+						String[] splitChannelInUse = channelsInUse.split(BroadBandTestConstants.CHARACTER_COMMA);
+						if (splitChannelInUse != null && splitChannelInUse.length > 0) {
+							for (int index = 0; index < splitChannelInUse.length; index++) {
+								if (Integer.parseInt(splitChannelInUse[index]) >= Integer.parseInt(splitRange[0])
+										&& Integer.parseInt(splitChannelInUse[index]) <= Integer.parseInt(splitRange[1])) {
+									validationResult = true;
+								} else {
+									validationResult = false;
+									break;
+								}
+							}
+						}
+
+					} else {
+						LOGGER.error("The possible Channels Range is invalid. Actual: " + possibleChannelsRange);
+						validationResult = false;
+						return validationResult;
+					}
+					// This part is applicable where the possible channels response is like "36,40,44,48,149,153,157,161"
+				} else if (possibleChannelsRange.contains(BroadBandTestConstants.CHARACTER_COMMA)) {
+					validationResult = checkIfTheOperatingStandardIsValid(possibleChannelsRange, channelsInUse);
+				} else if (BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON, possibleChannelsRange, channelsInUse)) {
+					validationResult = true;
+				}
+
+			}
+
+		} catch (NumberFormatException e) {
+			LOGGER.error("Number format exception occured while validating channels in use.", e);
+			validationResult = false;
+			return validationResult;
+		}
+		return validationResult;
+	} 
+	
+	public static boolean checkIfTheOperatingStandardIsValid(String validRangeOfStandards, String standardsToCheck) {
+
+		//Forming pattern matching with the available valid range
+		String patternMatcher = BroadBandCommonUtils.concatStringUsingStringBuffer("^[(",validRangeOfStandards,"),]+$");
+
+		return CommonMethods.patternMatcher(standardsToCheck,patternMatcher);
+	}
+	
+	
 }

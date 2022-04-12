@@ -41,11 +41,11 @@ public class BroadBandPropertyKeyConstants {
 
     /** The property key for wifi band for partner ID */
     public static final String PROP_KEY_PARTNERID_DEVICE = "verify.partner.id.device";
-    
-    /** property to configure the invalid NTP server URL  */
+
+    /** property to configure the invalid NTP server URL */
     public static final String PROPKEY_FOR_INVALID_NTPHOST = "serverurl.invalid.ntp";
-    
-    /** property to configure the NTP server URL  */
+
+    /** property to configure the NTP server URL */
     public static final String PROPKEY_FOR_NTPHOST = "serverurl.ntp";
 
     /** The property key for wifi operating standards of 2GHZ */
@@ -59,7 +59,7 @@ public class BroadBandPropertyKeyConstants {
 
     /** The property key to hold parodus token server url */
     public static final String PROP_KEY_PARODUS_TOKEN_SERVER_URL = "parodus.token.server.url";
-    
+
     /** Property key for store number of allowed clients */
     public static final String PROP_KEY_ALLOWED_NOOFCLIENTS = "numberofclients.allowed.";
 
@@ -110,6 +110,9 @@ public class BroadBandPropertyKeyConstants {
 
     /** Property key name for TFTP server IP address. */
     public static final String PROP_KEY_TFTP_SERVER_IP_ADDRESS = "cdl.tftp.server.ip";
+    
+    /** Property key for Device with firmwareupgrader */
+    public static final String PROP_KEY_SPECIFIC_DEVICE = "Device.specific."; 
 
     public static final String PARTIAL_DEVICE_CHECK = "is.device.check.";
 
@@ -279,11 +282,50 @@ public class BroadBandPropertyKeyConstants {
 
     /** Property key models with corrupt image info of same device class */
     public static final String MAP_MODEL_CORRUPT_IMAGE_PARTIAL_DOWNLOAD_INFO = "map.model.corrupt.image.partial.download.info.";
-    
+
     /** property key for corrupt image location */
     public static final String PROP_KEY_XCONF_FIRMWARE_LOCATION_CORRUPT_IMAGES = "xconf.firmware.location.http.corrupt.images";
 
     public static final String PARTIAL_DEVICE_CHECK_NEGETIVE_CDL = "partial.device.check.negetive.cdl.";
+
+    public static final String PROP_KEY_STB_SECURITY_BANNERS = "security.banner";
+
+    /** Key to get the possible channels in 5Ghz from Stb properties file */
+    public static String KEY_FOR_5GHZ_WIFI_POSSIBLE_CHANNELS = "possibleChannelsIn5GhzWifi.";
+
+    public static final String NEW_STBRTL_URL = "new.stbrtl.url";
+
+    public static final String OLD_STBRTL_URL = "old.stbrtl.url";
+
+    /** Property key for interface values */
+    public static final String PROP_KEY_INTERFACE_VALUES = "interface.alias.";
+
+    /** Property key for interface values */
+    public static final String PROP_KEY_INTERFACE_NAMES = "interface.name.";
+
+    public static final String RADIO_NAME_24GHZ_CHECK = "radio.name.24ghz.device.check.";
+
+    public static final String RADIO_NAME_5GHZ_CHECK = "radio.name.5ghz.device.check.";
     
+    public static final String DEVICE_CHECK_VALUE1 = "is.device.check.value1.";
     
+    public static final String DEVICE_CHECK_VALUE2 = "is.device.check.value2.";
+    
+    public static final String DEVICE_CHECK_VALUE3 = "is.device.check.value3.";
+    
+    public static final String PROCESS_NTPD_CLIENT1 = "process.ntpd.client1";
+
+    public static final String PROCESS_NTPD_CLIENT2 = "process.ntpd.client2";
+    
+    public static final String PARTIAL_DEVICE_CHECK_ACCEPTANCE_CRITERIA = "is.device.check.acceptance1.";
+    
+    public static final String PARTIAL_DEVICE_CHECK_ACCEPTANCE = "is.device.check.acceptance.";
+    
+    /**
+     * Test constant for dnsoverride level one block site address in stb.properties file
+     */
+    public static final String PROP_KEY_DNS_BLOCK_ADDRESS_FOR_LEVEL_ONE_SITE = "dnsoverride.blocksiteaddress.level.one";
+    
+    /** Test constant for level one site host address in stb.properties file */
+    public static final String PROP_KEY_HOST_ADDRESS_FOR_LEVEL_ONE_SITE = "dnsoverride.siteaddress.level.one";
 }

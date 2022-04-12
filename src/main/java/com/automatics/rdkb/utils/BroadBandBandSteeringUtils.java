@@ -24,6 +24,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.automatics.device.Device;
 import com.automatics.device.Dut;
 import com.automatics.exceptions.TestException;
 import com.automatics.rdkb.BroadBandResultObject;
@@ -431,5 +432,36 @@ public class BroadBandBandSteeringUtils {
 		}
 		return result;
 	}
-
+	/**
+	 * Return the list of connected clients with given capability
+	 * 
+	 * @param settop
+	 *            {@link Settop}
+	 * @param tapEnv
+	 *            {@link ECatsTapApi}
+	 * @param connectedClientSettopslist
+	 *            of connected clients
+	 * @param capability
+	 *            2GHZ,5GHz or Dual band
+	 * @return list of connected clients with given capability
+	 * 
+	 * @refactor Alan_Bivera
+	 */
+	public static List<Dut> getConnectedClientBasedOnCapability(Dut device, AutomaticsTapApi tapEnv,
+			List<Dut> connectedClientSettops, String capability) {
+		LOGGER.info("STARTING METHOD: getConnectedClientBasedOnCapability()");
+		List<Dut> requiredSettops = new ArrayList<Dut>();
+		for (Dut clientSettop : connectedClientSettops) {
+			LOGGER.info("client settop: " + ((Device) clientSettop).getNatAddress());
+			if (CommonMethods.isNotNull(capability) && null != clientSettop
+					&& null != ((Device) clientSettop).getConnectedDeviceInfo() && capability.equalsIgnoreCase(
+							((Device) clientSettop).getConnectedDeviceInfo().getWifiCapability())) {
+				requiredSettops.add(clientSettop);
+			}
+		}
+		LOGGER.info("Number of Connected client with Capability " + capability + " found is " + requiredSettops.size());
+		LOGGER.debug("ENDING METHOD: getConnectedClientBasedOnCapability()");
+		return requiredSettops;
+	}
+	
 }

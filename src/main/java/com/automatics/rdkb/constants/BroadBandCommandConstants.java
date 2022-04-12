@@ -23,6 +23,37 @@ import java.util.List;
 import com.automatics.tap.AutomaticsTapApi;
 
 public class BroadBandCommandConstants extends RDKBTestConstants {
+	
+    public static final String CMD_TO_LIST_TMP_CERTS = "ls /tmp/shesc/";
+	
+    /** Command to move CA certificate */
+    public static final String CMD_GET_CABUNDLE_MOVECERTIFICATE = "mv /tmp/shesc/ca-certificates.crt-orig /tmp/shesc/ca-certificates.crt";
+	
+    /** Command to move CA certificate BACK */
+    public static final String CMD_GET_CABUNDLE_MOVECERTIFICATE_BACK = "mv /tmp/shesc/ca-certificates.crt /tmp/shesc/ca-certificates.crt-orig ";
+	
+    /** Command for CA BUNDLE PING GOOGLE */
+    public static final String CMD_TO_PING_GOOGLE = "curl -v --cert-status https://google.com/";
+	
+    /** Command for CA BUNDLE Certs List */
+    public static final String CMD_TO_LIST_CERTS = "ls -la /etc/ssl/certs/COMODO_RSA_Certification_Authority.pem";
+    
+    /**
+     * Command to verify if all certs are present in the shadow folder /tmp/shesc
+     */
+    public static final String CMD_GET_CABUNDLE_SHADOWFOLDER = "/tmp/shesc/";
+	
+    /** Command to verify caupdatebundle packages are downloaded successfully */
+    public static final String CMD_GET_CABUNDLE_DOWNLOAD = "/tmp/caupdatebundle/etc/ca-store-update-bundle.bz2";
+    
+    /** Command for getting RDM Status logs for CABundle */
+    public static final String CMD_GET_CABUNDLE_RDMSTATUS_LOG = "/rdklogs/logs/rdm_status.log";
+	
+    /** Command for check if CABUNDLE is enabled */
+    public static final String CMD_GET_CABUNDLE_ENABLE_LOG = "/rdklogs/logs/caupdate.log";
+	
+    /** Command for CA BUNDLE */
+    public static final String CMD_SET_CABUNDLE_URL = "echo \"https://<cdl server>\" > /tmp/.xconfssrdownloadurl";
 
     /** Command to set the log interval time for channel bandwidth */
     public static final String CMD_UPLOAD_TIME = "echo 5 > /tmp/upload";
@@ -636,10 +667,10 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static final String CMD_TO_DEL_ALL_LINES_EXCEPT_FIRST = "sed -i '1\\!d' /tmp/resolv.conf";
 
     /** command to add invalid servver to file */
-    public static final String CMD_TO_ADD_INVALID_PRI_DNS_SERVER = "sed -i \\'$ a nameserver 2001:558:feed::10\\' /tmp/resolv.conf";
+    public static final String CMD_TO_ADD_INVALID_PRI_DNS_SERVER = "sed -i \\'$ a nameserver <IPV6>\\' /tmp/resolv.conf";
 
     /** command to add secondary dns servver to file */
-    public static final String CMD_TO_ADD_VALID_SEC_DNS_SERVER = "sed -i \\'$ a nameserver 2001:558:feed::2\\' /tmp/resolv.conf";
+    public static final String CMD_TO_ADD_VALID_SEC_DNS_SERVER = "sed -i \\'$ a nameserver <IPV6>\\' /tmp/resolv.conf";
 
     /** String to store the command for /sbin/mount-copybind **/
     public static String SBIN_MOUNT_COPYBIND = "/sbin/mount-copybind";
@@ -961,6 +992,10 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     
     public static final String FILE_PATH_RESET_INFO_TXT = "/rdklogs/logs/resetinfo.txt.0";
     
+    public static final String CMD_PING_FOR_WINDOWS = "ping -n";
+
+    public static final String CMD_PING_FOR_LINUX = "ping -c";
+    
 	/** List of executable binaries */
 	public static final List<String> EXECUTABLE_BUSYBOX_UTILS = new ArrayList<String>() {
 		{
@@ -1006,6 +1041,410 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 	
 	/** Command to replace value in dhclient file */
 	public static final String CMD_TO_REPLACE_VALUE_DHCLIENT_CONF = "sed -i 's/<<VALUERETRIEVED>>/<<VALUEPARAMETER>>/g' /etc/dhcp/dhclient.conf";
-	
+
+    /** Linux command to do revstbssh Xi devices. */
+    public static final String CMD_SUDO_REVERSE_SSH_RDKB = "sudo -S revstbssh_rdkb";
+
+    /** Command Constants for Reverse SSH */
+    public static final String CMD_REVERSE_SSH = "sh ~/.bashrc;sudo -S revstbssh";
+    
+    /** Command to get 2.4GHz wifi client max tx rx rate */
+    public static final String CMD_MAX_TX_RX_CLIENT_1 = "cat /rdklogs/logs/wifihealth.txt | grep -i max | grep -i clients_1 | tail -2";
+
+    /** Command to run aphealth script */
+    public static final String CMD_RUN_APHEALTH_SCRIPT = "sh /usr/ccsp/wifi/aphealth_log.sh ";
+    
+    /** Command to remove wifi health log */
+    public static final String CLEAR_WIFI_HEALTH_LOG = "echo \"\" > /rdklogs/logs/wifihealth.txt";
+    
+    /** startTunnel.sh file location */
+    public static final String FILE_START_TUNNEL_SSH = "/lib/rdk/startTunnel.sh";
+    
+    /** command toapply the static IP configuration */
+    public static final String COMMAND_APPLY_STATIC_IP_CONF = "ccsp_bus_client_tool eRT setv Device.X_CISCO_COM_TrueStaticIP.ConfigApply bool true";
+
+    /** command to get the wan ip address set in script */
+    public static final String COMMAND_GET_STATIC_IP_ADDRESS = "cat /var/cliconfig.txt | grep \"wan_ip_address\"";
+    
+    /** File path for Encrypted ManagementServer STUN Password stored in nvram */
+    public static final String FILE_NVRAM_KEYS_MGMTSTUNCRPWDID = "/nvram/.keysMgmtCRSTUNPwdID";
+
+    /** File path for Encrypted ManagementServer Password stored in nvram */
+    public static final String FILE_NVRAM_KEYS_MGMTPWDID = "/nvram/.keys/MgmtPwdID";
+
+    /** File path for Encrypted ManagementServer ConnectionRequestPassword stored in nvram */
+    public static final String FILE_NVRAM_KEYS_MGMTCRPWDID = "/nvram/.keys/MgmtCRPwdID";
+    
+    /** String command for ftp connection */
+    public static final String COMMAND_FTP_CONNECTION = "ftp <<IPV6ADDRESS>>";
+    
+    /** Command to retrieve the ip tables configurations */
+    public static final String CMD_TO_GET_IPTABLES_VALUES = "cat /tmp/.ipt | grep -i";
+    
+    /** curl command with 20 secs timeout for Ipv6 */
+    public static final String CMD_CURL_WITH_20_SECS_TIMEOUT_IPV6 = "curl --head -g -6 ";
+
+    /** Command to get from syscng.db file **/
+    public static final String CMD_FOR_SYSCFG_GET = "syscfg get ";
+    
+    /** File name for /etc/ONBOARD_LOGGING_ENABLE **/
+    public static final String FILE_ETC_ONBOARD_LOGGING_ENABLE = "/etc/ONBOARD_LOGGING_ENABLE";
+    
+    /** File name for /nvram/.device_onboarded **/
+    public static final String FILE_NVRAM_DEVICE_ONBOARDED = "/nvram/.device_onboarded";
+        
+    /** Command Constants for get onboard log creation time */
+    public static final String CMD_GET_ONBOARD_LOGS_TIME = "ls -ltr /nvram2/onboardlogs";
+
+    /** File name /nvram2/onboardlogs/OnBoardingLog*.txt.0 */
+    public static final String FILE_NVRAM_ONBOARDLOGS_ONBOARDINGLOG = "/nvram2/onboardlogs/OnBoardingLog*.txt.0";
+    
+    /** Process name util linux utility */
+    public static final String UTIL_LINUX = "util-linux";
+    
+    /** Command to delete the WiFi Packet Capture File */
+    public static final String CMD_REMOVE_WIFI_PACKET_CAPURE = "sudo rm -f /tmp/rdkb_test_pc.cap /root/packet_capture_script.sh";
+
+    
+    /** List of executable binaries */
+    public static final List<String> EXECUTABLE_BINARY_LIST = new ArrayList<String>() {
+	{
+	    add("/bin/dmesg");
+	    add("/bin/kill");
+	    add("/bin/more");
+	    add("/bin/mount");
+	    add("/bin/umount");
+	    add("/sbin/swapon");
+	    add("/sbin/swapoff");
+	    add("/sbin/fsck");
+	    add("/sbin/hwclock");
+	    add("/usr/bin/chrt");
+	    add("/usr/bin/eject");
+	    add("/usr/bin/flock");
+	    add("/usr/bin/hexdump");
+	    add("/usr/bin/logger");
+	    add("/usr/bin/mesg");
+	    add("/usr/bin/renice");
+	    add("/usr/bin/setsid");
+	    add("/sbin/losetup");
+	    add("/sbin/fsck.minix");
+	}
+    };
+    
+    /** Log file location /rdklogs/logs/radiusauthd.log */
+    public static final String FILE_RADIUSAUTHD_LOG = "/rdklogs/logs/radiusauthd.log";
+
+    /** File name to get the Raspberry pi device model */
+    public static final String FILE_RPI_DEVICE_MODEL = "/proc/device-tree/model";
+
+    /** RPI configuration files in VM Location */
+    public static final String RPI_FILES_IN_VM_LOCATION = "/home/svccpeqa01/RPI/";
+
+    /** File name wpa supplicant conf in RPI device */
+    public static final String FILE_WPA_SUPPLICANT_CONF = "wpa_supplicant.conf";
+
+    /** file path in RPI device /etc/wpa_supplicant/ */
+    public static final String PATH_WPA_SUPPLICANT = "/etc/wpa_supplicant/";
+
+    /** file path in RPI device for certificates /etc/wpa_supplicant/certs/ */
+    public static final String PATH_CERTIFICATE = "/etc/wpa_supplicant/certs/";
+
+    /** file name xi5client key pem in RPI device */
+    public static final String FILE_XI5_CLIENT_KEY = "xi5client.key.pem";
+
+    /** file name xi5client certificate pem in RPI device */
+    public static final String FILE_XI5_CLIENT_CERT = "xi5client.cert.pem";
+
+    /** file name ca chain certificate in RPI device */
+    public static final String FILE_CA_CHAIN_CERT = "ca-chain.cert.pem";
+
+    /** command constant for overwriting file content */
+    public static final String CMD_SED = "sed -i 's/";
+
+    /** sudo command */
+    public static final String CMD_SUDO = "sudo ";
+    
+    /** Command echo */
+    public static final String CMD_ECHO = "echo ";
+    
+    /** Command operator */
+    public static final String CMD_REDIRECTION = " >> ";
+    
+    /** rwx Permission to Users */
+    public static final String CHMOD_755_VALUE = "755 ";
+    
+    /** Command remove */
+    public static final String CMD_REMOVE = "rm ";
+    
+    /** Command constant for moving file/directory */
+    public static final String CMD_MV = "mv ";
+    
+    /** Command to get ntpd process details */
+    public static final String CMD_TO_GET_NTPD_PROCESS = "ps | grep -i ntpd | grep -v grep";
+
+    /** Process details for ntpd in Arm side */
+    public static final String PROCESS_DETAILS_NTPD = "ntpd -c /tmp/ntp.conf";
+    
+    /** Command to bring the WiFi Packet Monitoring interface down */
+    public static final String CMD_MONITOR_INTERFACE_DOWN = "sudo ifconfig mon0 down";
+
+    /** Command to bring the WiFi Packet Monitoring interface up */
+    public static final String CMD_MONITOR_INTERFACE_UP = "sudo ifconfig mon0 up";
+    
+    /** iwconfig Command */
+    public static final String CMD_IWCONFIG_MON0 = "sudo iwconfig mon0";
+    
+    /** sh Command */
+    public static final String CMD_SH = "sh ";
+
+    /** iw dev Command */
+    public static final String CMD_IW_DEV = "sudo iw dev";
+
+    /** iw phy Command to retrieve the information */
+    public static final String CMD_IW_PHY_INFO = "sudo iw phy phy0 info";
+
+    /** iw phy Command to add WiFi Packet Monitoring Interface */
+    public static final String CMD_IW_PHY_ADD_MON0 = "sudo iw phy phy0 interface add mon0 type monitor";
+
+    /** iw dev Command to delete interface */
+    public static final String CMD_IW_DEL_INTERFACE = "sudo iw dev wlp4s0 del";
+
+    /** Command to retrieve the WiFi Packet Monitoring interface */
+    public static final String CMD_MONITOR_INTERFACE_NAME = "sudo iwconfig 2>&1 | grep -i 'Mode:Monitor'";
+    
+    /** Shell Script File that captures the WiFi Packets */
+    public static final String FILE_PACKET_CAPTURE_SCRIPT = "packet_capture_script.sh";
+
+    /** Command to check if file exists - head part */
+    public static final String CMD_FILE_EXISTS_HEAD = "if [ -f  ";
+
+    /** Command to check if file exists - tail part */
+    public static final String CMD_FILE_EXISTS_TAIL = " ] ; then echo \"true\" ; else echo \"false\" ; fi";
+    
+    /** Command/ Process TCPDUMP */
+    public static final String CMD_TCPDUMP = "tcpdump";
+    
+    /** Command to read the captured WiFi Packets */
+    public static final String CMD_READ_CAPTURE_WIFI_PACKETS = "sudo tcpdump -r /tmp/rdkb_test_pc.cap | grep -i ";
+    
+    /** Log file /rdklogs/logs/ETHAGENTLog.txt.0 */
+    public static final String FILE_ETH_AGENT_LOG = "/rdklogs/logs/ETHAGENTLog.txt.0";
+    
+    /** Command to get ethernet telemetry log for client */
+    public static final String FILE_ETH_TELEMETRY_TXT = "/rdklogs/logs/eth_telemetry.txt";
+    
+    /** Command Constants for linux ping for ipv6 address */
+    public static final String CMD_PING_FOR_LINUX_IPV6 = "ping6 -c";
+    
+    /** LM.txt.0 file location */
+    public static final String LOG_FILE_LM = "/rdklogs/logs/LM.txt.0 ";
+
+    public enum QUALCOM_FILES {
+	ATF_BIN("/lib/firmware/AR9888/hw.2/atf.bin"),
+	UTF_BIN("/lib/firmware/AR9888/hw.2/utf.bin"),
+	OTP_BIN("/lib/firmware/AR9888/hw.2/otp.bin"),
+	BD3GLD_BIN("/lib/firmware/AR9888/hw.2/boardData_3_QC98XX_xb141_gld.bin"),
+	BD2GLD_BIN("/lib/firmware/AR9888/hw.2/boardData_2_QC98XX_xb143_gld.bin"),
+	BD2CUSGLD_BIN("/lib/firmware/AR9888/hw.2/boardData_2_QC98XX_cus223_523_gld.bin"),
+	FAKE_BIN("/lib/firmware/AR9888/hw.2/fakeBoardData_AR6004_bak.bin"),
+	FAKEBOARD("/lib/firmware/AR9888/hw.2/fakeBoardData_AR6004.bin");
+
+	private String file;
+
+	public String getFile() {
+	    return file;
+	}
+
+	public void setFile(String file) {
+	    this.file = file;
+	}
+
+	QUALCOM_FILES(String file) {
+	    this.file = file;
+	}
+
+    }
+
+    public enum ATOMSYNC_QUALCOM_FILES {
+	BISTIFY_BIN("/lib/firmware/AR9888/hw.2/bistify.dbg"),
+	SPORT_BIN("/lib/firmware/AR9888/hw.2/serialport.bin"),
+	OTP_BIN("/lib/firmware/AR9888/hw.2/otp_test.bin"),
+	ROM_BIN("/lib/firmware/AR9888/hw.2/fw.rom.bin"),
+	RAM_BIN("/lib/firmware/AR9888/hw.2/fw.ram.bin"),
+	WALTEST_BIN("/lib/firmware/AR9888/hw.2/waltest.bin"),
+	ATF_BIN("/lib/firmware/AR9888/hw.2/atf.bin"),
+	UTF_BIN("/lib/firmware/AR9888/hw.2/utf.bin"),
+	EPPING_BIN("/lib/firmware/AR9888/hw.2/endpointping.bin");
+
+	private String file;
+
+	public String getFile() {
+	    return file;
+	}
+
+	public void setFile(String file) {
+	    this.file = file;
+	}
+
+	ATOMSYNC_QUALCOM_FILES(String file) {
+	    this.file = file;
+	}
+
+    }
+
+    /** Constant to hold Atom removal files */
+    public enum ATOM_REMOVAL_FILES {
+	EZIPUPDATE("/usr/bin/ez-ipupdate"),
+	DCA_UTILITY("/rdklogger/dca_utility.sh"),
+	USBHIDDUMP("/usr/bin/usbhid-dump"),
+	DCASPLUNKUPLOAD("/rdklogger/dcaSplunkUpload.sh"),
+	DCMSCRIPT("/rdklogger/DCMscript.sh"),
+	ESTSECUREWRAPPER("/usr/bin/testsecurewrapper"),
+	LTIME("/usr/bin/LTime"),
+	STARTTUNNEL("/rdklogger/startTunnel.sh"),
+	RFC_REFRESH("/rdklogger/rfc_refresh.sh"),
+	GETPARTNERID("/rdklogger/getpartnerid.sh"),
+	GETACCOUNTID("/rdklogger/getaccountid.sh"),
+	DCMCRONRESCHEDULE("/rdklogger/DCMCronreschedule.sh"),
+	TELEMETRYEVENTLISTENER("/rdklogger/telemetryEventListener.sh"),
+	IPTABLES_CONTAINER("/rdklogger/iptables_container.sh"),
+	APPLY_PARTNER_CUSTOMIZATION("/rdklogger/apply_partner_customization.sh"),
+	XHSSCRIPT("/rdklogger/xhsScript.sh"),
+	GETIPV6_CONTAINER("/rdklogger/getipv6_container.sh"),
+	RFC("/rdklogger/rfc.sh"),
+	GETIP_FILE("/rdklogger/getip_file.sh"),
+	LOG_TIMESTAMP("/rdklogger/log_timestamp.sh"),
+	FILEUPLOADRANDOM("rdklogger/fileUploadRandom.sh"),
+	WAN_SSH("/rdklogger/wan_ssh.sh"),
+	EXPECT_CREATE_USERSPACE("/usr/bin/expect_create_userspace"),
+	EXPECT_CREATE_NAT("/usr/bin/expect_create_nat"),
+	EXPECT_CREATE("/usr/bin/expect_create"),
+	CONNTRACK_FILTER("/usr/bin/conntrack_filter"),
+	CONNTRACK_MASTER("/usr/bin/conntrack_master"),
+	EXPECT_GET("/usr/bin/expect_get"),
+	CONNTRACK_GET("/usr/bin/conntrack_get"),
+	EXPECT_DELETE("/usr/bin/expect_delete"),
+	CONNTRACK_GRP_CREATE("/usr/bin/conntrack_grp_create"),
+	CONNTRACK_CREATE_NAT("/usr/bin/conntrack_create_nat"),
+	CONNTRACK_UPDATE("/usr/bin/conntrack_update"),
+	CONNTRACK_CREATE("/usr/bin/conntrack_create"),
+	CONNTRACK_DUMP_FILTER("/usr/bin/conntrack_dump_filter"),
+	CTEXP_EVENTS("/usr/bin/ctexp_events"),
+	CONNTRACK_DELETE("/usr/bin/conntrack_delete"),
+	EXPECT_EVENTS("/usr/bin/expect_events"),
+	CONNTRACK_EVENTS("/usr/bin/conntrack_events"),
+	CONNTRACK_DUMP("/usr/bin/conntrack_dump"),
+	EXPECT_DUMP("/usr/bin/expect_dump"),
+	EXPECT_FLUSH("/usr/bin/expect_flush"),
+	CONNTRACK_FLUSH("/usr/bin/conntrack_flush"),
+	SERVICE_DHCP("/usr/bin/service_dhcp"),
+	SERVICE_MULTINET_EXEC("/usr/bin/service_multinet_exec"),
+	APPLY_SYSTEM_DEFAULTS("/usr/bin/apply_system_defaults"),
+	SERVICE_IPV6("/usr/bin/service_ipv6"),
+	SERVICE_WAN("/usr/bin/service_wan"),
+	SERVICE_UDHCPC("/usr/bin/service_udhcpc"),
+	DHCP_PROXY("/usr/bin/dhcp_proxy"),
+	SERVICE_ROUTED("/usr/bin/service_routed"),
+	NFQ_HANDLER("/usr/bin/nfq_handler"),
+	SYSEVENTD_PROXY("/usr/bin/syseventd_proxy"),
+	NEWHOST("/usr/bin/newhost"),
+	PMON("/usr/bin/pmon"),
+	EXECUTE_DIR("/usr/bin/execute_dir"),
+	UTCMD("/usr/bin/utcmd"),
+	INIT_01("/usr/bin/01_init"),
+	WAN_IPV6_03("/usr/bin/03_wan_ipv6"),
+	BYOI_04("/usr/bin/04_byoi"),
+	BYOI_GAP_04("/usr/bin/04_byoi_gap"),
+	IPV6_02("/usr/bin/02_ipv6"),
+	QOS_15("/usr/bin/15_qos"),
+	BOOTSTRAP_DNS_10("/usr/bin/10_bootstrap_dns"),
+	XHS_15("/usr/bin/15_xhs"),
+	DNSFORWARDER_15("/usr/bin/15_dnsforwarder"),
+	MCASTSNOOPER_10("/usr/bin/10_mcastsnooper"),
+	NTPCLIENT_10("/usr/bin/10_ntpclient"),
+	FACTORYDEFAULT_20("/usr/bin/20_factorydefault"),
+	CISCOCONNECT_20("/usr/bin/20_ciscoconnect"),
+	GWRESET_20("/usr/bin/20_gwreset"),
+	SWITCHPMON_15("/usr/bin/15_switchpmon"),
+	MANAGED_02("/usr/bin/02_managed"),
+	SYSTEM_01("/usr/bin/01_system"),
+	FPM_10("/usr/bin/10_fpm"),
+	WLAN_02("/usr/bin/02_wlan"),
+	LAN_02("/usr/bin/02_lan"),
+	FTP_SERVER_15("/usr/bin/15_ftp_server"),
+	IGD("/usr/bin/IGD"),
+	IGD_15("/usr/bin/15_igd"),
+	FIREWALL("/usr/bin/firewall"),
+	GENFWLOG("/usr/bin/GenFWLog"),
+	FIREWALL_10("/usr/bin/10_firewall"),
+	IPV4_02("/usr/bin/02_ipv4"),
+	HOTSPOT_15("/usr/bin/15_hotspot"),
+	DHCPV6_SERVER_15("/usr/bin/15_dhcpv6_server"),
+	WAN_02("/usr/bin/02_wan"),
+	LANHANDLER_02("/usr/bin/02_lanHandler"),
+	DHCPV6_CLIENT_15("/usr/bin/15_dhcpv6_client"),
+	MCASTPROXY_10("/usr/bin/10_mcastproxy"),
+	CCSPHS_15("/usr/bin/15_ccsphs"),
+	MLDPROXY_10("/usr/bin/10_mldproxy"),
+	DDNSCLIENT_15("/usr/bin/15_ddnsclient"),
+	POTD_26("/usr/bin/26_potd"),
+	MISC_15("/usr/bin/15_misc"),
+	XDNS_09("/usr/bin/09_xdns"),
+	NTPD_10("/usr/bin/10_ntpd"),
+	PARODUS_02("/usr/bin/02_parodus"),
+	FORWARDING_02("/usr/bin/02_forwarding"),
+	BRIDGE_02("/usr/bin/02_bridge"),
+	COSA_33("/usr/bin/33_cosa");
+
+	private String file;
+
+	public String getFile() {
+	    return file;
+	}
+
+	public void setFile(String file) {
+	    this.file = file;
+	}
+
+	ATOM_REMOVAL_FILES(String file) {
+	    this.file = file;
+	}
+
+    }
+
+    /** Constant to hold Arm removal files across platforms */
+    public enum ARM_REMOVAL_FILES {
+	APPLY_PARTNER_CUSTOMIZATION("/rdklogger/apply_partner_customization.sh"),
+	DCA_UTILITY("/rdklogger/dca_utility.sh"),
+	DCASPLUNKUPLOAD("/rdklogger/dcaSplunkUpload.sh"),
+	DCMCRONRESCHEDULE("/rdklogger/DCMCronreschedule.sh"),
+	DCMSCRIPT("/rdklogger/DCMscript.sh"),
+	GETACCOUNTID("/rdklogger/getaccountid.sh"),
+	GETPARTNERID("/rdklogger/getpartnerid.sh"),
+	INITZRAM("/rdklogger/init-zram.sh"),
+	RFC_REFRESH("/rdklogger/rfc_refresh.sh"),
+	STARTTUNNEL("/rdklogger/startTunnel.sh"),
+	TELEMETRYEVENTLISTENER("/rdklogger/telemetryEventListener.sh"),
+	UTILS("/rdklogger/utils.sh"),
+	WAN_SSH("/rdklogger/wan_ssh.sh");
+
+	private String file;
+
+	public String getFile() {
+	    return file;
+	}
+
+	public void setFile(String file) {
+	    this.file = file;
+	}
+
+	ARM_REMOVAL_FILES(String file) {
+	    this.file = file;
+	}
+    }
+    
+    /** File path for dcm processing log file */
+    public static final String LOG_FILE_DCMPROCESSING = "/rdklogs/logs/dcmProcessing.log";
+
     
 }

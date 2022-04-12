@@ -33,4 +33,10 @@ public class BroadBandTestGroup extends TestGroup{
     /** Test Group for Vulnerability **/
     public static final String WIFI_SECURITY = "wifisecurity";
     
+    /** Test group for verifying Tr69 API */
+    public static final String TELEMETRY = "telemetry";
+    
+    /** Test Group for xdns **/
+    public static final String XDNS = "xdns";
+    
 }

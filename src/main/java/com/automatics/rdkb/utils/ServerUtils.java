@@ -278,4 +278,18 @@ public class ServerUtils {
     	LOGGER.info("isSNMPHost: false");	
     	return false;
     }
+    
+    /**
+     * Closes the secure shell connection.
+     *
+     * @param connection
+     *            The SSH connection object.
+     */
+    public static final void closeSshConnection(SshConnection connection) {
+
+	if (null != connection) {
+	    connection.disconnect();
+	    LOGGER.debug("closeSshConnection(): " + connection.getHostName());
+	}
+    }
 }

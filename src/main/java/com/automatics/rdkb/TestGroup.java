@@ -47,5 +47,8 @@ public class TestGroup {
     
     /** Test Category for NTP test **/
     public static final String NTP = "NTP";
+    
+    /** Test Group for xdns **/
+    public static final String XDNS = "xdns";
 
 }

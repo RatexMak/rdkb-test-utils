@@ -33,6 +33,7 @@ import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandTraceConstants;
 import com.automatics.tap.AutomaticsTapApi;
+import com.automatics.utils.AutomaticsPropertyUtility;
 import com.automatics.utils.CommonMethods;
 
 public class BroadBandSystemUtils {
@@ -84,7 +85,7 @@ public class BroadBandSystemUtils {
      * @param ipAddress
      *            Interface address
      *
-     * @author Arunkumar (ajayac200)
+     * @author Arunkumar
      * @refactor yamini.s
      */
     public static boolean checkConnectionToIpAddress(AutomaticsTapApi tapEnv, Dut device, String connectionType,
@@ -126,7 +127,7 @@ public class BroadBandSystemUtils {
      * @param interfaceName
      *            interfacename for ifconfig.
      *
-     * @author Arunkumar (ajayac200)
+     * @author Arunkumar
      * @refactor yamini.s
      */
     public static boolean verifyTelnetConnectionToInterface(AutomaticsTapApi tapEnv, Dut device, String interfaceName) {
@@ -174,7 +175,7 @@ public class BroadBandSystemUtils {
      * 
      * @param tapEnv
      *            {@link AutomaticsTapApi} Reference
-     * @param settop
+     * @param device
      *            {@link device} to be validated
      * @param searchText
      *            String representing the text to be searched in the log file.
@@ -532,7 +533,7 @@ public class BroadBandSystemUtils {
 	try {
 
 	    response = tapApi.executeCommandUsingSsh(device,
-		    BroadBandCommandConstants.COMMAND_TO_CHECK_THE_RUNNING_STATUS_OF_DNSMASQ_SERVICE);
+			    BroadBandCommandConstants.COMMAND_TO_CHECK_THE_RUNNING_STATUS_OF_DNSMASQ_SERVICE);
 	    LOGGER.info("DNSMASQ service status response : " + response);
 
 	    if (CommonMethods.isNotNull(response)) {

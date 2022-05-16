@@ -403,8 +403,8 @@ public class CommonUtils {
      * 
      * @param tapEnv
      *            {@link AutomaticsTapApi}
-     * @param settop
-     *            {@link Settop}
+     * @param device
+     *            {@link Dut}
      * @param searchText
      *            String representing the Search Text. It needs to be passed with the required escape character.
      * @param logFile
@@ -780,16 +780,16 @@ public class CommonUtils {
      * 
      * @param tapEnv
      *            {@link AutomaticsTapApi}
-     * @param settop
-     *            {@link Settop}
+     * @param device
+     *            {@link Dut}
      * @param command
      *            Command to be executed
      * 
      * @return Result of operation execution.
      */
-    public static boolean performCreateRemoveUpdateFileOperations(AutomaticsTapApi tapEnv, Dut settop, String command) {
+    public static boolean performCreateRemoveUpdateFileOperations(AutomaticsTapApi tapEnv, Dut device, String command) {
 	boolean result = false;
-	String executionResult = tapEnv.executeCommandUsingSsh(settop, command);
+	String executionResult = tapEnv.executeCommandUsingSsh(device, command);
 	executionResult = executionResult.trim();
 	if (executionResult.isEmpty()) {
 	    result = true;
@@ -804,8 +804,8 @@ public class CommonUtils {
      * 
      * @param tapApi
      *            Instance of AutomaticsTapApi
-     * @param settop
-     *            Instance of Settop
+     * @param device
+     *            Instance of Dut
      * @return uptime uptime in seconds
      */
     public static String getUptimeFromProc(AutomaticsTapApi tapEnv, Dut device) {
@@ -973,8 +973,8 @@ public class CommonUtils {
      * 
      * @param tapEnv
      *            The {@link AutomaticsTapApi} reference.
-     * @param settop
-     *            The settop to be used.
+     * @param device
+     *            The device to be used.
      * @param process
      *            The process name which is to be killed
      * @refactor Alan_Bivera
@@ -1178,8 +1178,8 @@ public class CommonUtils {
     /**
      * Helper method to get a process status
      * 
-     * @param settop
-     *            The settop instance.
+     * @param device
+     *            The device instance.
      * @param tapEnv
      *            The AutomaticsTapApi instance.
      * @param processName
@@ -1303,6 +1303,56 @@ public class CommonUtils {
 	    e.printStackTrace();
 	}
 
+	return status;
+    }
+    
+    /**
+     * Utility method to replace a particular text in a file with another text using sed command. This method will not
+     * work if either textToReplace or textToBeReplaced has some special characters like ",',<,> etc
+     * 
+     * @param tapApi
+     *            instance of AutomaticsTapApi
+     * @param device
+     *            instance of Dut
+     * @param textToBeReplaced
+     *            string or text to be replaced in a file
+     * @param textToReplace
+     *            string or text which we need to replace in a file
+     * @param filePath
+     *            full path of the file
+     * @return true if the text is successfully replaced else false
+     * @author spriya
+     * @refactor Govardhan
+     */
+    public static boolean replaceTextInFileUsingSed(AutomaticsTapApi tapEnv, Dut device, String textToBeReplaced,
+	    String textToReplace, String filePath) {
+	boolean status = false;
+	LOGGER.debug("STARTING METHOD::replaceTextUsingSed()");
+	// commandToBeExecuted = "sed -i 's#" + textToBeReplaced + "#" + textToReplace + "#g' " + filePath;
+	StringBuffer sedCommand = new StringBuffer();
+	sedCommand.append("sed -i 's#");
+	sedCommand.append(textToBeReplaced);
+	sedCommand.append(BroadBandTestConstants.DELIMITER_HASH);
+	sedCommand.append(textToReplace);
+	sedCommand.append("#g' ");
+	sedCommand.append(filePath);
+	// execute sed command
+	tapEnv.executeCommandUsingSsh(device, sedCommand.toString());
+	// execute command :: grep -i "<textToReplace>" <filepath>
+	// making sure that text has been replaced
+	StringBuffer grepCommand = new StringBuffer();
+	grepCommand.append(BroadBandTestConstants.CMD_GREP_I);
+	grepCommand.append(BroadBandTestConstants.SINGLE_SPACE_CHARACTER);
+	grepCommand.append("\"");
+	grepCommand.append(textToReplace);
+	grepCommand.append("\" ");
+	grepCommand.append(filePath);
+	status = searchLogFiles(tapEnv, device, grepCommand.toString());
+	if (status) {
+	    LOGGER.info(textToBeReplaced + " has been replaced successfully with " + textToReplace + " in the file "
+		    + filePath);
+	}
+	LOGGER.debug("ENDING METHOD::replaceTextInFileUsingSed()");
 	return status;
     }
     

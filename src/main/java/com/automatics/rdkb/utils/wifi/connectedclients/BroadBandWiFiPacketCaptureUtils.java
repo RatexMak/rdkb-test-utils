@@ -42,10 +42,10 @@ public class BroadBandWiFiPacketCaptureUtils {
      * 
      * @param tapEnv
      *            instance of {@link AutomaticsTapApi}
-     * @param settop
+     * @param device
      *            instance of {@link Dut}
      * 
-     * @return Settop object representing the Ethernet Connected Client.
+     * @return Dut object representing the Ethernet Connected Client.
      * @refactor Athira
      */
     public static Dut getEthernetConnectedLinuxClient(AutomaticsTapApi tapEnv, Dut device) {
@@ -80,7 +80,7 @@ public class BroadBandWiFiPacketCaptureUtils {
      * capturing the WiFi Packets.
      * 
      * @param tapEnv
-     *            {@link ECatsTapApi}
+     *            {@link AutomaticsTapApi}
      * @param ethernetClient
      *            {@link Dut}
      * 

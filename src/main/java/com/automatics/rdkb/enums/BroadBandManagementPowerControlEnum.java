@@ -42,7 +42,7 @@ package com.automatics.rdkb.enums;
  * <li>AP 8 5GHz WiFi Radio Management Power</li>
  * </ol>
  * 
- * @author BALAJI V, INFOSYS
+ * @author BALAJI V
  * @refactor Alan_Bivera
  */
 

@@ -310,7 +310,7 @@ public class DmcliUtils {
      * 
      * @return result Boolean value representing the result of set and get actions.
      * 
-     * @author asanka200
+     * @author Ashwin Sankarasubramanian
      */
     public static boolean verifyElseSetParameterUsingDmcli(Dut device, AutomaticsTapApi tapEnv, String parameter,
 	    String dataType, String valueToBeSet) {

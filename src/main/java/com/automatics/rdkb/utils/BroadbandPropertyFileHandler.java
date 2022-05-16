@@ -45,12 +45,12 @@ public class BroadbandPropertyFileHandler {
     protected static final Logger LOGGER = LoggerFactory.getLogger(BroadbandPropertyFileHandler.class);
 
     /**
-     * Uses the partial key by appending it with the settop platform to get the property value from cats.props.
+     * Uses the partial key by appending it with the device platform to get the property value from cats.props.
      *
-     * @param settop
-     *            The settop instance.
+     * @param device
+     *            The device instance.
      * @param partialPropsKey
-     *            Partial property key which will be appended with the settop platform to form the complete
+     *            Partial property key which will be appended with the device platform to form the complete
      *            key.(Example:- "cdl.unsigned.image.name." it get resolved to
      *
      * @return CATS property value
@@ -351,24 +351,6 @@ public class BroadbandPropertyFileHandler {
      */
     public static String getDnsMasqVersionForDunfell() {
 	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_DUNFELL_DNSMASQ_VERSION);
-    }
-
-    /**
-     * This API will get the configparamgen path from properties
-     * 
-     * @author Said Hisham
-     */
-    public static String getConfigparamgenPath() {
-	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.STB_PROPS_CONFIGPARAMGEN_VM_PATH);
-    }
-
-    /**
-     * This API will get the configparamgen filename from properties
-     * 
-     * @author Said Hisham
-     */
-    public static String getConfigparamgenFileName() {
-	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.STB_PROPS_CONFIGPARAMGEN_FILENAME);
     }
 
     /**
@@ -1014,7 +996,253 @@ public class BroadbandPropertyFileHandler {
 		.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_HOST_ADDRESS_FOR_LEVEL_ONE_SITE);
     }
 
+    /**
+     * This API will check for device related to TxRxRate
+     * 
+     * @author Govardhan
+     */
+    public static boolean isTxRxRateListDevices(Dut device) {
+	boolean isTxRxDevice = false;
+	String deviceModel = device.getModel();
+	if (CommonMethods.isNotNull(deviceModel)) {
+	    try {
+		String[] txRxRateListDevices = AutomaticsPropertyUtility
+			.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_TXRX_RATELIST_DEVICE).split(",");
+		for (String model : txRxRateListDevices) {
+		    if (model.equalsIgnoreCase(deviceModel)) {
+			isTxRxDevice = true;
+			break;
+		    }
+		}
+	    } catch (Exception e) {
 
-
+	    }
+	}
+	return isTxRxDevice;
+    }
+    
+    
+    /**
+     * This API will get the global DNS IPv4 value from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getGlobalDNSIpv4Value() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE);
+    }
+    
+    /**
+     * This API will get the global DNS IPv6 value from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getGlobalDNSIpv6Value() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE);
+    }
+    
+    /**
+     * This API will get the DNS IPv4 value for DNS level one primary from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSIpv4ValueLevelOnePrimary() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY);
+    }
+    
+    /**
+     * This API will get the DNS IPv4 value for DNS level two primary from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSIpv4ValueLevelTwoPrimary() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY);
+    }
+    
+    /**
+     * This API will get the DNS IPv4 value for DNS level three primary from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSIpv4ValueLevelThreePrimary() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY);
+    }
+    
+    /**
+     * This API will get the DNS IPv6 value for DNS level one primary from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSIpv6ValueLevelOnePrimary() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY);
+    }
+    
+    /**
+     * This API will get the DNS IPv6 value for DNS level two primary from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSIpv6ValueLevelTwoPrimary() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY);
+    }
+    
+    /**
+     * This API will get the DNS IPv6 value for DNS level three primary from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSIpv6ValueLevelThreePrimary() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY);
+    }
+    
+    /**
+     * This API will get the DNS valid IPv4 value from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSValidIpv4Value() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_VALID_IPV4_VALUE);
+    }
+    
+    /**
+     * This API will get the DNS valid IPv6 value from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSValidIpv6Value() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_VALID_IPV6_VALUE);
+    }
+    
+    /**
+     * This API will get the DNS invalid secondary IPv4 value from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSInvalidSecondaryIpv4Value() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_INVALID_SECONDARY_IPV4_VALUE);
+    }
+    
+    /**
+     * This API will get the DNS invalid secondary IPv6 value from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSInvalidSecondaryIpv6Value() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_INVALID_SECONDARY_IPV6_VALUE);
+    }
+    
+    /**
+     * This API will get the DNS invalid primary IPv4 value from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSInvalidPrimaryIpv4Value() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_INVALID_PRIMARY_IPV4_VALUE );
+    }
+    
+    /**
+     * This API will get the DNS invalid primary IPv6 value from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSInvalidPrimaryIpv6Value() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_INVALID_PRIMARY_IPV6_VALUE );
+    }
+    
+    /**
+     * This API will get the DNS valid secondary IPv4 value from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSValidSecondaryIpv4Value() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_VALID_SECONDARY_IPV4_VALUE );
+    }
+    
+    /**
+     * This API will get the DNS valid secondary IPv6 value from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSValidSecondaryIpv6Value() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_VALID_SECONDARY_IPV6_VALUE );
+    }
+    
+    /**
+     * This API will get the DNS another invalid secondary IPv4 value from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSAnotherInvalidSecondaryIpv4Value() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_ANOTHER_INVALID_SECONDARY_IPV4_VALUE );
+    }
+    
+    /**
+     * This API will get the DNS another invalid secondary IPv6 value from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDNSAnotherInvalidSecondaryIpv6Value() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_ANOTHER_INVALID_SECONDARY_IPV6_VALUE );
+	
+    }
+    
+    /**
+     * This API will check the device type to return the expected value
+     * 
+     * @author yamini.s
+     */
+    public static boolean isDeviceCheckForXDNS(Dut device) {
+	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.DEVICE_CHECK_VALUE_XDNS));
+    }
+    
+    /**
+     * This API will get the current upnp version from properties
+     * 
+     * @author yamini.s
+     */
+    public static String getValueForCurrentUPNPVersion(Dut device) {
+	return getAutomaticsPropsValueByResolvingPlatform(device, BroadBandPropertyKeyConstants.CURRENT_UPNP_VERSION);
+    }
+    
+    /**
+     * This API will check for device related to GBPAD
+     * 
+     * @author yamini.s
+     */
+    public static boolean isDeviceCheckForGBPAD(Dut device) {
+	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.PARTIAL_DEVICE_CHECK_GBPAD));
+    }
+    
+    /**
+     * This API will check for device related to GBPAD
+     * 
+     * @author yamini.s
+     */
+    public static boolean isDeviceCheckForGBPAD1(Dut device) {
+	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.PARTIAL_DEVICE_CHECK_GBPAD1));
+    }
+    
+    /**
+     * This API will check for device related to GBPAD
+     * 
+     * @author yamini.s
+     */
+    public static boolean isDeviceCheckForGBPAD2(Dut device) {
+	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.PARTIAL_DEVICE_CHECK_GBPAD2));
+    }
+    
+    
+    /**
+     * This API will check if the server details are configured to upload crash details
+     * 
+     * @author yamini.s
+     */
+    public static Boolean isServerConfiguredToUploadCrashDetails() {
+    	return Boolean.parseBoolean(AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.IS_SERVER_CONFIGURED_TO_UPLOAD_CRASH_DETAILS));
+        }
+    
 
 }

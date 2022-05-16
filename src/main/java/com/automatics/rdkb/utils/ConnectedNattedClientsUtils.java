@@ -418,7 +418,7 @@ public class ConnectedNattedClientsUtils {
 	 * For windows machines, wifi profile need to be added ,inorder to connect to
 	 * wifi network. This method adds wifi profile
 	 * 
-	 * @param settop       Settop object
+	 * @param device       Dut object
 	 * @param tapEnv       Tap environment
 	 * @param ssid         SSID to connect to
 	 * @param password     Password for connecting to SSID
@@ -1708,6 +1708,54 @@ public class ConnectedNattedClientsUtils {
 		LOGGER.debug("ENDING METHOD : verifyPingConnection()");
 		return result;
 
+	}
+	
+	/**
+	 * 
+	 * This method is to verify iperf command execution for a particular duration on
+	 * the Connected Client Device.
+	 * 
+	 * @param connectedClientDevice {@link Dut}
+	 * @param tapEnv                {@link AutomaticsTapApi}
+	 * @param ipAddress             String representing the IP Address
+	 * @param durationInSeconds     String which gives iperf time
+	 * @return returns status of operation
+	 * @refactor Said Hisham
+	 */
+	public static boolean verifyIperfConnection(Dut connectedClientDevice, AutomaticsTapApi tapEnv, String ipAddress,
+			String durationInSeconds) {
+		LOGGER.debug("STARTING METHOD : verifyIperfConnection()");
+		boolean result = false;
+		String senderResponse = null;
+		String receiverResponse = null;
+		Device ecastSettop = (Device) connectedClientDevice;
+		LOGGER.info("OS TYPE OF THE WIFI CLIENT: " + ecastSettop.getOsType());
+		String iperfCommand = BroadBandCommandConstants.CMD_TO_INITIATE_IPERF_TRAFFIC_FROM_CLIENT;
+		String[] commands = new String[] { BroadBandCommonUtils.concatStringUsingStringBuffer(iperfCommand,
+				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, ipAddress, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+				BroadBandTestConstants.TIME_PARAM, durationInSeconds) };
+		LOGGER.info("IPERF Command: " + commands[0]);
+		
+		String response = tapEnv.executeCommandOnOneIPClients(connectedClientDevice, commands,
+				(Integer.parseInt(durationInSeconds) + 100)
+						* BroadBandTestConstants.SECONDS_TO_MILLISECONDS);
+		LOGGER.info("response of iperf : " + response);
+		if (CommonMethods.isNotNull(response)) {
+			LOGGER.info("response of iperf is not null");
+			senderResponse = BroadBandCommonUtils.patternFinderMatchPositionBased(response,
+					BroadBandConnectedClientTestConstants.PATTERN_TO_GET_IPERF_TRANSFER_RATE_SENT_FROM_CLIENT,
+					BroadBandTestConstants.CONSTANT_1);
+			LOGGER.info("DATA SENT : " + senderResponse);
+			receiverResponse = BroadBandCommonUtils.patternFinderMatchPositionBased(response,
+					BroadBandConnectedClientTestConstants.PATTERN_TO_GET_IPERF_TRANSFER_RATE_RECEIVED_BY_SERVER,
+					BroadBandTestConstants.CONSTANT_1);
+			LOGGER.info("DATA RECEIVED : " + receiverResponse);
+		}
+		if (CommonMethods.isNotNull(senderResponse) && CommonMethods.isNotNull(receiverResponse)) {
+			result = senderResponse.equalsIgnoreCase(receiverResponse);
+		}
+		LOGGER.debug("ENDING METHOD : verifyIperfConnection()");
+		return result;
 	}
 
 }

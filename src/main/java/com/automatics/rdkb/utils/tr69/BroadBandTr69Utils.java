@@ -51,7 +51,7 @@ import com.automatics.utils.AutomaticsPropertyUtility;
 public class BroadBandTr69Utils extends AutomaticsTestBase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BroadBandTr69Utils.class);
-    
+
     /**
      * Utility method to execute TR-69 using ACS Rest API.
      * 
@@ -67,16 +67,15 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 
 	// String parameterName = null;
 	// List<Parameter> response = getTR69ParameterValueUsingRestApi(device, new String[] { parameter });
-	String response = tapEnv.executeTr69Command(device, new String[]{parameterName});
+	String response = tapEnv.executeTr69Command(device, new String[] { parameterName });
 
 	if (CommonMethods.isNotNull(response)) {
-	    //parameterValue = response.get(0).getParamValue();
-	    LOGGER.info("VALUE FOR PARAMTER " + parameterName + " RETRIEVED FROM TELESCOPIC REST API = "
-		    + response);
+	    // parameterValue = response.get(0).getParamValue();
+	    LOGGER.info("VALUE FOR PARAMTER " + parameterName + " RETRIEVED FROM TELESCOPIC REST API = " + response);
 	}
 	return response;
     }
-    
+
     /**
      * Helper method to set Tr09 parameter using rest api
      * 
@@ -113,7 +112,7 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 	LOGGER.debug("ENDING METHOD: setTR69ParameterValueUsingRestApi ");
 	return status;
     }
-    
+
     /**
      * Utility method used to enable or verify the tr069 configuration
      * 
@@ -208,7 +207,7 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 	LOGGER.debug("ENDING METHOD : enableOrVerifyTheTr69Configuration");
 	return status;
     }
-    
+
     /**
      * Utility method used to validate the password length(Shot or new Password length will be 12 to 15)
      * 
@@ -225,8 +224,8 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 	try {
 	    response = tapEnv.executeWebPaCommand(device,
 		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_PASSWORD);
-	    status = CommonMethods.isNotNull(response)
-		    && (response.length() >= BroadBandTestConstants.CONSTANT_12 && response.length() < BroadBandTestConstants.CONSTANT_20);
+	    status = CommonMethods.isNotNull(response) && (response.length() >= BroadBandTestConstants.CONSTANT_12
+		    && response.length() < BroadBandTestConstants.CONSTANT_20);
 	} catch (Exception e) {
 	    LOGGER.error("Failed to verify the " + BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_PASSWORD
 		    + " value as expected" + e.getMessage());
@@ -234,7 +233,7 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 	LOGGER.debug("ENDING METHOD : validateShortAcsPasswrod()");
 	return status;
     }
-    
+
     /**
      * Utility method used to validate TR069 communication
      * 
@@ -252,12 +251,11 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 	    status = CommonMethods.isNotNull(BroadBandCommonUtils.searchLogFiles(tapEnv, device,
 		    BroadBandTestConstants.ACS_REQUEST_COMPLETE, BroadBandTestConstants.RDKLOGS_LOGS_TR69LOG_TXT_0,
 		    BroadBandTestConstants.TWO_MINUTE_IN_MILLIS, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS))
-		    && CommonMethods.isNotNull(BroadBandCommonUtils
-			    .searchLogFiles(tapEnv, device,
-				    BroadBandTraceConstants.OPENSSL_SUCCESS_CERTIFICATE_VERIFICATION,
-				    BroadBandTestConstants.RDKLOGS_LOGS_TR69LOG_TXT_0,
-				    BroadBandTestConstants.TWO_MINUTE_IN_MILLIS,
-				    BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS))
+		    && CommonMethods.isNotNull(BroadBandCommonUtils.searchLogFiles(tapEnv, device,
+			    BroadBandTraceConstants.OPENSSL_SUCCESS_CERTIFICATE_VERIFICATION,
+			    BroadBandTestConstants.RDKLOGS_LOGS_TR69LOG_TXT_0,
+			    BroadBandTestConstants.TWO_MINUTE_IN_MILLIS,
+			    BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS))
 		    && verifySerialNumberUsingTr069(device, tapEnv);
 	    if (!status) {
 		isSslCertFailure = CommonMethods.isNotNull(BroadBandCommonUtils.searchLogFiles(tapEnv, device,
@@ -275,7 +273,7 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 	LOGGER.debug("ENDING METHOD : validateTr69Communication()");
 	return status;
     }
-    
+
     /**
      * Utility method used to get the serial number using TR069
      * 
@@ -302,7 +300,7 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 	LOGGER.debug("ENDING METHOD : verifySerialNumberUsingTr069()");
 	return status;
     }
-    
+
     /**
      * Utility method to kill and verify the CcspTr069PaSsp process and it should be restarted immediately
      * 
@@ -332,8 +330,7 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 		do {
 		    processIdAfterKill = CommonMethods.getPidOfProcess(device, tapEnv, processName).trim();
 		    LOGGER.info("After Process Id : " + processIdAfterKill);
-		    status = CommonMethods.isNotNull(processIdBeforeKill)
-			    && CommonMethods.isNotNull(processIdAfterKill)
+		    status = CommonMethods.isNotNull(processIdBeforeKill) && CommonMethods.isNotNull(processIdAfterKill)
 			    && !processIdAfterKill.equals(processIdBeforeKill);
 		} while (!status
 			&& (System.currentTimeMillis() - startTime) < BroadBandTestConstants.THREE_MINUTE_IN_MILLIS
@@ -360,7 +357,7 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 	LOGGER.debug("Ending Method : killAndVerifyTr069Process()");
 	return status;
     }
-    
+
     /**
      * Utility method used to set the ACS configuration using webpa
      * 
@@ -381,8 +378,9 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 	try {
 	    webPaParam = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_URL,
-		    isdefault ? AutomaticsPropertyUtility
-			    .getProperty(BroadBandTestConstants.PROP_KEY_TR69_DEFAULT_ACS_URL)
+		    isdefault
+			    ? AutomaticsPropertyUtility
+				    .getProperty(BroadBandTestConstants.PROP_KEY_TR69_DEFAULT_ACS_URL)
 			    : AutomaticsPropertyUtility
 				    .getProperty(BroadBandTestConstants.PROP_KEY_TR69_CORRECT_ACS_URL),
 		    WebPaDataTypes.STRING.getValue());
@@ -396,8 +394,8 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 		    WebPaDataTypes.BOOLEAN.getValue());
 	    webPaParameters.add(webPaParam);
 	    webPaParam = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
-		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_ENABLECWMP,
-		    BroadBandTestConstants.TRUE, WebPaDataTypes.BOOLEAN.getValue());
+		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_ENABLECWMP, BroadBandTestConstants.TRUE,
+		    WebPaDataTypes.BOOLEAN.getValue());
 	    webPaParameters.add(webPaParam);
 	    webPaResponse = BroadBandWebPaUtils.validateMulitpleWebpaResponse(device, tapEnv, webPaParameters);
 	    status = !webPaResponse.isEmpty() && (webPaResponse.size() == webPaParameters.size());
@@ -407,6 +405,7 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 	LOGGER.debug("ENDING METHOD : setAcsConfigurationOnDevice");
 	return status;
     }
+
     /**
      * Utility method used to validate the Correct ACS server URL
      * 
@@ -432,7 +431,7 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 	LOGGER.debug("ENDING METHOD : validateCorrectAcsURL()");
 	return status;
     }
-    
+
     /**
      * This method will check and enable TR69 Support
      * 
@@ -461,14 +460,14 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 
 	return tr69Status;
     }
-    
-	/**
+
+    /**
      * Method to form username for Management Server
      * 
      * @param device
      * 
      * @return string
-	 * @refactor Athira
+     * @refactor Athira
      */
 
     public static String[] getUserNameForManagementServer(Dut device) {
@@ -479,35 +478,31 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 	String response1 = "";
 	// stores TR69 response
 	String response2 = "";
-	
-	    	    
+
 	List<String> parameters1 = new ArrayList<String>();
-	parameters1.add(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_INFO_MANUFACTURER_OUI);    		
-	
+	parameters1.add(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_INFO_MANUFACTURER_OUI);
+
 	List<String> parameters2 = new ArrayList<String>();
-	parameters2.add(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_DEVICE_INFO_PRODUCT_CLASS);  
-	
+	parameters2.add(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_DEVICE_INFO_PRODUCT_CLASS);
+
 	response1 = tapEnv.getTR69ParameterValues(device, parameters1);
 	LOGGER.info("response of getTR69ParameterValues" + response1);
 	response2 = tapEnv.getTR69ParameterValues(device, parameters2);
 	LOGGER.info("response of getTR69ParameterValues" + response2);
 
-
 	if (response1 != null && response2 != null) {
 
-	    username[0] = BroadBandCommonUtils.concatStringUsingStringBuffer(device.getSerialNumber(), "-",
-	    	response2, "-",
-	    	response1);
+	    username[0] = BroadBandCommonUtils.concatStringUsingStringBuffer(device.getSerialNumber(), "-", response2,
+		    "-", response1);
 	    LOGGER.info("response of getTR69ParameterValues" + username[0]);
-	    
-	    username[1] = BroadBandCommonUtils.concatStringUsingStringBuffer(
-	    	response1, "-",
-	    	response2, "-", device.getSerialNumber());
+
+	    username[1] = BroadBandCommonUtils.concatStringUsingStringBuffer(response1, "-", response2, "-",
+		    device.getSerialNumber());
 	    LOGGER.info("response of getTR69ParameterValues" + username[1]);
 	}
 	return username;
     }
-    
+
     /**
      * This method will set parameters to Array list for TR69 GET operation
      * 
@@ -526,7 +521,7 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 
 	return parameters1;
     }
-    
+
     /**
      * This method will set parameters to Array list for TR69 SET operation
      * 
@@ -551,100 +546,172 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 
 	return parameters;
     }
-    
+
     /**
-	 * Method to validate the possible channels list of WiFi radios
-	 * 
-	 * @param possibleChannels
-	 *            The possible channels list of radios
-	 * 
-	 * @return boolean
-	 * @refactor yamini.s
-	 */
+     * Method to validate the possible channels list of WiFi radios
+     * 
+     * @param possibleChannels
+     *            The possible channels list of radios
+     * 
+     * @return boolean
+     * @refactor yamini.s
+     */
 
-	public static boolean validatePossibleChannels(String possibleChannels) {
+    public static boolean validatePossibleChannels(String possibleChannels) {
 
-		boolean validationResult = false;
+	boolean validationResult = false;
 
-			// This part of the logic is applicable where the possible channels response is like "1-11"
-			if (possibleChannels.contains(BroadBandTestConstants.SYMBOL_HYPHEN)) {
-				validationResult = CommonMethods.patternMatcher(possibleChannels,BroadBandTestConstants.PATTERN_MATCHER_POSSIBLE_CHANNELS_HYPHEN);
-			}
-				// This part is applicable where the possible channels response is like "36,40,44,48,149,153,157,161"
-			else if (possibleChannels.contains(BroadBandTestConstants.CHARACTER_COMMA)) {
-				validationResult = CommonMethods.patternMatcher(possibleChannels,BroadBandTestConstants.PATTERN_MATCHER_POSSIBLE_CHANNELS_COMMA);
-			}
-	
-		return validationResult;
+	// This part of the logic is applicable where the possible channels response is like "1-11"
+	if (possibleChannels.contains(BroadBandTestConstants.SYMBOL_HYPHEN)) {
+	    validationResult = CommonMethods.patternMatcher(possibleChannels,
+		    BroadBandTestConstants.PATTERN_MATCHER_POSSIBLE_CHANNELS_HYPHEN);
 	}
-	
-	/**
-	 * Method to validate the channels in use
-	 * 
-	 * @param possibleChannelsRange
-	 *            The possible channels list of radios
-	 * 
-	 * @param channelsInUse
-	 *            The channels currently in use
-	 * 
-	 * @return boolean
-	 * 
-	 * @refactor yamini.s
-	 */
-	public static boolean checkForValueInRange(String possibleChannelsRange, String channelsInUse) {
+	// This part is applicable where the possible channels response is like "36,40,44,48,149,153,157,161"
+	else if (possibleChannels.contains(BroadBandTestConstants.CHARACTER_COMMA)) {
+	    validationResult = CommonMethods.patternMatcher(possibleChannels,
+		    BroadBandTestConstants.PATTERN_MATCHER_POSSIBLE_CHANNELS_COMMA);
+	}
 
-		boolean validationResult = false;
+	return validationResult;
+    }
 
-		try {
-			//The channels in could be multiple channels like this "1,5,6" or a single channel like this "5"
-			if (CommonMethods.isNotNull(possibleChannelsRange) && CommonMethods.isNotNull(channelsInUse)) {
+    /**
+     * Method to validate the channels in use
+     * 
+     * @param possibleChannelsRange
+     *            The possible channels list of radios
+     * 
+     * @param channelsInUse
+     *            The channels currently in use
+     * 
+     * @return boolean
+     * 
+     * @refactor yamini.s
+     */
+    public static boolean checkForValueInRange(String possibleChannelsRange, String channelsInUse) {
 
-				// This part of the logic is applicable where the possible channels response is like "1-11"
-				if (possibleChannelsRange.contains(BroadBandTestConstants.SYMBOL_HYPHEN)) {
-					String[] splitRange = possibleChannelsRange.split(BroadBandTestConstants.SYMBOL_HYPHEN);
-					if (splitRange != null && splitRange.length == BroadBandTestConstants.CONSTANT_2) {
-						String[] splitChannelInUse = channelsInUse.split(BroadBandTestConstants.CHARACTER_COMMA);
-						if (splitChannelInUse != null && splitChannelInUse.length > 0) {
-							for (int index = 0; index < splitChannelInUse.length; index++) {
-								if (Integer.parseInt(splitChannelInUse[index]) >= Integer.parseInt(splitRange[0])
-										&& Integer.parseInt(splitChannelInUse[index]) <= Integer.parseInt(splitRange[1])) {
-									validationResult = true;
-								} else {
-									validationResult = false;
-									break;
-								}
-							}
-						}
+	boolean validationResult = false;
 
-					} else {
-						LOGGER.error("The possible Channels Range is invalid. Actual: " + possibleChannelsRange);
-						validationResult = false;
-						return validationResult;
-					}
-					// This part is applicable where the possible channels response is like "36,40,44,48,149,153,157,161"
-				} else if (possibleChannelsRange.contains(BroadBandTestConstants.CHARACTER_COMMA)) {
-					validationResult = checkIfTheOperatingStandardIsValid(possibleChannelsRange, channelsInUse);
-				} else if (BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON, possibleChannelsRange, channelsInUse)) {
-					validationResult = true;
+	try {
+	    // The channels in could be multiple channels like this "1,5,6" or a single channel like this "5"
+	    if (CommonMethods.isNotNull(possibleChannelsRange) && CommonMethods.isNotNull(channelsInUse)) {
+
+		// This part of the logic is applicable where the possible channels response is like "1-11"
+		if (possibleChannelsRange.contains(BroadBandTestConstants.SYMBOL_HYPHEN)) {
+		    String[] splitRange = possibleChannelsRange.split(BroadBandTestConstants.SYMBOL_HYPHEN);
+		    if (splitRange != null && splitRange.length == BroadBandTestConstants.CONSTANT_2) {
+			String[] splitChannelInUse = channelsInUse.split(BroadBandTestConstants.CHARACTER_COMMA);
+			if (splitChannelInUse != null && splitChannelInUse.length > 0) {
+			    for (int index = 0; index < splitChannelInUse.length; index++) {
+				if (Integer.parseInt(splitChannelInUse[index]) >= Integer.parseInt(splitRange[0])
+					&& Integer.parseInt(splitChannelInUse[index]) <= Integer
+						.parseInt(splitRange[1])) {
+				    validationResult = true;
+				} else {
+				    validationResult = false;
+				    break;
 				}
-
+			    }
 			}
 
-		} catch (NumberFormatException e) {
-			LOGGER.error("Number format exception occured while validating channels in use.", e);
+		    } else {
+			LOGGER.error("The possible Channels Range is invalid. Actual: " + possibleChannelsRange);
 			validationResult = false;
 			return validationResult;
+		    }
+		    // This part is applicable where the possible channels response is like
+		    // "36,40,44,48,149,153,157,161"
+		} else if (possibleChannelsRange.contains(BroadBandTestConstants.CHARACTER_COMMA)) {
+		    validationResult = checkIfTheOperatingStandardIsValid(possibleChannelsRange, channelsInUse);
+		} else if (BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
+			possibleChannelsRange, channelsInUse)) {
+		    validationResult = true;
 		}
-		return validationResult;
-	} 
-	
-	public static boolean checkIfTheOperatingStandardIsValid(String validRangeOfStandards, String standardsToCheck) {
 
-		//Forming pattern matching with the available valid range
-		String patternMatcher = BroadBandCommonUtils.concatStringUsingStringBuffer("^[(",validRangeOfStandards,"),]+$");
+	    }
 
-		return CommonMethods.patternMatcher(standardsToCheck,patternMatcher);
+	} catch (NumberFormatException e) {
+	    LOGGER.error("Number format exception occured while validating channels in use.", e);
+	    validationResult = false;
+	    return validationResult;
 	}
-	
-	
+	return validationResult;
+    }
+
+    public static boolean checkIfTheOperatingStandardIsValid(String validRangeOfStandards, String standardsToCheck) {
+
+	// Forming pattern matching with the available valid range
+	String patternMatcher = BroadBandCommonUtils.concatStringUsingStringBuffer("^[(", validRangeOfStandards,
+		"),]+$");
+
+	return CommonMethods.patternMatcher(standardsToCheck, patternMatcher);
+    }
+
+    /**
+     * Method to validate the write access for the given parameter
+     * 
+     * @param parameterList
+     *            The list of parameters from which a given parameter has to be chosen and validated
+     * 
+     * @param parameterName
+     *            The name of the parameter for which the validation has to be done
+     * 
+     * @return boolean
+     * 
+     * @Refactor Sruthi Santhosh
+     */
+
+    public static String validateParameterForWriteAccess(List<Parameter> parameterList, String parameterName) {
+
+	String variable = null;
+	if (parameterList != null) {
+	    for (int index = 0; index < parameterList.size(); index++) {
+		Parameter tempParameter = parameterList.get(index);
+		if (BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON, parameterName,
+			tempParameter.getParamName())) {
+		    variable = Boolean.toString(tempParameter.isWritable());
+		    break;
+		} else {
+		    variable = Boolean.toString(tempParameter.isWritable());
+		}
+	    }
+	} else {
+	    variable = BroadBandTestConstants.OBJECT_NOT_FOUND_ERROR;
+	}
+
+	return variable;
+    }
+    
+    /**
+     * Method to validate the write access for the given parameter
+     * 
+     * @param parameterList
+     *            The list of parameters from which a given parameter has to be chosen and validated
+     * 
+     * @param parameterName
+     *            The name of the parameter for which the validation has to be done
+     * 
+     * @return boolean
+     * 
+     * @Refactor Said Hisham
+     */
+
+    public static String validateParameterForWriteAccessForStats(List<Parameter> parameterList, String parameterName) {
+
+	String variable = null;
+	if (parameterList != null) {
+	    for (int index = 0; index < parameterList.size(); index++) {
+		Parameter tempParameter = parameterList.get(index);
+		if (tempParameter.getParamName().contains(parameterName)) {
+		    variable = Boolean.toString(tempParameter.isWritable());
+		    break;
+		}
+	    }
+	} else {
+	    variable = BroadBandTestConstants.OBJECT_NOT_FOUND_ERROR;
+	}
+
+	return variable;
+    }
+
 }

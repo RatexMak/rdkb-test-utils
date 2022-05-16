@@ -39,7 +39,7 @@ import com.automatics.rdkb.enums.BroadBandManagementPowerControlEnum;
 /**
  * Utility class which handles the RDK B WiFi Access Point Management Frame Power Levels.
  * 
- * @author BALAJI V, INFOSYS
+ * @author BALAJI V
  * @refactor Alan_Bivera
  * 
  */
@@ -121,7 +121,7 @@ public class BroadBandMgmtFramePwrControlUtils extends AutomaticsTestBase {
      * @param tapEnv
      *            {@link AutomaticsTapApi}
      * @param device
-     *            {@link Settop}
+     *            {@link Dut}
      * @param wifiAccessPoints
      *            List of BroadBandManagementPowerControlEnum
      * @param setDefaultValue
@@ -181,7 +181,7 @@ public class BroadBandMgmtFramePwrControlUtils extends AutomaticsTestBase {
      * @param tapEnv
      *            {@link AutomaticsTapApi}
      * @param device
-     *            {@link Settop}
+     *            {@link Dut}
      * @param wifiAccessPoints
      *            List of BroadBandManagementPowerControlEnum
      * 
@@ -230,7 +230,7 @@ public class BroadBandMgmtFramePwrControlUtils extends AutomaticsTestBase {
      * @param tapEnv
      *            {@link AutomaticsTapApi}
      * @param device
-     *            {@link Settop}
+     *            {@link Dut}
      * @param wifiAccessPoints
      *            List of BroadBandManagementPowerControlEnum
      * @param checkDefaultValue

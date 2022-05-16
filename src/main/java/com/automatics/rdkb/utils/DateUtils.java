@@ -37,7 +37,7 @@ public class DateUtils {
      * 
      * @param tapEnv
      *            TAP api reference.
-     * @param settop
+     * @param device
      *            Set-top where test executes.
      * 
      * @return the epoch time in milli seconds.

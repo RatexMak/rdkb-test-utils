@@ -172,8 +172,6 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     /** FolderPath for SelfHeal.txt.0 */
     public static final String FILE_SELFHEAL_LOG = "/rdklogs/logs/SelfHeal.txt.0";
 
-    /** Command to get the configparamgen version */
-    public static final String CONFIGPARAMGEN = "configparamgen";
     /** File name for dcmrfc log file */
     public static final String FILE_DCMRFC_LOG = "/rdklogs/logs/dcmrfc.log";
 
@@ -667,10 +665,10 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static final String CMD_TO_DEL_ALL_LINES_EXCEPT_FIRST = "sed -i '1\\!d' /tmp/resolv.conf";
 
     /** command to add invalid servver to file */
-    public static final String CMD_TO_ADD_INVALID_PRI_DNS_SERVER = "sed -i \\'$ a nameserver <IPV6>\\' /tmp/resolv.conf";
+    public static final String CMD_TO_ADD_INVALID_PRI_DNS_SERVER = "sed -i \\'$ a nameserver 2001:558:feed::10\\' /tmp/resolv.conf";
 
     /** command to add secondary dns servver to file */
-    public static final String CMD_TO_ADD_VALID_SEC_DNS_SERVER = "sed -i \\'$ a nameserver <IPV6>\\' /tmp/resolv.conf";
+    public static final String CMD_TO_ADD_VALID_SEC_DNS_SERVER = "sed -i \\'$ a nameserver 2001:558:feed::2\\' /tmp/resolv.conf";
 
     /** String to store the command for /sbin/mount-copybind **/
     public static String SBIN_MOUNT_COPYBIND = "/sbin/mount-copybind";
@@ -1240,14 +1238,14 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static final String LOG_FILE_LM = "/rdklogs/logs/LM.txt.0 ";
 
     public enum QUALCOM_FILES {
-	ATF_BIN("/lib/firmware/AR9888/hw.2/atf.bin"),
-	UTF_BIN("/lib/firmware/AR9888/hw.2/utf.bin"),
-	OTP_BIN("/lib/firmware/AR9888/hw.2/otp.bin"),
-	BD3GLD_BIN("/lib/firmware/AR9888/hw.2/boardData_3_QC98XX_xb141_gld.bin"),
-	BD2GLD_BIN("/lib/firmware/AR9888/hw.2/boardData_2_QC98XX_xb143_gld.bin"),
-	BD2CUSGLD_BIN("/lib/firmware/AR9888/hw.2/boardData_2_QC98XX_cus223_523_gld.bin"),
-	FAKE_BIN("/lib/firmware/AR9888/hw.2/fakeBoardData_AR6004_bak.bin"),
-	FAKEBOARD("/lib/firmware/AR9888/hw.2/fakeBoardData_AR6004.bin");
+	ATF_BIN(""),
+	UTF_BIN(""),
+	OTP_BIN(""),
+	BD3GLD_BIN(""),
+	BD2GLD_BIN(""),
+	BD2CUSGLD_BIN(""),
+	FAKE_BIN(""),
+	FAKEBOARD("");
 
 	private String file;
 
@@ -1266,15 +1264,15 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     }
 
     public enum ATOMSYNC_QUALCOM_FILES {
-	BISTIFY_BIN("/lib/firmware/AR9888/hw.2/bistify.dbg"),
-	SPORT_BIN("/lib/firmware/AR9888/hw.2/serialport.bin"),
-	OTP_BIN("/lib/firmware/AR9888/hw.2/otp_test.bin"),
-	ROM_BIN("/lib/firmware/AR9888/hw.2/fw.rom.bin"),
-	RAM_BIN("/lib/firmware/AR9888/hw.2/fw.ram.bin"),
-	WALTEST_BIN("/lib/firmware/AR9888/hw.2/waltest.bin"),
-	ATF_BIN("/lib/firmware/AR9888/hw.2/atf.bin"),
-	UTF_BIN("/lib/firmware/AR9888/hw.2/utf.bin"),
-	EPPING_BIN("/lib/firmware/AR9888/hw.2/endpointping.bin");
+	BISTIFY_BIN(""),
+	SPORT_BIN(""),
+	OTP_BIN(""),
+	ROM_BIN(""),
+	RAM_BIN(""),
+	WALTEST_BIN(""),
+	ATF_BIN(""),
+	UTF_BIN(""),
+	EPPING_BIN("");
 
 	private String file;
 
@@ -1446,5 +1444,170 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     /** File path for dcm processing log file */
     public static final String LOG_FILE_DCMPROCESSING = "/rdklogs/logs/dcmProcessing.log";
 
+    /** Command to get wifi_getApSecurityMFPConfig */
+    public static final String CMD_TO_GET_WIFI_AP_SECURITY_MFGCONFIG = "wifi_api wifi_getApSecurityMFPConfig <REPLACE>";
     
+    /** Command to verify whether the service started */
+    public static final String CMD_TO_VERIFY_BLE_SERVICE_STARTED = "systemctl status ble.service | grep -i \"Started Ble service\"";
+
+    /** Command to verify whether the service started */
+    public static final String CMD_TO_RESTART_BLE_SERVICE = "systemctl restart ble.service";
+    
+    /** Command to verify whether Limit Beacon Detection Set to False */
+    public static final String CMD_TO_VERIFY_LIMIT_BEACON_DETECTION_SET_TO_FALSE = "grep -E \"Started Bluetooth LE advertisement scan|Boot packet received: gecko_evt_system_boot\" /rdklogs/logs/Blelog.txt.0";
+
+    /** Command to Clear the content of the log file /rdklogs/logs/Blelog.txt.0 */
+    public static final String CMD_TO_CLEAR_BLE_LOG = "echo \"\" > /rdklogs/logs/Blelog.txt.0";    
+
+    /** Command Constants for Starting iperf clinet */
+    public static final String CMD_TO_INITIATE_IPERF_TRAFFIC_FROM_CLIENT = "iperf3 -c";
+    
+    /** Command Constants for Starting iperf server in background */
+    public static final String CMD_TO_HOST_IPERF_SERVER = "iperf3 -s -D";
+
+    /** Command Constants to check iperf process */
+    public static final String CMD_TO_CHECK_IPERF_PROCESS_IN_WINDOWS = "ps -efW | grep iperf";
+
+    /** Command Constants to check iperf process */
+    public static final String CMD_TO_CHECK_IPERF_PROCESS_IN_LINUX = "ps -ef | grep iperf";
+    
+    /** Command Constants to kill a task */
+    public static final String CMD_TO_KILL_TASK = "taskkill /F /PID";
+    
+    /** FolderPath for File Systemd process */
+    public static final String FILE_SYSTEMD_PROCESS = "/rdklogs/logs/systemd_processRestart.log";
+    
+    /** File path for enabling wifi anqp debugging */
+    public static final String FILE_PATH_WIFI_ANQP_DEBUG = "/nvram/wifiAnqpDbg";
+
+    /** File path for enabling wifi passpoint debugging */
+    public static final String FILE_PATH_WIFI_PASSPOINT_DEBUG = "/nvram/wifiPasspointDbg";
+
+    /** File path to verify wifi anqp debug logs */
+    public static final String FILE_PATH_TMP_WIFI_ANQP = "/tmp/wifiAnqp";
+    
+    /** Command to simulate WiFi GAS request for dummy client on 2.4Ghz AP */
+    public static final String CMD_SIMULATE_24GHZ_GAS_REQUEST = "wifi_api wifi_anqpStartTest ath0 aa:bb:cc:dd:ee:ff";
+    
+    /** Command to get 5G wifi api diagnostics output */
+    public static final String CMD_WIFI_API_5G_STATS = "wifi_api wifi_getApAssociatedDeviceDiagnosticResult3 1";
+    
+    /** Command to get 5GHz wifi clients Max TxRxRate */
+    public static final String CMD_WIFI_MAX_TX_RX_RATE_1 = "wifi_api getAssociatedDeviceMaxTxRxRate 1 ";
+
+    /** Command to get 2.4GHz wifi clients Max TxRxRate */
+    public static final String CMD_WIFI_MAX_TX_RX_RATE_0 = "wifi_api getAssociatedDeviceMaxTxRxRate 0 ";
+    
+    /** Command to get 5GHz wifi client mac address */
+    public static final String CMD_5GHZ_MAC_LIST = "cat /rdklogs/logs/wifihealth.txt | grep -i mac_2: | tail -1";
+
+    /** Command to get 5GHz wifi client max tx rx rate */
+    public static final String CMD_MAX_TX_RX_CLIENT_2 = "cat /rdklogs/logs/wifihealth.txt | grep -i max | grep -i clients_2 | tail -2";
+     
+    /** Command to get 2.4GHz wifi client mac address */
+    public static final String CMD_2_4GHZ_MAC_LIST = "cat /rdklogs/logs/wifihealth.txt | grep -i mac_1: | tail -1";
+    
+    /** Command to get 2.4G wifi api output */
+    public static final String CMD_WIFI_API_24G_STATS = "wifi_api wifi_getApAssociatedDeviceDiagnosticResult3 0";
+    
+    /** File path for advsec.sh in /usr/ccsp/advsec/ */
+    public static final String FILE_PATH_ADVSEC_SH = "/usr/ccsp/advsec/usr/libexec/advsec.sh";
+    
+    /** Command to delete default interface in ip route */
+    public static final String CMD_DEL_DEFAULT_IP_ROUTE = "/sbin/iproute del default";
+
+    /** Command to grep default interface in ip route */
+    public static final String CMD_GREP_DEFAULT_IP_ROUTE = "/sbin/iproute | grep -i default";
+    
+    /** Command to copy dnsmasq.conf file from /etc to /tmp */
+    public static final String CMD_SBIN_MOUNT_COPYBIND = "/sbin/mount-copybind ";
+    
+    /** Command to get dns request from tcpdump and write to dummy folder */
+    public static final String CMD_TO_WRITE_TCPDUMP_DUMMY_FILE_ATOM_DEVICE = "/tmp/tcpdump -i erouter0 port 53 -n -w /tmp/dummy.txt";
+
+    /** Command to get dns request from tcpdump and write to dummy folder */
+    public static final String CMD_TO_WRITE_TCPDUMP_DUMMY_FILE = "/usr/sbin/tcpdump -i erouter0 port 53 -n -w /tmp/dummy.txt";
+
+    /** Command to get dns request from tcpdump and read from dummy folder */
+    public static final String CMD_TO_READ_TCPDUMP_DUMMY_FILE_ATOM_DEVICE = "/tmp/tcpdump -r /tmp/dummy.txt | grep google.com";
+
+    /** Command to get dns request from tcpdump and read from dummy folder */
+    public static final String CMD_TO_READ_TCPDUMP_DUMMY_FILE = "/usr/sbin/tcpdump -r /tmp/dummy.txt | grep google.com";
+
+    /** Command to get dns request from tcpdump and write to capture folder */
+    public static final String CMD_TO_WRITE_TCPDUMP_CAPTURE_FILE_ATOM_DEVICE = "/tmp/tcpdump -r /tmp/dummy.txt | grep google.com > /tmp/capture.txt";
+
+    /** Command to get dns request from tcpdump and write to capture folder */
+    public static final String CMD_TO_WRITE_TCPDUMP_CAPTURE_FILE = "/usr/sbin/tcpdump -r /tmp/dummy.txt | grep google.com > /tmp/capture.txt";
+    
+    /** Command to store path of tcpdump **/
+    public static final String FILE_PATH_TCPDUMP = "cpefiles/generic/tcpdump";
+    
+    /** Cmd to ping google */
+    public static final String CMD_PING_GOOGLE_URL = "ping www.google.com";
+
+    /** Cmd to remove dummy file from /tmp */
+    public static final String CMD_REMOVE_DUMMY_FILE = "rm /tmp/dummy.txt";
+    
+    /** Cmd to grep valid primary ip from tcpdump to /tmp/cpature.txt */
+    public static final String CMD_TO_GET_DNS_PRIMARY_IP_TCPDUMP = "grep -E \"74.121.125.54|2620:104:a00b::53\" /tmp/capture.txt";
+
+    /** Cmd to remove dummy file from /tmp */
+    public static final String CMD_REMOVE_CAPTURE_FILE = "rm /tmp/capture.txt";
+    
+    /** Cmd to grep valid secondary ip from tcpdump to /tmp/cpature.txt */
+    public static final String CMD_TO_GET_DNS_SECONDARY_IP_TCPDUMP = "grep -E \"74.121.125.55|2620:104:a00b::54\" /tmp/capture.txt";
+    
+    /** Cmd to grep invalid primary ip from tcpdump to /tmp/cpature.txt */
+    public static final String CMD_TO_GET_INVALID_DNS_PRIMARY_IP_TCPDUMP = "grep -E \"13.13.12.12|2621:104:a00b::4\" /tmp/capture.txt";
+
+    /** Constant to hold file path for dcmscriptl og file */
+    public static final String FILE_TMP_DCMSCRIPT_LOG = "/tmp/dcmscript";
+    
+    /** Log file to get tail of /rdklogs/logs/dcmscript.log */
+    public static final String CMD_GET_DCMSCRIPT_LOG = "tail -f -n +1 " + LOG_FILE_DCM_SCRIPT + " > "
+	    + FILE_TMP_DCMSCRIPT_LOG + "&";
+    
+    /** Command to get the count for ovs */
+    public static final String CMD_OVS_PARAMETERS = "cat /sys/module/acc/parameters/ovs_wifi_hit_count; cat /sys/module/acc/parameters/ovs_wifi_miss_count; cat /sys/module/acc/parameters/ovs_udma_hit_count; cat /sys/module/acc/parameters/ovs_udma_miss_count; cat /sys/module/acc/parameters/ovs_wifi_hit_count; cat /sys/module/acc/parameters/ovs_wifi_miss_count; cat /sys/module/acc/parameters/ovs_udma_hit_count; cat /sys/module/acc/parameters/ovs_udma_miss_count";
+    
+    /** Constant to hold file path for nvram wifilog file */
+    public static final String FILE_TMP_WIFILOG = " /tmp/wifilog";
+    
+    /** common tail command */
+    public static final String CMD_TAIL = "tail -f -n +1 ";
+    
+    /** Constant to hold process name ccspxdnsssp */
+    public static final String POROCESS_NAME_CCSPXDNSSSP = "CcspXdnsSsp";
+    
+    /** Temporary core log folder path */
+    public static final String CORE_LOG_FOLDER_TEMP_PATH = "/nvram/automation";
+    
+    /** Command to show ovs status */
+    public static final String OVS_SHOW_COMMAND = "ovs-vsctl show";
+    
+    /** Temporary core log file path */
+    public static final String CORE_LOG_FILE_TEMP_PATH = CORE_LOG_FOLDER_TEMP_PATH + "/core_log.txt";
+    
+    /** Command for Executing newly created crontab */
+    public static final String CRONTAB_EXECUTE_BUDDYINFO = "crontab -l -c /var/spool/cron/crontabs | grep -i buddyinfo";
+    
+    /** Command to trigger log_mem_cpu_info shell script file */
+    public static final String CMD_TO_TRIGGER_LOG_MEM_CPU_INFO = "sh /usr/ccsp/tad/log_mem_cpu_info.sh";
+
+    /** Command to trigger /usr/ccsp/tad/log_buddyinfo.sh shell script file */
+    public static final String CMD_TO_TRIGGER_LOG_BUDDYINFO = "sh /usr/ccsp/tad/log_buddyinfo.sh";
+
+    /** Command to get process_memory_log_count */
+    public static final String CMD_TO_GET_PROCESS_MEM_LOG_COUNT = "syscfg get process_memory_log_count";
+
+    /** Command to set process_memory_log_count */
+    public static final String CMD_TO_SET_PROCESS_MEM_LOG_COUNT = "syscfg set process_memory_log_count 12";
+    
+    /** Command to get the details from /rdklogs/logs/CPUInfo.txt.0 * */
+    public static final String CMD_TO_GET_CPU_INFO = "cat " + FILE_PATH_TO_GET_CPU_INFO;
+    
+    /** Command to get the details from /proc/buddyinfo * */
+    public static final String CMD_TO_GET_BUDDYINFO = "cat /proc/buddyinfo";
+
 }

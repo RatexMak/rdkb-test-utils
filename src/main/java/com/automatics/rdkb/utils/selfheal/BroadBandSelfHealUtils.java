@@ -221,7 +221,7 @@ public class BroadBandSelfHealUtils {
 	 * @param processId  Process id to to killed
 	 * @return true if process restarted successfully
 	 * 
-	 * @author sgnana010c
+	 * @author Sumathi Gunasekaran
 	 * 
 	 */
 	public static boolean restartProcess(Dut device, AutomaticsTapApi tapEnv, ProcessRestartOption option,
@@ -289,7 +289,7 @@ public class BroadBandSelfHealUtils {
 	/**
 	 * Method for setting precondition for self heal crash scenarios
 	 */
-	public static boolean executePreconditionForSelfHealTestScenario(Dut settop, AutomaticsTapApi tapEnv) {
+	public static boolean executePreconditionForSelfHealTestScenario(Dut device, AutomaticsTapApi tapEnv) {
 
 		boolean status = false;
 		String response = null;
@@ -299,34 +299,27 @@ public class BroadBandSelfHealUtils {
 		 * command verifies if the device is DSL device or not.
 		 */
 
-		boolean isDSLDevice = DeviceModeHandler.isDSLDevice(settop);
+		boolean isDSLDevice = DeviceModeHandler.isDSLDevice(device);
 		if ((isDSLDevice || CommonMethods.isRunningEthwanMode())) {
 
-			/*
-			 * status = BroadBandWiFiUtils.setWebPaParams(settop,
-			 * BroadBandWebPaConstants.USAGE_COMPUTE_WINDOW,
-			 * BroadBandTestConstants.STRING_VALUE_TWO,
-			 * WebPaDataTypes.UNSIGNED_INT.getValue());
-			 */
-			// unit
-			status = BroadBandWebPaUtils.setAndVerifyParameterValuesUsingWebPaorDmcli(settop, tapEnv,
+			status = BroadBandWebPaUtils.setAndVerifyParameterValuesUsingWebPaorDmcli(device, tapEnv,
 					BroadBandWebPaConstants.USAGE_COMPUTE_WINDOW, BroadBandTestConstants.CONSTANT_2,
 					BroadBandTestConstants.STRING_CONSTANT_3);
 
 		} else {
 
-			if (BroadbandPropertyFileHandler.isDeviceCheckForSelfHeal2(settop)) {
-				BroadBandWebPaUtils.setVerifyWebPAInPolledDuration(settop, tapEnv,
+			if (BroadbandPropertyFileHandler.isDeviceCheckForSelfHeal2(device)) {
+				BroadBandWebPaUtils.setVerifyWebPAInPolledDuration(device, tapEnv,
 						BroadBandWebPaConstants.WEBPA_PARAM_AGGRESSIVE_SELFHEAL_INTERVAL,
 						BroadBandTestConstants.CONSTANT_2, BroadBandTestConstants.STRING_CONSTANT_2,
 						BroadBandTestConstants.ONE_MINUTE_IN_MILLIS, BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS);
 			}
 			long startTime = System.currentTimeMillis();
 			do {
-				response = BroadBandSnmpUtils.retrieveSnmpSetOutputWithDefaultIndexOnRdkDevices(settop, tapEnv,
+				response = BroadBandSnmpUtils.retrieveSnmpSetOutputWithDefaultIndexOnRdkDevices(device, tapEnv,
 						BroadBandSnmpMib.ECM_SELFHEAL_RESOURCE_USAGE_COMPUTER_WINDOW.getOid(), SnmpDataType.INTEGER,
 						BroadBandTestConstants.STRING_CONSTANT_3);
-				snmpstatus = BroadBandSnmpUtils.hasNoSNMPErrorOnResponse(tapEnv, settop, response);
+				snmpstatus = BroadBandSnmpUtils.hasNoSNMPErrorOnResponse(tapEnv, device, response);
 			} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TEN_MINUTE_IN_MILLIS
 					&& !snmpstatus
 					&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));

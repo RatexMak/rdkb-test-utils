@@ -17,7 +17,11 @@
  */
 package com.automatics.rdkb.utils.telemetry;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
@@ -39,6 +43,7 @@ import com.automatics.rdkb.constants.RDKBTestConstants;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
 import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
 import com.automatics.rdkb.utils.CommonUtils;
+import com.automatics.rdkb.utils.SplunkUtils;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
 import com.automatics.restclient.RestClientException;
 import com.automatics.restclient.RestEasyClientImpl;
@@ -806,5 +811,54 @@ public class BroadBandTelemetryUtils {
 	LOGGER.info("Error Message while configuring Telemetry details : " + errorMessage);
     }
 
+    /**
+     * Utility method to verify Data Pay load in splunk
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param telemetryData
+     *            The telemetry data to verify
+     * @return The search result
+     * @refactor Govardhan
+     */
+    public static boolean verifyTelemetryDataPayLoadFromSplunk(Dut device, AutomaticsTapApi tapEnv,
+	    List<String> telemetryData) {
+
+	boolean isDataFound = false;
+
+	// retrieving the value from splunk
+	String splunkSearchString = "index=rdk-json(" + device.getHostMacAddress() + ")";
+	Collection<String> splunkResponse = SplunkUtils.searchInSplunk(tapEnv, splunkSearchString, null, -1, "20m");
+	List<String> markersNotFound = new ArrayList<String>();
+	if (null != splunkResponse) {
+	    Iterator<String> iterator = splunkResponse.iterator();
+
+	    while (iterator.hasNext()) {
+		String telemetryDataFromSplunk = iterator.next();
+		LOGGER.info("########################### DATA from splunk = " + telemetryDataFromSplunk);
+		for (String telemetryDataFromPayload : telemetryData) {
+		    if (CommonMethods.isNotNull(telemetryDataFromSplunk)
+			    && telemetryDataFromSplunk.contains(telemetryDataFromPayload)) {
+			isDataFound = true;
+			LOGGER.info("##################### DATA found");
+			break;
+		    }
+		}
+		if (!isDataFound) {
+		    markersNotFound.add(telemetryDataFromSplunk);
+		}
+	    }
+	    if (markersNotFound != null && markersNotFound.size() > 0) {
+		for (String telemetry : markersNotFound) {
+		    LOGGER.error("Telemetry not found: " + telemetry);
+		}
+	    }
+	} else {
+	    LOGGER.error("Received null response from splunk for search-" + splunkSearchString);
+	}
+	return isDataFound;
+    }
     
 }

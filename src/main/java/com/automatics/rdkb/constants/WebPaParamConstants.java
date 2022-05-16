@@ -40,4 +40,13 @@ public class WebPaParamConstants {
     
     /** TR181 parameter to Enable/Disable cloud encryption for crash and log uploads */
     public static final String WEBPA_PARAM_TO_ENABLE_DISABLE_CLOUD_UPLOAD_ENCRYPTION = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.EncryptCloudUpload.Enable";
+    
+    /** WebPa parameter for SSID password for 5GHz */
+    public static final String WEBPA_PARAM_SSID_PASSWORD_5GHZ = "Device.WiFi.AccessPoint.10101.Security.KeyPassphrase";
+
+    /** WebPa parameter for SSID password for 2.4GHz */
+    public static final String WEBPA_PARAM_SSID_PASSWORD_2_4GHZ = "Device.WiFi.AccessPoint.10001.Security.KeyPassphrase";
+    
+    /** WebPa parameter to enable Moca status */
+    public static final String WEBPA_PARAM_ENABLE_MOCA_STATUS = "Device.MoCA.Interface.1.Enable";
 }

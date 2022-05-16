@@ -1067,9 +1067,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	/** Constant to hold Webpa version Pattern Matcher */
 	public static final String WEBPA_VERSION_PATTERN_MATCHER = "WEBPA\\-(\\d+)\\.(\\d+)-.*";
 
-	/** Constant to hold Configparamgen version Pattern Matcher */
-	public static final String CONFIGPARAMGEN_VERSION_PATTERN_MATCHER = "Usage\\(v(.*)\\)\\s*:";
-
 	/** Constant to hold attenuation for 5 GHZ */
 	public static final Double CHANNEL_ATTENUATION_5_GHZ = 0.0;
 
@@ -1082,14 +1079,8 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	/** Feature keyword to search in build name */
 	public static final String STRING_FEATURE_IN_BUILD_NAME = "feature";
 
-	/** Constant to hold double configparamgen Version as 3.7 */
-	public static final double CONFIGPARAMGEN_VERSION_3_7 = 3.7;
-
 	/** Constant to hold double Firmware Version as 4.4 */
 	public static final double FIRMWARE_VERSION_4_4 = 4.4;
-
-	/** Constant to hold double configparamgen Version as 2.17 */
-	public static final double CONFIGPARAMGEN_VERSION_2_17 = 2.17;
 
 	/** Constant to hold core version from Regular release build Pattern Matcher */
 	public static final String CORE_VERSION_FROM_REGULAR_RELEASE_BUILD_PATTERN_MATCHER = "_(\\d+.\\d+)";
@@ -3201,9 +3192,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String STRING_PROTOCOL_HTTP = "http";
 
 	/** String variable to store success status for config params tests */
-	public static final String STRING_SUCCESS_STATUS_FOR_CONFIGPARAM_TESTS = "configparamgen Test SUCCESS";
-
-	/** String variable to store success status for config params tests */
 	public static final String PATTERN_GET_FAILURE_STEPS_FOR_CONFIGPARAM_TESTS = "Tests failed:\\s(\\d+)";
 
 	public static final String STRING_TESTFILE = "testfile";
@@ -3444,12 +3432,12 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String PATTERN_PROCESS_DNSMASQ = "(\\d+) +\\w+ +.* dnsmasq";
 
 	/** invalid dns server */
-	public static final String INVALID_DNS_SERVER = "";
+	public static final String INVALID_DNS_SERVER = "2001:558:feed::10";
 	/** String value 10 */
 	public static final String STRING_10 = "10";
 
 	/** dns server 2 */
-	public static final String DNS_SERVER_2 = "";
+	public static final String DNS_SERVER_2 = "2001:558:feed::2";
 
 	/** String variable to store webpa error message */
 	public static final String WEBPA_ERROR_UNSUPPORTED_NAME_SPACE = "Error unsupported namespace";
@@ -3707,7 +3695,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	/**
 	 * The constant for fibre Devices not applicable for IPV6 related steps
 	 */
-	public static final String PACE_NOT_APPLICABLE_IPV6 = "Not Applicable For fibre Box as Gateway Device";
+	public static final String FIBRE_NOT_APPLICABLE_IPV6 = "Not Applicable For fibre Box as Gateway Device";
 
 	/** Three minutes in milli seconds. */
 	public static final long FOUR_MINUTES = 4 * 60 * 1000;
@@ -3975,7 +3963,10 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String OPERATING_BANDWIDTH_20_MMZ = "20MHz";
 
 	/** String constant value for Operating bandwidth 40 MHz */
-	public static final String OPERATING_BANDWIDTH_40_MMZ = "40MHz";
+	public static final String OPERATING_BANDWIDTH_40_MMZ = "40MHz";	
+    
+    /** String constant value for Operating bandwidth 80 MHz */
+    public static final String OPERATING_BANDWIDTH_80_MMZ = "80MHz";
 
 	/** WebPa Parameter for admin page url */
 	public static final String WEBPA_PARAM_LAN_IP_ADDRESS = "Device.X_CISCO_COM_DeviceControl.LanManagementEntry.1.LanIPAddress";
@@ -4625,7 +4616,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	/** String Ip adress of Open dns 2a02:c7a:601:a::5000 for DSL */
 	public static final String STRING_OPEN_DNS_IP_DSL = "2a02:c7a:601:a::5000";
 
-	/** String Ip adress of Open dns  */
+	/** String Ip adress of Open dns 75.75.76.76 */
 	public static final String STRING_OPEN_DNS_IP_75_76 = "75.75.76.76";
 
 	/** String Ip adress of opendns.com 208.67.222.222 */
@@ -4699,12 +4690,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	/** Constant to hold wait duration of 300 Seconds */
 	public static final String FIVE_MINUTES_IN_SECONDS = "300";
-
-	/** partner id for cox */
-	public static final String PARTNER_ID_COX = "";
-
-	/** partner id for shaw */
-	public static final String PARTNER_ID_SHAW = "";
 
 	/** string for holding the file name */
 	public static final String FILE_WIFIHEALTH = "wifihealth.txt";
@@ -5109,9 +5094,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String STRING_DNS_IP_WITH_NULL_BROADCAST_ADDRESS = "0.0.0.0";
 
     /**
-     * Test constant for applying Dns override at client MAC level IPv4 level two primary value
+     * Test constant for applying Dns ovverride at client MAC level IPv4 level two primary value 75.75.75.20
      */
-    public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY = "";
+    public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY = "75.75.75.20";
 
     /** String used for replacing the ipv4 value in other string */
     public static final String STRING_REPLACE_IPV4 = "<IPV4>";
@@ -5123,31 +5108,31 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String STRING_DNS_INVALID_PRIMARY_IPV4_VALUE = "13.13.12.12";
 
     /** String to store invalid DNS primary IPV6 value */
-    public static final String STRING_DNS_INVALID_PRIMARY_IPV6_VALUE = "";
+    public static final String STRING_DNS_INVALID_PRIMARY_IPV6_VALUE = "2621:104:a00b::4";
 
     /** String to store invalid DNS Secondary IPV4 value */
     public static final String STRING_DNS_ANOTHER_INVALID_SECONDARY_IPV4_VALUE = "13.13.12.11";
 
     /** String to store invalid DNS Secondary IPV6 value */
-    public static final String STRING_DNS_ANOTHER_INVALID_SECONDARY_IPV6_VALUE = "";
+    public static final String STRING_DNS_ANOTHER_INVALID_SECONDARY_IPV6_VALUE = "2621:104:a00b::6";
 
     /** String to store valid DNS IPV4 value */
-    public static final String STRING_DNS_VALID_IPV4_VALUE = "";
+    public static final String STRING_DNS_VALID_IPV4_VALUE = "74.121.125.54";
 
     /** String to store valid DNS IPV6 value */
-    public static final String STRING_DNS_VALID_IPV6_VALUE = "";
+    public static final String STRING_DNS_VALID_IPV6_VALUE = "2620:104:a00b::53";
 
     /** String to store invalid DNS Secondary IPV4 value */
     public static final String STRING_DNS_INVALID_SECONDARY_IPV4_VALUE = "12.12.12.12";
 
     /** String to store invalid DNS Secondary IPV6 value */
-    public static final String STRING_DNS_INVALID_SECONDARY_IPV6_VALUE = "";
+    public static final String STRING_DNS_INVALID_SECONDARY_IPV6_VALUE = "2620:104:a00b::4";
 
     /** String to store valid DNS Secondary IPV4 value */
-    public static final String STRING_DNS_VALID_SECONDARY_IPV4_VALUE = "";
+    public static final String STRING_DNS_VALID_SECONDARY_IPV4_VALUE = "74.121.125.55";
 
     /** String to store valid DNS Secondary IPV6 value */
-    public static final String STRING_DNS_VALID_SECONDARY_IPV6_VALUE = "";
+    public static final String STRING_DNS_VALID_SECONDARY_IPV6_VALUE = "2620:104:a00b::54";
     
     /** Test constant for dnsmasq_servers.conf file */
     public static final String DNSMASQ_CONFIGURATION_FILE = "/nvram/dnsmasq_servers.conf";
@@ -5180,8 +5165,8 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** String for systemctl */
     public static final String COMMAND_SYSTEMCTL = "systemctl --all";
     
-    /** Test constant for applying Dns ovverride at gateway level IPv4 value */
-    public static final String STRING_DNS_GATEWAY_LEVEL_OVERRIDE_IPV4_VALUE = " ";
+    /** Test constant for applying Dns ovverride at gateway level IPv4 value 75.75.75.76 */
+    public static final String STRING_DNS_GATEWAY_LEVEL_OVERRIDE_IPV4_VALUE = "75.75.75.76";
 
     /** Test constant for level one site host address in stb.properties file */
     public static final String PROP_KEY_HOST_ADDRESS_FOR_LEVEL_ONE_SITE = "dnsoverride.siteaddress.level.one";
@@ -5189,8 +5174,8 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Test constant for dnsoverride level one block site address in stb.properties file */
     public static final String PROP_KEY_DNS_BLOCK_ADDRESS_FOR_LEVEL_ONE_SITE = "dnsoverride.blocksiteaddress.level.one";
     
-    /** Test constant for applying Dns ovverride at client MAC level IPv6 level two primary value */
-    public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY = " ";
+    /** Test constant for applying Dns ovverride at client MAC level IPv6 level two primary value 2001:558:feed::7520 */
+    public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY = "2001:558:feed::7520";
     
     /** Test constant for level two site host address in stb.properties file */
     public static final String PROP_KEY_HOST_ADDRESS_FOR_LEVEL_TWO_SITE = "dnsoverride.siteaddress.level.two";
@@ -5203,6 +5188,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Test constant for dnsoverride level three block site address in stb.properties file */
     public static final String PROP_KEY_DNS_BLOCK_ADDRESS_FOR_LEVEL_THREE_SITE = "dnsoverride.blocksiteaddress.level.three";
+    
+    /** Command to check running status of dnsmasq service */
+    public static final String PROP_KEY_LOG_FILE_SECURE_SYSCFG = "logfile.secure.syscfg";
     
     /** Constant to hold the Channel Number Place holder */
     public static final String CHANNEL_NUMBER_PLACE_HOLDER = "#CHANNEL#";
@@ -5287,4 +5275,348 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** String constant value Channel No 161 */
     public static final String CHANNEL_NO_161 = "161";
+    
+    /** String to hold the default value of MFPConfig Values */
+    public static final String DEFAULT_VALUE_MFPCONFIG_ACCESSPOINT = "Disabled";
+
+    /** String to hold the Optional value of MFPConfig Values */
+    public static final String OPTIONAL_VALUE_MFPCONFIG_ACCESSPOINT = "Optional";
+
+    /** String to hold the Required value of MFPConfig Values */
+    public static final String REQUIRED_VALUE_MFPCONFIG_ACCESSPOINT = "Required";
+    
+    /** File name for dcmrfc log file */
+    public static final String FILE_BLE_LOG = "/rdklogs/logs/Blelog.txt.0";
+    
+    public static final String PATTERN_GET_BLE_RADIO_PARAMETER_FROM_RFC_CONFIG = "tr181.Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WiFi-Interworking.Enable\\W+(\\w+)";
+
+    public static final String PATTERN_GET_WEBPA_PARAM_BLE_DISCOVERY_FROM_RFC_CONFIG = "tr181.Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.BLE.Discovery\\W+(\\w+)";
+
+    /** String regex to retrieve process ID */
+    public static final String PATTERN_TO_CHECK_IPERF_PROCESS = ".*iperf3";
+    
+    /** Constant to hold " -t" for time parameter */
+    public static final String TIME_PARAM = " -t";
+    
+    /** String regex to retrieve process ID */
+    public static final String PATTERN_TO_RETRIEVE_PROCESS_ID = ".*\\s+(\\d{5}|\\d{4}|\\d{3})\\s+\\d+.*iperf3";
+    
+    /** String that stores url of google */
+    public static final String URL_GOOGLE = "www.google.com";
+    
+    /** constant to hold string value 63 */
+    public static final String STRING_63 = "63";
+    
+    /** String value for 64 */
+    public static final String STRING_VALUE_SIXTY_FOUR = "64";
+    
+    /** constant to hold string value 1471 */
+    public static final String STRING_1471 = "1471";
+    
+    /** constant to hold string value 101 */
+    public static final String STRING_101 = "101";
+    
+    
+    /** String containing json value of WiFi GAS configuration to be set */
+    public static final String STRING_GAS_CONFIG_JSON_VALUE = "{\"gasConfig\":[{\"AdvertisementId\": 0,\"pauseForServerResp\": true,\"respTimeout\": 5000,\"comebackDelay\": 1000,\"respBufferTime\": 1000,\"queryRespLengthLimit\": 90 }]}";
+    
+    /** String containing json value of WiFi GAS configuration to be set */
+    public static final String STRING_GAS_CONFIG_DEFAULT_VALUE = "{\"gasConfig\": [{ \"advertId\": 0, \"pauseForServerResp\": true,  \"respTimeout\": 5000, \"comebackDelay\": 1000, \"respBufferTime\": 1000, \"queryRespLengthLimit\": 127 }]}";
+
+    /** WiFi vAP list for private and XH */
+    public static final String PRIVATE_XH_AP_LIST = "1,2";
+    
+    /** Pattern to get the wifi client mac address from wifi_api */
+    public static final String PATTERN_CLI_MAC_ADDRSS = "cli_MACAddress\\s+=\\s";
+    
+    /** Pattern to find the maximum downlink rate */
+    public static final String PATTERN_MAX_DOWNLINK_RATE = "cli_MaxDownlinkRate = (\\d+)";
+    
+    /** Pattern to find the maximum uplink rate */
+    public static final String PATTERN_MAX_UPLINK_RATE = "cli_MaxUplinkRate = (\\d+)";
+    
+    /** pattern to get the max tx rate */
+    public static final String PATTERN_MAX_TX_RATE = "Max Tx Rate:(\\d+)";
+
+    /** pattern to get the max rx rate */
+    public static final String PATTERN_MAX_RX_RATE = "Max Rx Rate:(\\d+)";
+    
+    /** Pattern to find the maximum TxRate for 5GHz Clients */
+    public static final String PATTERN_MAX_TXCLIENTS_2 = "WIFI_MAX_TXCLIENTS_2:(\\d+),";
+    
+    /** Pattern to find the maximum RxRate for 5GHz Clients */
+    public static final String PATTERN_MAX_RXCLIENTS_2 = "WIFI_MAX_RXCLIENTS_2:(\\d+),";
+    
+    /** Pattern to get 2.4GHz wifi client mac address */
+    public static final String PATTERN_WIFI_MAC_1 = "WIFI_MAC_1:";
+
+    /** Pattern to get 5GHz wifi client mac address */
+    public static final String PATTERN_WIFI_MAC_2 = "WIFI_MAC_2:";
+    
+    /** Pattern to find the maximum TxRate for 2.4GHz Clients */
+    public static final String PATTERN_MAX_TXCLIENTS_1 = "WIFI_MAX_TXCLIENTS_1:(\\d+),";
+
+    /** Pattern to find the maximum RxRate for 2.4GHz Clients */
+    public static final String PATTERN_MAX_RXCLIENTS_1 = "WIFI_MAX_RXCLIENTS_1:(\\d+),";
+    
+    /** String constant for Export */
+    public static final String STRING_EXPORT = "export";
+    
+    /** String constant INVALID to set the invalid value for WebPA parameter */
+    public static final String STRING_INVALID = "INVALID";
+    
+    /** String value for 7895 */
+    public static final String STRING_VALUE_SEVEN_THOUSAND_EIGHT_HUNDRED_AND_NINETY_FIVE = "7895";
+    
+    /** String constant to store two thousand eight hundred eighty value */
+    public static final String STRING_VALUE_TWO_THOUSAND_EIGHT_HUNDRED_EIGHTY = "2880";
+    
+    /** Linux command to copy files */
+    public static final String CMD_COPY_FILES = "cp";
+    
+    /** Constant to hold low level site blocker */
+    public static final String LOW_LEVEL_SITE_BLOCKER = "LOW_LEVEL_SITE_BLOCKER";
+
+    /** Constant to hold medium level site blocker */
+    public static final String MEDIUM_LEVEL_SITE_BLOCKER = "MEDIUM_LEVEL_SITE_BLOCKER";
+
+    /** Constant to hold high level site blocker */
+    public static final String HIGH_LEVEL_SITE_BLOCKER = "HIGH_LEVEL_SITE_BLOCKER";
+    
+    /** Constant to hold low level blocked site */
+    public static final String LOW_LEVEL_SITE = "LOW_LEVEL_SITE";
+
+    /** Constant to hold medium level blocked site */
+    public static final String MEDIUM_LEVEL_SITE = "MEDIUM_LEVEL_SITE";
+
+    /** Constant to hold high level blocked site */
+    public static final String HIGH_LEVEL_SITE = "HIGH_LEVEL_SITE";
+    
+    /**
+     * The hash map to retrieve the the level with its bloecked sites
+     */
+    public static final Map<String, String> RESTRICTED_SITE_MAPPING = getRestrictedSites();
+    
+    /**
+     * Method to create a map to store the blocked sites
+     * 
+     * @return map with level as key and its blocked site as value
+     */
+    private static Map<String, String> getRestrictedSites() {
+	Map<String, String> mapping = new HashMap<String, String>() {
+	    {
+		put(LOW_LEVEL_SITE, AutomaticsPropertyUtility
+			.getProperty(BroadBandTestConstants.PROP_KEY_HOST_ADDRESS_FOR_LEVEL_ONE_SITE));
+		put(MEDIUM_LEVEL_SITE, AutomaticsPropertyUtility
+			.getProperty(BroadBandTestConstants.PROP_KEY_HOST_ADDRESS_FOR_LEVEL_TWO_SITE));
+		put(HIGH_LEVEL_SITE, AutomaticsPropertyUtility
+			.getProperty(BroadBandTestConstants.PROP_KEY_HOST_ADDRESS_FOR_LEVEL_THREE_SITE));
+	    }
+	};
+	return Collections.unmodifiableMap(mapping);
+    }
+    
+    /**
+     * The hash map to retrieve the the level with its site blocker
+     */
+    public static final Map<String, String> DNS_SITE_BLOCKER_MAPPING = getDnsSiteBlocker();
+    
+    
+    /**
+     * Method to create a map to store the site blocker
+     * 
+     * @return map with level as key and its site blocker as value
+     */
+    private static Map<String, String> getDnsSiteBlocker() {
+	Map<String, String> mapping = new HashMap<String, String>() {
+	    {
+		put(LOW_LEVEL_SITE_BLOCKER, AutomaticsPropertyUtility
+			.getProperty(BroadBandTestConstants.PROP_KEY_DNS_BLOCK_ADDRESS_FOR_LEVEL_ONE_SITE));
+		put(MEDIUM_LEVEL_SITE_BLOCKER, AutomaticsPropertyUtility
+			.getProperty(BroadBandTestConstants.PROP_KEY_DNS_BLOCK_ADDRESS_FOR_LEVEL_TWO_SITE));
+		put(HIGH_LEVEL_SITE_BLOCKER, AutomaticsPropertyUtility
+			.getProperty(BroadBandTestConstants.PROP_KEY_DNS_BLOCK_ADDRESS_FOR_LEVEL_THREE_SITE));
+	    }
+	};
+	return Collections.unmodifiableMap(mapping);
+    }
+    
+    /** Constant to hold site www */
+    public static final String SITE_WWWW = "www";
+    
+    /** Pattern for getting the blocked site name. */
+    public static final String PATTERN_SITE_NAME = "Name:\\s*(\\S+)";
+    
+    /** Constant to hold 2.4GHZ index */
+    public static final int TWO_FOUR_GHZ_INDEX = 10000;
+
+    /** Constant to hold 5GHZ index */
+    public static final int FIVE_GHZ_INDEX = 10100;
+    
+    /** Constant to hold Object Not found error */
+    public static final String OBJECT_NOT_FOUND_ERROR = "Object Not Found!";
+    
+    /** String to hold value - tcpdump */
+    public static final String TCPDUMP = "tcpdump";
+    
+    /** string to hold ampersand */
+    public static final String CONSTANT_STRING_AMPERSAND = "&";
+    
+    /** Command to get upnp version */
+    public static final String CMD_GET_UPNP_VERSION = "/usr/sbin/miniupnpd --version";
+
+    /** Pattern to get upnp version */
+    public static final String PATTERN_GET_UPNP_VERSION = "miniupnpd (\\d+.\\d+)";
+    
+    /** String Restarting process CcspXdnsSsp in systemd_processRestart.log */
+    public static final String TEXT_RESTARTING_CCSPXDNSSSP = "Stopping/Restarting CcspXdnsSsp";
+    
+    /** String Resetting process CcspXdnsSsp in SelfHeal.txt.0 */
+    public static final String TEXT_RESETTING_CCSPXDNSSSP = "Resetting process CcspXdnsSsp";
+    
+    /** Sample string with 2000 character */
+    public static final String SAMPLE_STRING_WITH_2000_CHARACTER = "String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request String used to authenticate the Speed Test request Stri";
+    
+    /** Constant to hold the string value Block */
+    public static final String PARENTAL_CONTROL_MANAGE_DEVICE_RULE_TYPE = "Block";
+    
+    /** Connection Type Wifi 5 Ghz  */
+    public static final String CONNECTION_TYPE_WIFI_5_GHZ = "Wi-Fi 5G";
+    
+    /** Connection Type Wifi 2.4 Ghz  */
+    public static final String CONNECTION_TYPE_WIFI_24_GHZ = "Wi-Fi 2.4G";
+    
+    /** String to pass in searchlogfiles to retrieve crash portal log file */
+    public static final String STRING_FOR_CRASH_PORTAL_FILE_NAME_SEARCH = "Removing file";
+    
+    /** String regex wild card (.*) */
+    public static final String STRING_REGEX_WILDCARD = "(.*)";
+    
+    /** String constant to hold public wifi secured */
+    public static final String SECURED_WIFI_PUBLIC = "Secured Public Wifi";
+    
+    /** To verify dump upload to vbn crash portal succeeded */
+    public static final String FAIL_OVER_MECHANISM_VBN_SUCCESS = "Success uploading.+file:\\s*((\\w+_)?mac+\\w+_dat+\\d+-\\d+-\\d+-\\d+-\\d+-\\d+_box+\\w+_mod+\\w+.*(.dmp.tgz|.core.tgz)\\sto\\svbn.crashportal.ccp.xcal.tv)";
+    
+    /** String CR_crash */
+    public static final String STRING_CR_CRASH = "CR_crash";
+    
+    /** Constant to integer value 17 */
+    public static final int CONSTANT_17 = 17;
+    
+    /** String for Backhaul wifi 24ghz ssid */
+    public static final String STRING_LNF_SSID_24GHZ = "LNF_SSID_24Ghz";
+
+    /** String for Backhaul wifi 5ghz ssid */
+    public static final String STRING_LNF_SSID_5GHZ = "LNF_SSID_5Ghz";
+    
+    /** Reg ex to get the mac address */
+    public static final String REG_EX_MAC_ADDRESS_FORMAT = "\\w+:\\w+:\\w+:\\w+:\\w+:\\w+";
+    
+    /** String constant to hold the status Not Processed */
+    public static final String NOT_PROCESSED = "Not Processed";
+    
+    /** String constant to hold wifi private */
+    public static final String WIFI_PRIVATE = "Private Wifi";
+    
+    /** Constant to integer value 33 */
+    public static final int CONSTANT_33 = 33;
+
+    /** Constant to integer value 41 */
+    public static final int CONSTANT_41 = 41;
+    
+    /** String for Rfc properties to post - Replace with data payload */
+    public static final String STRING_RFC_DATA_PAYLOAD = "{\"estbMacAddress\":\"ESTB_MAC_ADDRESS\",\"features\":[{\"name\":\"EncryptCloudData\",\"effectiveImmediate\":true,\"enable\":true,\"configData\":<REPLACE>}]}\r\n";
+
+    /** Operating Standards for 5GHz a mode. */
+    public static final String OPERATING_STANDARDS_A = "a";
+
+    /** Operating Standards for 2GHz b mode. */
+    public static final String OPERATING_STANDARDS_B = "b";
+
+    /** Operating Standards for 2GHz g mode. */
+    public static final String OPERATING_STANDARDS_G = "g";
+    
+    /** Constant to hold WiFi Band 5.0 Constant */
+    public static final String WIFI_BAND_5_0 = "5.0";
+
+    /** Constant for 2.4GHZ band */
+    public static final String STRING_WIFI_BAND_2_4 = "2.4";
+    
+    /** Pattern to match Crontab time interval */
+    public static final String PATTERN_TO_FETCH_CRONTAB_TIME_INTERVAL_FOR_1HR = "0\\s+(1,(\\d+,)+\\d+)(\\s*){3}\\s+";
+
+    /** Constant value for crontab 4hours time interval */
+    public static final String FOUR_HRS_TIME_INTERVAL = "0,4,8,12,16,20";
+
+    /** Constant value for crontab 2hours time interval */
+    public static final String ONE_HRS_TIME_INTERVAL = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23";
+    
+    /** Pattern to fetch host zones from cpu memory fragmentation details */
+    public static final String PATTERN_TO_FETCH_HOST_ZONES_CPU_MEMFRAG = "PROC_BUDDYINFO_HOST:CPU_MEM_FRAG-(\\w+)";
+
+    /** Pattern to fetch host values from cpu memory fragmentation details */
+    public static final String PATTERN_TO_FETCH_HOST_VALUES_CPU_MEMFRAG = "PROC_BUDDYINFO_HOST:CPU_MEM_FRAG-\\w+,([\\d+,]{0,}\\d+)";
+
+    /** Pattern to fetch peer zones from cpu memory fragmentation details */
+    public static final String PATTERN_TO_FETCH_PEER_ZONES_CPU_MEMFRAG = "PROC_BUDDYINFO_PEER:CPU_MEM_FRAG-(\\w+)";
+
+    /** Pattern to fetch peer values from cpu memory fragmentation details */
+    public static final String PATTERN_TO_FETCH_PEER_VALUES_CPU_MEMFRAG = "PROC_BUDDYINFO_PEER:CPU_MEM_FRAG-\\w+,([\\d+,]{0,}\\d+)";
+
+    /** Pattern to check cpu memory fragmentation format */
+    public static final String PATTERN_TO_CHECK_CPU_FRAGMENTATION_FORMAT = "(\\d{6}-\\d{2}:\\d{2}:\\d{2}.\\d+\\sPROC_BUDDYINFO_(\\w+):CPU_MEM_FRAG-(\\w+)(,\\d+)+)";
+
+    /** Pattern to check buddy info details */
+    public static final String PATTERN_TO_FETCH_BUDDYINFO = "Node \\d+, zone\\s+(\\w+)";
+    
+    /** qtn_hal Log File Name */
+    public static final String LOG_FILE_QTN_HAL = "/rdklogs/logs/qtn_hal.log";
+    
+    /** qtn_system_snapshot Log File Name */
+    public static final String LOG_FILE_QTN_SYSTEM_SNAPSHOT = "/rdklogs/logs/qtn_system_snapshot.log";
+    
+    /** Integer value 2 */
+    public static final Integer INTEGER_VALUE_2 = 2;
+    
+    /** MoCA Log File Name */
+    public static final String LOG_FILE_MOCA_TEXT = "/rdklogs/logs/MOCAlog.txt.0";
+
+    /** Pattern to extract passphrase from MoCA log file */
+    public static final String PATTERN_TO_EXTRACT_PASSPHRASE_FROM_MOCA_LOG = "KeyPassphrase pString:\\s*(.*)";
+
+    /** Constant to hold signature */
+    public static final String SIGNATURE = "signature";
+
+    /** Constant to hold curl */
+    public static final String CURL = "curl";
+
+    /** Constant to hold KeyPassphrase */
+    public static final String KEY_PASSPHRASE = "KeyPassphrase";
+    
+    /** Constant for number 10001 */
+    public static final int CONSTANT_10001 = 10001;
+    
+    /** Constant for number 10001 */
+    public static final int CONSTANT_10101 = 10101;
+    
+    /** Constant for number 10001 */
+    public static final int CONSTANT_10002 = 10002;
+    
+    /** Constant for number 10001 */
+    public static final int CONSTANT_10102 = 10102;
+    
+    /** Constant for number 10001 */
+    public static final int CONSTANT_10003 = 10003;
+    
+    /** Constant for number 10001 */
+    public static final int CONSTANT_10103 = 10103;
+    
+    /** Constant to integer value 29 */
+    public static final int CONSTANT_29 = 29;
+
+    /** Constant to integer value 36 */
+    public static final int CONSTANT_36 = 36;
+    
+    
 }

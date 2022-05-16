@@ -29,7 +29,7 @@ import com.automatics.tap.AutomaticsTapApi;
 /**
  * Class to define Thread class to execute multiple webpa requests in parallel
  * 
- * @author asanka200
+ * @author Ashwin Sankarasubramanian
  *
  */
 public class BroadBandParallelWebPaRequest implements Callable<String> {

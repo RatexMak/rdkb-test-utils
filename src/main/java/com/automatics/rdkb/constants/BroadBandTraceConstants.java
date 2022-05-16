@@ -889,4 +889,62 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
     /** Log Message for to verify the ethernet connected client */
     public static final String LOG_MESSAGE_TO_VERIFY_CONNECTED_ETHERNET_CLIENT_CONNECTED = "\"RDKB_CONNECTED_CLIENTS: Client type is Ethernet, MacAddress is.*##MACADDRESS##.*HostName is.*Connected\"";
 
+    /** Log message when LimitBeaconDetection changes */
+    public static final String LOG_MESSAGE_TO_CHECK_BLUETOOTH_BEACON_DETECTION = "Tile Discovery disabled or beacon detection is limited";
+
+    /** Log message for Wifi change attempt when force disabled */
+    public static final String LOG_MESSAGE_WIFI_CHANGE_ATTEMPT_WHEN_FORCE_DISABLED = "WIFI_ATTEMPT_TO_CHANGE_CONFIG_WHEN_FORCE_DISABLED";
+
+    /** Log message for force wifi disable set to true */
+    public static final String LOG_MESSAGE_FORCE_WIFI_DISABLE_TRUE = "WIFI_FORCE_DISABLE_CHANGED_TO_TRUE";
+    
+    /** Log message for force wifi disable set to false */
+    public static final String LOG_MESSAGE_FORCE_WIFI_DISABLE_FALSE = "WIFI_FORCE_DISABLE_CHANGED_TO_FALSE";
+    
+    /** String Stopping/Restarting log message in systemd_processRestart.log */
+    public static final String LOG_STOPPING_RESTARTING = "Stopping/Restarting";
+    
+    /** Log message for wifi gas request on 2.4Ghz AP in anqp debuglog */
+    public static final String LOG_MESSAGE_GAS_REQUEST_AP = "Interworking is enabled will proceed to gas response send on AP: 1";  
+    
+    /** Log message for DNS entries in /etc/resolv.conf */
+    public static final String DNS_OVERRIDE_VALUE = "dnsoverride 00:00:00:00:00:00 <IPV4> <IPV6> Test_xdns1";
+    
+    /** Log message for XDNS parameters values in /rdklogs/logs/Consolelog.txt or Armconsolelog.txt */
+    public static final String LOG_MSG_XDNS_PARAMETER_VALUE = "XDNS_SetParamStringValue";
+    
+    /** Log message for enabling Secondary XDNS in /rdklogs/logs/PAMlog.txt.0 */
+    public static final String LOG_MSG_SECONDARY_XDNS_ENABLE = "Enabling secondary XDNS";
+    
+    /** Trace Constants for GW Configuration Telemetry */
+    /** Log Message for Same SSID Password for both the radio */
+    public static final String LOG_MESSAGE_SAME_SSID_PASSWORD = "Same password was configured on User Private SSID for 2.4 and 5 GHz radios.";
+
+    /** Log Message for Different SSID Password */
+    public static final String LOG_MESSAGE_DIFFERENT_SSID_PASSWORD = "Different passwords were configured on User Private SSID for 2.4 and 5 GHz radios.";
+
+    /** Telemetry Marker for Same SSID Password for both the radio */
+    public static final String TELEMETRY_MARKER_SAME_SSID_PASSWORD = "SAME_PASSWORDS_PRIVATE_RADIOS";
+    
+    /** Telemetry Marker for Different SSID Password */
+    public static final String TELEMETRY_MARKER_DIFFERENT_SSID_PASSWORD = "DIFFERENT_PASSWORDS_PRIVATE_RADIOS";
+
+    /** Log message ovs */
+    public static final String LOG_MESSAGE_OVS = "ovs";
+
+    /** Log message for ovs disable state */
+    public static final String LOG_MESSAGE_OVS_DISABLED = "param: OVS.Enable val:false type=3";
+
+    /** Log message for ovs enable state */
+    public static final String LOG_MESSAGE_OVS_ENABLED = "param: OVS.Enable val:true type=3";
+
+    /** Log message for ovs connected status from ovs show output */
+    public static final String LOG_MESSAGE_IS_CONNECTED = "is_connected: true";
+    
+    /** RDKB WiFi Notification message in /rdklogs/logs/WiFilog.txt.0 */
+    public static final String RDKB_WIFI_NOTIFICATION_MESSAGE_1 = "RDKB_WIFI_NOTIFY: connectedTo:<REPLACE>_LNF_PSK_SSID clientMac:";
+
+    /** RDKB WiFi Notification message in /rdklogs/logs/WiFilog.txt.0 */
+    public static final String RDKB_WIFI_NOTIFICATION_MESSAGE_2 = "RDKB_WIFI_NOTIFY: connected to:<REPLACE>_LNF_PSK_SSID clientMac:";
+
 }

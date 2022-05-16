@@ -1131,8 +1131,8 @@ public class BroadBandCommonUtils {
     /**
      * Utility method to identify whether device is loaded with PROD build or not.
      * 
-     * @param settop
-     *            The settop to be used.
+     * @param device
+     *            The Dut to be used.
      * @return True if device is loaded with prod build.
      * @author Govardhan
      */
@@ -1200,98 +1200,6 @@ public class BroadBandCommonUtils {
 	    LOGGER.error("Number format exception occured while trying to convert: " + stringToConvert, nfe);
 	}
 	return return_value;
-    }
-
-    /**
-     * Utility method to Cross verify the Configparemgen Version based on Current Build in the device
-     * 
-     * @param buildName
-     *            Current Buildname of the device.
-     * @param configparamgenVersion
-     *            Configparamgen Version obtained from the gateway.
-     * @return true if configparamgen version matches the version
-     * @author Govardhan
-     */
-    public static boolean verifyConfigparamgenForGivenBuild(String buildName, String configparamgenVersion) {
-	LOGGER.debug("STARTING METHOD : verifyConfigparamgenForGivenBuild()");
-	boolean status = false;
-	try {
-	    double coreVersion = BroadBandTestConstants.CHANNEL_ATTENUATION_5_GHZ;
-	    int pVersion = BroadBandTestConstants.CONSTANT_0;
-	    int sVersion = BroadBandTestConstants.CONSTANT_0;
-	    double configparamgen = convertStringToDouble(configparamgenVersion);
-	    // condition covers sprint, stable, feature builds.
-	    if (BroadBandCommonUtils.patternSearchFromTargetString(buildName,
-		    BroadBandTestConstants.STRING_SPRINT_IN_BUILD_NAME)
-		    || BroadBandCommonUtils.patternSearchFromTargetString(buildName,
-			    BroadBandTestConstants.FIRMWARE_VERSION_BRANCH_STABLE)
-		    || BroadBandCommonUtils.patternSearchFromTargetString(buildName,
-			    BroadBandTestConstants.STRING_FEATURE_IN_BUILD_NAME)) {
-		LOGGER.info("Current build in device is either Sprint/Stable/Feature :" + buildName);
-		LOGGER.info("Expected Configparamgen Version : >=3.7");
-		LOGGER.info("Actual Configparamgen Version : " + configparamgen);
-		status = configparamgen >= BroadBandTestConstants.CONFIGPARAMGEN_VERSION_3_7;
-	    } else {
-		coreVersion = convertStringToDouble(CommonMethods.patternFinder(buildName,
-			BroadBandTestConstants.CORE_VERSION_FROM_REGULAR_RELEASE_BUILD_PATTERN_MATCHER));
-		// for regular/Proper Release builds
-		if (CommonMethods.patternMatcher(buildName,
-			BroadBandTestConstants.REGULAR_RELEASE_BUILD_PATTERN_MATCHER)
-			|| CommonMethods.patternMatcher(buildName,
-				BroadBandTestConstants.PROPER_RELEASE_BUILD_PATTERN_MATCHER)) {
-		    LOGGER.info("Current build in device is a proper/Regular Release Build :" + buildName);
-		    pVersion = convertStringToInteger(CommonMethods.patternFinder(buildName,
-			    BroadBandTestConstants.P_VERSION_FROM_REGULAR_RELEASE_BUILD_PATTERN_MATCHER));
-		    sVersion = convertStringToInteger(CommonMethods.patternFinder(buildName,
-			    BroadBandTestConstants.S_VERSION_FROM_REGULAR_RELEASE_BUILD_PATTERN_MATCHER));
-		}
-		// for Spin Builds where patter differs from regular release builds
-		else if (CommonMethods.patternMatcher(buildName, BroadBandTestConstants.SPIN_BUILD_PATTERN_MATCHER)
-			|| CommonMethods.patternMatcher(buildName,
-				BroadBandTestConstants.PROPER_SPIN_BUILD_PATTERN_MATCHER)) {
-		    LOGGER.info("Current build in device is a spin Build :" + buildName);
-		    sVersion = convertStringToInteger(CommonMethods.patternFinder(buildName,
-			    BroadBandTestConstants.S_VERSION_FROM_REGULAR_RELEASE_BUILD_PATTERN_MATCHER));
-		}
-
-		// Build name is split into core, p, s version in order to match the expected
-		// logic
-		LOGGER.info("Core Version in build is : " + coreVersion);
-		LOGGER.info("P Version in build is : " + pVersion);
-		LOGGER.info("s Version in build is : " + sVersion);
-		// condition covers 'Release <4.4' or 'Release between 4.4p1s10 to 4.4p2s2'.
-		if (coreVersion < BroadBandTestConstants.FIRMWARE_VERSION_4_4
-			|| (coreVersion == BroadBandTestConstants.FIRMWARE_VERSION_4_4
-				&& ((pVersion == BroadBandTestConstants.CONSTANT_1
-					&& sVersion == BroadBandTestConstants.CONSTANT_10)
-					|| (pVersion == BroadBandTestConstants.CONSTANT_1
-						&& sVersion == BroadBandTestConstants.CONSTANT_11)
-					|| (pVersion == BroadBandTestConstants.CONSTANT_2
-						&& sVersion == BroadBandTestConstants.CONSTANT_1)
-					|| (pVersion == BroadBandTestConstants.CONSTANT_2
-						&& sVersion == BroadBandTestConstants.CONSTANT_2)))) {
-		    LOGGER.info(
-			    "Given build Version is either : 'Release <4.4' or 'Release between 4.4p1s10 to 4.4p2s2'");
-		    LOGGER.info("Expected Configparamgen Version : 2.17");
-		    LOGGER.info("Actual Configparamgen Version : " + configparamgen);
-		    status = configparamgen == BroadBandTestConstants.CONFIGPARAMGEN_VERSION_2_17;
-		}
-		// condition covers '4.4 initial releases until 4.4p1s9' or 'Release 4.4p2s3 to
-		// latest release
-		// build'.
-		else if (coreVersion >= BroadBandTestConstants.FIRMWARE_VERSION_4_4) {
-		    LOGGER.info(
-			    "Given build Version is either : '4.4 initial releases until 4.4p1s9' or 'Release 4.4p2s3 to latest release build'");
-		    LOGGER.info("Expected Configparamgen Version : >=3.7");
-		    LOGGER.info("Actual Configparamgen Version : " + configparamgen);
-		    status = configparamgen >= BroadBandTestConstants.CONFIGPARAMGEN_VERSION_3_7;
-		}
-	    }
-	} catch (Exception e) {
-	    LOGGER.error("Exception occured while cross verifying the configparamgen values :" + e.getMessage());
-	}
-	LOGGER.debug("ENDING METHOD: verifyConfigparamgenForGivenBuild()");
-	return status;
     }
 
     /**
@@ -1386,8 +1294,8 @@ public class BroadBandCommonUtils {
      * 
      * @param tapEnv
      *            AutomaticsTapApi instance
-     * @param settop
-     *            Settop instance
+     * @param device
+     *            device instance
      * @return index to get wanmac
      * 
      * 
@@ -1428,12 +1336,12 @@ public class BroadBandCommonUtils {
     }
 
     /**
-     * Uses the partial key by appending it with the settop platform to get the property value from cats.props.
+     * Uses the partial key by appending it with the device platform to get the property value from cats.props.
      *
      * @param device
      *            The Dut instance.
      * @param partialPropsKey
-     *            Partial property key which will be appended with the settop platform to form the complete
+     *            Partial property key which will be appended with the device platform to form the complete
      *            key.(Example:- "cdl.unsigned.image.name." it get resolved to "cdl.unsigned.image.name.pace_x1")
      *
      * @return CATS property value
@@ -1497,7 +1405,7 @@ public class BroadBandCommonUtils {
      * Compares list string with the limit value
      * 
      * 
-     * @param settop
+     * @param device
      *            The device to be validated
      * @return true is it satisfies the limit value
      */
@@ -2118,8 +2026,8 @@ public class BroadBandCommonUtils {
     /**
      * Method used to get the current time from the device
      * 
-     * @param settop
-     *            {@link Settop}
+     * @param device
+     *            {@link Dut}
      * @return current time from the device
      */
     private static long getCurrentLocalTime(Dut device, AutomaticsTapApi tapEnv) {
@@ -2167,8 +2075,8 @@ public class BroadBandCommonUtils {
     /**
      * Method used to verify device reboot in the maintenance window
      * 
-     * @param settop
-     *            instance of {@link Settop}
+     * @param device
+     *            instance of {@link Dut}
      * @param tapEnv
      *            instance of {@link AutomaticsTapApi}
      * @param waitTime
@@ -2271,8 +2179,8 @@ public class BroadBandCommonUtils {
      * 
      * @param tapApi
      *            instance of {@link AutomaticsTapApi}
-     * @param settop
-     *            instance of {@link Settop}
+     * @param device
+     *            instance of {@link Dut}
      * @param delay
      *            delay in between the retry
      * @param maxLoopCount
@@ -2304,8 +2212,8 @@ public class BroadBandCommonUtils {
     /**
      * Utility method to validate the currently running firmware version using WebPA command.
      * 
-     * @param settop
-     *            The settop to be validated.
+     * @param device
+     *            The device to be validated.
      * @param buildImage
      *            The firmware version to be validated.
      * @return True if given image name matches with WebPA response.
@@ -3085,7 +2993,7 @@ public class BroadBandCommonUtils {
      * @return searchResponse response for search text
      * @author ArunKumar Jayachandran
      */
-    public static String searchLogFilesInAtomConsoleByPolling(AutomaticsTapApi tapEnv, Dut settop, String searchText,
+    public static String searchLogFilesInAtomConsoleByPolling(AutomaticsTapApi tapEnv, Dut device, String searchText,
 	    String logFile, long pollDuration, long pollInterval) {
 	LOGGER.debug("STARTING METHOD searchLogFilesInAtomConsoleByPolling");
 	String command = BroadBandTestConstants.GREP_COMMAND;
@@ -3105,7 +3013,7 @@ public class BroadBandCommonUtils {
 	String searchResponse = null;
 	do {
 	    tapEnv.waitTill(pollInterval);
-	    searchResponse = BroadBandCommonUtils.executeCommandInAtomConsole(settop, tapEnv, command);
+	    searchResponse = BroadBandCommonUtils.executeCommandInAtomConsole(device, tapEnv, command);
 	    searchResponse = CommonMethods.isNotNull(searchResponse)
 		    && !searchResponse.contains(BroadBandTestConstants.NO_SUCH_FILE_OR_DIRECTORY)
 			    ? searchResponse.trim()
@@ -3384,8 +3292,8 @@ public class BroadBandCommonUtils {
     /**
      * Utility method to verify process running status
      * 
-     * @param settop
-     *            {@link Settop}
+     * @param device
+     *            {@link Dut}
      * @param tapEnv
      *            {@link AutomaticsTapApi}
      * @param isAtomConsole
@@ -3394,7 +3302,7 @@ public class BroadBandCommonUtils {
      *            Process to be verified
      * 
      * @return true if process is running
-     * @author sgnana010c
+     * @author Seerangarayar Gnanaprakasham
      */
     public static boolean verifyProcessRunningStatus(Dut device, AutomaticsTapApi tapEnv, boolean isAtomConsole,
 	    String process) {
@@ -3524,8 +3432,8 @@ public class BroadBandCommonUtils {
      * 
      * @param tapEnv
      *            AutomaticsTapApi instance
-     * @param settop
-     *            instance of settop
+     * @param device
+     *            instance of Dut
      * @param dummyTest
      *            Test file path
      * 
@@ -3566,8 +3474,8 @@ public class BroadBandCommonUtils {
      * 
      * @param tapEnv
      *            AutomaticsTapApi instance
-     * @param settop
-     *            instance of settop
+     * @param device
+     *            instance of Dut
      * @param createFile
      *            Test file path
      * 
@@ -3892,8 +3800,8 @@ public class BroadBandCommonUtils {
      * 
      * @param tapEnv
      *            AutomaticsTapApi instance
-     * @param settop
-     *            The settop to be validated
+     * @param device
+     *            The device to be validated
      * @return - true if grep command retrieves the expected value else false
      */
     public static boolean verifyTelemetryMarkerForDeviceRebootInitiatedBySnmpDocDevMib(Dut device,
@@ -5007,7 +4915,7 @@ public class BroadBandCommonUtils {
      * in the reponse
      * 
      * @param device
-     *            instance of {@link Settop}
+     *            instance of {@link Dut}
      * @param tapEnv
      *            instance of {@link AutomaticsTapApi}
      * @return boolean true if the brlan0 configuration has both ipv4 and ipv6 addresses
@@ -5594,7 +5502,7 @@ public class BroadBandCommonUtils {
      *            Actual partnerID retrieved from script
      * 
      * @return String LAN Start IP
-     * @author Athira
+     * @refactor Athira
      */
     public static String getSynStartIPforPartner(String partnerId) {
 	LOGGER.info("STARTING METHOD: getSynStartIPforPartner");
@@ -5614,7 +5522,7 @@ public class BroadBandCommonUtils {
      *            Actual partnerID retrieved from script
      * 
      * @return String LAN Local IP
-     * @author Athira
+     * @refactor Athira
      */
     public static String getSynLocalIPforPartner(String partnerId) {
 	LOGGER.info("STARTING METHOD: getSynLocalIPforPartner");
@@ -6437,7 +6345,7 @@ public class BroadBandCommonUtils {
      * @return response
      * @refactor Alan_Bivera
      */
-    public static boolean executeAndVerifyNsLookUpCommandInConnectedClient(Dut settop, AutomaticsTapApi tapEnv,
+    public static boolean executeAndVerifyNsLookUpCommandInConnectedClient(Dut device, AutomaticsTapApi tapEnv,
 	    String dnsIpAddress, String expectedvalue) throws TestException {
 	LOGGER.debug("STARTING METHOD: executeAndVerifyNsLookUpCommandInConnectedClient()");
 	boolean status = false;
@@ -6445,7 +6353,7 @@ public class BroadBandCommonUtils {
 		BroadBandCommandConstants.CMD_NS_LOOKUP_OPEN_DNS_COM, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
 		dnsIpAddress);
 	try {
-	    String response = tapEnv.executeCommandOnOneIPClients(settop, command).replaceAll(
+	    String response = tapEnv.executeCommandOnOneIPClients(device, command).replaceAll(
 		    BroadBandTestConstants.PATTERN_MATCHER_FOR_MULTIPLE_SPACES,
 		    BroadBandTestConstants.SINGLE_SPACE_CHARACTER);
 	    LOGGER.info("NS LOOKUP RESPONSE: " + response);
@@ -6716,9 +6624,9 @@ public class BroadBandCommonUtils {
     /**
      * Utility method to configure Port Forwarding Rule
      * 
-     * @param eCatsTapApi
+     * @param tapEnv
      *            Instance of {@link AutomaticsTapApi}
-     * @param settop
+     * @param device
      *            Instance of {@link Dut}
      * @param enable
      *            To enable port forwarding (true/false)
@@ -7079,7 +6987,7 @@ public class BroadBandCommonUtils {
      * 
      * @param tapEnv
      *            {@link AutomaticsTapApi} Reference
-     * @param settop
+     * @param device
      *            {@link Dut} to be validated
      * @param searchText
      *            String representing the text to be searched in the log file.
@@ -7097,7 +7005,7 @@ public class BroadBandCommonUtils {
      * @refactor Athira
      */
 
-    public static boolean verifyConsoleLogByPassingDateFormat(AutomaticsTapApi tapEnv, Dut settop, String searchText,
+    public static boolean verifyConsoleLogByPassingDateFormat(AutomaticsTapApi tapEnv, Dut device, String searchText,
 	    String logFileName, String deviceDateTime, String patternMatcherToGetDateFromLog,
 	    String logMessageTimeStampFormat) {
 	LOGGER.debug("ENTERING METHOD: BroadBandCommonUtils.verifyConsoleLogForMultipleDateFormat");
@@ -7110,8 +7018,8 @@ public class BroadBandCommonUtils {
 		BroadBandTestConstants.TEXT_DOUBLE_QUOTE, searchText, BroadBandTestConstants.TEXT_DOUBLE_QUOTE,
 		BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
 		logFileName);
-	String response = tapEnv.executeCommandUsingSsh(settop, command);
-	String response2 = tapEnv.executeCommandUsingSsh(settop, command2);
+	String response = tapEnv.executeCommandUsingSsh(device, command);
+	String response2 = tapEnv.executeCommandUsingSsh(device, command2);
 	LOGGER.info("Count of the string :" + response2);
 	searchText = searchText.replaceAll(BroadBandTestConstants.TEXT_DOUBLE_QUOTE, AutomaticsConstants.EMPTY_STRING);
 	SimpleDateFormat logMessageDateTimeFormat = new SimpleDateFormat(logMessageTimeStampFormat);
@@ -7192,5 +7100,300 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("ENDING METHOD: BroadBandCommonUtils.isLogTimeStampRecentThanCapDeviceTime");
 	return result;
     }
+    
+    /**
+     * Method to verify feature enable via RFC
+     * 
+     * @param device
+     *            Dut instance
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @param pattern
+     *            pattern which is to be executed
+     * @param operation
+     *            value comparison operation
+     * @param expectedValue
+     *            enabled is true
+     * @return true if expected value matches the response
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @refactor Govardhan
+     */
+    public static boolean verifyFeatureEnableViaRFC(Dut device, AutomaticsTapApi tapEnv, String pattern,
+	    String operation, String expectedValue) {
+	LOGGER.debug("STARTING METHOD: verifyFeatureEnableViaRFC()");
+	String response = null;
+	boolean status = false;
+	try {
+	    response = tapEnv.executeCommandUsingSsh(device, BroadBandTestConstants.COMMAND_TO_RFC_VALUE_CONFIG_FILE);
+	    if (CommonMethods.isNotNull(response)) {
+		response = CommonMethods.patternFinder(response, pattern);
+		if (CommonMethods.isNotNull(response)) {
+		    LOGGER.info("Feature value  in RFC configuration : " + response);
+		    status = BroadBandCommonUtils.compareValues(operation, response, expectedValue);
+		    LOGGER.info("Feature is enabled by RFC configuration : " + status);
+		}
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while verifying SNMP reboot reason:" + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: verifyFeatureEnableViaRFC()");
+	return status;
+    }
+    
+    /**
+     * Method to clear log file on atom console
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param fileName
+     *            path of file on atom to be cleared
+     * @return true if clear is success
+     * 
+     * @author Ashwin Sankarasubramanian
+     * @refactor Athira
+     */
+    public static boolean clearAtomLogFile(AutomaticsTapApi tapEnv, Dut device, String fileName) {
+	LOGGER.debug("STARTING METHOD clearLogFile");
+	String response = tapEnv.executeCommandOnAtom(device,
+		concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_ECHO_CLEAR, fileName));
+	boolean result = CommonMethods.isNull(response);
+	LOGGER.info("Is " + fileName + " CLEARED: " + result);
+	LOGGER.debug("ENDING METHOD clearLogFile");
+	return result;
+    }
+    public static String getSecurityModeForDeviceModels(Dut device) {
+	LOGGER.debug("STARTING METHOD: getSecurityModeForDeviceModels()");
+	String deviceModel = device.getModel();
+	String securityMode = null;
+	boolean isNonDefaultSecurityModeModel = false;
+
+	securityMode = BroadBandTestConstants.SECURITY_MODE_WPA2_PERSONAL;
+	LOGGER.debug("ENDING METHOD: getSecurityModeForDeviceModels()");
+	return securityMode;
+    }
+    
+    /**
+     * Method to remove file/ folder from ATOM/ ARM Console depending upon the availability of ATOM Console.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param completeFilePath
+     *            The Complete file path
+     * @param isAtomSyncAvailable
+     *            Flag representing the availability of ATOM Console; TRUE if present; else FALSE
+     * 
+     * @return Result of the file delete operation; TRUE if successful; else FALSE.
+     * @refactor Govardhan
+     */
+    public static boolean deleteFileAndVerifyIfAtomPresentElseArm(AutomaticsTapApi tapEnv, Dut device,
+	    String completeFilePath, boolean isAtomSyncAvailable) {
+	LOGGER.info("ENTERING METHOD deleteFileAndVerifyIfAtomPresentElseArm");
+	boolean result = false;
+	if (isAtomSyncAvailable) {
+	    String commandToRemoveFile = BroadBandTestConstants.CMD_REMOVE_DIR_FORCEFULLY
+		    + BroadBandTestConstants.SINGLE_SPACE_CHARACTER + completeFilePath;
+	    String response = tapEnv.executeCommandOnAtom(device, commandToRemoveFile);
+	    LOGGER.info("COMMAND RESPONSE TO DELETE FILE/ FOLDER: " + response);
+	    BroadBandResultObject resultObject = doesFileExistInAtomConsole(device, tapEnv, completeFilePath);
+	    result = !resultObject.isStatus();
+	} else {
+	    result = CommonUtils.deleteFile(device, tapEnv, completeFilePath);
+	}
+	LOGGER.info("REMOVED THE FILE " + completeFilePath + " FROM " + (isAtomSyncAvailable ? "ATOM " : "ARM ")
+		+ "CONSOLE SUCCESSFULLY - " + result);
+	LOGGER.info("ENDING METHOD deleteFileAndVerifyIfAtomPresentElseArm");
+	return result;
+    }
+    
+    /**
+     * Helper method to format the mac address from wifi_api response
+     * 
+     * @param macAddress
+     * @return macResponse
+     * 
+     * @author ArunKumar Jayachandran
+     */
+    public static String wifiApiMacAddressFormat(String macAddress) {
+	LOGGER.debug("STARTING METHOD: wifiApiMacAddressFormat()");
+	String mac[] = macAddress.split(BroadBandTestConstants.CHARACTER_COLON.toString());
+	StringBuilder macResponse = new StringBuilder();
+	for (int count = BroadBandTestConstants.CONSTANT_0; count < mac.length; count++) {
+	    if (mac[count].length() == BroadBandTestConstants.CONSTANT_1) {
+		mac[count] = BroadBandTestConstants.STRING_ZERO + mac[count];
+	    }
+	    if (count != mac.length - BroadBandTestConstants.CONSTANT_1) {
+		mac[count] = mac[count] + BroadBandTestConstants.CHARACTER_COLON;
+	    }
+
+	    macResponse.append(mac[count]);
+	}
+	LOGGER.debug("ENDING METHOD: wifiApiMacAddressFormat()");
+	return macResponse.toString();
+    }
+    
+    /**
+     * Helper method to execute command in ATOM console with polling method
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param command
+     *            command to execute
+     * @param pollDuration
+     *            maximum poll duration
+     * @param pollInterval
+     *            polling interval
+     * @return searchResponse response for search text
+     * @author ArunKumar Jayachandran
+     * @refactor Govardhan
+     */
+    public static String executeCommandInAtomConsoleByPolling(AutomaticsTapApi tapEnv, Dut device, String command,
+	    long pollDuration, long pollInterval) {
+	LOGGER.debug("STARTING METHOD executeCommandInAtomConsoleByPolling");
+	String response = null;
+	long startTime = System.currentTimeMillis();
+	do {
+	    response = BroadBandCommonUtils.executeCommandInAtomConsoleIfAtomIsPresentElseInArm(device, tapEnv,
+		    command);
+	    response = CommonMethods.isNotNull(response) && (!CommonUtils
+		    .isGivenStringAvailableInCommandOutput(response, BroadBandTestConstants.COMMAND_NOT_FOUND_ERROR)
+		    || !CommonUtils.isGivenStringAvailableInCommandOutput(response,
+			    BroadBandTestConstants.NO_SUCH_FILE_OR_DIRECTORY)) ? response.trim() : null;
+	} while ((System.currentTimeMillis() - startTime) < pollDuration && CommonMethods.isNull(response)
+		&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, pollInterval));
+	LOGGER.info("COMMAND OUTPUT FOR - " + command + " IS : " + response);
+	LOGGER.debug("ENDING METHOD executeCommandInAtomConsoleByPolling");
+	return response;
+    }
+    
+    /**
+     * Method to copy file, replace text in file, mount copy bind file and remove file
+     * 
+     * Note: To remove the mount copy bind in original file caused by this method, we should either unmount the file
+     * using umount command or reboot the device
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param originalFilePath
+     *            string containing path of file to be copied
+     * @param copyToDirectory
+     *            string containing destination to be copied
+     * @param textBeforeReplace
+     *            string containing text in file to be replaced
+     * @param textAfterReplace
+     *            string containing new text to be put in file
+     * 
+     * @return true if file copied, text replaced and mount copy bind success
+     * @refactor Govardhan
+     */
+    public static boolean copyReplaceTextMountCopyBindRemoveFile(Dut device, AutomaticsTapApi tapEnv,
+	    String originalFilePath, String copyToDirectory, String textBeforeReplace, String textAfterReplace) {
+
+	LOGGER.debug("Entering method: copyReplaceTextMountCopyBindRemoveFile");
+	boolean status = false;
+	String tempFilePath = concatStringUsingStringBuffer(copyToDirectory,
+		originalFilePath.substring(originalFilePath.lastIndexOf(BroadBandTestConstants.FORWARD_SLASH_CHARACTER)
+			+ BroadBandTestConstants.CONSTANT_1));
+
+	tapEnv.executeCommandUsingSsh(device,
+		BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.CMD_COPY_FILES,
+			BroadBandTestConstants.SINGLE_SPACE_CHARACTER, originalFilePath,
+			BroadBandTestConstants.SINGLE_SPACE_CHARACTER, copyToDirectory));
+	if (CommonUtils.replaceTextInFileUsingSed(tapEnv, device, textBeforeReplace, textAfterReplace, tempFilePath)) {
+	    tapEnv.executeCommandUsingSsh(device,
+		    BroadBandCommonUtils.concatStringUsingStringBuffer(
+			    BroadBandCommandConstants.CMD_SBIN_MOUNT_COPYBIND, tempFilePath,
+			    BroadBandTestConstants.SINGLE_SPACE_CHARACTER, originalFilePath));
+	    status = CommonMethods
+		    .isNotNull(BroadBandCommonUtils.searchLogFiles(tapEnv, device, textAfterReplace, originalFilePath));
+	    CommonUtils.removeFileandVerifyFileRemoval(tapEnv, device, tempFilePath);
+	} else {
+	    LOGGER.error("Unable to replace interface name in /nvram/advsec.sh using sed command");
+	}
+
+	LOGGER.info("Result of copy, replace text and mount copybind file: " + status);
+	LOGGER.debug("Exiting method: copyReplaceTextMountCopyBindRemoveFile");
+	return status;
+    }
+    
+    /**
+     * Helper method to convert list of strings to lower case characters
+     * 
+     * 
+     * @param response
+     *            List of String which needs to be converted to lower case characters
+     * 
+     * @return list containing lower case characters
+     * @refactor Said Hisham
+     * 
+     */
+    public static List<String> convertListOfStringsToLowerCase(List<String> response) {
+	LOGGER.debug("Starting Method : convertListOfStringsToLowerCase()");
+	List<String> listOfStringsWithLowerCaseCharacters = new ArrayList<String>();
+	try {
+	    for (int iterationOverListOfStrings = 0; iterationOverListOfStrings < response
+		    .size(); iterationOverListOfStrings++) {
+		listOfStringsWithLowerCaseCharacters.add(response.get(iterationOverListOfStrings).toLowerCase());
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception occurred in convertListOfStringsToLowerCase.Error -" + e.getMessage());
+	}
+	LOGGER.debug("Starting Method : ()convertListOfStringsToLowerCase");
+	return listOfStringsWithLowerCaseCharacters;
+    }
+    
+    /**
+     * Utility method to verify the logs in Atom or Arm Console
+     * 
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param device
+     *            instance of {@link Dut}
+     * @param searchText
+     *            text that needs to be searched in the log file
+     * @param logFileName
+     *            log file name to be searched
+     * @param isAtom
+     *            is atom available or not
+     * 
+     * @return true if the searchText is not logged in the log file
+     * @refactor Said Hisham
+     */
+    public static boolean verifyLogsInAtomOrArmConsoleWithErrorLogValidations(AutomaticsTapApi tapEnv, Dut device,
+	    String searchText, String logFileName, boolean isAtom) {
+	LOGGER.debug("STARTING METHOD : verifyLogsInAtomOrArmConsoleWithErrorLogValidations");
+	boolean result = false;
+	String response = null;
+	try {
+	    response = isAtom ? BroadBandCommonUtils.searchAtomConsoleLogs(tapEnv, device, searchText, logFileName)
+		    : BroadBandCommonUtils.searchLogFiles(tapEnv, device, searchText, logFileName);
+	    result = CommonMethods.isNull(response) || (CommonMethods.isNotNull(response)
+		    && !CommonUtils.patternSearchFromTargetString(response, searchText)
+		    && !CommonUtils.patternSearchFromTargetString(response, BroadBandTestConstants.NO_ROUTE_TO_HOST)
+		    && !CommonUtils.patternSearchFromTargetString(response,
+			    BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE)
+		    && !CommonUtils.patternSearchFromTargetString(response,
+			    BroadBandTestConstants.STRING_CONNECTION_REFUSED)
+		    && !CommonUtils.patternSearchFromTargetString(response,
+			    BroadBandTestConstants.AUTHENTICATION_FAILED));
+	} catch (Exception exception) {
+	    LOGGER.error("Exception occurrd while verifying logs in arm or atom console with Error log validations: "
+		    + exception.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD : verifyLogsInAtomOrArmConsoleWithErrorLogValidations");
+	return result;
+    }
+
+
 
 }

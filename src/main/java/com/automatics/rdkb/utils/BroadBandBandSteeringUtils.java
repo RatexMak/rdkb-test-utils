@@ -99,8 +99,8 @@ public class BroadBandBandSteeringUtils {
     /**
      * Get and compare the webpa or dmcli values with the default values
      * 
-     * @param settop
-     *            {@link Settop}
+     * @param device
+     *            {@link Dut}
      * @param webpaParameter
      *            webpa or dmcli parameter to be checked
      * @param defaultValue
@@ -244,7 +244,7 @@ public class BroadBandBandSteeringUtils {
 	 * This method checks for specific parameter in lbd.conf file
 	 * 
 	 * @param device
-	 *            {@link Settop}
+	 *            {@link Dut}
 	 * @param tapEnv
 	 *            {@link AutomaticsTapApi}
 	 * @param band
@@ -316,8 +316,8 @@ public class BroadBandBandSteeringUtils {
 	/**
 	 * Get the contents of given radio from LBD.conf file
 	 * 
-	 * @param settop
-	 *            {@link Settop}
+	 * @param device
+	 *            {@link Dut}
 	 * @param tapEnv
 	 *            {@link AutomaticsTapApi}
 	 * @param band
@@ -356,7 +356,7 @@ public class BroadBandBandSteeringUtils {
 	 * This method checks for specific parameter in cfg
 	 * 
 	 * @param device
-	 *            {@link Settop}
+	 *            {@link Dut}
 	 * @param tapEnv
 	 *            {@link AutomaticsTapApi}
 	 * @param band
@@ -435,10 +435,10 @@ public class BroadBandBandSteeringUtils {
 	/**
 	 * Return the list of connected clients with given capability
 	 * 
-	 * @param settop
-	 *            {@link Settop}
+	 * @param device
+	 *            {@link Dut}
 	 * @param tapEnv
-	 *            {@link ECatsTapApi}
+	 *            {@link AutomaticsTapApi}
 	 * @param connectedClientSettopslist
 	 *            of connected clients
 	 * @param capability

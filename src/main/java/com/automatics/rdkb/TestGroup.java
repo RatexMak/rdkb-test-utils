@@ -51,4 +51,6 @@ public class TestGroup {
     /** Test Group for xdns **/
     public static final String XDNS = "xdns";
 
+    /** Test group for telemetry **/
+    public static final String TELEMETRY = "telemetry";
 }

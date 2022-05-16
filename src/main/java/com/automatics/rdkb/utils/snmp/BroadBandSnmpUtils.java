@@ -302,7 +302,7 @@ public class BroadBandSnmpUtils {
 	 * both XB and XF devices.
 	 * 
 	 * @param tapEnv       The {@link AutomaticsTapApi} instance
-	 * @param settop       The settop to be validated.
+	 * @param device       The {@link Dut} instance
 	 * @param oidOrMibName The MIB or OID name.
 	 * 
 	 * @param dataType     The type of data to be set
@@ -874,7 +874,7 @@ public class BroadBandSnmpUtils {
 	 * Utility methods to verify docsis event text.
 	 * 
 	 * @param tapEnv     AutomaticsTapApi instance
-	 * @param device     The settop to be validated.
+	 * @param device     The Dut to be validated.
 	 * @param eventCount DocsisEventText
 	 * 
 	 * @return true if event count matches with event text count.
@@ -902,7 +902,7 @@ public class BroadBandSnmpUtils {
 	 * Utility methods to verify Docs Dev Server Boot State.
 	 * 
 	 * @param tapEnv AutomaticsTapApi instance
-	 * @param device The settop to be validated.
+	 * @param device The {@link Dut} instance
 	 * 
 	 * @return true if OID value is 1
 	 */
@@ -921,7 +921,7 @@ public class BroadBandSnmpUtils {
 	 * Utility methods to verify DocsIf CM Status Transmission Power
 	 * 
 	 * @param tapEnv AutomaticsTapApi instance
-	 * @param device The settop to be validated.
+	 * @param device The {@link Dut} instance
 	 * 
 	 * @return true if OID value is between the limit range from 80 to 580
 	 */
@@ -944,7 +944,7 @@ public class BroadBandSnmpUtils {
 	 * Utility methods to verify DocsIf Down Channel Power
 	 * 
 	 * @param tapEnv AutomaticsTapApi instance
-	 * @param device The settop to be validated.
+	 * @param device The {@link Dut} instance
 	 * 
 	 * @return true if OID value is between the limit range from -150 to 150
 	 */
@@ -968,7 +968,7 @@ public class BroadBandSnmpUtils {
 	 * Utility methods to verify DocsIf SigQSignal Noise
 	 * 
 	 * @param tapEnv AutomaticsTapApi instance
-	 * @param device The settop to be validated.
+	 * @param device The device to be validated.
 	 * 
 	 * @return true if OID value is greater than or equal to 120
 	 */
@@ -990,7 +990,7 @@ public class BroadBandSnmpUtils {
 	/**
 	 * Utility methods to verify System up time
 	 * 
-	 * @param settop The settop to be validated.
+	 * @param device The device to be validated.
 	 * 
 	 * @return true if SNMP MIB response and output of 'cat /proc/uptime' command
 	 *         are same
@@ -1036,7 +1036,7 @@ public class BroadBandSnmpUtils {
 	 * 
 	 * @return true if OID value is greater than or equal to 200 and less than or
 	 *         equal to 500
-	 * @author dbada200
+	 * @author Deepa Bada
 	 * @Refactor Athira
 	 */
 	public static boolean verifyDocsIfSigQSignalNoiseWithRange(AutomaticsTapApi tapEnv, Dut device) {
@@ -1059,10 +1059,10 @@ public class BroadBandSnmpUtils {
 	}
 
 	/**
-	 * @param settop The settop to be validated
+	 * @param device The device to be validated
 	 * @param tapEnv EactsTapApi instance
 	 * @return true if OID is read-only
-	 * @author dbada200
+	 * @author Deepa Bada
 	 */
 	public static boolean verifyReadOnlySignalNoiseStatus(Dut device, AutomaticsTapApi tapEnv) {
 
@@ -1085,7 +1085,7 @@ public class BroadBandSnmpUtils {
 	/**
 	 * Utility method to validate CmEthernetOperSetting value retrieved from SNMP
 	 * 
-	 * @param settop The settop to be validated.
+	 * @param device The device to be validated.
 	 * @param output input
 	 * @return status output
 	 * @Refactor Alan_Bivera
@@ -1093,7 +1093,7 @@ public class BroadBandSnmpUtils {
 	public static boolean validateCmEthernetOperSettingValueRetrievedFromSnmp(String output) {
 		boolean status = false;
 		try {
-			// Megabits per second = bps per second ÷ 1,000,000
+
 			int result = Integer.parseInt(output);
 			result = result / (BroadBandTestConstants.CONSTANT_1000000);
 			status = (result == BroadBandTestConstants.CONSTANT_0) || (result == BroadBandTestConstants.CONSTANT_10)
@@ -1143,7 +1143,7 @@ public class BroadBandSnmpUtils {
 	 * Utility method to check whether all the OIDs under DOCSIS Signal Quality
 	 * Tables are READ ONLY
 	 * 
-	 * @param settop
+	 * @param device
 	 * @param tapEnv
 	 * @param snmpOutput
 	 * @param childOid
@@ -1180,7 +1180,7 @@ public class BroadBandSnmpUtils {
 	 * execute the same
 	 * 
 	 * @param tapEnv
-	 * @param settop
+	 * @param device
 	 * @param oid
 	 * @param dataType
 	 * @param value

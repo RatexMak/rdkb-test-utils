@@ -555,5 +555,38 @@ public class BroadBandTelemetry2Utils {
 	LOGGER.debug(" ENDING METHOD: verifyTelemetry2ConfigurationViaWebpa");
 	return result;
     }
+    
+    /**
+     * Utility method to set the telemetry 2 settings
+     * 
+     * @param device
+     *            {@link Instanceof Dut}
+     * @return setting result
+     * 
+     * @author Sathurya_R
+     * 
+     */
+    public static boolean setTelemetry2ConfigurationViaWebpa(Dut device, AutomaticsTapApi tapEnv) {
+	LOGGER.debug(" STARTING METHOD: setTelemetry2ConfigurationViaWebpa");
+	boolean result = false;
+	try {
+	    result = false;
+	    for (BroadBandTestConstants.TELEMETRY_2_WEBPA_SETTINGS telesetting : BroadBandTestConstants.TELEMETRY_2_WEBPA_SETTINGS
+		    .values()) {
+		result = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv, telesetting.getParam(),
+			telesetting.getParam().equals(BroadBandWebPaConstants.WEBPA_PARAM_FOR_TELEMETRY_2_0_ENABLE)
+				? WebPaDataTypes.BOOLEAN.getValue()
+				: WebPaDataTypes.STRING.getValue(),
+			telesetting.getDefaultT2Config());
+		if (!result) {
+		    break;
+		}
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception occurred while setting T2 configurations", e);
+	}
+	LOGGER.debug(" ENDING METHOD: setTelemetry2ConfigurationViaWebpa");
+	return result;
+    }
 
 }

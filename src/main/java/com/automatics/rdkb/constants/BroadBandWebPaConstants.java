@@ -26,11 +26,20 @@ public class BroadBandWebPaConstants {
 	/** WebPA Parameter to update XDNS Device Tag Name */
 	public static final String WEBPA_PARAM_TO_UPDATE_XDNS_DEVICE_TAG = "Device.X_RDKCENTRAL-COM_XDNS.DefaultDeviceTag";
 
+    /** Webpa param for 2.4GHz LNF SSIDAdvertisementEnabled */
+    public static final String WEBPA_PARAM_Device_WiFi_AccessPoint_10004_SSIDAdvertisementEnabled = "Device.WiFi.AccessPoint.10004.SSIDAdvertisementEnabled";
+
+    /** Webpa param for 5GHz LNF SSIDAdvertisementEnabled */
+    public static final String WEBPA_PARAM_Device_WiFi_AccessPoint_10104_SSIDAdvertisementEnabled = "Device.WiFi.AccessPoint.10104.SSIDAdvertisementEnabled";
+
 	/** WebPA Parameter to get Default SSID for 2.4 Ghz */
 	public static final String WEBPA_DEFAULT_SSID_NAME_2_4_GHZ = "Device.WiFi.SSID.10001.X_COMCAST-COM_DefaultSSID";
 
 	/** WebPA Parameter to get Default SSID for 5 Ghz */
 	public static final String WEBPA_DEFAULT_SSID_NAME_5_GHZ = "Device.WiFi.SSID.10101.X_COMCAST-COM_DefaultSSID";
+	
+    /** WebPA Parameter for Private Prefer Connection */
+    public static final String WEBPA_PARAMETER_PREFER_PRIVATE_CONNECTION = "Device.WiFi.X_RDKCENTRAL-COM_PreferPrivate";
 
 	/** WebPA Parameter to get SSID of 5G Private Network */
 	public static final String WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID = "Device.WiFi.SSID.10101.SSID";
@@ -2475,5 +2484,114 @@ public static final String WEBPA_PARAM_DEVICE_ETHERNET_INTERFACE_ENTRIES = "Devi
 
    /** TR69 param for reboot device */
    public static final String TR69_PARAM_REBOOT = "Device.X_CISCO_COM_DeviceControl.RebootDevice";
+   
+   /** Webpa parameter for wifi feature MFPCONFIG */
+   public static final String WEBPA_PARAM_WIFI_FEATURE_MFPCONFIG = "Device.WiFi.FeatureMFPConfig";
+   
+   /**
+    * WebPa parameter for Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.BLERadio
+    */
+   public static final String WEBPA_PARAM_FEATURE_BLE_RADIO = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.BLERadio";
+
+   /**
+    * WebPa parameter for Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.BLE.Discovery
+    */
+   public static final String WEBPA_PARAM_FEATURE_BLE_DISCOVERY = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.BLE.Discovery";
+
+   /**
+    * WebPA Parameter to get Passphrase of 2.4 GHZ private WiFi Network
+    */
+   public static final String WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_1_SECURITY_COMCAST_COM_KEYPASSPHRASE = "Device.WiFi.AccessPoint.1.Security.X_COMCAST-COM_KeyPassphrase";
+
+   /** WebPA parameter to set WiFi GAS configuration */
+   public static final String WEBPA_PARAM_WIFI_GAS_CONFIGURATION = "Device.WiFi.X_RDKCENTRAL-COM_GASConfiguration";
+
+   /** WebPA parameter to set WiFi GAS Queries Stats */
+   public static final String WEBPA_PARAM_WIFI_GAS_STATS_QUERIES = "Device.WiFi.X_RDKCENTRAL-COM_GASStats.1.Queries";
+
+   /** WebPA parameter to set WiFi GAS QueryRate Stats */
+   public static final String WEBPA_PARAM_WIFI_GAS_STATS_QUERY_RATE = "Device.WiFi.X_RDKCENTRAL-COM_GASStats.1.QueryRate";
+   
+   /** WebPA parameter to set WiFi GAS Responses Stats */
+   public static final String WEBPA_PARAM_WIFI_GAS_STATS_RESPONSES = "Device.WiFi.X_RDKCENTRAL-COM_GASStats.1.Responses";
+
+   /** WebPA parameter to set WiFi GAS ResponseRate Stats */
+   public static final String WEBPA_PARAM_WIFI_GAS_STATS_RESPONSE_RATE = "Device.WiFi.X_RDKCENTRAL-COM_GASStats.1.ResponseRate";
+
+   /** WebPA parameter to set WiFi GAS NoRequestOutstanding Stats */
+   public static final String WEBPA_PARAM_WIFI_GAS_STATS_REQUEST_OUTSTANDING = "Device.WiFi.X_RDKCENTRAL-COM_GASStats.1.NoRequestOutstanding";
+
+   /** WebPA parameter to set WiFi GAS ResponsesDiscarded Stats */
+   public static final String WEBPA_PARAM_WIFI_GAS_STATS_RESPONSES_DISCARDED = "Device.WiFi.X_RDKCENTRAL-COM_GASStats.1.ResponsesDiscarded";
+
+   /** WebPA parameter to set WiFi GAS FailedResponses Stats */
+   public static final String WEBPA_PARAM_WIFI_GAS_STATS_FAILED_RESPONSES = "Device.WiFi.X_RDKCENTRAL-COM_GASStats.1.FailedResponses";
+   
+   /** Webpa parameter for telemetry TxRxRateList */
+   public static final String WEBPA_PARAM_WIFI_TELE_TXRX_RATE_LIST = "Device.DeviceInfo.X_RDKCENTRAL-COM_WIFI_TELEMETRY.TxRxRateList";
+   
+   /** WebPA parameter to get the public WiFi BSSID */
+   public static final String WEBPA_PARAM_DEVICE_PUBLIC_WIFI_SSID_BSSID = "Device.WiFi.SSID.{i}.BSSID";
+   
+   /** WebPA parameter for Device Finger Print Logging Period */
+   public static final String WEBPA_PARAM_DEVICE_FINGER_PRINT_LOGGING_PERIOD = "Device.DeviceInfo.X_RDKCENTRAL-COM_DeviceFingerPrint.LoggingPeriod";
+   
+   /** WebPA Parameter to update the Global DNS IPv4 value */
+   public static final String WEBPA_PARAM_TO_UPDATE_GLOBAL_SECONDARY_XDNS_IPV4 = "Device.X_RDKCENTRAL-COM_XDNS.DefaultSecondaryDeviceDnsIPv4";
+
+   /** WebPA Parameter to update the Global DNS IPv6 value */
+   public static final String WEBPA_PARAM_TO_UPDATE_GLOBAL_SECONDARY_XDNS_IPV6 = "Device.X_RDKCENTRAL-COM_XDNS.DefaultSecondaryDeviceDnsIPv6";
+   
+   /** WebPA parameter for SpeedTest.Authentication */
+   public static final String WEBPA_PARAM_SPEED_TEST_AUTHENTICATION = "Device.IP.Diagnostics.X_RDKCENTRAL-COM_SpeedTest.Authentication";
+   
+   /** WebPA Parameter to enable/disable Parental control managed devices feature */
+   public static final String WEBPA_PARAM_TO_ENABLE_PARENTAL_CONTROL_MANAGED_DEVICES_FEATURE = "Device.X_Comcast_com_ParentalControl.ManagedDevices.Enable";
+   
+   /** WebPA Parameter to enable/disable Parental control managed devices allow all */
+   public static final String WEBPA_PARAM_TO_ENABLE_PARENTAL_CONTROL_ALLOW_ALL = "Device.X_Comcast_com_ParentalControl.ManagedDevices.AllowAll";
+   
+   /** WebPA Parameter to add/get parental control managed devices table */
+   public static final String WEBPA_PARAM_TO_GET_PARENTAL_CONTROL_MANAGED_DEVICES_TABLE = "Device.X_Comcast_com_ParentalControl.ManagedDevices.Device.";
+
+   /** Webpa parameter to enable OVS */
+   public static final String WEBPA_PARAM_OVS_ENABLE = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.OVS.Enable";
+
+   /** WebPA parameter for secured public wifi 2GHz SSID name */
+   public static final String WEBPA_PARAM_2GHZ_SECURED_PUBLIC_WIFI_SSID = "Device.WiFi.SSID.10005.SSID";
+
+   /** WebPA parameter for secured public wifi 5GHz SSID name */
+   public static final String WEBPA_PARAM_5GHZ_SECURED_PUBLIC_WIFI_SSID = "Device.WiFi.SSID.10105.SSID";
+   
+   /** WebPA Parameter for WiFi associated device details */
+   public static final String WEBPA_PARAM_FOR_CONNECTED_DEVICES_DETAILS = "Device.WiFi.AccessPoint.{i}.AssociatedDevice.";
+   
+   /** WebPA Parameter to check secondary cpu dma memory fragmentation details */
+   public static final String WEBPA_PARAM_SECONDARY_CPU_MEMFRAG_DMA = "Device.SelfHeal.CpuMemFrag.2.DMA";
+
+   /** WebPA Parameter to check secondary cpu dma32 memory fragmentation details */
+   public static final String WEBPA_PARAM_SECONDARY_CPU_MEMFRAG_DMA32 = "Device.SelfHeal.CpuMemFrag.2.DMA32";
+
+   /** WebPA Parameter to check secondary cpu normal memory fragmentation details */
+   public static final String WEBPA_PARAM_SECONDARY_CPU_MEMFRAG_NORMAL = "Device.SelfHeal.CpuMemFrag.2.Normal";
+
+   /** WebPA Parameter to check secondary cpu highmem memory fragmentation details */
+   public static final String WEBPA_PARAM_SECONDARY_CPU_MEMFRAG_HIGHMEM = "Device.SelfHeal.CpuMemFrag.2.Highmem";
+
+   /** WebPA Parameter to check primary cpu dma memory fragmentation details */
+   public static final String WEBPA_PARAM_PRIMARY_CPU_MEMFRAG_DMA = "Device.SelfHeal.CpuMemFrag.1.DMA";
+
+   /** WebPA Parameter to check primary cpu dma32 memory fragmentation details */
+   public static final String WEBPA_PARAM_PRIMARY_CPU_MEMFRAG_DMA32 = "Device.SelfHeal.CpuMemFrag.1.DMA32";
+
+   /** WebPA Parameter to check primary cpu normal memory fragmentation details */
+   public static final String WEBPA_PARAM_PRIMARY_CPU_MEMFRAG_NORMAL = "Device.SelfHeal.CpuMemFrag.1.Normal";
+
+   /** WebPA Parameter to check primary cpu highmem memory fragmentation details */
+   public static final String WEBPA_PARAM_PRIMARY_CPU_MEMFRAG_HIGHMEM = "Device.SelfHeal.CpuMemFrag.1.Highmem";
+   
+   /** WebPA Parameter to check cpu fragmentation interval details */
+   public static final String WEBPA_PARAM_CPU_FRAGMENTATION_INTERVAL = "Device.SelfHeal.X_RDKCENTRAL-COM_CpuMemFragInterval";
+
 }
 

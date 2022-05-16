@@ -95,7 +95,7 @@ public class CodeDownloadUtils {
     /**
      * Method to get the current running image name from Version.txt file
      * 
-     * @param settop
+     * @param device
      *            Device under test
      * @param tapEnv
      *            {@code AutomaticsTapApi} instance

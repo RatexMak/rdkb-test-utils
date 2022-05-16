@@ -579,8 +579,8 @@ public class BroadBandXconfCdlUtils {
      * 
      * @param tapEnv
      *            instance of {@link AutomaticsTapApi}
-     * @param settop
-     *            instance of {@link Settop}
+     * @param device
+     *            instance of {@link Dut}
      * @param imageName
      *            image name for cdl
      * @param rebootImmediately
@@ -656,8 +656,8 @@ public class BroadBandXconfCdlUtils {
     /**
      * Perform Reboot and verify Xconf CDL
      * 
-     * @param settop
-     *            instance of{@link Settop}
+     * @param device
+     *            instance of{@link Dut}
      * @param tapEnv
      *            instance of {@link AutomaticsTapApi}
      * @param firmwareVersionToUpgrade
@@ -708,8 +708,8 @@ public class BroadBandXconfCdlUtils {
      *
      * @param tapEnv
      *            The {@link AutomaticsTapApi} instance.
-     * @param settop
-     *            The settop to be used.
+     * @param device
+     *            The device to be used.
      * @param imageVersion
      *            The name of image version.
      * @param rebootImmediately
@@ -719,7 +719,7 @@ public class BroadBandXconfCdlUtils {
      * 
      * @return FirmwareConfiguration The object which holds Xconf configurations
      * 
-     * @author sgunas200
+     * @author Sumathi Gunasekaran
      */
     public static FirmwareConfigurations configureXconfDownloadFirmwareDetailsWithInvalidURL(
 	    final AutomaticsTapApi tapEnv, final Dut device, String imageVersion, final boolean rebootImmediately,

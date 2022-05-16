@@ -242,4 +242,11 @@ public class BroadBandConnectedClientTestConstants {
     
     /** String variable to store connection type Ethernet */
     public static final String CLIENT_DEVICE_CONNECTION_TYPE_ETHERNET = "Ethernet";
+    
+    /** Pattern to match iperf response for sender */
+    public static final String PATTERN_TO_GET_IPERF_TRANSFER_RATE_SENT_FROM_CLIENT = ".*\\s+([\\d\\.]+\\s+[KMG]?Bytes).*sender";
+  
+    /** Pattern to match iperf response for receiver */
+    public static final String PATTERN_TO_GET_IPERF_TRANSFER_RATE_RECEIVED_BY_SERVER = ".*\\s+([\\d\\.]+\\s+[KMG]?Bytes).*receiver";
+
 }

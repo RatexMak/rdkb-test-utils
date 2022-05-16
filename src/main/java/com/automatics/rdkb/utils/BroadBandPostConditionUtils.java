@@ -28,11 +28,13 @@ import org.slf4j.LoggerFactory;
 import com.automatics.constants.AutomaticsConstants;
 import com.automatics.device.Dut;
 import com.automatics.exceptions.TestException;
+import com.automatics.rdkb.BroadBandResultObject;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
 import com.automatics.rdkb.constants.RDKBTestConstants.WiFiFrequencyBand;
 import com.automatics.rdkb.constants.WebPaParamConstants.WebPaDataTypes;
+import com.automatics.rdkb.enums.BroadBandMFPConfigEnum;
 import com.automatics.rdkb.utils.cdl.BroadBandCodeDownloadUtils;
 import com.automatics.rdkb.utils.cdl.BroadBandXconfCdlUtils;
 import com.automatics.rdkb.utils.telemetry.BroadBandTelemetry2Utils;
@@ -53,6 +55,8 @@ public class BroadBandPostConditionUtils {
 
 	/** SLF4J logger. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(BroadBandPostConditionUtils.class);
+	
+	
 
 	/**
 	 * Post-Condition method to reactivate the device
@@ -108,7 +112,7 @@ public class BroadBandPostConditionUtils {
 	 * Post-Condition method to trigger Original build on the device. Existing build
 	 * on the device before starting the test
 	 * 
-	 * @param settop                  {@link Settop}
+	 * @param device                  {@link Dut}
 	 * @param hasLatestBuildChanged   It is 'True' - Latest build flashed.'False' -
 	 *                                Latest build didn't flashed
 	 * 
@@ -170,7 +174,7 @@ public class BroadBandPostConditionUtils {
 	 * Post-Condition method to clear the CDL information URL in
 	 * /nvram/swupdate.conf
 	 * 
-	 * @param settop              instance of{@link Settop}
+	 * @param device              instance of{@link Dut}
 	 * @param tapEnv              instance of {@link AutomaticsTapApi}
 	 * @param postConditionNumber String to hold post condition number.
 	 */
@@ -1167,59 +1171,275 @@ public class BroadBandPostConditionUtils {
 					+ exception.getMessage());
 		}
 	}
-	
+
 	/**
-     * Post-Condition method to used to disable the TR69 Configuration
+	 * Post-Condition method to used to disable the TR69 Configuration
+	 * 
+	 * @param device            {@link Dut}
+	 * @param tapEnv            {@link AutomaticsTapApi}
+	 * @param postConStepNumber Post condition number
+	 * 
+	 * @refactor yamini.s
+	 */
+	public static void postConditionToDisableTR069Configuration(Dut device, AutomaticsTapApi tapEnv,
+			int postConStepNumber) {
+		String errorMessage = null;
+		boolean status = false;
+		/**
+		 * POST-CONDITION : Disable the TR69 configuration
+		 */
+		LOGGER.info("#######################################################################################");
+		LOGGER.info("POST-CONDITION " + postConStepNumber + " : DESCRIPTION : Disable the TR69 configuration");
+		LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : Set "
+				+ BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_ENABLECWMP + " as FALSE.");
+		LOGGER.info("POST-CONDITION " + postConStepNumber
+				+ " : EXPTECTED : Disable the TR69 configuration configuration should be success");
+		LOGGER.info("#######################################################################################");
+		errorMessage = "Failed to Disable the TR69 configuration";
+		try {
+			status = BroadBandCommonUtils.getWebPaValueAndVerify(device, tapEnv,
+					BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_ENABLECWMP,
+					BroadBandTestConstants.FALSE);
+			LOGGER.info("GET DEVICE_MANAGEMENTSERVER_ENABLECWMP :" + status);
+		} catch (Exception exception) {
+			LOGGER.error(errorMessage + " : " + exception.getMessage());
+		}
+		try {
+			if (!status) {
+				LOGGER.info("TRYING TO SET DEVICE_MANAGEMENTSERVER_ENABLECWMP :" + status);
+				status = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv,
+						BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_ENABLECWMP,
+						WebPaDataTypes.BOOLEAN.getValue(), BroadBandTestConstants.FALSE);
+			}
+		} catch (Exception exception) {
+			LOGGER.error(errorMessage + " : " + exception.getMessage());
+		}
+		if (status) {
+			LOGGER.info("POST-CONDITION " + postConStepNumber
+					+ " : ACTUAL : TR69 configuration configuration disabled successfully.");
+		} else {
+			LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
+		}
+	}
+
+	/**
+	 * POST condition to Revert Back default values of MFPConfig
+	 * 
+	 * @param device            {@link Dut}
+	 * @param tapEnv            {@link AutomaticsTapApi}
+	 * @param postConStepNumber Post condition number
+	 */
+
+	public static void postConditionTosetDefaultMFPConfigValues(Dut device, AutomaticsTapApi tapEnv,
+			int postConStepNumber) {
+		String errorMessage = null;
+		boolean status = false;
+		List<BroadBandMFPConfigEnum> wifiAccessPoints = null;
+		BroadBandResultObject resultObj = null;
+		/**
+		 * POST-CONDITION : Set MFPConfig to default values
+		 */
+		LOGGER.info("#######################################################################################");
+		LOGGER.info(
+				"POST-CONDITION " + postConStepNumber + ": DESCRIPTION : Revert back the MFPConfig to default values ");
+		LOGGER.info("POST-CONDITION " + postConStepNumber
+				+ ": ACTION : Execute webpa set command:Parameter: Device.WiFi.Feature.MFPConfig to False");
+		LOGGER.info("POST-CONDITION " + postConStepNumber
+				+ ": EXPECTED : Webpa set operation should be success and value should be updated as Disabled");
+		LOGGER.info("#######################################################################################");
+		status = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv,
+				BroadBandWebPaConstants.WEBPA_PARAM_WIFI_FEATURE_MFPCONFIG, WebPaDataTypes.BOOLEAN.getValue(),
+				BroadBandTestConstants.FALSE);
+		if (status) {
+			LOGGER.info("POST-CONDITION " + postConStepNumber
+					+ ": ACTUAL : Successfully Set the Values of MFPConfig  to Default Value");
+		} else {
+			LOGGER.error("POST-CONDITION " + postConStepNumber + ": ACTUAL : " + errorMessage);
+		}
+
+	}
+
+	/**
+	 * Post-Condition method to disable the Xdns Status
+	 * 
+	 * @param device              {@link Dut}
+	 * @param tapApi              AutomaticsTapApi instance
+	 * @param postConditionNumber String to hold post condition number.
+	 * @refactor Alan_Bivera
+	 */
+	public static void executePostConditionToDisableXdnsStatus(Dut device, AutomaticsTapApi tapEnv,
+			int postConStepNumber) {
+		boolean status = false;
+		try {
+			LOGGER.info("#######################################################################################");
+			LOGGER.info("POST-CONDITION " + postConStepNumber + " : DESCRIPTION : VERIFY THE XDNS STATUS IS DISABLED");
+			LOGGER.info("POST-CONDITION " + postConStepNumber
+					+ " : ACTION : DISABLE AND VERIFY THE XDNS STATUS USING WEBPA");
+			LOGGER.info("POST-CONDITION " + postConStepNumber
+					+ " : EXPECTED : SUCCESSFULLY DISABLED THE XDNS ON GATEWAY DEVICE");
+			LOGGER.info("#######################################################################################");
+			status = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv,
+					BroadBandWebPaConstants.WEBPA_PARAM_TO_GET_XDNS_FEATURE_STATUS, BroadBandTestConstants.CONSTANT_3,
+					BroadBandTestConstants.FALSE);
+			if (status) {
+				LOGGER.info("POST-CONDITION " + postConStepNumber
+						+ " : ACTUAL : SUCCESSFULLY DISABLED THE XDNS ON GATEWAY DEVICE ");
+			} else {
+				LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : "
+						+ "UNABLE TO DISABLE THE XDNS ON GATEWAY DEVICE");
+			}
+		} catch (Exception e) {
+			LOGGER.info(e.getMessage());
+			LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Post-Condition method to enable/disable the prefer private wifi
+	 * 
+	 * @param device            instance of{@link Dut}
+	 * @param tapEnv            instance of {@link AutomaticsTapApi}
+	 * @param isEnabled         True - To be Enabled,False- To be Disabled
+	 * @param postConStepNumber Post condition number
+	 * @refactor Said Hisham
+	 */
+	public static void executePostConditionToTogglePreferPrivateWiFi(Dut device, AutomaticsTapApi tapEnv,
+			boolean isEnabled, int postConStepNumber) throws TestException {
+		String errorMessage = null;
+		boolean status = false;
+		try {
+			/**
+			 * POST CONDITION : ENABLE/DISABLE THE PREFER PTIVATE WIFI
+			 */
+			LOGGER.info("#######################################################################################");
+			LOGGER.info("POST-CONDITION " + postConStepNumber + " : DESCRIPTION : " + (isEnabled ? "ENABLE" : "DISABLE")
+					+ " THE PREFER PTIVATE WIFI");
+			LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : " + (isEnabled ? "ENABLE" : "DISABLE")
+					+ " THE PREFER PTIVATE WIFI" + BroadBandWebPaConstants.WEBPA_PARAMETER_PREFER_PRIVATE_CONNECTION
+					+ " STATUS AS " + (isEnabled ? "TRUE" : "FALSE") + " USING WEBPA");
+			LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : PREFER PTIVATE WIFI MUST BE "
+					+ (isEnabled ? "ENABLED" : "DISABLED"));
+			LOGGER.info("#######################################################################################");
+			try {
+				status = BroadBandCommonUtils.getWebPaValueAndVerify(device, tapEnv,
+						BroadBandWebPaConstants.WEBPA_PARAMETER_PREFER_PRIVATE_CONNECTION,
+						isEnabled ? BroadBandTestConstants.TRUE : BroadBandTestConstants.FALSE);
+			} catch (TestException exception) {
+				status = false;
+				LOGGER.error(errorMessage + " : " + exception.getMessage());
+			}
+			if (!status) {
+				errorMessage = "UNABLE TO " + (isEnabled ? "ENABLE" : "DISABLE") + " THE PREFER PTIVATE WIFI";
+				status = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv,
+						BroadBandWebPaConstants.WEBPA_PARAMETER_PREFER_PRIVATE_CONNECTION,
+						BroadBandTestConstants.CONSTANT_3,
+						isEnabled ? BroadBandTestConstants.TRUE : BroadBandTestConstants.FALSE);
+			}
+			if (status) {
+				LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTUAL : SUCCESSFULLY "
+						+ (isEnabled ? "ENABLED" : "DISABLED") + " THE PREFER PTIVATE WIFI");
+			} else {
+				LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL :" + errorMessage);
+			}
+		} catch (Exception exception) {
+			LOGGER.error("Execution error occurred while executing to enable prefer private wifi --> "
+					+ exception.getMessage());
+		}
+	}
+	
+    /**
+     * Post-Condition method to verify and change the given security mode
      * 
-     * @param device
-     *            {@link Dut}
+     * 
      * @param tapEnv
-     *            {@link ECatsTapApi}
+     *            instance of {@link AutomaticsTapApi}
+     * @param device
+     *            instance of{@link Dut}
      * @param postConStepNumber
      *            Post condition number
+     * @param securityModeToset
+     *            Security mode for 2.4 /5 Ghz
      * 
-     * @refactor yamini.s
+     * @throws TestException
+     * 
+     * @Refactor Sruthi Santhosh
      */
-    public static void postConditionToDisableTR069Configuration(Dut device, AutomaticsTapApi tapEnv,
-	    int postConStepNumber) {
+    public static void executePostConditionToSetSecurityMode(Dut device, AutomaticsTapApi tapEnv, int postConStepNumber,
+	    String securityModeToset) throws TestException {
 	String errorMessage = null;
 	boolean status = false;
-	/**
-	 * POST-CONDITION : Disable the TR69 configuration
-	 */
-	LOGGER.info("#######################################################################################");
-	LOGGER.info("POST-CONDITION " + postConStepNumber + " : DESCRIPTION : Disable the TR69 configuration");
-	LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : Set "
-		+ BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_ENABLECWMP + " as FALSE.");
-	LOGGER.info("POST-CONDITION " + postConStepNumber
-		+ " : EXPTECTED : Disable the TR69 configuration configuration should be success");
-	LOGGER.info("#######################################################################################");
-	errorMessage = "Failed to Disable the TR69 configuration";
 	try {
-	    status = BroadBandCommonUtils.getWebPaValueAndVerify(device, tapEnv,
-		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_ENABLECWMP,
-		    BroadBandTestConstants.FALSE);
-	    LOGGER.info("GET DEVICE_MANAGEMENTSERVER_ENABLECWMP :" + status);
-	} catch (Exception exception) {
-	    LOGGER.error(errorMessage + " : " + exception.getMessage());
-	}
-	try {
+	    /**
+	     * POST-CONDITION :SET THE SECURITY MODE FOR 2.4 GHZ SSID USING WEBPA
+	     */
+	    status = false;
+	    errorMessage = null;
+	    LOGGER.info("#######################################################################################");
+	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : DESCRIPTION : SET THE SECURITY MODE "
+		    + securityModeToset + " FOR 2.4 GHZ SSID ");
+	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : SET THE SECURITY MODE " + securityModeToset
+		    + " FOR 2.4 GHZ SSID USING WEBPA ");
+	    LOGGER.info("POST-CONDITION " + postConStepNumber
+		    + " : EXPTECTED : SECURITY MODE 'WPA2-Personal' CHANGED SUCCESSFULLY FOR 2.4 GHZ SSID");
+	    LOGGER.info("#######################################################################################");
+	    errorMessage = "UNABLE TO CHANGE THE SECURITY MODE " + securityModeToset + " FOR 2.4GHz SSID USING WEBPA. ";
+	    try {
+		status = BroadBandCommonUtils.getWebPaValueAndVerify(device, tapEnv,
+			BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_2_4_GHZ_PRIVATE_SECURITY_MODEENABLED,
+			securityModeToset);
+	    } catch (TestException exception) {
+		status = false;
+		LOGGER.error(errorMessage + " : " + exception.getMessage());
+	    }
 	    if (!status) {
-		LOGGER.info("TRYING TO SET DEVICE_MANAGEMENTSERVER_ENABLECWMP :" + status);
 		status = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv,
-			BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_MANAGEMENTSERVER_ENABLECWMP,
-			WebPaDataTypes.BOOLEAN.getValue(), BroadBandTestConstants.FALSE);
+			BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_2_4_GHZ_PRIVATE_SECURITY_MODEENABLED,
+			WebPaDataTypes.STRING.getValue(), securityModeToset);
+	    }
+	    if (status) {
+		LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTUAL : SECURITY MODE " + securityModeToset
+			+ " VERIFIED/CHANGED SUCCESSFULLY FOR 2.4 GHZ SSID.");
+	    } else {
+		LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL :" + errorMessage);
+	    }
+	    /**
+	     * POST-CONDITION :SET THE SECURITY MODE FOR 5 GHZ SSID USING WEBPA
+	     */
+	    postConStepNumber++;
+	    status = false;
+	    errorMessage = null;
+	    LOGGER.info("#######################################################################################");
+	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : DESCRIPTION : SET THE SECURITY MODE "
+		    + securityModeToset + " FOR 5 GHZ SSID ");
+	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : SET THE SECURITY MODE " + securityModeToset
+		    + " FOR 5 GHZ SSID USING WEBPA ");
+	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPTECTED : SECURITY MODE " + securityModeToset
+		    + " CHANGED SUCCESSFULLY FOR 5 GHZ SSID");
+	    LOGGER.info("#######################################################################################");
+	    errorMessage = "UNABLE TO CHANGE THE SECURITY MODE " + securityModeToset + " FOR 5GHz SSID USING WEBPA. ";
+	    try {
+		status = BroadBandCommonUtils.getWebPaValueAndVerify(device, tapEnv,
+			BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_5_GHZ_PRIVATE_SECURITY_MODEENABLED,
+			securityModeToset);
+	    } catch (TestException exception) {
+		status = false;
+		LOGGER.error(errorMessage + " : " + exception.getMessage());
+	    }
+	    if (!status) {
+		status = BroadBandWebPaUtils.setAndGetParameterValuesUsingWebPa(device, tapEnv,
+			BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_5_GHZ_PRIVATE_SECURITY_MODEENABLED,
+			WebPaDataTypes.STRING.getValue(), securityModeToset);
+	    }
+	    if (status) {
+		LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTUAL : SECURITY MODE " + securityModeToset
+			+ " VERIFIED/CHANGED SUCCESSFULLY FOR 5 GHZ SSID.");
+	    } else {
+		LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL :" + errorMessage);
 	    }
 	} catch (Exception exception) {
-	    LOGGER.error(errorMessage + " : " + exception.getMessage());
-	}
-	if (status) {
-	    LOGGER.info("POST-CONDITION " + postConStepNumber
-		    + " : ACTUAL : TR69 configuration configuration disabled successfully.");
-	} else {
-	    LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
+	    LOGGER.error(
+		    "Execution error occurred while executing to Set Security Mode post conditions due to exception --> "
+			    + exception.getMessage());
 	}
     }
-
-
 }

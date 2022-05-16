@@ -21,7 +21,7 @@ package com.automatics.rdkb.utils;
 /**
  * POJO Object that holds the result details.
  * 
- * @author BALAJI V, INFOSYS
+ * @author BALAJI V
  * @refactor Said Hisham
  */
 public class ResultValues {

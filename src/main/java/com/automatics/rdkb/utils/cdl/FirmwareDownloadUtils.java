@@ -363,7 +363,7 @@ public class FirmwareDownloadUtils {
      * 
      * @param tapApi
      *            instance of {@link AutomaticsTapApi}
-     * @param settop
+     * @param device
      *            instance of {@link Dut}
      * @return true if in maintenance window else false
      */
@@ -487,26 +487,14 @@ public class FirmwareDownloadUtils {
 	return status;
     }
 
-    /**
-     * Method to verify last reboot reason via Webpa
-     * 
-     * @param tapEnv
-     *            AutomaticsTapApi instance
-     * @param settop
-     *            Settop instance
-     * @param rebootReason
-     *            Reboot reason to be verified
-     * @return true if reboot reason is verified successfully
-     * 
-     */
 
     /**
      * Method to retrieve last reboot reason from RDKB device
      * 
      * @param tapEnv
      *            instance of {@link AutomaticsTapApi}
-     * @param settop
-     *            instance of {@link Settop}
+     * @param device
+     *            instance of {@link Dut}
      * @return last reboot reason
      */
     public static String getLastRebootReason(AutomaticsTapApi tapEnv, Dut device) {
@@ -555,8 +543,8 @@ public class FirmwareDownloadUtils {
     /**
      * Method to validate the current image both in ARM and ATOM Console
      * 
-     * @param settop
-     *            instance of {@link Settop}
+     * @param device
+     *            instance of {@link Dut}
      * @param imageName
      *            image name
      */
@@ -642,8 +630,8 @@ public class FirmwareDownloadUtils {
      * 
      * @param tapEnv
      *            {@link AutomaticsTapApi}
-     * @param settop
-     *            {@link Settop}
+     * @param device
+     *            {@link Dut}
      * @param cdlImageWithoutBinExtension
      *            String representing the CDL Image Name without .bin extension
      * 
@@ -1565,8 +1553,8 @@ public class FirmwareDownloadUtils {
      * 
      * @param tapEnv
      *            {@link AutomaticsTapApi} Reference
-     * @param settop
-     *            settop
+     * @param device
+     *            {@link Dut} Reference
      * @param last
      *            reboot reason source of reboot
      *

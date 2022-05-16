@@ -739,7 +739,7 @@ public class BroadBandFactoryResetUtils {
     /**
      * Enum class for Advanced Feature Service Setting option
      * 
-     * @author ppaner200
+     * @author Praveenkumar Paneerselvam
      *
      */
     public enum LocalGatewayIPv4 implements FactoryResetSettings {
@@ -1186,7 +1186,7 @@ public class BroadBandFactoryResetUtils {
      * 
      * @param tapEnv
      *            AutomaticsTapApi Object
-     * @param settop
+     * @param device
      *            Dut instance
      * @param RebootMethod
      *            Reboot methods

@@ -128,12 +128,6 @@ public class BroadBandPropertyKeyConstants {
 
     public static final String PROP_KEY_DUNFELL_DNSMASQ_VERSION = "dunfell.dnsmasq.version";
 
-    /** configparamgen path from stb.props **/
-    public static final String STB_PROPS_CONFIGPARAMGEN_VM_PATH = "config.param.gen.utility.rdkb.vm.path";
-
-    /** configparamgen utility file name **/
-    public static final String STB_PROPS_CONFIGPARAMGEN_FILENAME = "config.param.gen.utility.rdkb";
-
     /** Constant for Property Key to fetch download url to access AutoVault service */
     public static final String PROP_KEY_AUTOVAULT_DOWNLOAD_URL = "autovault.downloadURL";
 
@@ -215,6 +209,12 @@ public class BroadBandPropertyKeyConstants {
 
     /** The property key for partner ID Names */
     public static final String PROP_KEY_SPECIFIC_PARTNER_ID = "specific.partner.id";
+    
+    /** The property key for partner ID Names */
+    public static final String PROP_KEY_SPECIFIC_PARTNER_ID_ONE = "specific.partner.id_one";
+    
+    /** The property key for partner ID Names */
+    public static final String PROP_KEY_SPECIFIC_PARTNER_ID_TWO = "specific.partner.id_two";
 
     /** Property key for Device Ledlogs */
     public static final String PROP_KEY_LEDLOGS_DEVICE = "Device.ledlogs.Available.";
@@ -328,4 +328,55 @@ public class BroadBandPropertyKeyConstants {
     
     /** Test constant for level one site host address in stb.properties file */
     public static final String PROP_KEY_HOST_ADDRESS_FOR_LEVEL_ONE_SITE = "dnsoverride.siteaddress.level.one";
+    
+    public static final String PROP_KEY_TXRX_RATELIST_DEVICE = "txrx.ratelist.devices";
+    
+	public static final String STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE = "default.global.dns.ipv4.value";
+
+	public static final String STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE = "default.global.dns.ipv6.value";
+
+	public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = "dns.ipv4.value.level.one.primary";
+
+	public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY = "dns.ipv4.value.level.two.primary";
+	
+	public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = "dns.ipv4.value.level.three.primary";
+
+	public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = "dns.ipv6.value.level.one.primary";
+	
+	public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY = "dns.ipv6.value.level.two.primary";
+	
+	public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = "dns.ipv6.value.level.three.primary";
+
+	public static final String STRING_DNS_VALID_IPV4_VALUE = "dns.valid.ipv4.value";
+
+	public static final String STRING_DNS_VALID_IPV6_VALUE = "dns.valid.ipv6.value";
+
+	public static final String STRING_DNS_INVALID_SECONDARY_IPV4_VALUE = "dns.invalid.secondary.ipv4.value";
+
+	public static final String STRING_DNS_INVALID_SECONDARY_IPV6_VALUE = "dns.invalid.secondary.ipv6.value";
+
+	public static final String STRING_DNS_INVALID_PRIMARY_IPV4_VALUE = "dns.invalid.primary.ipv4.value";
+
+	public static final String STRING_DNS_INVALID_PRIMARY_IPV6_VALUE = "dns.invalid.primary.ipv6.value";
+
+	public static final String STRING_DNS_VALID_SECONDARY_IPV4_VALUE = "dns.valid.secondary.ipv4.value";
+	
+	public static final String STRING_DNS_VALID_SECONDARY_IPV6_VALUE = "dns.valid.secondary.ipv6.value";
+
+	public static final String STRING_DNS_ANOTHER_INVALID_SECONDARY_IPV4_VALUE = "dns.another.invalid.secondary.ipv4.value";
+	
+	public static final String STRING_DNS_ANOTHER_INVALID_SECONDARY_IPV6_VALUE = "dns.another.invalid.secondary.ipv6.value";
+	
+	public static final String DEVICE_CHECK_VALUE_XDNS = "is.device.check.xdns.";
+	
+	public static final String CURRENT_UPNP_VERSION = "current.upnp.version";
+	
+	public static final String PARTIAL_DEVICE_CHECK_GBPAD = "is.device.check.gbpad.";
+
+	public static final String PARTIAL_DEVICE_CHECK_GBPAD1 = "is.device.check.gbpad1.";
+
+	public static final String PARTIAL_DEVICE_CHECK_GBPAD2 = "is.device.check.gbpad2.";
+
+	public static final String IS_SERVER_CONFIGURED_TO_UPLOAD_CRASH_DETAILS = "is.server.configured";
+
 }

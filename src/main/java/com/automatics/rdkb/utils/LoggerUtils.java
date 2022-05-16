@@ -28,7 +28,7 @@ import com.automatics.utils.CommonMethods;
 /**
  * Utility class which handles the Logger Related Operations.
  * 
- * @author BALAJI V, INFOSYS
+ * @author BALAJI V
  */
 public class LoggerUtils {
 

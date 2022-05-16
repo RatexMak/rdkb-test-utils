@@ -118,15 +118,15 @@ public class BroadBandWifiWhixUtils {
      * @param pollInterval
      * @return
      */
-    public static String calculateAverageCpuAndMemoryUtilisation(Dut settop, AutomaticsTapApi tapEnv, long pollDuration,
+    public static String calculateAverageCpuAndMemoryUtilisation(Dut device, AutomaticsTapApi tapEnv, long pollDuration,
 	    long pollInterval) {
 	String averageValues = null;
 	String response1, response2 = null;
 	List<String> utilisationValues = new ArrayList<String>();
 	long startTime = System.currentTimeMillis();
 	do {
-	    response1 = tapEnv.executeCommandUsingSsh(settop, BroadBandTestConstants.CMD_GET_MEM_USAGE);
-	    response2 = tapEnv.executeCommandUsingSsh(settop, BroadBandTestConstants.CMD_GET_CPU_USAGE);
+	    response1 = tapEnv.executeCommandUsingSsh(device, BroadBandTestConstants.CMD_GET_MEM_USAGE);
+	    response2 = tapEnv.executeCommandUsingSsh(device, BroadBandTestConstants.CMD_GET_CPU_USAGE);
 	    if (CommonMethods.isNotNull(response1) && CommonMethods.isNotNull(response2)) {
 		utilisationValues.add(CommonMethods.patternFinder(response1, BroadBandTestConstants.CMD_GREP_MEM_UTIL)
 			+ BroadBandTestConstants.SINGLE_HASH_TERMINATING_CHAR

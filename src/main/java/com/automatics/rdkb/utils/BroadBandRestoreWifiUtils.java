@@ -61,8 +61,8 @@ public class BroadBandRestoreWifiUtils {
      * 
      * @param tapEnv
      *            {@link AutomaticsTapApi}
-     * @param settop
-     *            {@link Settop}
+     * @param device
+     *            {@link Dut}
      * 
      * @return Boolean representing the result of the wifi restore Operation.
      * @refactor Govardhan
@@ -268,8 +268,8 @@ public class BroadBandRestoreWifiUtils {
      * 
      * @param tapEnv
      *            {@link AutomaticsTapApi}
-     * @param settop
-     *            {@link Settop}
+     * @param device
+     *            {@link Dut}
      * @param valueExpected
      *            Value for comparison
      * @param mib

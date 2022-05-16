@@ -356,11 +356,11 @@ public class BroadBandWebPaUtils {
 	 * 
 	 * @author Govardhan
 	 */
-	public static boolean getParameterValuesUsingWebPaOrDmcliAndVerify(Dut settop, AutomaticsTapApi tapApi,
+	public static boolean getParameterValuesUsingWebPaOrDmcliAndVerify(Dut device, AutomaticsTapApi tapApi,
 			String parameter, String valueToBeVerified) {
 		LOGGER.debug("STARTING METHOD getParameterValuesUsingWebPaOrDmcliAndVerify()");
 		boolean status = false;
-		String response = getParameterValuesUsingWebPaOrDmcli(settop, tapApi, parameter);
+		String response = getParameterValuesUsingWebPaOrDmcli(device, tapApi, parameter);
 		status = CommonMethods.isNotNull(response) && response.equalsIgnoreCase(valueToBeVerified);
 		LOGGER.info("Is value expected is same as value obtained - " + status + " Value expected - " + valueToBeVerified
 				+ " value obtained - " + response);
@@ -371,7 +371,7 @@ public class BroadBandWebPaUtils {
 	/**
 	 * Utility method to verify the supported security modes
 	 * 
-	 * @param settop    The device to be validated
+	 * @param device    The device to be validated
 	 * @param tapEnv    {@link AutomaticsTapApi} Reference
 	 * @param parameter webPA Parameter to set the security mode
 	 * @param setValue
@@ -1730,7 +1730,7 @@ public class BroadBandWebPaUtils {
 	 * Utility method to retrieve all Device Status related WebPA parameters based
 	 * on supported models.
 	 * 
-	 * @param settop The device to be validated.
+	 * @param device The device to be validated.
 	 * @return array of WebPA parameters used for fetching the device status.
 	 * @refactor Govardhan
 	 */
@@ -1843,7 +1843,7 @@ public class BroadBandWebPaUtils {
 	 * Utility Method to fetch the interface name based on the device <interface
 	 * name>
 	 * 
-	 * @param settop    Set top to be used
+	 * @param device    Set top to be used
 	 * @param tapEnv    {@link AutomaticsTapApi} Reference
 	 * @param band      wifi band
 	 * @param wifiType  Type of wifi
@@ -1944,7 +1944,7 @@ public class BroadBandWebPaUtils {
 	/**
 	 * Utility Method to get the SSID from the device side <interface name>
 	 * 
-	 * @param settop        Set top to be used
+	 * @param device        Set top to be used
 	 * @param tapEnv        {@link AutomaticsTapApi} Reference
 	 * @param interfaceName Interface name to get the SSID
 	 * @return Retruns the SSID Name of the particular interface given
@@ -2145,7 +2145,7 @@ public class BroadBandWebPaUtils {
 	 * Utility Method to get the MAC Address from the device side
 	 * 
 	 * 
-	 * @param settop        Set top to be used
+	 * @param device        Set top to be used
 	 * @param tapEnv        {@link AutomaticsTapApi} Reference
 	 * @param interfaceName Interface name to get the MAC Address
 	 * @return Returns the MAC Addresss of the particular interface given
@@ -2211,7 +2211,7 @@ public class BroadBandWebPaUtils {
 	 * Utility method to disable the SSID for the given parameter and verify the
 	 * same from device side for "ssid enable" parameters
 	 * 
-	 * @param settop        Set top to be used
+	 * @param device        Set top to be used
 	 * @param tapEnv        {@link AutomaticsTapApi} Reference
 	 * @param interfaceName Interface name to get the MAC Address
 	 * @param parameter     Wifi parameter to disable it.
@@ -2243,7 +2243,7 @@ public class BroadBandWebPaUtils {
 	 * Utility Method to get the Wifi Name from the device
 	 * 
 	 * 
-	 * @param settop        Set top to be used
+	 * @param device        Set top to be used
 	 * @param tapEnv        {@link AutomaticsTapApi} Reference
 	 * @param interfaceName Interface name to get the Wifi Name
 	 * @return Returns the Wifi Name of the particular interface given
@@ -2310,7 +2310,7 @@ public class BroadBandWebPaUtils {
 	 * Utility method to enable the SSID for the given parameter and verify the same
 	 * from device side for "ssid enable" parameters
 	 * 
-	 * @param settop        Set top to be used
+	 * @param device        Set top to be used
 	 * @param tapEnv        {@link AutomaticsTapApi} Reference
 	 * @param interfaceName Interface name to get the MAC Address
 	 * @param parameter     Wifi parameter to enable it.
@@ -2451,7 +2451,7 @@ public class BroadBandWebPaUtils {
 	 * parameters
 	 * 
 	 * @param request
-	 * @param settop
+	 * @param device
 	 * @return
 	 * @Refactor Sruthi Santhosh
 	 */
@@ -2581,7 +2581,7 @@ public class BroadBandWebPaUtils {
 	/**
 	 * Method to execute multiple webpa requests in parallel
 	 * 
-	 * @param settop {@link device}
+	 * @param device {@link Dut}
 	 * @param tapEnv {@link AutomaticsTapApi}
 	 * @param params String list of webpa parameters to execute parallel requests
 	 * @return List of webpa request outputs
@@ -2821,8 +2821,8 @@ public class BroadBandWebPaUtils {
 	/**
 	 * Helper method to get the Partner ID of the Device
 	 * 
-	 * @param settop {@link device}
-	 * @param tapEnv {@link tapEnv}
+	 * @param device {@link Dut}
+	 * @param tapEnv {@link AutomaticsTapApi}
 	 * 
 	 */
 	public static void getPartnerIdOfDevice(Dut device, AutomaticsTapApi tapEnv) {
@@ -2945,7 +2945,7 @@ public class BroadBandWebPaUtils {
      * Method used to the execute the multiple webpa parameter
      * 
      * @param device
-     *            instance of {@link Settop}
+     *            instance of {@link device}
      * @param tapEnv
      *            instance of {@link AutomaticsTapApi}
      * @param listOfWebpaGetParameters
@@ -3133,7 +3133,7 @@ public class BroadBandWebPaUtils {
      * Method to validate the two Map Entries. i.e comparing the key an value pair both maps
      * 
      * @param device
-     *            instance of {@link Settop}
+     *            instance of {@link Dut}
      * @param tapEnv
      *            instance of {@link AutomaticsTapApi}
      * @param inititalValues
@@ -3496,7 +3496,7 @@ public class BroadBandWebPaUtils {
     /**
      * Method to enable public wifi
      * 
-     * @param settop
+     * @param device
      * @param tapEnv
      * @return status
      * @refactor Alan_Bivera
@@ -3698,7 +3698,7 @@ public class BroadBandWebPaUtils {
      * 
      * i,e toggling the parameter values
      * 
-     * @ param Settop device @ param String parameter - webpa parameter whose value is to be updated
+     * @ param device device @ param String parameter - webpa parameter whose value is to be updated
      * 
      * @ return String updated value on success null on failure.
      * 
@@ -3733,5 +3733,47 @@ public class BroadBandWebPaUtils {
 	    throw new TestException(
 		    "unable to change the value of webpa parameter " + parameter + "to value " + updatedValue);
 
+    }
+    
+
+    /**
+     * Method to verify value of WebPA parameter with JSON value
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param parameter
+     *            TR181 parameter to be verified
+     * @param jsonValue
+     *            JSON value to be verified
+     * 
+     * @return true if parameter contains passed json value
+     * 
+     * @author Ashwin sankara
+     * @refactor Govardhan
+     */
+    public static boolean verifyJsonParameterValue(Dut device, AutomaticsTapApi tapEnv, String parameter,
+	    JSONObject jsonValue) {
+	LOGGER.debug("STARTING METHOD: verifyJsonParameterValue");
+	boolean result = false;
+	String response = null;
+	JSONObject paramValue = null;
+
+	try {
+	    response = tapEnv.executeWebPaCommand(device, parameter);
+	    if (CommonMethods.isNotNull(response)) {
+		paramValue = new JSONObject(response.trim());
+		result = jsonValue.equals(paramValue);
+	    } else {
+		LOGGER.error("Obtained null value of parameter: " + parameter);
+	    }
+
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured in verifyJsonParameterValue: " + e.getMessage());
+	}
+
+	LOGGER.debug("ENDING METHOD: verifyJsonParameterValue");
+	return result;
     }
 }

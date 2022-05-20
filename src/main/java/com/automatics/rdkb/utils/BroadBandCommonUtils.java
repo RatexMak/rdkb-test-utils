@@ -7394,6 +7394,49 @@ public class BroadBandCommonUtils {
 	return result;
     }
 
+    /**
+     * Utility method to validate the IP of namespace
+     * 
+     * @param response
+     *            Command output
+     * @param commandOutputPattern
+     *            Pattern that is to match the command output
+     * 
+     * @return true if all the pattern matches
+     * 
+     * @author Alan_Bivera
+     */
+    public static boolean validateNameServerIP(String response, String commandOutputPattern) {
+	LOGGER.info("STARTING METHOD: validateNameServerIP()");
+	boolean status = false;
+	try {
+	    if (CommonMethods.isNotNull(response)) {
 
+		ArrayList<String> matchedList = CommonMethods.patternFinderToReturnAllMatchedString(response,
+			commandOutputPattern);
+		if (!matchedList.isEmpty()) {
+		    for (String entry : matchedList) {
+			status = false;
+			LOGGER.info("entry = " + entry);
+
+			if (CommonMethods.isIpv4Address(entry) || CommonMethods.isIpv6Address(entry)) {
+			    status = true;
+			} else {
+			    LOGGER.info("Presence of parameter " + entry + " in the command output : " + status);
+			    break;
+			}
+
+			LOGGER.info("Presence of parameter " + entry + " in the command output : " + status);
+
+		    }
+		}
+		LOGGER.info("pattern matched string are - " + matchedList);
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Caught exception while comparing all the matched pattern " + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: validateNameServerIP()");
+	return status;
+    }
 
 }

@@ -524,6 +524,60 @@ public class BroadBandSystemUtils {
      */
     public static boolean verifyDnsmasqSerivceStatusUsingSystemctl(Dut device, AutomaticsTapApi tapApi,
 	    String serviceStatus) throws TestException {
+    	// stores the verification status
+    	boolean status = false;
+    	// stores the command response
+    	String response = null;
+    	String NON_ASCII_CHARACTERS_FROM_REMOTE_API_RESPONSE = "\\[1;32m";
+
+    	try {
+
+    	    response = tapApi.executeCommandUsingSsh(device,
+    			    BroadBandCommandConstants.COMMAND_TO_CHECK_THE_RUNNING_STATUS_OF_DNSMASQ_SERVICE);
+
+    	    LOGGER.info("DNSMASQ service status response : " + response);
+
+    	    if (CommonMethods.isNotNull(response)) {
+
+    		response = response.replaceAll(NON_ASCII_CHARACTERS_FROM_REMOTE_API_RESPONSE,
+    			AutomaticsConstants.EMPTY_STRING);
+    		// retrieving the status from systemctl response
+    		response = CommonMethods.patternFinder(response,
+    			BroadBandTestConstants.PATTERN_TO_GET_STATUS_FROM_SYSTEMCTL_RESPONSE);
+    		LOGGER.info("systemctl dnsmasq service status is: " + response);
+    		if (CommonMethods.isNotNull(response) && response.trim().equalsIgnoreCase(serviceStatus)) {
+    		    status = true;
+    		    LOGGER.info("systemctl command returned dnsmasq service is " + serviceStatus);
+    		} else {
+    		    throw new TestException("dnsmasq service is NOT " + serviceStatus
+    			    + " as observed with systemctl command. The current status is " + response);
+    		}
+    	    } else {
+    		throw new TestException("NULL response obtained after executing commands"
+    			+ BroadBandCommandConstants.COMMAND_TO_CHECK_THE_RUNNING_STATUS_OF_DNSMASQ_SERVICE
+    			+ " using remote ssh api in stb");
+    	    }
+    	} catch (Exception exception) {
+    	    throw new TestException(exception.getMessage());
+    	}
+    	return status;
+    }
+    
+    /**
+     * Helper method to verify the dnsmasq service status using systemctl
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapApi
+     *            {@link AutomaticsTapApi}
+     * @param serviceStatus
+     *            {@link DNSMASQ_SERVICE_STATUS}
+     * 
+     * @return true if status is verified successfully else false
+     * @throws TestException
+     */
+    public static boolean verifyDnsmasqSerivceStatus(Dut device, AutomaticsTapApi tapApi,
+	    String serviceStatus) throws TestException {
 	// stores the verification status
 	boolean status = false;
 	// stores the command response
@@ -532,17 +586,25 @@ public class BroadBandSystemUtils {
 
 	try {
 
+
+	    String cmmandForRunningStsDnsMasq = AutomaticsPropertyUtility
+			    .getProperty(BroadBandTestConstants.PROP_KEY_CMDTOCHECK_RUNNING_STATUS_DNSMASQ_SERVICE);
+	    
 	    response = tapApi.executeCommandUsingSsh(device,
-			    BroadBandCommandConstants.COMMAND_TO_CHECK_THE_RUNNING_STATUS_OF_DNSMASQ_SERVICE);
+	    		cmmandForRunningStsDnsMasq);	    
 	    LOGGER.info("DNSMASQ service status response : " + response);
 
 	    if (CommonMethods.isNotNull(response)) {
 
 		response = response.replaceAll(NON_ASCII_CHARACTERS_FROM_REMOTE_API_RESPONSE,
 			AutomaticsConstants.EMPTY_STRING);
+		
+	    String patternTogetStatusFromSystmctlResponse = AutomaticsPropertyUtility
+			    .getProperty(BroadBandTestConstants.PROP_KEY_PATTERN_TOCHECK_DNSMASQ_SERVICE);
+		
 		// retrieving the status from systemctl response
 		response = CommonMethods.patternFinder(response,
-			BroadBandTestConstants.PATTERN_TO_GET_STATUS_FROM_SYSTEMCTL_RESPONSE);
+				patternTogetStatusFromSystmctlResponse);
 		LOGGER.info("systemctl dnsmasq service status is: " + response);
 		if (CommonMethods.isNotNull(response) && response.trim().equalsIgnoreCase(serviceStatus)) {
 		    status = true;
@@ -553,7 +615,7 @@ public class BroadBandSystemUtils {
 		}
 	    } else {
 		throw new TestException("NULL response obtained after executing commands"
-			+ BroadBandCommandConstants.COMMAND_TO_CHECK_THE_RUNNING_STATUS_OF_DNSMASQ_SERVICE
+			+ cmmandForRunningStsDnsMasq
 			+ " using remote ssh api in stb");
 	    }
 	} catch (Exception exception) {
@@ -561,6 +623,8 @@ public class BroadBandSystemUtils {
 	}
 	return status;
     }
+    
+    
     
     /**
      * helper method to verify that the three backup files, which are used for

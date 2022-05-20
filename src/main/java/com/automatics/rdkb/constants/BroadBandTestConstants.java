@@ -368,6 +368,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	 * Pattern to get the Active status of wifimesh service from systemctl response
 	 */
 	public static final String PATTERN_TO_GET_STATUS_FROM_SYSTEMCTL_RESPONSE = "Active:\\s+(\\S+)";
+	
+	/** Property key for expected response */
+    public static final String PROP_KEY_EXPECTED_RESPONSE = "expected.response";
 
 	/** Constants to hold the bridge mode value bridge-static */
 	public static final String CONSTANT_BRIDGE_STATIC = "bridge-static";
@@ -5584,6 +5587,12 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Pattern to extract passphrase from MoCA log file */
     public static final String PATTERN_TO_EXTRACT_PASSPHRASE_FROM_MOCA_LOG = "KeyPassphrase pString:\\s*(.*)";
+    
+    /** Property key for Command to check running status of dnsmasq service */
+    public static final String PROP_KEY_CMDTOCHECK_RUNNING_STATUS_DNSMASQ_SERVICE = "cmd.tochk.runningsts.dnsmasqservice";
+    
+    /** Property key for pattern to check status of dnsmasq service */
+    public static final String PROP_KEY_PATTERN_TOCHECK_DNSMASQ_SERVICE = "pattern.tochk.dnsmasqservice";
 
     /** Constant to hold signature */
     public static final String SIGNATURE = "signature";

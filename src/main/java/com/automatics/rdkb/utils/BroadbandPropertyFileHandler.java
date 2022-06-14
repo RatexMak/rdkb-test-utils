@@ -313,7 +313,7 @@ public class BroadbandPropertyFileHandler {
     public static String getSSIDPassword() {
 	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.TEST_SSID_PASSWORD);
     }
-    
+
     /**
      * This API will return whether the led logs available
      * 
@@ -729,6 +729,16 @@ public class BroadbandPropertyFileHandler {
 		BroadBandPropertyKeyConstants.PARTIAL_DEVICE_CHECK_UPGRADE_STATUS_SNMP_COMMAND));
 	return status;
     }
+    
+    /**
+     * This API will return partner values
+     * 
+     * @return Syndication partner values
+     * @author Athira
+     */
+    public static String getSpecificSyndicationPartnerIDValues() {
+    return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_SPECIFIC_SYNDICATION_PARTNER_ID_LIST);
+    }
 
     /**
      * This API will store the property of cert of rdk_manager snmpv3
@@ -906,25 +916,25 @@ public class BroadbandPropertyFileHandler {
     public static String getRadioName5BasedOnModel(Dut device) {
 	return getAutomaticsPropsValueByResolvingPlatform(device, BroadBandPropertyKeyConstants.RADIO_NAME_5GHZ_CHECK);
     }
-    
+
     /**
      * This API will check the device type to return the expected value
      * 
      * @author yamini.s
      */
     public static boolean isDeviceCheckToReturnExpectedValue1(Dut device) {
-    	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
-        		BroadBandPropertyKeyConstants.DEVICE_CHECK_VALUE1));
+	return Boolean.parseBoolean(
+		getAutomaticsPropsValueByResolvingPlatform(device, BroadBandPropertyKeyConstants.DEVICE_CHECK_VALUE1));
     }
-    
+
     /**
      * This API will check the device type to return the expected value
      * 
      * @author yamini.s
      */
     public static boolean isDeviceCheckToReturnExpectedValue2(Dut device) {
-    	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
-        		BroadBandPropertyKeyConstants.DEVICE_CHECK_VALUE2));
+	return Boolean.parseBoolean(
+		getAutomaticsPropsValueByResolvingPlatform(device, BroadBandPropertyKeyConstants.DEVICE_CHECK_VALUE2));
     }
 
     /**
@@ -933,10 +943,10 @@ public class BroadbandPropertyFileHandler {
      * @author yamini.s
      */
     public static boolean isDeviceCheckToReturnExpectedValue3(Dut device) {
-    	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
-        		BroadBandPropertyKeyConstants.DEVICE_CHECK_VALUE3));
+	return Boolean.parseBoolean(
+		getAutomaticsPropsValueByResolvingPlatform(device, BroadBandPropertyKeyConstants.DEVICE_CHECK_VALUE3));
     }
-    
+
     /**
      * This API will get the value for NTPD client
      * 
@@ -946,7 +956,7 @@ public class BroadbandPropertyFileHandler {
 	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROCESS_NTPD_CLIENT1);
 
     }
-    
+
     /**
      * This API will get the value for NTPD client
      * 
@@ -955,7 +965,7 @@ public class BroadbandPropertyFileHandler {
     public static String getPropertyKeyForNTPDClient2() {
 	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROCESS_NTPD_CLIENT2);
     }
-    
+
     /**
      * This API will check for specific device for acceptance criteria
      * 
@@ -975,7 +985,7 @@ public class BroadbandPropertyFileHandler {
 	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
 		BroadBandPropertyKeyConstants.PARTIAL_DEVICE_CHECK_ACCEPTANCE));
     }
-    
+
     /**
      * This API will get the value for level one block site address
      * 
@@ -1020,80 +1030,87 @@ public class BroadbandPropertyFileHandler {
 	}
 	return isTxRxDevice;
     }
-    
-    
+
     /**
      * This API will get the global DNS IPv4 value from properties
      * 
      * @author Said Hisham
      */
     public static String getGlobalDNSIpv4Value() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE);
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE);
     }
-    
+
     /**
      * This API will get the global DNS IPv6 value from properties
      * 
      * @author Said Hisham
      */
     public static String getGlobalDNSIpv6Value() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE);
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE);
     }
-    
+
     /**
      * This API will get the DNS IPv4 value for DNS level one primary from properties
      * 
      * @author Said Hisham
      */
     public static String getDNSIpv4ValueLevelOnePrimary() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY);
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY);
     }
-    
+
     /**
      * This API will get the DNS IPv4 value for DNS level two primary from properties
      * 
      * @author Said Hisham
      */
     public static String getDNSIpv4ValueLevelTwoPrimary() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY);
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY);
     }
-    
+
     /**
      * This API will get the DNS IPv4 value for DNS level three primary from properties
      * 
      * @author Said Hisham
      */
     public static String getDNSIpv4ValueLevelThreePrimary() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY);
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY);
     }
-    
+
     /**
      * This API will get the DNS IPv6 value for DNS level one primary from properties
      * 
      * @author Said Hisham
      */
     public static String getDNSIpv6ValueLevelOnePrimary() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY);
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY);
     }
-    
+
     /**
      * This API will get the DNS IPv6 value for DNS level two primary from properties
      * 
      * @author Said Hisham
      */
     public static String getDNSIpv6ValueLevelTwoPrimary() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY);
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY);
     }
-    
+
     /**
      * This API will get the DNS IPv6 value for DNS level three primary from properties
      * 
      * @author Said Hisham
      */
     public static String getDNSIpv6ValueLevelThreePrimary() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY);
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY);
     }
-    
+
     /**
      * This API will get the DNS valid IPv4 value from properties
      * 
@@ -1102,7 +1119,7 @@ public class BroadbandPropertyFileHandler {
     public static String getDNSValidIpv4Value() {
 	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_VALID_IPV4_VALUE);
     }
-    
+
     /**
      * This API will get the DNS valid IPv6 value from properties
      * 
@@ -1111,80 +1128,88 @@ public class BroadbandPropertyFileHandler {
     public static String getDNSValidIpv6Value() {
 	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_VALID_IPV6_VALUE);
     }
-    
+
     /**
      * This API will get the DNS invalid secondary IPv4 value from properties
      * 
      * @author Said Hisham
      */
     public static String getDNSInvalidSecondaryIpv4Value() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_INVALID_SECONDARY_IPV4_VALUE);
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_INVALID_SECONDARY_IPV4_VALUE);
     }
-    
+
     /**
      * This API will get the DNS invalid secondary IPv6 value from properties
      * 
      * @author Said Hisham
      */
     public static String getDNSInvalidSecondaryIpv6Value() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_INVALID_SECONDARY_IPV6_VALUE);
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_INVALID_SECONDARY_IPV6_VALUE);
     }
-    
+
     /**
      * This API will get the DNS invalid primary IPv4 value from properties
      * 
      * @author Said Hisham
      */
     public static String getDNSInvalidPrimaryIpv4Value() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_INVALID_PRIMARY_IPV4_VALUE );
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_INVALID_PRIMARY_IPV4_VALUE);
     }
-    
+
     /**
      * This API will get the DNS invalid primary IPv6 value from properties
      * 
      * @author Said Hisham
      */
     public static String getDNSInvalidPrimaryIpv6Value() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_INVALID_PRIMARY_IPV6_VALUE );
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_INVALID_PRIMARY_IPV6_VALUE);
     }
-    
+
     /**
      * This API will get the DNS valid secondary IPv4 value from properties
      * 
      * @author Said Hisham
      */
     public static String getDNSValidSecondaryIpv4Value() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_VALID_SECONDARY_IPV4_VALUE );
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_VALID_SECONDARY_IPV4_VALUE);
     }
-    
+
     /**
      * This API will get the DNS valid secondary IPv6 value from properties
      * 
      * @author Said Hisham
      */
     public static String getDNSValidSecondaryIpv6Value() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_VALID_SECONDARY_IPV6_VALUE );
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_VALID_SECONDARY_IPV6_VALUE);
     }
-    
+
     /**
      * This API will get the DNS another invalid secondary IPv4 value from properties
      * 
      * @author Said Hisham
      */
     public static String getDNSAnotherInvalidSecondaryIpv4Value() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_ANOTHER_INVALID_SECONDARY_IPV4_VALUE );
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_ANOTHER_INVALID_SECONDARY_IPV4_VALUE);
     }
-    
+
     /**
      * This API will get the DNS another invalid secondary IPv6 value from properties
      * 
      * @author Said Hisham
      */
     public static String getDNSAnotherInvalidSecondaryIpv6Value() {
-	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_ANOTHER_INVALID_SECONDARY_IPV6_VALUE );
-	
+	return AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_ANOTHER_INVALID_SECONDARY_IPV6_VALUE);
+
     }
-    
+
     /**
      * This API will check the device type to return the expected value
      * 
@@ -1194,7 +1219,7 @@ public class BroadbandPropertyFileHandler {
 	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
 		BroadBandPropertyKeyConstants.DEVICE_CHECK_VALUE_XDNS));
     }
-    
+
     /**
      * This API will get the current upnp version from properties
      * 
@@ -1203,7 +1228,7 @@ public class BroadbandPropertyFileHandler {
     public static String getValueForCurrentUPNPVersion(Dut device) {
 	return getAutomaticsPropsValueByResolvingPlatform(device, BroadBandPropertyKeyConstants.CURRENT_UPNP_VERSION);
     }
-    
+
     /**
      * This API will check for device related to GBPAD
      * 
@@ -1213,7 +1238,7 @@ public class BroadbandPropertyFileHandler {
 	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
 		BroadBandPropertyKeyConstants.PARTIAL_DEVICE_CHECK_GBPAD));
     }
-    
+
     /**
      * This API will check for device related to GBPAD
      * 
@@ -1223,7 +1248,7 @@ public class BroadbandPropertyFileHandler {
 	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
 		BroadBandPropertyKeyConstants.PARTIAL_DEVICE_CHECK_GBPAD1));
     }
-    
+
     /**
      * This API will check for device related to GBPAD
      * 
@@ -1233,16 +1258,134 @@ public class BroadbandPropertyFileHandler {
 	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
 		BroadBandPropertyKeyConstants.PARTIAL_DEVICE_CHECK_GBPAD2));
     }
-    
-    
+
     /**
      * This API will check if the server details are configured to upload crash details
      * 
      * @author yamini.s
      */
     public static Boolean isServerConfiguredToUploadCrashDetails() {
-    	return Boolean.parseBoolean(AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.IS_SERVER_CONFIGURED_TO_UPLOAD_CRASH_DETAILS));
-        }
+	return Boolean.parseBoolean(AutomaticsTapApi
+		.getSTBPropsValue(BroadBandPropertyKeyConstants.IS_SERVER_CONFIGURED_TO_UPLOAD_CRASH_DETAILS));
+    }
+
+    /**
+     * This API will get the proxy xconf for rfc update settings url
+     * 
+     * @author Sruthi Santhosh
+     */
+    public static String getProxyXconfRfcUrl() {
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PROXY_XCONF_RFC_URL);
+    }
+
+    /**
+     * Method to get page title for captive Portal/login GUI for Syndicate partner devices
+     * 
+     * @author Govardhan
+     */
+    public static String getCaptivePageTitleForSyndicatePartners(String partner) {
+	String captivePortalTitle = null;
+	try {
+	    captivePortalTitle = AutomaticsPropertyUtility
+		    .getProperty(BroadBandPropertyKeyConstants.CAPTIVE_PORTAL_PAGE_TITLE_FOR_PARTNER_DEVICE + partner);
+	} catch (Exception e) {
+	    LOGGER.info("Not able to find the Page Title in Properties for the Partner : " + partner);
+	}
+	return captivePortalTitle;
+    }
     
+    /**
+     * Method to get Captive Portal Header Confirm Message based on partner
+     * 
+     * @author Govardhan
+     */
+    public static String getCaptivePortalConfirmHeaderMessageForPartner(String partner) {
+	String captivePortalConfirmHeaderMessage = null;
+	try {
+	    captivePortalConfirmHeaderMessage = AutomaticsPropertyUtility
+		    .getProperty(BroadBandPropertyKeyConstants.CAPTIVE_PORTAL_CONFIGURATION_CONFIRM_PAGE_HEADER_MESSAGE + partner);
+	} catch (Exception e) {
+	    LOGGER.info("Not able to find the Captive Portal Header Confirm Message in Properties for the Partner : " + partner);
+	}
+	return captivePortalConfirmHeaderMessage;
+    }
+    
+    /**
+     * Method to get Captive Portal Header Success Message based on partner
+     * 
+     * @author Govardhan
+     */
+    public static String getCaptivePortalSuccessHeaderMessageForPartner(String partner) {
+	String captivePortalSuccessHeaderMessage = null;
+	try {
+	    captivePortalSuccessHeaderMessage = AutomaticsPropertyUtility
+		    .getProperty(BroadBandPropertyKeyConstants.CAPTIVE_PORTAL_CONFIGURATION_SUCCESS_PAGE_HEADER_MESSAGE + partner);
+	} catch (Exception e) {
+	    LOGGER.info("Not able to find the Page Title in Properties for the Partner : " + partner);
+	}
+	return captivePortalSuccessHeaderMessage;
+    }
+    
+    /**
+     * This API will get the naming conventions for TR69 parameters from properties
+     * 
+     * @author Govardhan
+     */
+    public static String getNamingConventionForTR69() {
+	return AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.TR69_NAMING_CONVENTION_PARAMETERS);
+    }
+    
+    /**
+     * This API will get the DAC15 CDL URL for devices which are both business and Atom console from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getCodeDownloadUrlForBusinessAndAtom() {
+	String operatingStandards = null;
+	try {
+	    operatingStandards = AutomaticsTapApi
+		    .getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_DAC15_CDL_URL_BUSINESS_ATOM);
+	} catch (Exception e) {
+
+	}
+	return operatingStandards;
+    }
+
+    /**
+     * This API will check if the server details are configured to upload logs to server
+     * 
+     * @author yamini.s
+     */
+    public static Boolean isServerConfiguredToUploadToServer() {
+	return Boolean.parseBoolean(AutomaticsTapApi
+		.getSTBPropsValue(BroadBandPropertyKeyConstants.IS_SERVER_CONFIGURED_TO_UPLOAD_TO_SERVER));
+    }
+
+    /**
+     * This method will return the default partner ID configured
+     * 
+     * @return default partner ID
+     */
+    public static String getDefaultPartnerID() {
+
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROPERTY_DEFAULT_PARTNER);
+    }
+    
+    /**
+     * This method will get the platform based partner List configured in external props
+     * 
+     * @param device
+     * @return
+     */
+    public static List<String> getPartnerListByResolvingPlatform(Dut device) {
+	List<String> partnerList = new ArrayList<String>();
+
+	String partnerListAsString = getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.PROPERTY_PLATFORM_BASED_PARTNER_LIST);
+	if (CommonMethods.isNotNull(partnerListAsString)) {
+	    partnerList = Arrays.asList(partnerListAsString.split(","));
+	}
+	return partnerList;
+    }
 
 }

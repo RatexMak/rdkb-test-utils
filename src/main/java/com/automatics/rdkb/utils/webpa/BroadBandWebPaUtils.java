@@ -3776,4 +3776,32 @@ public class BroadBandWebPaUtils {
 	LOGGER.debug("ENDING METHOD: verifyJsonParameterValue");
 	return result;
     }
+    
+    /**
+     * Method to get the status of rbus mode
+     * 
+     * @param device
+     *            instance of {@link Dut}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param isEnable True-Enable,False- Disable
+     * @return status True-Enable/Disable success,Else False
+     * 
+     * @refactor yamini.s
+     */
+    public static boolean getRbusModeStatus(Dut device, AutomaticsTapApi tapEnv, boolean isEnable) {
+	LOGGER.debug("STARTING METHOD: getRbusModeStatus()");
+	boolean status = false;
+	try {
+	    status = BroadBandWebPaUtils.getAndVerifyWebpaValueInPolledDuration(device, tapEnv,
+		    BroadBandWebPaConstants.WEBPA_PARAM_FOR_RBUS_ENABLE,
+		    isEnable ? BroadBandTestConstants.TRUE : BroadBandTestConstants.FALSE,
+			    BroadBandTestConstants.ONE_MINUTE_IN_MILLIS, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+	} catch (Exception exception) {
+	    LOGGER.error("Exception caught while verifyRbusModeStatus : " + exception.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: getRbusModeStatus()");
+	return status;
+    }
+
 }

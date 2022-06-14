@@ -94,6 +94,11 @@ public enum BroadBandSnmpMib {
     ESTB_SYS_UP_TIME("sysUpTime", ".1.3.6.1.2.1.1.3"),
     ESTB_RDKB_RUNNING("factoryResetDevice", "1.3.6.1.4.1.17270.50.2.1.1.1006"),
     WIFI_APPLY_SETTINGS("applySettings", ".1.3.6.1.4.1.17270.50.2.2.1001"),
+    ECM_UPLOAD_STATUS("uploadStatus", "1.3.6.1.4.1.17270.43.1.2.2.0"),
+    ECM_UPLOAD_LOG_NOW("uploadLogsNow", "1.3.6.1.4.1.17270.43.1.2.1.0"),
+    WIFI_APPLY_SETTINGS_WITH_INDEX("applySettings",".1.3.6.1.4.1.17270.50.2.2.1001.0"),
+    WIFI_5_SSID_STATUS("ssidStatus5", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.2", "10101"),
+    ESTB_WIFI_RESTORE_DEVICE_WITH_INDEX("wifiRestoreDevice", ".1.3.6.1.4.1.17270.50.2.1.1.1003.0"),
 
     /** OIDs for geting device serial number. */
     EMTA_TELEPHONE_LINE_RESET_NEGATIVE_SCENARIO("mtaReset", "1.3.6.1.2.1.2.2.1.7.9", "0"),
@@ -122,6 +127,7 @@ public enum BroadBandSnmpMib {
     ECM_SELFHEAL_MAX_REBOOT_COUNT("maxRebootCount", ".1.3.6.1.4.1.17270.44.1.1.10"),
     ECM_SELFHEAL_MAX_SUB_SYSTEM_RESET_COUNT("maximumSubsystemResetCount", ".1.3.6.1.4.1.17270.44.1.1.11"),
     ECM_SELFHEAL_AVG_MEMORY_THRESHOLD("avgMemoryThreshold", ".1.3.6.1.4.1.17270.44.1.1.9"),
+    ECM_CONFIG_BRIDGEMODE_STATUS("configBridgeModeStatus", "1.3.6.1.4.1.17270.50.2.3.2.1.1", "32"),
     ECM_PRIVATE_2_4GHZ_SSID_ADVERTISEMENT_ENABLED(
 	    "ssidadvertisementenabledforprivate2_4ghz",
 	    ".1.3.6.1.4.1.17270.50.2.2.2.1.1.5",
@@ -130,6 +136,14 @@ public enum BroadBandSnmpMib {
 	    "ssidadvertisementenabledforprivate5ghz",
 	    ".1.3.6.1.4.1.17270.50.2.2.2.1.1.5",
 	    "10101"),
+    ECM_CONFIG_MAX_CONCURRENT_CLIENTLIMIT_2_4_GHZ(
+    	    "configMaxConcurrentClientLimitfor2.4GHz",
+    	    "1.3.6.1.4.1.17270.50.2.2.2.1.1.11",
+    	    "10003"),
+    ECM_CONFIG_MAX_CONCURRENT_CLIENTLIMIT_5_GHZ(
+    	    "configMaxConcurrentClientLimitfor5GHz",
+    	    "1.3.6.1.4.1.17270.50.2.2.2.1.1.11",
+    	    "10103"),
     ECM_CM_ETHERNET_OPER_SETTING("cmEthernetOperSetting", "1.3.6.1.2.1.2.2.1.5", "1"),
     ECM_DEV_MAX_CPE("DevMaxCPE", ".1.3.6.1.2.1.69.1.1.7", "0"),
     ECM_DEV_SW_OPER_STATUS("DevSwOperStatus", ".1.3.6.1.2.1.69.1.3.4", "0"),
@@ -162,6 +176,12 @@ public enum BroadBandSnmpMib {
     ECM_LOG_UPLOAD_FREQUENCY("logUploadFrequency", ".1.3.6.1.4.1.17270.44.1.1.13.0"),
     ECM_BAND_STEERING("rdkbRgDot11BandSteeringEnable", ".1.3.6.1.4.1.17270.50.2.2.8.2", "0"),
     ENABLE_DOCSIS_SNMP_REBOOT("enableDocsisSnmpReboot", "1.3.6.1.2.1.69.1.1.3", "0"),
+    ECM_CONFIG_WIFIMODE_2_4_GHZ("configWifiModefor2.4GHz", "1.3.6.1.4.1.17270.50.2.2.7.1.1.1", "10000"),
+    ECM_CONFIG_WIFIMODE_5_GHZ("configWifiModefor5GHz", "1.3.6.1.4.1.17270.50.2.2.7.1.1.1", "10100"),
+    ECM_CONFIG_REMOTEID_CIRCUTID("configOfRemoteidCircutid", "1.3.6.1.4.1.17270.50.2.13.1.2.1.11", "3"),
+    ECM_CONFIG_WANMAC_ADDRESS("configWanMacAddress", "1.3.6.1.2.1.2.2.1.6", "1"),
+    ECM_CONFIG_CHANNELSELECTION_2_4_GHZ("configChannelSelectionfor2.4GHz", "1.3.6.1.4.1.17270.50.2.2.6.1.1.3", "10000"),
+    ECM_CONFIG_CHANNELSELECTION_5_GHZ("configChannelSelectionfor5GHz", "1.3.6.1.4.1.17270.50.2.2.6.1.1.3", "10100"),
     ECM_BSSID_MAC_ADDRESS_2_4_GHZ_PRIVATE_SSID(
 	    "bssidMacaddressFor2GHzPrivateSsid",
 	    "1.3.6.1.4.1.17270.50.2.2.2.1.1.1",

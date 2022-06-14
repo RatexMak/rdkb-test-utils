@@ -2891,4 +2891,74 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 	LOGGER.debug("ENDING METHOD: validateDefaultOperatingBandwidth");
 	return status;
     }
+    
+    /**
+     * Method to check and set Public wifi.
+     * 
+     * @param device
+     *            {@link Dut} device
+     * @param tapEnv
+     *            {@link AutomaticsTapApi} Reference
+     * @refactor Alan_Bivera
+     */
+    public static boolean checkAndSetXfinityWifi(Dut device, AutomaticsTapApi tapEnv) {
+	String xfinityWifiValue = null;
+	boolean reactivationStatus = false;
+	try {
+	    // get the property value from stb.properties
+	    LOGGER.info(" Going to get property value for " + BroadBandTestConstants.KEY_FOR_XFINITY_WIFI_WHITELISTING);
+	    xfinityWifiValue = AutomaticsPropertyUtility
+		    .getProperty(BroadBandTestConstants.KEY_FOR_XFINITY_WIFI_WHITELISTING);
+	    LOGGER.info("XFINITY wifi is set as " + xfinityWifiValue + " in stb.properties");
+	    reactivationStatus = BroadBandWebPaUtils.setAndVerifyParameterValuesUsingWebPaorDmcli(device, tapEnv,
+		    BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI, WebPaDataTypes.BOOLEAN.getValue(),
+		    xfinityWifiValue);
+	    if (reactivationStatus) {
+		LOGGER.info("Sucessfully set Xfinity wifi as " + xfinityWifiValue);
+	    } else {
+		LOGGER.info("Failed to set Xfinity wifi as " + xfinityWifiValue + " as part of reactivation ");
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while checking xfinityvalue from stb.properties ." + e.getMessage());
+	}
+	return reactivationStatus;
+    }
+    
+    /**
+     * Method to grep bssid from gateway
+     * 
+     * @param device
+     *            {@link Instanceof Dut}
+     * @param tapEnv
+     *            {@link Instanceof AutomaticsTapApi}
+     * @param band
+     *            {@link Instanceof WiFiFrequencyBand}
+     * @return Bssid of the private wifi
+     * @refactor Rakesh C N
+     */
+
+    public static String getBssidFromGateway(Dut device, AutomaticsTapApi tapEnv, WiFiFrequencyBand band) {
+	LOGGER.debug("STARTING METHOD: getBssidFromGateway ");
+	String bssid = null;
+	String response = null;
+	String command = null;
+	try {
+	    if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
+		command = (band == WiFiFrequencyBand.WIFI_BAND_2_GHZ)
+			? BroadBandTestConstants.CMD_IW_CONFIG + " " + BroadBandTestConstants.INTERFACE_ATH0
+			: BroadBandTestConstants.CMD_IW_CONFIG + " " + BroadBandTestConstants.INTERFACE_ATH1;
+		response = tapEnv.executeCommandOnAtom(device, command);
+	    } else {
+		command = (band == WiFiFrequencyBand.WIFI_BAND_2_GHZ) ? BroadBandTestConstants.INTERFACE_ATOM_PRIVATE_2
+			: BroadBandTestConstants.INTERFACE_ATOM_PRIVATE_5;
+		response = tapEnv.executeCommandUsingSsh(device, command);
+	    }
+	    if (CommonMethods.isNotNull(response))
+		bssid = CommonMethods.patternFinder(response, BroadBandTestConstants.REGEX_GREP_BSSID);
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while trying to grep bssid from gateway");
+	}
+	LOGGER.debug("ENDING METHOD: getBssidFromGateway ");
+	return bssid;
+    }
 }

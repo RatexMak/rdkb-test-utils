@@ -39,4 +39,10 @@ public class BroadBandTestGroup extends TestGroup{
     /** Test Group for xdns **/
     public static final String XDNS = "xdns";
     
+    /** Test Group For Harvester */
+    public static final String HARVESTER = "harvester";
+    
+    /** Test group for telemetry **/
+    public static final String BOOT_UP = "boot_up";
+    
 }

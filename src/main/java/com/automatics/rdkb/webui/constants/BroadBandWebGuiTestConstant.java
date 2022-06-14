@@ -15,23 +15,13 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
+package com.automatics.rdkb.webui.constants;
 
-package com.automatics.rdkb.constants;
-
-/**
- * Class to hold all the invalid Certificates
- * 
- * @author Prince ArunRaj
- * @refactor Said Hisham
- */
-public class BroadBandInvalidCertConstants {
-
-    /**
-     * invalid certificates to verify L & F
-     */
-    public static final String CERT_CA_CHAIN = "";
-
-    public static final String CERT_VIDEO_CLIENT = "";
-
-    public static final String KEY_VIDEO_CLIENT = "";
+public class BroadBandWebGuiTestConstant {
+    
+    /** Variable to store Admin page URL */
+    public static final String ADMIN_PAGE_URL = "Admin.page.url";
+    
+    /** Variable to store Admin page URL for Business Class Device */
+    public static final String ADMIN_PAGE_URL_BUSINESS_CLASS = "Admin.page.url.business";
 }

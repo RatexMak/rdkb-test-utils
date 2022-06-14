@@ -1609,5 +1609,49 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     
     /** Command to get the details from /proc/buddyinfo * */
     public static final String CMD_TO_GET_BUDDYINFO = "cat /proc/buddyinfo";
+    
+    /** ipconfig command to get 20 lines after the grep match */
+    public static final String CMD_IPCONFIG_ALL_GREP_A20 = "ipconfig /all |grep -A 20 ";
+    
+    /** Command to check the wifi connect notification */
+    public static final String CMD_SEARCH_FILE_TEXT = "cat /rdklogs/logs/{i}|grep -i {j}";
+    
+    /** Command to get wifi client stats via Hal Api */
+    public static final String CMD_GET_WIFI_CLIENT_STATS = "wifi_api wifi_getApAssociatedDeviceDiagnosticResult3 ";
+    
+    /** Command to GREP the log upload success message from logs */
+    public static final String LOG_UPLOAD_SUCCESS_TXT_GREP_FROM_LOGS = "\"LOGS UPLOADED SUCCESSFULLY, RETURN CODE: 200\"";
+
+    /** Command to GREP the log upload file name from console logs */
+    public static final String LOG_UPLOAD_FILE_NAME_GREP_FROM_LOGS = "\"files to be uploaded is\"";
+    
+    /** Temporary file in nvram to store Console log tail */
+    public static final String FILE_PATH_TMP_CONSOLE_TAIL = "/tmp/Consoletail.txt";
+
+    /** Command to tail Consolelog contents to tmp */
+    public static final String CMD_GET_LOGUPLOAD_CONSOLE_LOG = "tail -f /rdklogs/logs/Consolelog.txt.0 >"
+	    + FILE_PATH_TMP_CONSOLE_TAIL + " &";
+
+    /** Command to tail ArmConsolelog contents to tmp */
+    public static final String CMD_GET_LOGUPLOAD_ARMCONSOLE_LOG = "tail -f /rdklogs/logs/ArmConsolelog.txt.0 >"
+	    + FILE_PATH_TMP_CONSOLE_TAIL + " &";
+
+    /** File path for rdm manifest json file in /etc/rdm/ */
+    public static final String FILE_PATH_RDM_MANIFEST_JSON = "/etc/rdm/rdm-manifest.json";
+    
+    /** File path for rdk manifest xml which was removed */
+    public static final String FILE_PATH_RDK_MANIFEST_XML = "/etc/rdm/rdk-manifest.xml";
+        
+    /** File name for rfcresponse.json */
+    public static final String FILE_RFC_RESPONSE_LOG = "/tmp/rfcresponse.json";
+
+    /** Complete file path for /tmp/rfc-parsed.txt file */
+    public static final String FILE_RFC_PARSED_TEXT_PATH = "/tmp/rfc-parsed.txt";
+    
+    /** File name for dcm.properties */
+    public static final String FILE_DCM_PROPERTIES = "/etc/dcm.properties";
+
+    /** Command to test the ssh connectivity */
+    public static final String CMD_ECHO_TEST_CONNECTION = "\"'echo test_connection'\"";
 
 }

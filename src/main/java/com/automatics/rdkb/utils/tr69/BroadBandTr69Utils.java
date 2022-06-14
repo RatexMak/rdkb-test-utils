@@ -22,12 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.automatics.constants.AutomaticsConstants;
-import com.automatics.core.SupportedModelHandler;
 import com.automatics.device.Dut;
 import com.automatics.enums.TR69ParamDataType;
 import com.automatics.exceptions.TestException;
@@ -37,7 +34,6 @@ import com.automatics.rdkb.constants.BroadBandWebPaConstants;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.test.AutomaticsTestBase;
-import com.automatics.utils.AutomaticsUtils;
 import com.automatics.utils.CommonMethods;
 import com.automatics.webpa.WebPaParameter;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
@@ -45,6 +41,7 @@ import com.automatics.rdkb.constants.BroadBandTraceConstants;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
 import com.automatics.rdkb.utils.wifi.BroadBandWiFiUtils;
 import com.automatics.rdkb.utils.BroadBandRfcFeatureControlUtils;
+import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
 import com.automatics.rdkb.constants.WebPaParamConstants.WebPaDataTypes;
 import com.automatics.utils.AutomaticsPropertyUtility;
 
@@ -712,6 +709,69 @@ public class BroadBandTr69Utils extends AutomaticsTestBase {
 	}
 
 	return variable;
+    }
+    
+    /**
+     * Method to validate Naming Convention of all Device. Parameters of the device
+     * 
+     * @param
+     * 
+     * @return List<Parameter>
+     * @refactor Govardhan
+     */
+    public static List<Parameter> validateNamingConvention(List<Parameter> deviceParameter) {
+
+	// stores list of parameter with faulty naming convention
+	List<Parameter> parametersWithFaultyNaming = new ArrayList<Parameter>();
+
+	// stores parameter name
+	String parameterName = "";
+	/*
+	 * Logic to traverse through parameter list and filter out parameters with wrong naming convention
+	 */
+
+	if (deviceParameter != null && deviceParameter.size() > 0) {
+	    for (int i = 0; i < deviceParameter.size(); i++) {
+		parameterName = deviceParameter.get(i).getParamName();
+		if (verifyIsFaultyNaming(parameterName)) {
+		    parametersWithFaultyNaming.add(deviceParameter.get(i));
+		}
+	    }
+	}
+	return parametersWithFaultyNaming;
+    }
+    
+    /**
+     * Method to verify Faulty Naming
+     * 
+     * @param
+     * 
+     * @return List<Parameter>
+     * @refactor Govardhan
+     */ 
+    public static Boolean verifyIsFaultyNaming(String parameterName) {
+	boolean isFaultyNaming = false;
+	Map<String, String> faultyParameters_Map = new HashMap<String, String>();
+	try {
+	    String[] namingConventionTR69Paremeters = BroadbandPropertyFileHandler.getNamingConventionForTR69()
+		    .split(BroadBandTestConstants.SEMI_COLON);
+	    for (String conventionParemeter : namingConventionTR69Paremeters) {
+		String[] faultyParameters;
+		faultyParameters = conventionParemeter.split("=");
+		faultyParameters_Map.put(faultyParameters[0].toString().trim(), faultyParameters[1].toString().trim());
+	    }
+
+	    for (String faultyParameter : faultyParameters_Map.keySet()) {
+		if ((parameterName.matches(faultyParameter)
+			&& !parameterName.matches(faultyParameters_Map.get(faultyParameter)))) {
+		    isFaultyNaming = true;
+		}
+	    }
+
+	} catch (Exception e) {
+	    
+	}
+	return isFaultyNaming;
     }
 
 }

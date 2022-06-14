@@ -55,4 +55,24 @@ public class BroadBandTelemetryConstants {
     /** Telemetry marker for WIFI_MAC_COUNT_TELEMETRY_MARKER */
     public static final String WIFI_MAC_COUNT_TELEMETRY_MARKER = "Total_2G_clients_split";
     
+    /** Telemetry marker for WebPA reboot */
+    public static final String TELEMETRY_STRING_WEBPA_REBOOT = "rdkb_rebootreason_split";
+    
+    /** Command to grep reboot reason from dcmscript log */
+    public static final String CMD_GREP_REBOOT_REASON_WEBPA_LOG = "cat /rdklogs/logs/dcmscript.log | grep "
+	    + TELEMETRY_STRING_WEBPA_REBOOT;
+    
+    /** Constant for Old Stbrtl URLl */
+    public static final String OLD_STBRTL_URL = "";
+    
+    /** Constant for Old Stb prod code big URL */
+    public static final String OLD_CODEBIG_STBRTL_URL = "";
+    
+    /** Constant for new Stbrtl URLl */
+    public static final String NEW_STBRTL_URL = "";
+    
+    /** Constant for New Stb prod code big URL */
+    public static final String NEW_CODEBIG_STBRTL_URL = "";
+
+    
 }

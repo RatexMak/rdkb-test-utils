@@ -166,5 +166,11 @@ public class BroadBandCdlConstants {
     
     /** The constant holding a log for http download completed status. */
     public static final String LOG_MESSAGE_HTTP_DOWNLOAD_COMPLETED = "HTTP download COMPLETED with status : 200";
+    
+    /** WANAGENT log file */
+    public static final String WANAGENT_LOG = "/rdklogs/logs/WANAGENTLog.txt.0";
+    
+    /** String Constant for .bin Extension */
+    public static final String BIN_CCS_EXTENSION = ".bin.ccs";
 
 }

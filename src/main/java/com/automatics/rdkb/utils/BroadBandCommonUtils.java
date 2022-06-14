@@ -54,6 +54,7 @@ import com.automatics.exceptions.TestException;
 import com.automatics.rdkb.BroadBandDeviceStatus;
 import com.automatics.rdkb.BroadBandParentalControlParameter;
 import com.automatics.rdkb.BroadBandResultObject;
+import com.automatics.rdkb.constants.BroadBandCdlConstants;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.BroadBandConnectedClientTestConstants;
 import com.automatics.rdkb.constants.BroadBandInvalidCertConstants;
@@ -471,6 +472,38 @@ public class BroadBandCommonUtils {
 	} while ((System.currentTimeMillis() - startTime) < maxDuration && CommonMethods.isNull(response));
 	LOGGER.debug("ENDING executeCommandByPolling()");
 	return response;
+    }
+
+    /**
+     * Helper method to get status of rabid and advsec process
+     * 
+     * @param Dut
+     *            {@link device}
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param pidRapid
+     *            Rapid process pid
+     * @return true if response is obtained for both rabid and advsec process
+     * @Refactor Athira
+     */
+    public static boolean getRabidAndAdvSecStatus(Dut device, AutomaticsTapApi tapEnv, String pidRabid) {
+	LOGGER.debug("Starting of Method: getRabidAndAdvSecStatus");
+	String response = null;
+	boolean status = false;
+	try {
+	    response = tapEnv.executeCommandUsingSsh(device, BroadBandCommandConstants.CMD_PS_GREP_RABID_PROCESS);
+	    status = CommonMethods.isNotNull(response)
+		    && CommonUtils.isGivenStringAvailableInCommandOutput(response, pidRabid);
+	    if (status) {
+		response = tapEnv.executeCommandUsingSsh(device, BroadBandCommandConstants.CMD_PS_GREP_ADVSEC);
+		status = CommonMethods.isNotNull(response);
+	    }
+
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while retrieving status of Advsec/Rabid " + e.getMessage());
+	}
+	LOGGER.debug("Ending of Method: getRabidAndAdvSecStatus");
+	return status;
     }
 
     /**
@@ -1186,23 +1219,7 @@ public class BroadBandCommonUtils {
 	return isPatternFoundInText;
     }
 
-    /**
-     * @param response
-     *            response to validate
-     * @author Govardhan
-     */
-
-    public static int convertStringToInteger(String stringToConvert) {
-	int return_value = 0;
-	try {
-	    return_value = Integer.parseInt(stringToConvert);
-	} catch (NumberFormatException nfe) {
-	    LOGGER.error("Number format exception occured while trying to convert: " + stringToConvert, nfe);
-	}
-	return return_value;
-    }
-
-    /**
+     /**
      * Helper method is to format MAC address to remove leading zeros.
      * 
      * @param macAddress
@@ -5815,6 +5832,51 @@ public class BroadBandCommonUtils {
     }
 
     /**
+     * Utility method to validate the IP of namespace
+     * 
+     * @param response
+     *            Command output
+     * @param commandOutputPattern
+     *            Pattern that is to match the command output
+     * 
+     * @return true if all the pattern matches
+     * 
+     * @author Alan_Bivera
+     */
+    public static boolean validateNameServerIP(String response, String commandOutputPattern) {
+	LOGGER.info("STARTING METHOD: validateNameServerIP()");
+	boolean status = false;
+	try {
+	    if (CommonMethods.isNotNull(response)) {
+
+		ArrayList<String> matchedList = CommonMethods.patternFinderToReturnAllMatchedString(response,
+			commandOutputPattern);
+		if (!matchedList.isEmpty()) {
+		    for (String entry : matchedList) {
+			status = false;
+			LOGGER.info("entry = " + entry);
+
+			if (CommonMethods.isIpv4Address(entry) || CommonMethods.isIpv6Address(entry)) {
+			    status = true;
+			} else {
+			    LOGGER.info("Presence of parameter " + entry + " in the command output : " + status);
+			    break;
+			}
+
+			LOGGER.info("Presence of parameter " + entry + " in the command output : " + status);
+
+		    }
+		}
+		LOGGER.info("pattern matched string are - " + matchedList);
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Caught exception while comparing all the matched pattern " + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: validateNameServerIP()");
+	return status;
+    }
+
+    /**
      * Helper method to get Ip Address from given Interface
      * 
      * @param device
@@ -6121,6 +6183,32 @@ public class BroadBandCommonUtils {
 	return partnerIDExists;
     }
 
+    /**
+     * Utility method to verify the expected syndication partner ID is available or not
+     * 
+     * @param verifySpecificSyndicationPartnerAvailability
+     *            Actual partnerID retrieved from script
+     * 
+     * @return Boolean representing the result of the validation.
+     * @author Athira
+     */
+    public static boolean verifySpecificSyndicationPartnerAvailability(String synPartnerIdToVerify) {
+    LOGGER.info("STARTING METHOD: verifyPartnerAvailability");
+    boolean partnerIDExists = false;
+    String partnerIDList = BroadbandPropertyFileHandler.getSpecificSyndicationPartnerIDValues();
+
+    String[] partnerIDValues = partnerIDList.split(",");
+
+    for (String partnerID : partnerIDValues) {
+    	if (partnerID.equalsIgnoreCase(synPartnerIdToVerify)) {
+    	partnerIDExists = true;
+    	break;
+    	}
+    }
+    return partnerIDExists;
+    }
+
+    
     /**
      * Method used to validate the syndication partner id's based on device models.
      * 
@@ -6888,17 +6976,17 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("Exiting from rmInvalidCertificatedsToRPI()");
 	return status;
     }
-    
+
     /**
      * method to check the device type and return the value
      * 
      * @param device
      * @param value1
-     *            expected value 
+     *            expected value
      * @param value2
-     *            expected value 
+     *            expected value
      * @param value3
-     *            expected value 
+     *            expected value
      * @return expectedValue return expected value based on the device type
      * @author ArunKumar Jayachandran
      * @refactor yamini.s
@@ -6918,7 +7006,7 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("ENDING METHOD :getTxRateExpctdValForDeviceType()");
 	return expectedValue;
     }
-    
+
     /**
      * Utility method to verify the logs in Atom or Arm Console with pattern matcher
      * 
@@ -6981,7 +7069,7 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("ENDING METHOD : verifyLogsInAtomOrArmWithPatternMatcherWithLogTime");
 	return broadBandResultObject;
     }
-    
+
     /**
      * Utility method to verify the log messages on given log file for multiple date format.
      * 
@@ -7012,12 +7100,10 @@ public class BroadBandCommonUtils {
 	boolean result = false;
 	String command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND,
 		BroadBandTestConstants.TEXT_DOUBLE_QUOTE, searchText, BroadBandTestConstants.TEXT_DOUBLE_QUOTE,
-		BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
-		logFileName);
+		BroadBandTestConstants.SINGLE_SPACE_CHARACTER, logFileName);
 	String command2 = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND, "-c",
 		BroadBandTestConstants.TEXT_DOUBLE_QUOTE, searchText, BroadBandTestConstants.TEXT_DOUBLE_QUOTE,
-		BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
-		logFileName);
+		BroadBandTestConstants.SINGLE_SPACE_CHARACTER, logFileName);
 	String response = tapEnv.executeCommandUsingSsh(device, command);
 	String response2 = tapEnv.executeCommandUsingSsh(device, command2);
 	LOGGER.info("Count of the string :" + response2);
@@ -7030,7 +7116,7 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("ENDING METHOD: BroadBandCommonUtils.verifyConsoleLogForMultipleDateFormat");
 	return result;
     }
-    
+
     /**
      * Utility Method to validate the log message searched & found is the recent one i.e. after performing the
      * validation step, the timestamp on the device is captured and compared with the timestamp of logs retrieved for
@@ -7100,7 +7186,7 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("ENDING METHOD: BroadBandCommonUtils.isLogTimeStampRecentThanCapDeviceTime");
 	return result;
     }
-    
+
     /**
      * Method to verify feature enable via RFC
      * 
@@ -7142,7 +7228,7 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("ENDING METHOD: verifyFeatureEnableViaRFC()");
 	return status;
     }
-    
+
     /**
      * Method to clear log file on atom console
      * 
@@ -7166,6 +7252,7 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("ENDING METHOD clearLogFile");
 	return result;
     }
+
     public static String getSecurityModeForDeviceModels(Dut device) {
 	LOGGER.debug("STARTING METHOD: getSecurityModeForDeviceModels()");
 	String deviceModel = device.getModel();
@@ -7176,7 +7263,7 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("ENDING METHOD: getSecurityModeForDeviceModels()");
 	return securityMode;
     }
-    
+
     /**
      * Method to remove file/ folder from ATOM/ ARM Console depending upon the availability of ATOM Console.
      * 
@@ -7211,7 +7298,7 @@ public class BroadBandCommonUtils {
 	LOGGER.info("ENDING METHOD deleteFileAndVerifyIfAtomPresentElseArm");
 	return result;
     }
-    
+
     /**
      * Helper method to format the mac address from wifi_api response
      * 
@@ -7237,7 +7324,7 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("ENDING METHOD: wifiApiMacAddressFormat()");
 	return macResponse.toString();
     }
-    
+
     /**
      * Helper method to execute command in ATOM console with polling method
      * 
@@ -7273,7 +7360,7 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("ENDING METHOD executeCommandInAtomConsoleByPolling");
 	return response;
     }
-    
+
     /**
      * Method to copy file, replace text in file, mount copy bind file and remove file
      * 
@@ -7325,7 +7412,7 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("Exiting method: copyReplaceTextMountCopyBindRemoveFile");
 	return status;
     }
-    
+
     /**
      * Helper method to convert list of strings to lower case characters
      * 
@@ -7351,7 +7438,7 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("Starting Method : ()convertListOfStringsToLowerCase");
 	return listOfStringsWithLowerCaseCharacters;
     }
-    
+
     /**
      * Utility method to verify the logs in Atom or Arm Console
      * 
@@ -7394,48 +7481,302 @@ public class BroadBandCommonUtils {
 	return result;
     }
 
+    
     /**
-     * Utility method to validate the IP of namespace
-     * 
      * @param response
-     *            Command output
-     * @param commandOutputPattern
-     *            Pattern that is to match the command output
-     * 
-     * @return true if all the pattern matches
-     * 
-     * @author Alan_Bivera
+     *            response to convert
+     * @author Sathurya Ravi
+     * @refactor Athira
      */
-    public static boolean validateNameServerIP(String response, String commandOutputPattern) {
-	LOGGER.info("STARTING METHOD: validateNameServerIP()");
-	boolean status = false;
+
+    public static String convertIntegerToString(int numberToConvert) {
 	try {
-	    if (CommonMethods.isNotNull(response)) {
+	    return Integer.toString(numberToConvert);
+	} catch (NumberFormatException nfe) {
+	    LOGGER.error("Number format exception occured while trying to convert: " + numberToConvert, nfe);
+	}
+	return null;
+    }
+    
+    /**
+     * Method to verify reboot status after CR process crash
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param waitTime
+     *            waitTime
+     * @return true if the device is in reboot state
+     * 
+     * @author Gnanaprakasham
+     * @refactor Govardhan
+     */
 
-		ArrayList<String> matchedList = CommonMethods.patternFinderToReturnAllMatchedString(response,
-			commandOutputPattern);
-		if (!matchedList.isEmpty()) {
-		    for (String entry : matchedList) {
-			status = false;
-			LOGGER.info("entry = " + entry);
+    public static boolean verifyRebootStatusAfterSpecificWaitTime(Dut device, AutomaticsTapApi tapEnv,
+	    String rebootReason, long waitTime) {
 
-			if (CommonMethods.isIpv4Address(entry) || CommonMethods.isIpv6Address(entry)) {
-			    status = true;
-			} else {
-			    LOGGER.info("Presence of parameter " + entry + " in the command output : " + status);
-			    break;
-			}
+	LOGGER.debug("STARTING METHOD : verifyRebootStatusAfterSpecificWaitTime");
+	// Variable to store execution status
+	boolean status = false;
 
-			LOGGER.info("Presence of parameter " + entry + " in the command output : " + status);
+	String errorMessage = null;
 
-		    }
+	// CR process crash will take ~20 mins to initiate reboot
+	// So check device accessibility for every 1 min
+	long delayDuration = BroadBandTestConstants.ONE_MINUTE_IN_MILLIS;
+
+	LOGGER.info("Delay duration time for polling : " + delayDuration);
+
+	status = isRdkbDeviceAccessible(tapEnv, device, delayDuration, waitTime, false);
+	LOGGER.info("is device is in reboot state : " + status);
+	if (status) {
+	    LOGGER.info("Going to wait for IP acquitiosition ");
+	    status = CommonMethods.waitForEstbIpAcquisition(tapEnv, device);
+	    if (!status) {
+		errorMessage = "Device is not accessible after reboot initiated by " + rebootReason;
+		throw new TestException(errorMessage);
+	    }
+	} else {
+	    errorMessage = rebootReason + " is not initiating reboot even 20 minutes after process crash";
+	    
+	    throw new TestException(errorMessage);
+	}
+	LOGGER.debug("ENDING METHOD : verifyRebootStatusAfterSpecificWaitTime");
+	return status;
+    }
+    
+    /**
+     * Method to get the search log file on firmware download for different models
+     * 
+     * @param device
+     *            instance of {@link Dut}
+     * 
+     * @return search log file name based on device model
+     * @refactor Said Hisham
+     */
+    public static String getLogFileNameOnFirmwareDownload(Dut device) {
+	LOGGER.debug("STARTING METHOD: getLogFileNameOnFirmwareDownload()");
+	String logFile = null;
+	if (DeviceModeHandler.isDSLDevice(device)) {
+	    logFile = BroadBandCdlConstants.WANAGENT_LOG;
+	} else {
+	    logFile = ((DeviceModeHandler.isFibreDevice(device)) ? BroadBandCdlConstants.EPONAGENT_LOG
+		    : BroadBandCdlConstants.CM_LOG_TXT_0);
+	}
+	LOGGER.debug("ENDING METHOD: getLogFileNameOnFirmwareDownload()");
+	return logFile;
+    }
+    
+    /**
+     * Utility method to Cross verify the the log upload file name with uptime.
+     * 
+     * @param device
+     *            device
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @return true if Log Upload File name is latest with time greater than the uptime and upload is successful.
+     * @refactor Said Hisham
+     */
+    public static boolean verifyLatestLogUploadSuccessful(AutomaticsTapApi tapEnv, Dut device) {
+	LOGGER.debug("STARTING METHOD : verifyLatestLogUploadSuccessful()");
+	boolean status = false;
+	String uptimeObtainedViaWebpa = null;
+	String uploadedFileNameResponse = null;
+	String uploadSuccessfulResponse = null;
+	long startTime = 0L;
+	String upTimeObtainedViaCommand = null;
+	String uploadedFileName = null;
+	try {
+	    startTime = System.currentTimeMillis();
+	    do {
+		if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
+		    uploadSuccessfulResponse = tapEnv.executeCommandUsingSsh(device,
+			    BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND,
+				    BroadBandCommandConstants.LOG_UPLOAD_SUCCESS_TXT_GREP_FROM_LOGS,
+				    BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+				    BroadBandCommandConstants.FILE_ARMCONSOLELOG));
+		    uploadedFileNameResponse = tapEnv.executeCommandUsingSsh(device,
+			    BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND,
+				    BroadBandCommandConstants.LOG_UPLOAD_FILE_NAME_GREP_FROM_LOGS,
+				    BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+				    BroadBandCommandConstants.FILE_ARMCONSOLELOG));
+		} else {
+		    uploadSuccessfulResponse = tapEnv.executeCommandUsingSsh(device,
+			    BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND,
+				    BroadBandCommandConstants.LOG_UPLOAD_SUCCESS_TXT_GREP_FROM_LOGS,
+				    BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+				    BroadBandCommandConstants.FILE_CONSOLELOG));
+		    uploadedFileNameResponse = tapEnv.executeCommandUsingSsh(device,
+			    BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND,
+				    BroadBandCommandConstants.LOG_UPLOAD_FILE_NAME_GREP_FROM_LOGS,
+				    BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+				    BroadBandCommandConstants.FILE_CONSOLELOG));
 		}
-		LOGGER.info("pattern matched string are - " + matchedList);
+		status = CommonMethods.isNotNull(uploadSuccessfulResponse)
+			&& CommonMethods.isNotNull(uploadedFileNameResponse);
+	    } while (!status
+		    && ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TWENTY_MINUTES_IN_MILLIS)
+		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+	    upTimeObtainedViaCommand = tapEnv.executeCommandUsingSsh(device, BroadBandCommandConstants.CMD_UPTIME);
+	    uptimeObtainedViaWebpa = tapEnv.executeWebPaCommand(device,
+		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_UPTIME);
+	    if (CommonMethods.isNotNull(uploadSuccessfulResponse) && CommonMethods.isNotNull(uploadedFileNameResponse)
+		    && CommonMethods.isNotNull(upTimeObtainedViaCommand)
+		    && CommonMethods.isNotNull(uptimeObtainedViaWebpa)) {
+		uploadedFileName = CommonMethods.patternFinder(uploadedFileNameResponse,
+			BroadBandTestConstants.LOG_UPLOAD_PATTERN_MATCHER);
+		LOGGER.info("UPLOADED FILE NAME IS : " + uploadedFileName);
+		LOGGER.info("RESPONSE FOR UPTIME VIA WEBPA : " + uptimeObtainedViaWebpa);
+		LOGGER.info("RESPONSE FOR UPTIME COMMAND : " + upTimeObtainedViaCommand);
+		status = verifyLatestLogUploadFileName(uploadedFileName, uptimeObtainedViaWebpa,
+			upTimeObtainedViaCommand);
+	    } else {
+		LOGGER.error("Invalid/Null response obtained for either of the following values \n"
+			+ " 1. uptime via WEBPA \n" + "	2. uptime via Command \n"
+			+ "	3. Latest Log upload Filename \n" + "	4. Log Upload success text");
+		status = false;
 	    }
 	} catch (Exception e) {
-	    LOGGER.error("Caught exception while comparing all the matched pattern " + e.getMessage());
+	    LOGGER.error("Exception occured while cross verifying the Log Upload Successful status :" + e.getMessage());
 	}
-	LOGGER.debug("ENDING METHOD: validateNameServerIP()");
+	LOGGER.debug("ENDING METHOD: verifyLatestLogUploadSuccessful()");
+	return status;
+    }
+
+    /**
+     * Utility method to Cross verify the the log upload file name with uptime.
+     * 
+     * @param logUploadfileName
+     *            instance to hold string value of log upload file name
+     * @param uptimeObtainedViaWebpa
+     *            instance to hold string value of uptime obtained via WEBPA
+     * @param upTimeObtainedViaCommand
+     *            instance to hold string value of uptime obtained via Command
+     * @return true if Log Upload File name is latest with time greater than the uptime of the device after reboot.
+     * @refactor Said Hisham
+     */
+    public static boolean verifyLatestLogUploadFileName(String logUploadfileName, String uptimeObtainedViaWebpa,
+	    String upTimeObtainedViaCommand) {
+	LOGGER.debug("STARTING METHOD : verifyLatestLogUploadFileName()");
+	boolean status = false;
+	long hoursFromFileName = 0L;
+	long minutesFromFileName = 0L;
+	long totalTimeInSecondsFromFileName = 0L;
+	long hoursFromUpTimeCommandResponse = 0L;
+	long minutesFromUpTimeCommandResponse = 0L;
+	long secondsFromUpTimeCommandResponse = 0L;
+	long totalTimeInSecondsFromUpTimeCommandResponse = 0L;
+	long timeDifference = 0L;
+	long uptimeViaWebpa = 0L;
+	try {
+	    // Since file name is in 12hrs format, Converting into 24hrs format to cross check with uptime of the device
+	    // which is in 24hrs format and Converting hours into seconds
+	    hoursFromFileName = CommonMethods.patternMatcher(logUploadfileName,
+		    BroadBandTestConstants.LOG_UPLOAD_FILE_NAME_WITH_PM_PATTERN_MATCHER)
+			    ? (convertStringToLong(CommonMethods.patternFinder(logUploadfileName,
+				    BroadBandTestConstants.GET_HOURS_FROM_LOG_UPLOAD_FILE_NAME_PATTERN_MATCHER))
+				    + BroadBandTestConstants.CONSTANT_12)
+				    * BroadBandTestConstants.INTERGER_CONSTANT_3600
+			    : (convertStringToLong(CommonMethods.patternFinder(logUploadfileName,
+				    BroadBandTestConstants.GET_HOURS_FROM_LOG_UPLOAD_FILE_NAME_PATTERN_MATCHER)))
+				    * BroadBandTestConstants.INTERGER_CONSTANT_3600;
+	    // Converting minutes into seconds
+	    minutesFromFileName = convertStringToLong(CommonMethods.patternFinder(logUploadfileName,
+		    BroadBandTestConstants.GET_MINUTES_FROM_LOG_UPLOAD_FILE_NAME_PATTERN_MATCHER))
+		    * BroadBandTestConstants.CONSTANT_60;
+	    totalTimeInSecondsFromFileName = hoursFromFileName + minutesFromFileName;
+	    LOGGER.info("Hours converted to seconds from File name is : " + hoursFromFileName);
+	    LOGGER.info("Minutes converted to seconds obtained from File name is : " + minutesFromFileName);
+	    LOGGER.info("Total Time in seconds obtained from file name : " + totalTimeInSecondsFromFileName);
+
+	    // Converting hours into seconds for response obtained from uptime command
+	    hoursFromUpTimeCommandResponse = convertStringToLong(CommonMethods.patternFinder(upTimeObtainedViaCommand,
+		    BroadBandTestConstants.GET_HOURS_FROM_UPTIME_VALUE_PATTERN_MATCHER))
+		    * BroadBandTestConstants.INTERGER_CONSTANT_3600;
+	    // Converting minutes into seconds for respose obtained from uptime command
+	    minutesFromUpTimeCommandResponse = convertStringToLong(CommonMethods.patternFinder(upTimeObtainedViaCommand,
+		    BroadBandTestConstants.GET_MINUTES_FROM_UPTIME_VALUE_PATTERN_MATCHER))
+		    * BroadBandTestConstants.CONSTANT_60;
+	    secondsFromUpTimeCommandResponse = convertStringToLong(CommonMethods.patternFinder(upTimeObtainedViaCommand,
+		    BroadBandTestConstants.GET_SECONDS_FROM_UPTIME_VALUE_PATTERN_MATCHER));
+	    totalTimeInSecondsFromUpTimeCommandResponse = hoursFromUpTimeCommandResponse
+		    + minutesFromUpTimeCommandResponse + secondsFromUpTimeCommandResponse;
+	    LOGGER.info(
+		    "Hours converted to seconds from UpTime Command response is : " + hoursFromUpTimeCommandResponse);
+	    LOGGER.info("Minutes converted to seconds obtained from UpTime Command response is : "
+		    + minutesFromUpTimeCommandResponse);
+	    LOGGER.info("Seconds obtained from UpTime Command response is : " + secondsFromUpTimeCommandResponse);
+	    LOGGER.info("Total Time in seconds obtained from UpTime Command response is : "
+		    + totalTimeInSecondsFromUpTimeCommandResponse);
+
+	    // convert the string value of uptime obtained via WEBPA to long
+	    uptimeViaWebpa = convertStringToLong(uptimeObtainedViaWebpa);
+	    // Time Difference = Current Device time - uptime (exact time when device came up online after reboot)
+	    timeDifference = totalTimeInSecondsFromUpTimeCommandResponse - uptimeViaWebpa;
+	    LOGGER.info("Actual Time (in seconds) when device came online after reboot is : " + timeDifference);
+	    LOGGER.info(
+		    "Actual Time (in seconds) of log file when it got uploaded : " + totalTimeInSecondsFromFileName);
+	    // Time Obtained from file name should be Greater than the device uptime after reboot and difference between
+	    // log upload file name time and device up time should be less than or equal to 30 minutes
+	    status = (totalTimeInSecondsFromFileName > timeDifference
+		    && ((totalTimeInSecondsFromFileName - timeDifference) <= BroadBandTestConstants.CONSTANT_1800));
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while cross verifying the latest file name with uptime of the device :"
+		    + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: verifyLatestLogUploadFileName()");
+	return status;
+    }
+
+    /**
+     * Utility method to Convert string to Long Value.
+     * 
+     * @param stringToConvert
+     *            String which needs to be converted to Long value.
+     *
+     * @return Long value post conversion.
+     * @refactor Said Hisham
+     */
+    public static long convertStringToLong(String stringToConvert) {
+	LOGGER.debug("STARTING METHOD : convertStringToLong()");
+	long longValueAfterConversion = 0L;
+	try {
+	    longValueAfterConversion = Long.parseLong(stringToConvert);
+	} catch (NumberFormatException nfe) {
+	    LOGGER.error(
+		    "Number format Exception occured while trying to parse the string to Double -  " + stringToConvert,
+		    nfe);
+	}
+	LOGGER.debug("ENDING METHOD: convertStringToLong()");
+	return longValueAfterConversion;
+    }
+    
+    /**
+     * Method to ssh to the WanIpv6 address on jump server and return the status.
+     * 
+     * @param tapEnv
+     * @param wanIpv6address
+     * @refactor Alan_Bivera
+     * 
+     */
+    public static boolean executeSshCommandOnJumpServer(AutomaticsTapApi tapEnv,Dut device, String wanIpv6) {
+	Boolean status = false;
+	
+	LOGGER.debug("STARTING METHOD :executeSshCommandOnJumpServer");
+	String command = CommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.LINUX_CMD_SUDO_STB_SSH_IPV6,
+		BroadBandTestConstants.SINGLE_SPACE_CHARACTER, wanIpv6, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+		BroadBandCommandConstants.CMD_ECHO_TEST_CONNECTION);
+	LOGGER.info("Command is " + command);
+
+	String response = tapEnv.executeCommandUsingSsh( device, command);
+	LOGGER.info("the response is" + response);
+	
+	if (CommonMethods.isNotNull(response)
+		&& CommonUtils.patternSearchFromTargetString(response, BroadBandTestConstants.STRING_TEST_CONNECTION)) {
+	    status = true;
+	}
+	LOGGER.debug("ENDING METHOD :executeSshCommandOnJumpServer");
 	return status;
     }
 

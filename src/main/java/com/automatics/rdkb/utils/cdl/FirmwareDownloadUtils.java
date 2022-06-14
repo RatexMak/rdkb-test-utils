@@ -1418,7 +1418,7 @@ public class FirmwareDownloadUtils {
     }
 
     /**
-     * Method to trigger code download using hub4_triggerFirmwareDownload.sh script file
+     * Method to trigger code download using triggerFirmwareDownload.sh script file
      * 
      * @param tapEnv
      *            instance of {@link AutomaticsTapApi}

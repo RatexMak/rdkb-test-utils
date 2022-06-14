@@ -39,6 +39,7 @@ import com.automatics.rdkb.utils.CommonUtils;
 import com.automatics.rdkb.utils.DeviceModeHandler;
 import com.automatics.rdkb.utils.snmp.BroadBandSnmpUtils;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
+import com.automatics.rdkb.utils.wifi.BroadBandWiFiUtils;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.AutomaticsPropertyUtility;
 import com.automatics.utils.CommonMethods;
@@ -730,5 +731,162 @@ public class BroadBandCodeDownloadUtils {
 	LOGGER.debug("ENDING METHOD : 'waitAndVerifyImageNameAfterCDL'");
 
 	return status;
+    }
+    
+    /**
+     * Method used to trigger the code download with log validation
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param buildNameToBeTriggerred
+     *            String representing the CDL Image Name and it has extension(.bin or .bib.ccs)
+     * @param isCcsSupportBuild
+     *            True if ccs support build model,Else-False
+     * @return True- Code download triggered successfully.False-Code download triggered failed
+     * @refactor Said Hisham
+     */
+    public static boolean triggerUpgradeOrDowngradeGivenBuild(Dut device, AutomaticsTapApi tapEnv,
+	    String buildNameToBeTriggerred, boolean isCcsSupportBuild) {
+	LOGGER.debug("STARTING METHOD : triggerUpgradeOrDowngradeGivenBuild");
+	
+	String cdlServerUrl = BroadbandPropertyFileHandler.getCodeDownloadUrl();
+	String buildNameToUse = null;
+	boolean result = false;
+	long startTime = 0L;
+	// For Fiber devices have to check in EponAgent log
+	boolean isFiberDevice = DeviceModeHandler.isFibreDevice(device);
+	String currentFirmwareVersion = FirmwareDownloadUtils.getCurrentFirmwareFileNameForCdl(tapEnv, device);
+	LOGGER.info("CURRENT FIRMWARE VERSION: " + currentFirmwareVersion);
+	LOGGER.info("FIRMWARE VERSION TO TRIGGER: " + buildNameToBeTriggerred);
+	// Trigger HTTP code download
+	try {
+	    result = BroadBandCodeDownloadUtils.triggerHttpCodeDownloadUsingWebpaParameters(device, tapEnv,
+		    buildNameToBeTriggerred, isCcsSupportBuild);
+	} catch (Exception exception) {
+	    LOGGER.error("Exception occurred while triggering WEBPA CDL ");
+	}
+	LOGGER.info("WEBPA CDL TRIGGERED & COMPLETED SUCCESSFULLY: " + result);
+	String logFileToSearch = BroadBandCommonUtils.getLogFileNameOnFirmwareDownload(device);
+	if (!result) {
+	    try {
+		LOGGER.error("WEBPA CDL FAILED, GOING TO TRIGGER TR-181");
+		boolean isCcsExtensionPresent = buildNameToBeTriggerred
+			.contains(BroadBandCdlConstants.BIN_CCS_EXTENSION);
+		if (isCcsExtensionPresent) {
+		    buildNameToUse = buildNameToBeTriggerred;
+		} else if (!isCcsExtensionPresent && isCcsSupportBuild) {
+		    buildNameToUse = buildNameToBeTriggerred.toLowerCase() + BroadBandCdlConstants.BIN_CCS_EXTENSION;
+		} else {
+		    buildNameToUse = buildNameToBeTriggerred + BroadBandTestConstants.BINARY_BUILD_IMAGE_EXTENSION;
+		}
+
+		if (DeviceModeHandler.isBusinessClassDevice(device)
+			&& CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
+		    cdlServerUrl = BroadbandPropertyFileHandler.getCodeDownloadUrlForBusinessAndAtom();
+		}
+		LOGGER.info("CODE DOWNLOAD URL: " + cdlServerUrl);
+		LOGGER.info("CODE DOWNLOAD IMAGE: " + buildNameToUse);
+		result = CommonMethods.isNotNull(cdlServerUrl);
+		String searchResponse = null;
+		// Set the WebPA Parameter: Code Download URL & Code Download Image Name
+		if (result) {
+		    result = false;
+		    LOGGER.info("GOING TO SET CODE DOWNLOAD IMAGE URL (TR-181)");
+		    result = BroadBandWiFiUtils.setWebPaParams(device,
+			    BroadBandCdlConstants.WEBPA_PARAM_CODE_DOWNLOAD_URL, cdlServerUrl,
+			    BroadBandTestConstants.CONSTANT_0);
+		    if (result) {
+			result = false;
+			LOGGER.info("GOING TO SET CODE DOWNLOAD IMAGE NAME (TR-181)");
+			tapEnv.waitTill(BroadBandTestConstants.TEN_SECOND_IN_MILLIS);
+			result = BroadBandWiFiUtils.setWebPaParams(device,
+				BroadBandCdlConstants.WEBPA_PARAM_CODE_DOWNLOAD_IMAGE_NAME, buildNameToUse,
+				BroadBandTestConstants.CONSTANT_0);
+		    }
+		    if (result) {
+			result = false;
+			startTime = System.currentTimeMillis();
+			do {
+			    LOGGER.info("GOING TO WAIT FOR 10 SECONDS.");
+			    tapEnv.waitTill(BroadBandTestConstants.TEN_SECOND_IN_MILLIS);
+			    result = CommonMethods
+				    .isNotNull(BroadBandCommonUtils.searchLogFiles(tapEnv, device,
+					    BroadBandCdlConstants.LOG_MESSAGE_CDL_URL + cdlServerUrl, logFileToSearch))
+				    && CommonMethods.isNotNull(BroadBandCommonUtils.searchLogFiles(tapEnv, device,
+					    BroadBandCdlConstants.LOG_MESSAGE_CDL_IMAGE_NAME + buildNameToUse,
+					    logFileToSearch));
+			} while ((System.currentTimeMillis()
+				- startTime) < BroadBandTestConstants.FIFTEEN_MINUTES_IN_MILLIS && !result);
+		    }
+		    LOGGER.info("CODE DOWNLOAD URL & IMAGE NAME SET SUCCESSFULLY (TR-181): " + result);
+		}
+		// Trigger the CDL
+		if (result) {
+		    LOGGER.info("GOING TO TRIGGER CDL (TR-181)");
+		    result = BroadBandWiFiUtils.setWebPaParams(device, BroadBandCdlConstants.WEBPA_PARAM_TRIGGER_CDL,
+			    BroadBandTestConstants.TRUE, BroadBandTestConstants.CONSTANT_3);
+		    if (result) {
+			result = false;
+			startTime = System.currentTimeMillis();
+			do {
+			    LOGGER.info("GOING TO WAIT FOR 10 SECONDS.");
+			    tapEnv.waitTill(BroadBandTestConstants.TEN_SECOND_IN_MILLIS);
+			    searchResponse = BroadBandCommonUtils.searchLogFiles(tapEnv, device,
+				    BroadBandCdlConstants.LOG_MESSAGE_CDL_TRIGGERED, logFileToSearch);
+			    result = CommonMethods.isNotNull(searchResponse);
+			    if (CommonUtils.verifyStbRebooted(device, tapEnv)) {
+				result = true;
+				break;
+			    }
+			} while ((System.currentTimeMillis()
+				- startTime) < BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS && !result);
+		    }
+		    LOGGER.info("CODE DOWNLOAD TRIGGERED SUCCESSFULLY (TR-181): " + result);
+		}
+		if (result) {
+		    result = CommonMethods.isSTBRebooted(tapEnv, device, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS,
+			    BroadBandTestConstants.CONSTANT_20);
+		    LOGGER.info("DEVICE REBOOTS AFTER (TR-181) CDL: " + result);
+		}
+		if (result) {
+		    result = CommonMethods.waitForEstbIpAcquisition(tapEnv, device);
+		} else {
+		    result = false;
+		}
+		LOGGER.info("DEVICE COMES UP AFTER (TR-181) CDL & REBOOT: " + result);
+		// Verify the flashed image name after CDL.
+		if (result) {
+		    result = false;
+		    startTime = System.currentTimeMillis();
+		    do {
+			LOGGER.info("GOING TO WAIT FOR 1 MINUTE.");
+			tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+			String tempFirmwareVersion = FirmwareDownloadUtils.getCurrentFirmwareFileNameForCdl(tapEnv,
+				device);
+			result = CommonMethods.isNotNull(tempFirmwareVersion)
+				&& currentFirmwareVersion.equalsIgnoreCase(tempFirmwareVersion.trim());
+		    } while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.THREE_MINUTES
+			    && !result);
+		    LOGGER.info("CDL IMAGE FLASHED SUCCESSFULLY: " + result);
+		}
+	    } catch (Exception exception) {
+		LOGGER.error("Exception occurred while triggering HTTP TR-181 CDL ");
+	    }
+	    LOGGER.info("HTTP TR-181 CDL TRIGGERED & COMPLETED SUCCESSFULLY: " + result);
+	    if (!result) {
+		try {
+		    LOGGER.error("HTTP TR-181 CDL FAILED; HENCE GOING TO TRIGGER CDL WITH TFTP DOCSIS SNMP COMMANDS.");
+		    result = FirmwareDownloadUtils.triggerAndWaitForTftpCodeDownloadUsingDocsisSnmpCommand(tapEnv,
+			    device, buildNameToUse, false);
+		} catch (Exception exception) {
+		    LOGGER.error("Exception occurred while triggering SNMP CDL");
+		}
+		LOGGER.info("SNMP CDL TRIGGERED & COMPLETED SUCCESSFULLY: " + result);
+	    }
+	}
+	LOGGER.debug("ENDING METHOD : triggerUpgradeOrDowngradeGivenBuild");
+	return result;
     }
 }

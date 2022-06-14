@@ -29,6 +29,9 @@ public class BroadBandPropertyKeyConstants {
 
     /** The property key for syndication partner ID Names */
     public static final String PROP_KEY_SYNDICATION_PARTNER_ID_LIST = "syndicationpartner.id.list";
+    
+    /** The property key for specific syndication partner ID Names */
+    public static final String PROP_KEY_SPECIFIC_SYNDICATION_PARTNER_ID_LIST = "specific.syndicationpartner.id.list";
 
     /** The property key to get partner ID Prefix */
     public static final String PROP_KEY_DEFAULT_SSID_PREFIX = "default.ssid.prefix.";
@@ -110,9 +113,9 @@ public class BroadBandPropertyKeyConstants {
 
     /** Property key name for TFTP server IP address. */
     public static final String PROP_KEY_TFTP_SERVER_IP_ADDRESS = "cdl.tftp.server.ip";
-    
+
     /** Property key for Device with firmwareupgrader */
-    public static final String PROP_KEY_SPECIFIC_DEVICE = "Device.specific."; 
+    public static final String PROP_KEY_SPECIFIC_DEVICE = "Device.specific.";
 
     public static final String PARTIAL_DEVICE_CHECK = "is.device.check.";
 
@@ -209,12 +212,6 @@ public class BroadBandPropertyKeyConstants {
 
     /** The property key for partner ID Names */
     public static final String PROP_KEY_SPECIFIC_PARTNER_ID = "specific.partner.id";
-    
-    /** The property key for partner ID Names */
-    public static final String PROP_KEY_SPECIFIC_PARTNER_ID_ONE = "specific.partner.id_one";
-    
-    /** The property key for partner ID Names */
-    public static final String PROP_KEY_SPECIFIC_PARTNER_ID_TWO = "specific.partner.id_two";
 
     /** Property key for Device Ledlogs */
     public static final String PROP_KEY_LEDLOGS_DEVICE = "Device.ledlogs.Available.";
@@ -306,77 +303,97 @@ public class BroadBandPropertyKeyConstants {
     public static final String RADIO_NAME_24GHZ_CHECK = "radio.name.24ghz.device.check.";
 
     public static final String RADIO_NAME_5GHZ_CHECK = "radio.name.5ghz.device.check.";
-    
+
     public static final String DEVICE_CHECK_VALUE1 = "is.device.check.value1.";
-    
+
     public static final String DEVICE_CHECK_VALUE2 = "is.device.check.value2.";
-    
+
     public static final String DEVICE_CHECK_VALUE3 = "is.device.check.value3.";
-    
+
     public static final String PROCESS_NTPD_CLIENT1 = "process.ntpd.client1";
 
     public static final String PROCESS_NTPD_CLIENT2 = "process.ntpd.client2";
-    
+
     public static final String PARTIAL_DEVICE_CHECK_ACCEPTANCE_CRITERIA = "is.device.check.acceptance1.";
-    
+
     public static final String PARTIAL_DEVICE_CHECK_ACCEPTANCE = "is.device.check.acceptance.";
-    
+
     /**
      * Test constant for dnsoverride level one block site address in stb.properties file
      */
     public static final String PROP_KEY_DNS_BLOCK_ADDRESS_FOR_LEVEL_ONE_SITE = "dnsoverride.blocksiteaddress.level.one";
-    
+
     /** Test constant for level one site host address in stb.properties file */
     public static final String PROP_KEY_HOST_ADDRESS_FOR_LEVEL_ONE_SITE = "dnsoverride.siteaddress.level.one";
-    
+
     public static final String PROP_KEY_TXRX_RATELIST_DEVICE = "txrx.ratelist.devices";
+
+    public static final String STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE = "default.global.dns.ipv4.value";
+
+    public static final String STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE = "default.global.dns.ipv6.value";
+
+    public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = "dns.ipv4.value.level.one.primary";
+
+    public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY = "dns.ipv4.value.level.two.primary";
+
+    public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = "dns.ipv4.value.level.three.primary";
+
+    public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = "dns.ipv6.value.level.one.primary";
+
+    public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY = "dns.ipv6.value.level.two.primary";
+
+    public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = "dns.ipv6.value.level.three.primary";
+
+    public static final String STRING_DNS_VALID_IPV4_VALUE = "dns.valid.ipv4.value";
+
+    public static final String STRING_DNS_VALID_IPV6_VALUE = "dns.valid.ipv6.value";
+
+    public static final String STRING_DNS_INVALID_SECONDARY_IPV4_VALUE = "dns.invalid.secondary.ipv4.value";
+
+    public static final String STRING_DNS_INVALID_SECONDARY_IPV6_VALUE = "dns.invalid.secondary.ipv6.value";
+
+    public static final String STRING_DNS_INVALID_PRIMARY_IPV4_VALUE = "dns.invalid.primary.ipv4.value";
+
+    public static final String STRING_DNS_INVALID_PRIMARY_IPV6_VALUE = "dns.invalid.primary.ipv6.value";
+
+    public static final String STRING_DNS_VALID_SECONDARY_IPV4_VALUE = "dns.valid.secondary.ipv4.value";
+
+    public static final String STRING_DNS_VALID_SECONDARY_IPV6_VALUE = "dns.valid.secondary.ipv6.value";
+
+    public static final String STRING_DNS_ANOTHER_INVALID_SECONDARY_IPV4_VALUE = "dns.another.invalid.secondary.ipv4.value";
+
+    public static final String STRING_DNS_ANOTHER_INVALID_SECONDARY_IPV6_VALUE = "dns.another.invalid.secondary.ipv6.value";
+
+    public static final String DEVICE_CHECK_VALUE_XDNS = "is.device.check.xdns.";
+
+    public static final String CURRENT_UPNP_VERSION = "current.upnp.version";
+
+    public static final String PARTIAL_DEVICE_CHECK_GBPAD = "is.device.check.gbpad.";
+
+    public static final String PARTIAL_DEVICE_CHECK_GBPAD1 = "is.device.check.gbpad1.";
+
+    public static final String PARTIAL_DEVICE_CHECK_GBPAD2 = "is.device.check.gbpad2.";
+
+    public static final String IS_SERVER_CONFIGURED_TO_UPLOAD_CRASH_DETAILS = "is.server.configured";
+
+    public static final String CAPTIVE_PORTAL_PAGE_TITLE_FOR_PARTNER_DEVICE = "captive.portal.page.titles.partner.device.";
+
+    public static final String CAPTIVE_PORTAL_CONFIGURATION_CONFIRM_PAGE_HEADER_MESSAGE = "captive.portal.configuraion.confirm.message.partner.";
+
+    public static final String CAPTIVE_PORTAL_CONFIGURATION_SUCCESS_PAGE_HEADER_MESSAGE = "captive.portal.configuraion.success.message.partner.";
+
+    public static final String TR69_NAMING_CONVENTION_PARAMETERS = "tr69.namingconvention.parameters";
     
-	public static final String STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE = "default.global.dns.ipv4.value";
+    /** Property Key for DAC15 CDL URL for Business Class devices which are Atom Console*/
+    public static final String PROP_KEY_DAC15_CDL_URL_BUSINESS_ATOM = "rdkb.cdl.url.business.atom";
+    
+    public static final String IS_SERVER_CONFIGURED_TO_UPLOAD_TO_SERVER = "is.logupload.server.configured";
+    
+    /** property to configure the default partner */
+    public static final String PROPERTY_DEFAULT_PARTNER = "default.partnerId";
+    
+    /** platform based property for available syndication partners */
+    public static final String PROPERTY_PLATFORM_BASED_PARTNER_LIST = "partners.list.";
 
-	public static final String STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE = "default.global.dns.ipv6.value";
-
-	public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = "dns.ipv4.value.level.one.primary";
-
-	public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY = "dns.ipv4.value.level.two.primary";
-	
-	public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = "dns.ipv4.value.level.three.primary";
-
-	public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = "dns.ipv6.value.level.one.primary";
-	
-	public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_TWO_PRIMARY = "dns.ipv6.value.level.two.primary";
-	
-	public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = "dns.ipv6.value.level.three.primary";
-
-	public static final String STRING_DNS_VALID_IPV4_VALUE = "dns.valid.ipv4.value";
-
-	public static final String STRING_DNS_VALID_IPV6_VALUE = "dns.valid.ipv6.value";
-
-	public static final String STRING_DNS_INVALID_SECONDARY_IPV4_VALUE = "dns.invalid.secondary.ipv4.value";
-
-	public static final String STRING_DNS_INVALID_SECONDARY_IPV6_VALUE = "dns.invalid.secondary.ipv6.value";
-
-	public static final String STRING_DNS_INVALID_PRIMARY_IPV4_VALUE = "dns.invalid.primary.ipv4.value";
-
-	public static final String STRING_DNS_INVALID_PRIMARY_IPV6_VALUE = "dns.invalid.primary.ipv6.value";
-
-	public static final String STRING_DNS_VALID_SECONDARY_IPV4_VALUE = "dns.valid.secondary.ipv4.value";
-	
-	public static final String STRING_DNS_VALID_SECONDARY_IPV6_VALUE = "dns.valid.secondary.ipv6.value";
-
-	public static final String STRING_DNS_ANOTHER_INVALID_SECONDARY_IPV4_VALUE = "dns.another.invalid.secondary.ipv4.value";
-	
-	public static final String STRING_DNS_ANOTHER_INVALID_SECONDARY_IPV6_VALUE = "dns.another.invalid.secondary.ipv6.value";
-	
-	public static final String DEVICE_CHECK_VALUE_XDNS = "is.device.check.xdns.";
-	
-	public static final String CURRENT_UPNP_VERSION = "current.upnp.version";
-	
-	public static final String PARTIAL_DEVICE_CHECK_GBPAD = "is.device.check.gbpad.";
-
-	public static final String PARTIAL_DEVICE_CHECK_GBPAD1 = "is.device.check.gbpad1.";
-
-	public static final String PARTIAL_DEVICE_CHECK_GBPAD2 = "is.device.check.gbpad2.";
-
-	public static final String IS_SERVER_CONFIGURED_TO_UPLOAD_CRASH_DETAILS = "is.server.configured";
-
+    
 }

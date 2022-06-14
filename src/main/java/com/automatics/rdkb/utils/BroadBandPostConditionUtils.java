@@ -1442,4 +1442,97 @@ public class BroadBandPostConditionUtils {
 			    + exception.getMessage());
 	}
     }
+    
+    /**
+     * Post-Condition method to disconnect the connected setup
+     * 
+     * @param device
+     *            instance of{@link Dut}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param deviceConnected
+     *            instance of connected setup
+     * @param postConditionNumber
+     *            String to hold post condition number.
+     * @refactor Said Hisham
+     */
+    public static void executePostConditionToDisconnectConnectedClient(Dut device, AutomaticsTapApi tapEnv,
+	    Dut deviceConnected, int postConStepNumber) {
+	boolean status = false;
+	String errorMessage = null;
+	try {
+	    LOGGER.info("#######################################################################################");
+	    LOGGER.info("POST-CONDITION " + postConStepNumber
+		    + " : DESCRIPTION : DISCONNECT WIFI RADIO 2.4GHZ/5GHZ SSID FROM THE DEVICE");
+	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : DISCONNECT WIFI RADIO 2.4GHZ/5GHZ SSID ");
+	    LOGGER.info("POST-CONDITION " + postConStepNumber
+		    + " : EXPECTED : PRIVATE WIFI 2.4GHZ/5GHZ SSID SHOULD BE DISCONNECTED SUCCESSFULLY");
+	    LOGGER.info("#######################################################################################");
+	    status = false;
+	    try {
+		BroadBandResultObject resultObject = BroadBandConnectedClientUtils.disconnectCnnClientFromSsid(tapEnv,
+			device, deviceConnected);
+		status = resultObject.isStatus();
+		errorMessage = resultObject.getErrorMessage();
+	    } catch (Exception e) {
+		errorMessage = e.getMessage();
+		LOGGER.error("EXCEPTION OCCURRED WHILE PERFORMING POST CONDITION " + postConStepNumber + " : "
+			+ errorMessage);
+	    }
+	    if (status) {
+		LOGGER.info("POST-CONDITION " + postConStepNumber
+			+ " : ACTUAL : PRIVATE WIFI 2.4GHZ/5GHZ SSID DISCONNECTED SUCCESSFULLY");
+	    } else {
+		LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
+	    }
+	} catch (Exception e) {
+	    LOGGER.info(e.getMessage());
+	    LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + e.getMessage());
+	}
+    }
+    
+    /**
+     * Post-Condition method to enable the xifnity wifi
+     * 
+     * @param device
+     *            instance of{@link Dut}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param postConditionNumber
+     *            String to hold post condition number.
+     *            
+     * @refactor Alan_Bivera
+     */
+    public static void executePostConditionToEnableOrDisableXfinityWifiBasedOnStbProperty(Dut device, AutomaticsTapApi tapEnv, int postConStepNumber) {
+	boolean status = false;
+	String errorMessage = null;
+	try {
+	    LOGGER.info(" Going to get property value for " + BroadBandTestConstants.KEY_FOR_XFINITY_WIFI_WHITELISTING);
+	    String xfinityWifiValue = tapEnv.getSTBPropsValue(BroadBandTestConstants.KEY_FOR_XFINITY_WIFI_WHITELISTING);
+	    String loggerString = xfinityWifiValue.equalsIgnoreCase(BroadBandTestConstants.TRUE) ? "ENABLED"
+		    : "DISABLED";
+	    LOGGER.info("#######################################################################################");
+	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : DESCRIPTION : VERIFY THE XFINITYWIFI STATUS IS "
+		    + loggerString);
+	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTION : EXECUTE WEBPA COMMAND:"
+		    + BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI);
+	    LOGGER.info("POST-CONDITION " + postConStepNumber + " : EXPECTED : XFINITY WIFI MUST BE " + loggerString);
+	    LOGGER.info("#######################################################################################");
+	    errorMessage = "FAILED TO " + loggerString + " THE XFINITY WIFI ON GATEWAY DEVICE";
+
+	    LOGGER.info("Going to check and set XfinityWifi as configured in Stb.properties");
+	    status = BroadBandWiFiUtils.checkAndSetXfinityWifi(device, tapEnv);
+	    if (status) {
+		LOGGER.info("POST-CONDITION " + postConStepNumber + " : ACTUAL : SUCCESSFULLY " + loggerString
+			+ " THE XFINITY WIFI ON GATEWAY DEVICE");
+	    } else {
+		LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
+	    }
+
+	} catch (Exception e) {
+	    LOGGER.info(e.getMessage());
+	    LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + e.getMessage());
+	}
+    }
+
 }

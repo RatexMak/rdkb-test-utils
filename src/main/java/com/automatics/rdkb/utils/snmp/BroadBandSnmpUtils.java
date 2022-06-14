@@ -299,7 +299,6 @@ public class BroadBandSnmpUtils {
 
 	/**
 	 * Utility method to execute SNMP SET command with table index on RDKB devices
-	 * both XB and XF devices.
 	 * 
 	 * @param tapEnv       The {@link AutomaticsTapApi} instance
 	 * @param device       The {@link Dut} instance
@@ -1896,6 +1895,94 @@ public class BroadBandSnmpUtils {
 	}
 	return result;
     }
+    
+    /**
+     * Method to execute enable/disable Wifi radio by SNMP
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            The set-top instance
+     * @param expectedValue
+     *            Expected response for SNMP Get
+     * @return true if able to disable 2.4ghz and 5ghz radio
+     * 
+     * @refactor yamini.s
+     */
+    public static boolean performEnableOrDisableWifiRadioBySnmp(AutomaticsTapApi tapEnv, Dut device,
+    	    String expectedValue) {
+    	LOGGER.debug("STARTING METHOD: performEnableOrDisableWifiRadioBySnmp");
+    	// Variable declaration starts
+    	String snmpResponse = "";
+    	String errorMessage = "";
+    	boolean status = false;
+    	boolean status2Ghz = false;
+    	boolean status5Ghz = false;
+    	boolean applySettings = false;
+    	long startTime;
+    	// Variable declaration ends
+    	try {
+    	    startTime = System.currentTimeMillis();
+    	    do {
+    		snmpResponse = BroadBandSnmpUtils.retrieveSnmpSetOutputWithGivenIndexOnRdkDevices(device, tapEnv,
+    			BroadBandSnmpMib.WIFI_2_4_SSID_STATUS.getOid(), SnmpDataType.INTEGER, expectedValue,
+    			BroadBandSnmpMib.WIFI_2_4_SSID_STATUS.getTableIndex());
+    		status2Ghz = CommonMethods.isNotNull(snmpResponse) && snmpResponse.equals(expectedValue)
+    			&& BroadBandSnmpUtils
+    				.executeSnmpGetWithTableIndexOnRdkDevices(tapEnv, device,
+    					BroadBandSnmpMib.WIFI_2_4_SSID_STATUS.getOid(),
+    					BroadBandSnmpMib.WIFI_2_4_SSID_STATUS.getTableIndex())
+    				.equalsIgnoreCase(expectedValue);
+    	    } while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TWO_MINUTE_IN_MILLIS
+    		    && !status2Ghz
+    		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS));
+    	    if (status2Ghz) {
+    		startTime = System.currentTimeMillis();
+    		do {
+    		    snmpResponse = BroadBandSnmpUtils.retrieveSnmpSetOutputWithGivenIndexOnRdkDevices(device, tapEnv,
+    			    BroadBandSnmpMib.WIFI_5_SSID_STATUS.getOid(), SnmpDataType.INTEGER, expectedValue,
+    			    BroadBandSnmpMib.WIFI_5_SSID_STATUS.getTableIndex());
+    		    status5Ghz = CommonMethods.isNotNull(snmpResponse) && snmpResponse.equals(expectedValue)
+    			    && BroadBandSnmpUtils
+    				    .executeSnmpGetWithTableIndexOnRdkDevices(tapEnv, device,
+    					    BroadBandSnmpMib.WIFI_5_SSID_STATUS.getOid(),
+    					    BroadBandSnmpMib.WIFI_5_SSID_STATUS.getTableIndex())
+    				    .equalsIgnoreCase(expectedValue);
+    		} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TWO_MINUTE_IN_MILLIS
+    			&& !status5Ghz && BroadBandCommonUtils.hasWaitForDuration(tapEnv,
+    				BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS));
+    	    } else {
+    		LOGGER.info("Unable to Enable/disable 2.4 Ghz Wifi Radio by SNMP");
+    	    }
+    	    if (status5Ghz) {
+    		startTime = System.currentTimeMillis();
+    		do {
+    		    snmpResponse = BroadBandSnmpUtils.retrieveSnmpSetOutputWithDefaultIndexOnRdkDevices(device, tapEnv,
+    			    BroadBandSnmpMib.WIFI_APPLY_SETTINGS_WITH_INDEX.getOid(), SnmpDataType.INTEGER,
+    			    BroadBandTestConstants.STRING_VALUE_ONE);
+    		    applySettings = CommonMethods.isNotNull(snmpResponse)
+    			    && snmpResponse.equals(BroadBandTestConstants.STRING_VALUE_ONE);
+    		} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TWO_MINUTE_IN_MILLIS
+    			&& !applySettings && BroadBandCommonUtils.hasWaitForDuration(tapEnv,
+    				BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS));
+    	    } else {
+    		LOGGER.info("Unable to Enable/disable 5Ghz Wifi Radio by SNMP");
+    	    }
+    	    if (applySettings) {
+    		LOGGER.info("Wait for 5 min to affect changes");
+    		tapEnv.waitTill(BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS);
+    	    } else {
+    		LOGGER.info("Unable to Apply Settings for Enable/disable Wifi Radio by SNMP");
+    	    }
+    	    status = status2Ghz && status5Ghz && applySettings;
+    	} catch (Exception e) {
+    	    errorMessage = e.getMessage();
+    	    LOGGER.error("Exception occured while enable/disable Wifi radio by SNMP" + errorMessage);
+    	}
+    	LOGGER.debug("ENDING METHOD: performEnableOrDisableWifiRadioBySnmp");
+    	return status;
+        }
+
 
 
 

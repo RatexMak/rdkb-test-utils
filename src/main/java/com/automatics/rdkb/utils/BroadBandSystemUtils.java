@@ -524,43 +524,43 @@ public class BroadBandSystemUtils {
      */
     public static boolean verifyDnsmasqSerivceStatusUsingSystemctl(Dut device, AutomaticsTapApi tapApi,
 	    String serviceStatus) throws TestException {
-    	// stores the verification status
-    	boolean status = false;
-    	// stores the command response
-    	String response = null;
-    	String NON_ASCII_CHARACTERS_FROM_REMOTE_API_RESPONSE = "\\[1;32m";
+	// stores the verification status
+	boolean status = false;
+	// stores the command response
+	String response = null;
+	String NON_ASCII_CHARACTERS_FROM_REMOTE_API_RESPONSE = "\\[1;32m";
 
-    	try {
+	try {
 
-    	    response = tapApi.executeCommandUsingSsh(device,
-    			    BroadBandCommandConstants.COMMAND_TO_CHECK_THE_RUNNING_STATUS_OF_DNSMASQ_SERVICE);
+	    response = tapApi.executeCommandUsingSsh(device,
+			    BroadBandCommandConstants.COMMAND_TO_CHECK_THE_RUNNING_STATUS_OF_DNSMASQ_SERVICE);
 
-    	    LOGGER.info("DNSMASQ service status response : " + response);
+	    LOGGER.info("DNSMASQ service status response : " + response);
 
-    	    if (CommonMethods.isNotNull(response)) {
+	    if (CommonMethods.isNotNull(response)) {
 
-    		response = response.replaceAll(NON_ASCII_CHARACTERS_FROM_REMOTE_API_RESPONSE,
-    			AutomaticsConstants.EMPTY_STRING);
-    		// retrieving the status from systemctl response
-    		response = CommonMethods.patternFinder(response,
-    			BroadBandTestConstants.PATTERN_TO_GET_STATUS_FROM_SYSTEMCTL_RESPONSE);
-    		LOGGER.info("systemctl dnsmasq service status is: " + response);
-    		if (CommonMethods.isNotNull(response) && response.trim().equalsIgnoreCase(serviceStatus)) {
-    		    status = true;
-    		    LOGGER.info("systemctl command returned dnsmasq service is " + serviceStatus);
-    		} else {
-    		    throw new TestException("dnsmasq service is NOT " + serviceStatus
-    			    + " as observed with systemctl command. The current status is " + response);
-    		}
-    	    } else {
-    		throw new TestException("NULL response obtained after executing commands"
-    			+ BroadBandCommandConstants.COMMAND_TO_CHECK_THE_RUNNING_STATUS_OF_DNSMASQ_SERVICE
-    			+ " using remote ssh api in stb");
-    	    }
-    	} catch (Exception exception) {
-    	    throw new TestException(exception.getMessage());
-    	}
-    	return status;
+		response = response.replaceAll(NON_ASCII_CHARACTERS_FROM_REMOTE_API_RESPONSE,
+			AutomaticsConstants.EMPTY_STRING);
+		// retrieving the status from systemctl response
+		response = CommonMethods.patternFinder(response,
+			BroadBandTestConstants.PATTERN_TO_GET_STATUS_FROM_SYSTEMCTL_RESPONSE);
+		LOGGER.info("systemctl dnsmasq service status is: " + response);
+		if (CommonMethods.isNotNull(response) && response.trim().equalsIgnoreCase(serviceStatus)) {
+		    status = true;
+		    LOGGER.info("systemctl command returned dnsmasq service is " + serviceStatus);
+		} else {
+		    throw new TestException("dnsmasq service is NOT " + serviceStatus
+			    + " as observed with systemctl command. The current status is " + response);
+		}
+	    } else {
+		throw new TestException("NULL response obtained after executing commands"
+			+ BroadBandCommandConstants.COMMAND_TO_CHECK_THE_RUNNING_STATUS_OF_DNSMASQ_SERVICE
+			+ " using remote ssh api in stb");
+	    }
+	} catch (Exception exception) {
+	    throw new TestException(exception.getMessage());
+	}
+	return status;
     }
     
     /**
@@ -623,7 +623,6 @@ public class BroadBandSystemUtils {
 	}
 	return status;
     }
-    
     
     
     /**

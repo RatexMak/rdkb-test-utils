@@ -17,6 +17,8 @@
  */
 package com.automatics.rdkb.constants;
 
+import com.automatics.utils.AutomaticsPropertyUtility;
+
 public class BroadBandConnectedClientTestConstants {
     /** windows command to get the WLAN networks  */
     public static final String WINDOWS_COMMAND_TO_GET_WLAN_NETWORK = "netsh wlan show networks";
@@ -248,5 +250,116 @@ public class BroadBandConnectedClientTestConstants {
   
     /** Pattern to match iperf response for receiver */
     public static final String PATTERN_TO_GET_IPERF_TRANSFER_RATE_RECEIVED_BY_SERVER = ".*\\s+([\\d\\.]+\\s+[KMG]?Bytes).*receiver";
+    
+    /** Constant hold driver name geckodriver */
+    public static final String DRIVER_NAME_GECKODRIVER = "geckodriver";
+    
+    /** Command to get the gecko driver version */
+    public static final String CMD_TO_GET_THE_GECKO_DRIVER_VERSION = DRIVER_NAME_GECKODRIVER + " --version";
+    
+    /** Pattern to get gecko driver version from client */
+    public static final String PATTERN_TO_GET_GECKO_DRIVER_VERSION_FROM_CLIENT = "geckodriver\\s+\\d+.(\\d+).\\d+";
+    
+    /** Command to check unzip support */
+    public static final String CMD_TO_CHECK_UNZIP_SUPPORT = "unzip -v";
+    
+    /** Chrome driver storage api url from property file */
+    public static final String CHROME_DRIVER_STORAGE_GOOGLE_APIS_URL = "chromedriver.storage.googleapis.url";
+    
+    /** Constant to hold selenium configuration path to be read from property file for windows os */
+    public static final String SELENIUM_CONFIG_PATH_FOR_WINDOWS_OS = "selenium.config.path.windows.os";
+    
+    /** Constant hold java kill command for chrome driver in windows */
+    public static final String CHROME_DRIVER_KILL_CMD_FOR_WINDOWS = "taskkill /F /IM chromedriver.exe /T";
+    
+    /** Constant hold grep command for chrome driver in windows */
+    public static final String CHROME_DRIVER_PROCESS_STATUS_FOR_WINDOWS = "tasklist | grep 'chromedriver.exe'";
+    
+    /** Pattern to for chrome browser version */
+    public static final String PATTERN_FOR_CHROME_DRIVER_PROCESS_RUNNING_STATUS ="chromedriver.exe\\s+\\d+\\s+Services";
+    
+    /** download file path */
+    public static final String DOWNLOAD_FILE_PATH = "/home/<REPLACE>/";
+    
+    /** Chrome driver download zip file name from property file */
+    public static final String CHROME_DRIVER_DOWNLOAD_ZIP_FILE_NAME = "chromedriver.download.filename.zip";
+    
+    /** Constant to hold selenium file path for cygwin */
+    public static final String CYGWIN_SELENUIM_FILE_PATH = "/cygdrive/c/Selenium/";
+    
+    /** Command to unzip and move the file to configured location */
+    public static final String CMD_TO_DOWNLOAD_DRIVER = "curl --create -O --output " + DOWNLOAD_FILE_PATH + " "
+	    + AutomaticsPropertyUtility.getProperty(CHROME_DRIVER_STORAGE_GOOGLE_APIS_URL) + "<<VALUE>>/"
+	    + AutomaticsPropertyUtility.getProperty(CHROME_DRIVER_DOWNLOAD_ZIP_FILE_NAME);
+    
+    /** Command to unzip and move the file to configured location */
+    public static final String CMD_TO_UNZIP_AND_MOVE_THE_DRIVER = "unzip " + DOWNLOAD_FILE_PATH
+	    + AutomaticsPropertyUtility.getProperty(CHROME_DRIVER_DOWNLOAD_ZIP_FILE_NAME) + " -d "
+	    + CYGWIN_SELENUIM_FILE_PATH;
 
+    /** Constant to hold version check windows vbs file */
+    public static final String CHROMEDRIVER_VERSION_CHECK_VBS_FILE_NAME = "chromedriver.version.check.vbs.file.name";
+    
+    /** Constant to hold version check windows bat file */
+    public static final String CHROMEDRIVER_VERSION_CHECK_BAT_FILE_NAME="chromedriver.version.check.bat.file.name";
+    
+    /** Selenium register command for windows os */
+    public static final String SELENIUM_REGISTER_CMD_FOR_WONDOWS_OS = "selenium.reg.cmd.for.windows.os";
+    
+    /** Constant hold replace string for vbs file location */
+    public static final String REPLACE_STRING_VBS_FILE_LOCATION = "<VBS_FILE_LOCATION>";
+    
+    /** Constant to hold version check output file name */
+    public static final String VERSION_CHECK_OUTPUT_FILE_NAME = "chromedriver.version.check.output.file.name";
+    
+    /** Selenium configuration chrome driver file name to be read from property file */
+    public static final String SELENIUM_CONFIG_CHROME_DRIVER_FILE_NAME = "selenium.config.chrome.driver.file.name";
+    
+    /** Command to get the chrome driver version in version_output.txt */
+    public static final String CMD_TO_GET_THE_CHROME_DRIVER_VERSION = "grep -i \"ChromeDriver\" <REPLACE>";
+
+    /** Command to get the chrome browser version in version_output.txt */
+    public static final String CMD_TO_GET_THE_CHROME_BROWSER_VERSION = "grep -i \"Version    REG_SZ\" <REPLACE>";
+
+    /** Pattern to for chrome driver version */
+    public static final String PATTERN_TO_GET_DRIVER_VERSION = "ChromeDriver\\s+(\\d+)";
+
+    /** Pattern to for chrome browser version */
+    public static final String PATTERN_TO_GET_BROWSER_VERSION = "Version\\s+REG_SZ\\s+(\\d+)";
+    
+    /** Constant for latest release */
+    public static final String LATEST_RELEASE = "LATEST_RELEASE_";
+    
+    /** Constant to get the installed path using which cmd*/
+    public static final String GET_INSTALLED_PATH = "which ";
+    
+    /** Constant hold browser name firefox */
+    public static final String BROWSER_NAME_FIREFOX = "firefox";
+    
+    /** Command to get the firefox browser version */
+    public static final String CMD_TO_GET_THE_FIREFOX_VERSION = BROWSER_NAME_FIREFOX + " -v";
+    
+    /** Constant for ethernet client driver browser mapping from property file*/
+    public static final String ETHERNET_CLIENT_DRIVER_BROWSER_MAPPING = "ethernet.client.driver.browser.mapping";
+    
+    /** Command to get present working directory */
+    public static final String CMD_TO_GET_PWD = "pwd";
+    
+    /** Pattern to get gecko driver version from property */
+    public static final String PATTERN_TO_GET_GECKO_DRIVER_VERSION_FROM_PROPERTY = "\\d+.(\\d+).\\d+";
+
+    /** Pattern to get firefox browser version */
+    public static final String PATTERN_TO_GET_FIREFOX_VERSION = "Mozilla Firefox\\s+(\\d+).\\d+.\\d+";
+    
+    /** Gecko driver downlaod url from property file */
+    public static final String GECKO_DRIVER_DOWNLOAD_URL = "gecko.driver.download.url";
+    
+    /** Pattern to get gecko driver download status */
+    public static final String PATTERN_FOR_GECKO_DRIVER_DOWNLAOD_STATUS = "saved\\s+\\[\\d+/\\d+\\]";
+
+    /** Pattern to get gecko driver filename */
+    public static final String PATTERN_FOR_GECKO_DRIVER_FILENAME = "(geckodriver-v\\d+.\\d+.\\d+-arm7hf.tar.gz)";
+    
+    /** Command to untar the file*/
+    public static final String CMD_TAR="tar -xvzf ";
 }

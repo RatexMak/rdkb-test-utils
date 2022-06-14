@@ -947,4 +947,63 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
     /** RDKB WiFi Notification message in /rdklogs/logs/WiFilog.txt.0 */
     public static final String RDKB_WIFI_NOTIFICATION_MESSAGE_2 = "RDKB_WIFI_NOTIFY: connected to:<REPLACE>_LNF_PSK_SSID clientMac:";
 
+    /** Log Message for enabling Interface Devices Wifi Report */
+    public static final String LOG_MESSAGE_INTERFACE_DEVICE_WIFI_REPORT_ENABLED = "\"Harvester InterfaceDeviceWifi Report STARTED SetIDWHarvestingStatus\"";
+  
+    /** Log Message for enabling Radio Interface Statistics */
+    public static final String LOG_MESSAGE_RADIO_INTERFACE_STATISTICS_ENABLED = "\"Sent message successfully to parodus\"";
+
+    /** Trace Constants for Harvester */
+    /** Log Message for RDK Logger Initialization */
+    public static final String LOG_MESSAGE_RDK_LOGGER_INITIALIZED = "\"rdk-logger initialzed\"";
+    
+    /** Log to get the client last data rate uplink using wiFi HAL Api */
+    public static final String CMD_TO_GET_CLI_LAST_UPLINK_RATE_VALUE = "\"sta_<REPLACE>:\\s*cli_LastDataUplinkRate\"";
+
+    /** Pattern to find the last data downlink rate */
+    public static final String PATTERN_LAST_DOWNLINK_RATE = "cli_LastDataDownlinkRate = (\\d+)";
+    
+    /** Pattern to find the last data uplink rate */
+    public static final String PATTERN_LAST_UPLINK_RATE = "cli_LastDataUplinkRate = (\\d+)";
+    
+    /** Log to get the client last data rate downlink value using wiFi HAL Api */
+    public static final String CMD_TO_GET_CLI_LAST_DOWNLINK_RATE_VALUE = "\"sta_<REPLACE>:\\s*cli_LastDataDownlinkRate\"";
+
+    /** Log message for wifi destination */
+    public static final String LOG_MESSAGE_WIFI_DESTINATION = "wifi destination";
+
+    /** Log message for polled station info */
+    public static final String LOG_MESSAGE_POLLED_STATION_INFO = "Polled station info";
+    
+    /** Log message for single client report */
+    public static final String LOG_MESSAGE_SINGLE_CLIENT_REPORT = "single client report";
+    
+    /** Activation Journey - Enter Wifi Personalization Captive Mode */
+    public static final String ACTIVATION_ENTER_WIFI_PERSONALIZATION_CAPTIVE = "Enter_WiFi_Personalization_captive_mode";
+    
+    /** Activation Journey - Exit Wifi Personalization Captive Mode */
+    public static final String ACTIVATION_EXIT_WIFI_PERSONALIZATION_CAPTIVE = "Exit_WiFi_Personalization_captive_mode";
+    
+    /** Activation Journey - SSID Name Change */
+    public static final String ACTIVATION_SSID_NAME_CHANGE = "SSID_name_changed";
+    
+    /** Trace Constant for Xconf Query URL */
+    public static final String TRACE_LOG_XCONF_CURL = "\"CURL_CMD:\\s*\"";
+    
+    /** Trace Constant for Xconf Query URL */
+    public static final String TRACE_LOG_TELEMETRY_2 = "\"doHttpGet with url\\s*\"";
+    
+    /** Log Message for successful log upload */
+    public static final String LOGS_UPLOADED_SUCCESSFULLY = "\"LOGS UPLOADED SUCCESSFULLY\"";
+    
+    /** String to store Log Upload status */
+    public static final String LOG_UPLOAD_STATUS = "LOGS UPLOADED SUCCESSFULLY";
+    
+    /** Log Message for DCM RFC Service */
+    public static final String LOG_MESSAGE_DCM_RFC_STARTED = "\"RFC feature\"";
+    
+    /** Log Message for Curl Command */
+    public static final String LOG_MESSAGE_CURL_COMMAND = "\"curl\"";
+    
+    
 }

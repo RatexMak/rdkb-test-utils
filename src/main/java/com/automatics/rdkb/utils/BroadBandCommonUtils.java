@@ -7780,4 +7780,19 @@ public class BroadBandCommonUtils {
 	return status;
     }
 
+    /**
+     * @param response
+     *            response to validate
+     * @author Govardhan
+     */
+
+    public static int convertStringToInteger(String stringToConvert) {
+	int return_value = 0;
+	try {
+	    return_value = Integer.parseInt(stringToConvert);
+	} catch (NumberFormatException nfe) {
+	    LOGGER.error("Number format exception occured while trying to convert: " + stringToConvert, nfe);
+	}
+	return return_value;
+    }
 }

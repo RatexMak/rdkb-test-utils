@@ -24,11 +24,11 @@ import javax.crypto.spec.SecretKeySpec;
 
 import com.automatics.error.GeneralError;
 import com.automatics.exceptions.FailedTransitionException;
+import com.automatics.rdkb.constants.BroadBandPropertyKeyConstants;
+import com.automatics.utils.AutomaticsPropertyUtility;
 
 public class Crypto {
-	
-	 /** The AES key used for encryption and decryption. */
-    private static final String AES_ENCRYPTION_KEY = "";
+
 	
 	/**
      * Decrypt the given data using known key.
@@ -42,7 +42,8 @@ public class Crypto {
      *             If any upnormal execution.
      */
     public static String decrypt(String data) {
-	SecretKeySpec sks = new SecretKeySpec(hexStringToByteArray(AES_ENCRYPTION_KEY), "AES");
+	SecretKeySpec sks = new SecretKeySpec(hexStringToByteArray(AutomaticsPropertyUtility
+			.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_AES_ENCRYPTION_KEY)), "AES");
 	byte[] decrypted = null;
 
 	try {

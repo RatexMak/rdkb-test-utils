@@ -1186,8 +1186,10 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 
 	public static String getGatewayIpOfDevice(Dut device) {
 		String gatewayIp = DeviceModeHandler.isBusinessClassDevice(device)
-				? BroadBandTestConstants.STRING_BUSINESS_CLASS_GATEWAYIP
-				: BroadBandTestConstants.STRING_RESIDENTIAL_CLASS_GATEWAYIP;
+				? AutomaticsPropertyUtility
+						.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_BUSINESS_CLASS_GATEWAYIP)
+				: AutomaticsPropertyUtility
+				.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_RESIDENTIAL_CLASS_GATEWAYIP);
 		if (DeviceModeHandler.isDSLDevice(device)) {
 			gatewayIp = BroadBandTestConstants.LAN_LOCAL_IP;
 		}

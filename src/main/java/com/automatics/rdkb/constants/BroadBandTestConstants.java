@@ -1958,12 +1958,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Pattern to get IPv4 Address */
     public static final String PATTERN_TO_GET_IPV4_ADDRESS = "(\\d+\\.\\d+\\.\\d+\\.\\d+)";
 
-    /** Constant for Primary remote endpoint */
-    public static final String PRIMARY_REMOTE_ENDPOINT = "";
-
-    /** Constant for Secondary remote endpoint */
-    public static final String SECONDARY_REMOTE_ENDPOINT = "";
-
     /** Pattern to get public wifi status from rfc config data */
     public static final String PATTERN_GET_XFINITY_WIFI_STATUS_FROM_RFC_CONFIG = "tr181.Device.DeviceInfo.X_COMCAST_COM_xfinitywifiEnable\\W+(\\w+)";
 
@@ -1976,12 +1970,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
      * Default firmware maintenance upgrade window end time.
      */
     public static final String DEFAULT_FIRMWARE_UPGRADE_MAINTENANCE_WINDOW_END_TIME = "14400";
-
-    /** Test constant for Global Dns IPv4 default value */
-    public static final String STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE = "";
-
-    /** Test constant for Global Dns IPv6 default value */
-    public static final String STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE = "";
 
     /** Constant for DSCPMarkPolicy */
     public static final String DSCP_MARK_POLICY = "44";
@@ -2378,14 +2366,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** snmp version */
     public static final String SYSTEM_PARAM_SNMP_VERSION = "snmpVersion";
 
-    /** snmpv3 dk kickstart security number 1 */
-    public static final String SNMPV3_DH_KICK_START_SECURITY_NUMBER_1 = "";
-    /** snmpv3 dk kickstart security number 2 */
-    public static final String SNMPV3_DH_KICK_START_SECURITY_NUMBER_2 = "";
-    /** snmpv3 dk kickstart security number 3 */
-    public static final String SNMPV3_DH_KICK_START_SECURITY_NUMBER_3 = "";
-    /** snmpv3 dk kickstart security number 4 */
-    public static final String SNMPV3_DH_KICK_START_SECURITY_NUMBER_4 = "";
     /** snmpv3 dk kickstart security Name 1 */
     public static final String SNMPV3_DH_KICK_START_SECURITY_NAME_1 = "docsismanager";
 
@@ -2445,22 +2425,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** File path for WEBPAlog.txt */
     public static final String RDKLOGS_LOGS_WEBPA_TXT_0 = "/rdklogs/logs/WEBPAlog.txt.0";
-
-    /** string for holding dummy first mac address for XDNS */
-    public static final String VALUE_MACADDRESS_FIRST_XDNS = "";
-
-    /** string for holding dummy second mac address for XDNS */
-    public static final String VALUE_MACADDRESS_SECOND_XDNS = "";
-
-    /**
-     * Test constant for applying Dns ovverride at client MAC level IPv4 level three primaryvalue
-     */
-    public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = "";
-
-    /**
-     * Test constant for applying Dns ovverride at client MAC level IPv6 level three primary value
-     */
-    public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY = "";
 
     /** Test constant for string value MacAddress */
     public static final String STRING_DNS_MAC_ADDRESS = "MacAddress";
@@ -2951,9 +2915,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** command to list the contents of given folder in long listing format */
     public static final String CMD_TO_LONGLIST_FOLDER_FILES = "ls -la";
 
-    /** Constant for Radius Server IPAddr */
-    public static final String RADIUS_SERVER_IPADDR = "";
-
     /** String for 'Requested' */
     public static final String STRING_REQUESTED = "Requested";
 
@@ -3096,11 +3057,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
      * Test constant for applying Dns ovverride at client MAC level IPv4 level one primary value
      */
     public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = "";
-
-    /**
-     * Test constant for applying Dns ovverride at client MAC level IPv6 level one primary value
-     */
-    public static final String STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = "";
 
     /**
      * The constant holding command for seeing the process status of CCSPXDNSSSP process.
@@ -3343,9 +3299,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Pattern to check MB */
     public static final String VALUE_FOR_MB = "M";
-
-    /** String containing url of rdkb crash failover upload server */
-    public static final String RDKB_CRASH_FAILOVER_UPLOAD_URL = "";
 
     /** Log which indicates selfheal process is up and running */
     public static final String SELFHEAL_PROCESS_UP_LOG = "{self_heal_conne}";
@@ -3632,11 +3585,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Constant for Bad Host */
     public static final String NC_ERROR_BAD_HOST = "Bad Host ";
 
-    /** Broadband Device LAN IP */
-    public static final String XB_LAN_IP = "";
-
     /** Constant for nc Connection error */
-    public static final String NC_CONNECTION_ERROR_LAN_IP = NC_ERROR_BAD_HOST + XB_LAN_IP;
+    public static final String NC_CONNECTION_ERROR_LAN_IP = NC_ERROR_BAD_HOST + AutomaticsPropertyUtility
+    		.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_XB_LAN_IP);
 
     /** Constant for nc Connection error */
     public static final String NC_CONNECTION_ERROR_IP_192 = NC_ERROR_BAD_HOST + "";
@@ -3693,12 +3644,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** String command for ping to linux */
     public static final String STRING_PING_TO_LINUX = "ping -c 4 <IPADDRESS>";
-
-    /** String for business calss gateway IP */
-    public static final String STRING_BUSINESS_CLASS_GATEWAYIP = "";
-
-    /** String for residential class gateway ip */
-    public static final String STRING_RESIDENTIAL_CLASS_GATEWAYIP = "";
 
     /** String command for ping to windows */
     public static final String STRING_PING_TO_WINDOWS = "ping <IPADDRESS>";
@@ -3807,12 +3752,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Pattern for verifying the dev default interface . */
     public static final String PATTERN_DEFAULT_DEV_IP = "default\\s+via\\s+(\\d+\\.\\d+\\.\\d+\\.\\d)\\s+dev";
 
-    /** String DHCP min address for business class devices */
-    public static final String STRING_DHCP_MIN_ADDRESS_BUSSI = "";
-
-    /** String DHCP min address for residential class devices */
-    public static final String STRING_DHCP_MIN_ADDRESS = "";
-
     /** String constant for All */
     public static final String STRING_ALL = "All";
 
@@ -3877,12 +3816,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Constant for hold string 5000 */
     public static final String STRING_CONSTANT_5000 = "5000";
 
-    /** Constant to hold plan ID of wifi blaster */
-    public static final String STRING_BLASTER_PLANID = "";
-
-    /** Constant to sample destination mac for wifi blaster */
-    public static final String STRING_BLASTER_DESTMAC = "";
-
     /** Constant to hold Not applicable message for Commercial devices */
     public static final String NA_MSG_FOR_COMMERCIAL_DEVICES = "Test Step Not Applicable for Commercial class devices";
 
@@ -3945,15 +3878,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** String value for Regular expression (.*) */
     public static final String REG_EXPRESSION_DOT_STAR = "(.*)";
-
-    /** Valid Gateway local Ip in setting Gateway Ip */
-    public static final String TEST_GATEWAY_LOCAL_IP_1 = "";
-
-    /** Valid Gateway local DHCP Start address in setting Gateway Ip */
-    public static final String TEST_GATEWAY_LOCAL_DHCP_START_ADDR = "";
-
-    /** Valid Gateway local DHCP Start address in setting Gateway Ip */
-    public static final String TEST_GATEWAY_LOCAL_DHCP_END_ADDR = "";
 
     /** Telescope Rest API URL. */
     public static final String TELESCOPIC_REST_API_URL = "telescopic.rest.api.url";
@@ -4056,9 +3980,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
      * Test value of webpa Device.WiFi.X_RDKCENTRAL-COM_BandSteering.BandSetting.2. OverloadInactiveTime
      */
     public static final String TEST_VALUE_OVERLOAD_INACTIVE_TIME_5GHZ = "14";
-
-    /** Constant to hold MAC Address for WIFI Client MacAddress parameter */
-    public static final String WIFI_CLIENT_MAC_ADDRESS_WIFICLIENT = "";
 
     /** Constant to hold Null MAC address without delimeter */
     public static final String NULL_MAC_ADDRESS_WITHOUT_DELIMETER = "000000000000";
@@ -5017,12 +4938,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** String to store TestInvalidParam_Multi telemetry profile header */
     public static final String TEST_INVALID_PARAM_MULTI = "TestInvalidParam_Multi";
-
-    /** String DHCP Max address for business class devices */
-    public static final String STRING_DHCP_MAX_ADDRESS_BUSSI = "10.1.10.3";
-
-    /** String DHCP max address for residential class devices */
-    public static final String STRING_DHCP_MAX_ADDRESS = "10.0.0.3";
 
     /**
      * Test constant for applying Dns ovverride at client MAC level IPv4 null value 00.00.00.00

@@ -29,6 +29,7 @@ import com.automatics.device.Dut;
 import com.automatics.rdkb.BroadBandDeviceSsidInfo;
 import com.automatics.rdkb.BroadBandDeviceStatus;
 import com.automatics.rdkb.WiFiSsidConfigStatus;
+import com.automatics.rdkb.constants.BroadBandPropertyKeyConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
 import com.automatics.rdkb.constants.WebPaParamConstants.WebPaDataTypes;
@@ -194,11 +195,13 @@ public class BroadBandRegressionQuickTestUtils {
 	    if (!deviceStatus.isXdnsEnabled()) {
 		WebPaParameter defaultDeviceDnsIpv4 = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 			BroadBandWebPaConstants.WEBPA_PARAM_TO_UPDATE_GLOBAL_XDNS_IPV4,
-			BroadBandTestConstants.STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE, WebPaDataTypes.STRING.getValue());
+			AutomaticsPropertyUtility
+			.getProperty(BroadBandPropertyKeyConstants.STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE), WebPaDataTypes.STRING.getValue());
 		genericComponents.add(defaultDeviceDnsIpv4);
 		WebPaParameter defaultDeviceDnsIpv6 = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 			BroadBandWebPaConstants.WEBPA_PARAM_TO_UPDATE_GLOBAL_XDNS_IPV6,
-			BroadBandTestConstants.STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE, WebPaDataTypes.STRING.getValue());
+			AutomaticsPropertyUtility
+			.getProperty(BroadBandPropertyKeyConstants.STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE), WebPaDataTypes.STRING.getValue());
 		genericComponents.add(defaultDeviceDnsIpv6);
 
 		WebPaParameter defaultDeviceDnsTag = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
@@ -313,12 +316,14 @@ public class BroadBandRegressionQuickTestUtils {
 
 	    WebPaParameter primaryRemoteEndpoint = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 		    BroadBandWebPaConstants.WEBPA_PARAM_PRIMARY_REMOTE_ENDPOINT,
-		    BroadBandTestConstants.PRIMARY_REMOTE_ENDPOINT, WebPaDataTypes.STRING.getValue());
+		    AutomaticsPropertyUtility
+			.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_PRIMARY_REMOTE_ENDPOINT), WebPaDataTypes.STRING.getValue());
 	    wifiComponents.add(primaryRemoteEndpoint);
 
 	    WebPaParameter secondaryRemoteEndpoint = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 		    BroadBandWebPaConstants.WEBPA_PARAM_SECONDARY_REMOTE_ENDPOINT,
-		    BroadBandTestConstants.SECONDARY_REMOTE_ENDPOINT, WebPaDataTypes.STRING.getValue());
+		    AutomaticsPropertyUtility
+			.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_SECONDARY_REMOTE_ENDPOINT), WebPaDataTypes.STRING.getValue());
 	    wifiComponents.add(secondaryRemoteEndpoint);
 
 	    WebPaParameter ssidAdvEnable_2ghz = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(

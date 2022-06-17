@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.automatics.device.Dut;
 import com.automatics.enums.TR69ParamDataType;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
+import com.automatics.rdkb.constants.BroadBandPropertyKeyConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
 import com.automatics.rdkb.constants.WebPaParamConstants;
@@ -43,6 +44,7 @@ import com.automatics.exceptions.TestException;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
 import com.automatics.rdkb.utils.CommonUtils;
 import com.automatics.rdkb.utils.tr69.BroadBandTr69Utils;
+import com.automatics.utils.AutomaticsPropertyUtility;
 
 /**
  * Utility class with methods related to Factory reset and its functionality
@@ -966,11 +968,14 @@ public class BroadBandFactoryResetUtils {
 		    ? BroadBandTestConstants.STRING_TEST_2
 		    : BroadBandTestConstants.STRING_TEST_1;
 	} else if (LocalGatewayIPv4.LAN_GATEWAY_IP.toString().equalsIgnoreCase(factoryResetSetting.toString())) {
-	    valueToBeSet = BroadBandTestConstants.TEST_GATEWAY_LOCAL_IP_1;
+	    valueToBeSet = AutomaticsPropertyUtility
+	    		.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_TEST_GATEWAY_LOCAL_IP_1);
 	} else if (LocalGatewayIPv4.LAN_DHCP_START.toString().equalsIgnoreCase(factoryResetSetting.toString())) {
-	    valueToBeSet = BroadBandTestConstants.TEST_GATEWAY_LOCAL_DHCP_START_ADDR;
+	    valueToBeSet = AutomaticsPropertyUtility
+	    		.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_TEST_GATEWAY_LOCAL_DHCP_START_ADDR);
 	} else if (LocalGatewayIPv4.LAN_DHCP_END.toString().equalsIgnoreCase(factoryResetSetting.toString())) {
-	    valueToBeSet = BroadBandTestConstants.TEST_GATEWAY_LOCAL_DHCP_END_ADDR;
+	    valueToBeSet = AutomaticsPropertyUtility
+	    		.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_TEST_GATEWAY_LOCAL_DHCP_END_ADDR);
 	} else if (WifiSettings2Ghz.CHANNELBANDWIDTH.toString().equalsIgnoreCase(factoryResetSetting.toString())) {
 	    if (DeviceModeHandler.isBusinessClassDevice(device) || DeviceModeHandler.isFibreDevice(device)
 		    || DeviceModeHandler.isDSLDevice(device)) {

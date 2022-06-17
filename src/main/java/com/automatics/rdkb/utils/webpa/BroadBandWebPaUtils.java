@@ -47,6 +47,7 @@ import com.automatics.device.Dut;
 import com.automatics.exceptions.TestException;
 import com.automatics.rdkb.BroadBandResultObject;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
+import com.automatics.rdkb.constants.BroadBandPropertyKeyConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandTraceConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
@@ -2036,7 +2037,8 @@ public class BroadBandWebPaUtils {
 		// Setting the primary tunnel Endpoint
 		isPrimaryRemoteEndpointSet = BroadBandWiFiUtils.setWebPaParams(device,
 				BroadBandWebPaConstants.WEBPA_PARAM_PRIMARY_REMOTE_ENDPOINT,
-				BroadBandTestConstants.PRIMARY_REMOTE_ENDPOINT, BroadBandTestConstants.CONSTANT_0);
+				AutomaticsPropertyUtility
+				.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_PRIMARY_REMOTE_ENDPOINT), BroadBandTestConstants.CONSTANT_0);
 		LOGGER.info("SETTING PRIMARY_REMOTE_ENDPOINT IS-" + isPrimaryRemoteEndpointSet);
 		if (!isPrimaryRemoteEndpointSet) {
 			LOGGER.error("SETTING PRIMARY_REMOTE_ENDPOINT FAILED SO PUBLIC WIFI IS NOT CONFIGURED");
@@ -2046,7 +2048,8 @@ public class BroadBandWebPaUtils {
 		// Setting the secondary tunnel Endpoint
 		isSecondaryRemoteEndpointSet = BroadBandWiFiUtils.setWebPaParams(device,
 				BroadBandWebPaConstants.WEBPA_PARAM_SECONDARY_REMOTE_ENDPOINT,
-				BroadBandTestConstants.SECONDARY_REMOTE_ENDPOINT, BroadBandTestConstants.CONSTANT_0);
+				AutomaticsPropertyUtility
+				.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_SECONDARY_REMOTE_ENDPOINT), BroadBandTestConstants.CONSTANT_0);
 		LOGGER.info("SETTING SECONDARY REMOTE ENDPOINT IS-" + isSecondaryRemoteEndpointSet);
 		if (!isSecondaryRemoteEndpointSet) {
 			LOGGER.error("SETTING SECONDARY REMOTE ENDPOINT FAILED SO PUBLIC WIFI IS NOT CONFIGURED");
@@ -2390,9 +2393,12 @@ public class BroadBandWebPaUtils {
 		// tag//
 		List<String> tagList = new ArrayList<String>();
 		if (param.equalsIgnoreCase(BroadBandTestConstants.STRING_POST)) {
-			macAddressList.add(BroadBandTestConstants.VALUE_MACADDRESS_FIRST_XDNS);
-			dnsIPv4List.add(BroadBandTestConstants.STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY);
-			dnsIPv6List.add(BroadBandTestConstants.STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY);
+			macAddressList.add(AutomaticsPropertyUtility
+					.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_VALUE_MACADDRESS_FIRST_XDNS));
+			dnsIPv4List.add(AutomaticsPropertyUtility
+					.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY));
+			dnsIPv6List.add(AutomaticsPropertyUtility
+					.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY));
 			tagList.add(BroadBandTestConstants.PRIMARY);
 			xdnsMapPost.put(BroadBandTestConstants.STRING_DNS_MAC_ADDRESS, macAddressList);
 			xdnsMapPost.put(BroadBandTestConstants.STRING_DNS_IPV4, dnsIPv4List);
@@ -2402,9 +2408,12 @@ public class BroadBandWebPaUtils {
 					BroadBandWebPaConstants.WEBPA_PARAM_DNS_MAPPING_TABLE, xdnsMapPost);
 
 		} else if (param.equalsIgnoreCase(BroadBandTestConstants.STRING_PUT)) {
-			macAddressList.add(BroadBandTestConstants.VALUE_MACADDRESS_SECOND_XDNS);
-			dnsIPv4List.add(BroadBandTestConstants.STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY);
-			dnsIPv6List.add(BroadBandTestConstants.STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY);
+			macAddressList.add(AutomaticsPropertyUtility
+					.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_VALUE_MACADDRESS_SECOND_XDNS));
+			dnsIPv4List.add(AutomaticsPropertyUtility
+					.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY));
+			dnsIPv6List.add(AutomaticsPropertyUtility
+					.getProperty(BroadBandPropertyKeyConstants.STRING_DNS_IPV6_VALUE_FOR_DNS_LEVEL_THREE_PRIMARY));
 			tagList.add(BroadBandTestConstants.NON_PRIMARY);
 			rowParamsMap.put(BroadBandTestConstants.STRING_DNS_MAC_ADDRESS, macAddressList);
 			rowParamsMap.put(BroadBandTestConstants.STRING_DNS_IPV4, dnsIPv4List);
@@ -2992,8 +3001,10 @@ public class BroadBandWebPaUtils {
 		    ? initialMapValues
 			    .get(BroadBandWebPaConstants.WEBPA_PARAM_TO_CONFIGURE_LAN_IP_ADDRESS_TO_DMZ)
 		    : DeviceModeHandler.isBusinessClassDevice(device)
-			    ? BroadBandTestConstants.STRING_DHCP_MIN_ADDRESS_BUSSI
-			    : BroadBandTestConstants.STRING_DHCP_MIN_ADDRESS,
+			    ? AutomaticsPropertyUtility
+			    		.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_STRING_DHCP_MIN_ADDRESS_BUSSI)
+			    : AutomaticsPropertyUtility
+				.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_STRING_DHCP_MIN_ADDRESS),
 	    BroadBandTestConstants.CONSTANT_0);
 
 
@@ -3541,10 +3552,12 @@ public class BroadBandWebPaUtils {
 		BroadBandTestConstants.INCERMENTAL_ONE);
 	WebPaParameter webPaParamPrimaryEndPoint = setAndReturnWebPaParameterObject(
 		BroadBandWebPaConstants.WEBPA_PARAM_PRIMARY_REMOTE_ENDPOINT,
-		BroadBandTestConstants.PRIMARY_REMOTE_ENDPOINT, BroadBandTestConstants.CONSTANT_0);
+		AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_PRIMARY_REMOTE_ENDPOINT), BroadBandTestConstants.CONSTANT_0);
 	WebPaParameter webPaParamSecondaryEndpoint = setAndReturnWebPaParameterObject(
 		BroadBandWebPaConstants.WEBPA_PARAM_SECONDARY_REMOTE_ENDPOINT,
-		BroadBandTestConstants.SECONDARY_REMOTE_ENDPOINT, BroadBandTestConstants.CONSTANT_0);
+		AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_SECONDARY_REMOTE_ENDPOINT), BroadBandTestConstants.CONSTANT_0);
 
 	webPaParameters.add(webPaParamForDscpPolicy);
 	webPaParameters.add(webPaParamPrimaryEndPoint);

@@ -57,7 +57,6 @@ import com.automatics.rdkb.BroadBandResultObject;
 import com.automatics.rdkb.constants.BroadBandCdlConstants;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.BroadBandConnectedClientTestConstants;
-import com.automatics.rdkb.constants.BroadBandInvalidCertConstants;
 import com.automatics.rdkb.constants.BroadBandPropertyKeyConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandTraceConstants;
@@ -6911,17 +6910,20 @@ public class BroadBandCommonUtils {
 	tapEnv.executeCommandOnOneIPClients(raspberryPi, command);
 	// adding invalid certificates to RPI
 	command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_SUDO,
-		BroadBandCommandConstants.CMD_ECHO, BroadBandInvalidCertConstants.CERT_CA_CHAIN,
+		BroadBandCommandConstants.CMD_ECHO, AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_CERT_CA_CHAIN),
 		BroadBandCommandConstants.CMD_REDIRECTION, BroadBandCommandConstants.PATH_CERTIFICATE,
 		BroadBandCommandConstants.FILE_CA_CHAIN_CERT);
 	tapEnv.executeCommandOnOneIPClients(raspberryPi, command);
 	command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_SUDO,
-		BroadBandCommandConstants.CMD_ECHO, BroadBandInvalidCertConstants.CERT_VIDEO_CLIENT,
+		BroadBandCommandConstants.CMD_ECHO, AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_CERT_VIDEO_CLIENT),
 		BroadBandCommandConstants.CMD_REDIRECTION, BroadBandCommandConstants.PATH_CERTIFICATE,
 		BroadBandCommandConstants.FILE_XI5_CLIENT_CERT);
 	tapEnv.executeCommandOnOneIPClients(raspberryPi, command);
 	command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_SUDO,
-		BroadBandCommandConstants.CMD_ECHO, BroadBandInvalidCertConstants.KEY_VIDEO_CLIENT,
+		BroadBandCommandConstants.CMD_ECHO, AutomaticsPropertyUtility
+		.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_VIDEO_CLIENT),
 		BroadBandCommandConstants.CMD_REDIRECTION, BroadBandCommandConstants.PATH_CERTIFICATE,
 		BroadBandCommandConstants.FILE_XI5_CLIENT_KEY);
 	tapEnv.executeCommandOnOneIPClients(raspberryPi, command);
@@ -7752,34 +7754,6 @@ public class BroadBandCommonUtils {
 	return longValueAfterConversion;
     }
     
-    /**
-     * Method to ssh to the WanIpv6 address on jump server and return the status.
-     * 
-     * @param tapEnv
-     * @param wanIpv6address
-     * @refactor Alan_Bivera
-     * 
-     */
-    public static boolean executeSshCommandOnJumpServer(AutomaticsTapApi tapEnv,Dut device, String wanIpv6) {
-	Boolean status = false;
-	
-	LOGGER.debug("STARTING METHOD :executeSshCommandOnJumpServer");
-	String command = CommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.LINUX_CMD_SUDO_STB_SSH_IPV6,
-		BroadBandTestConstants.SINGLE_SPACE_CHARACTER, wanIpv6, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
-		BroadBandCommandConstants.CMD_ECHO_TEST_CONNECTION);
-	LOGGER.info("Command is " + command);
-
-	String response = tapEnv.executeCommandUsingSsh( device, command);
-	LOGGER.info("the response is" + response);
-	
-	if (CommonMethods.isNotNull(response)
-		&& CommonUtils.patternSearchFromTargetString(response, BroadBandTestConstants.STRING_TEST_CONNECTION)) {
-	    status = true;
-	}
-	LOGGER.debug("ENDING METHOD :executeSshCommandOnJumpServer");
-	return status;
-    }
-
     /**
      * @param response
      *            response to validate

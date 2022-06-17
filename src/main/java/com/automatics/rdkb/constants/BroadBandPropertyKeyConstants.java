@@ -394,6 +394,77 @@ public class BroadBandPropertyKeyConstants {
     
     /** platform based property for available syndication partners */
     public static final String PROPERTY_PLATFORM_BASED_PARTNER_LIST = "partners.list.";
-
     
+    /** property to configure AES encryption key **/
+    public static final String PROP_KEY_AES_ENCRYPTION_KEY = "aes.encryption.key";
+    
+    /** property to configure invalid certificates to verify L & F **/
+    public static final String PROP_KEY_CERT_CA_CHAIN = "cert.ca.chain";
+    public static final String PROP_KEY_CERT_VIDEO_CLIENT = "cert.video.client";
+    public static final String PROP_KEY_VIDEO_CLIENT = "key.video.client";
+    
+    /** property to configure Primary remote endpoint */
+    public static final String PROP_KEY_PRIMARY_REMOTE_ENDPOINT = "primary.remote.endpoint";
+    /** property to configure secondary remote endpoint */
+    public static final String PROP_KEY_SECONDARY_REMOTE_ENDPOINT = "secondary.remote.endpoint";
+    
+    /** property to configure snmpv3 dk kickstart security number 1 */
+    public static final String PROP_KEY_SNMPV3_DH_KICK_START_SECURITY_NUMBER_1 = "snmpv3.dh.kickstart.seccurity.no1";
+    /** property to configure snmpv3 dk kickstart security number 2 */
+    public static final String PROP_KEY_SNMPV3_DH_KICK_START_SECURITY_NUMBER_2 = "snmpv3.dh.kickstart.seccurity.no2";
+    /** property to configure snmpv3 dk kickstart security number 3 */
+    public static final String PROP_KEY_SNMPV3_DH_KICK_START_SECURITY_NUMBER_3 = "snmpv3.dh.kickstart.seccurity.no3";
+    /** property to configure snmpv3 dk kickstart security number 4 */
+    public static final String PROP_KEY_SNMPV3_DH_KICK_START_SECURITY_NUMBER_4 = "snmpv3.dh.kickstart.seccurity.no4";
+    
+    /** property to configure dummy first mac address for XDNS */
+    public static final String PROP_KEY_VALUE_MACADDRESS_FIRST_XDNS = "value.macaddress.first.xdns";
+
+    /** property to configure dummy second mac address for XDNS */
+    public static final String PROP_KEY_VALUE_MACADDRESS_SECOND_XDNS = "value.macaddress.second.xdns";
+    
+    /**  property to configure  Radius Server IPAddr */
+    public static final String PROP_KEY_RADIUS_SERVER_IPADDR = "radius.server.ipaddr";
+    
+    /** property to configure url of rdkb crash failover upload server */
+    public static final String PROP_KEY_RDKB_CRASH_FAILOVER_UPLOAD_URL = "rdkd.crash.fallover.upload.url";
+    
+    /** property to configure Broadband Device LAN IP */
+    public static final String PROP_KEY_XB_LAN_IP = "xb.lan.ip";
+    
+	/** property to configure business calss gateway IP */
+	public static final String PROP_KEY_BUSINESS_CLASS_GATEWAYIP = "bussiness.class.gatewayip";
+	
+	/** property to configure residential class gateway ip */
+	public static final String PROP_KEY_RESIDENTIAL_CLASS_GATEWAYIP = "residential.class.gatewatip";
+	
+	/** property to configure DHCP min address for business class devices */
+	public static final String PROP_KEY_STRING_DHCP_MIN_ADDRESS_BUSSI = "dhcp.min.address.buss";
+	
+	/** property to configure DHCP min address for residential class devices */
+	public static final String PROP_KEY_STRING_DHCP_MIN_ADDRESS = "dhcp.min.address";	
+	
+	/** property to configure DHCP max address for business class devices */
+	public static final String PROP_KEY_STRING_DHCP_MAX_ADDRESS_BUSSI = "dhcp.max.address.buss";
+	
+	/** property to configure DHCP max address for residential class devices */
+	public static final String PROP_KEY_STRING_DHCP_MAX_ADDRESS = "dhcp.max.address";
+	
+	/** property to configure  plan ID of wifi blaster */
+	public static final String PROP_KEY_BLASTER_PLANID = "wifiblaster.plan.id";
+	
+	/** property to configure destination mac for wifi blaster */
+	public static final String PROP_KEY_BLASTER_DESTMAC = "wifiblaster.destmac";
+	
+	/** property to configure valid Gateway local Ip in setting Gateway Ip */
+	public static final String PROP_KEY_TEST_GATEWAY_LOCAL_IP_1 = "test.gateway.localip1";
+	
+	/** property to configure valid Gateway local DHCP Start address in setting Gateway Ip */
+	public static final String PROP_KEY_TEST_GATEWAY_LOCAL_DHCP_START_ADDR = "test.gateway.localdhcp.startaddr";
+
+	/** property to configure valid Gateway local DHCP end address in setting Gateway Ip */
+	public static final String PROP_KEY_TEST_GATEWAY_LOCAL_DHCP_END_ADDR = "test.gateway.localdhcp.endaddr";	
+	
+	/** property to configure WIFI Client MacAddress parameter */
+	public static final String PROP_KEY_MAC_ADDRESS_WIFICLIENT = "wificlient.macaddress";
 }

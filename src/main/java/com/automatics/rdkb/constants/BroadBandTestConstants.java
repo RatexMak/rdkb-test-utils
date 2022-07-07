@@ -3051,7 +3051,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String STRING_REGEX_DATE = "((Mon|Tue|Wed|Thu|Fri|Sat|Sun)\\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\s+\\d+\\s\\d{2}:\\d{2}:\\d{2}\\sUTC\\s\\d{4})";
 
     /** Command to get the used space for filename in the device */
-    public static final String COMMAND_TO_FETCH_USED_SPACE_FOR_FILENAME = "df | grep FILENAME | awk 'NR==1{print \\$5}'";
+    public static final String COMMAND_TO_FETCH_USED_SPACE_FOR_FILENAME = "df | grep FILENAME | awk 'NR==1{print $5}'";
 
     /** Constant for the filename nvram */
     public static final String NVRAM_FILE_NAME = "nvram";
@@ -3069,7 +3069,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String STRING_REGEX_TO_GET_PERCENTAGE_VALUE = "(\\w+)%";
 
     /** Command to get the Highest % of CPU consumption in the device */
-    public static final String COMMAND_TO_FETCH_CPU_PERCENTAGE = "top -n1 -- o %cpu | awk 'NR==6{print \\$7}'";
+    public static final String COMMAND_TO_FETCH_CPU_PERCENTAGE = "top -n1 -- o %cpu | awk 'NR==6{print $7}'";
 
     /** String value for 50 */
     public static final String STRING_VALUE_FIFTY = "50";

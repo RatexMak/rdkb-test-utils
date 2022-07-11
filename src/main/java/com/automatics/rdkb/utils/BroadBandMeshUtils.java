@@ -34,6 +34,7 @@ import java.util.List;
 import com.automatics.device.Dut;
 import com.automatics.rdkb.BroadBandResultObject;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
+import com.automatics.rdkb.constants.BroadBandTestConstants.WINDOWS_WIRELESS_MODE_OPTIONS;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.CommonMethods;
@@ -120,4 +121,45 @@ public class BroadBandMeshUtils {
 	}
 	return result;
     }
+    
+    /**
+     * Method to change wireless mode on windows client
+     * 
+     * @param tapEnv
+     *            {@link Instanceof AutomaticsTapApi}
+     * @param clientSettop
+     *            {@link Instanceof Dut}
+     * @param wirelessMode
+     *            wireless mode to set
+     * @return status of set operation
+     * 
+     * @author Sathurya Ravi
+     * @refactor yamini.s
+     */
+
+    public static boolean changeWirelessModeOnWindowsClients(AutomaticsTapApi tapEnv, Dut clientSettop,
+	    WINDOWS_WIRELESS_MODE_OPTIONS wirelessMode) {
+	boolean status = false;
+	String response = null;
+	LOGGER.debug("STARTING METHOD: changeWirelessModeOnWindowsClients");
+	try {
+
+	    LOGGER.info("Option to set " + wirelessMode.getOption());
+	    response = tapEnv.executeCommandOnOneIPClients(clientSettop,
+		    BroadBandTestConstants.COMMAND_SET_WIRELESS_MODE.replace(BroadBandTestConstants.STRING_REPLACE,
+			    wirelessMode.getOption()));
+	    
+	    if (!CommonMethods.isNotNull(response)) {
+		response = tapEnv.executeCommandOnOneIPClients(clientSettop,
+			BroadBandTestConstants.COMMAND_GET_WIRELESS_MODE);
+		status = CommonMethods.isNotNull(response) && response.contains(wirelessMode.getName());
+	    }
+
+	} catch (Exception e) {
+	    LOGGER.error("Exception occurred while trying to change wireless mode", e);
+	}
+	LOGGER.debug("ENDING METHOD:changeWirelessModeOnWindowsClients");
+	return status;
+    }
+
 }

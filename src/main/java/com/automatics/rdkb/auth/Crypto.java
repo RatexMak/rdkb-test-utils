@@ -28,8 +28,8 @@ import com.automatics.rdkb.constants.BroadBandPropertyKeyConstants;
 import com.automatics.utils.AutomaticsPropertyUtility;
 
 public class Crypto {
-
 	
+
 	/**
      * Decrypt the given data using known key.
      *
@@ -42,6 +42,7 @@ public class Crypto {
      *             If any upnormal execution.
      */
     public static String decrypt(String data) {
+    	
 	SecretKeySpec sks = new SecretKeySpec(hexStringToByteArray(AutomaticsPropertyUtility
 			.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_AES_ENCRYPTION_KEY)), "AES");
 	byte[] decrypted = null;

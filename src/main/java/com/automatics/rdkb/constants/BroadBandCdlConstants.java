@@ -172,5 +172,14 @@ public class BroadBandCdlConstants {
     
     /** String Constant for .bin Extension */
     public static final String BIN_CCS_EXTENSION = ".bin.ccs";
+        
+    /** Property Key for CDL URL */
+    public static final String PROP_KEY_CDL_URL = "rdkb.cdl.url";
+    
+    /**Constant represent log file /rdklogs/logs/FWUPGRADEMANAGERLog.txt.0 */
+    public static final String FWUPGRADEMANAGER_LOG_FILE_NAME = "/rdklogs/logs/FwUpgradeManagerLog.txt.0";
+    
+    /** WebPA Parameter for CDL Status */
+    public static final String WEBPA_PARAM_CDL_STATUS = "Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareDownloadStatus";
 
 }

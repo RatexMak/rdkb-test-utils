@@ -90,7 +90,7 @@ public class BroadBandCodeDownloadUtils {
     public static boolean triggerHttpCodeDownloadUsingWebpaParameters(Dut device, AutomaticsTapApi tapEnv,
 	    String buildNameToBeTriggerred, boolean isCcsSupportBuild) {
 
-	String cdlServerUrl = AutomaticsPropertyUtility.getProperty("rdkb.cdl.dac15.url");
+	String cdlServerUrl = AutomaticsPropertyUtility.getProperty("rdkb.cdl.url");
 	boolean status = false;
 	String response = null;
 	String buildNameToUse = null;

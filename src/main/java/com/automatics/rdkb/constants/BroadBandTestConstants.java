@@ -62,6 +62,45 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	return Collections.unmodifiableMap(mapping);
     }
 
+    /** Constant to hold command to get band preference */
+
+    /**
+     * enum variable to store registry value for wireless mode on windows clients
+     */
+    public enum WINDOWS_WIRELESS_MODE_OPTIONS {
+	A_802_11("802.11a", "17"),
+	B_802_11("802.11b", "0"),
+	G_802_11("802.11g", "16"),
+	B_G_802_11("802.11b/g", "32"),
+	A_G_802_11("802.11a/g", "18"),
+	A_B_G_802_11("802.11a/b/g", "34");
+
+	String option = "";
+	String name = "";
+
+	public String getOption() {
+	    return option;
+	}
+
+	public void setOption(String option) {
+	    this.option = option;
+	}
+
+	public String getName() {
+	    return name;
+	}
+
+	public void setName(String name) {
+	    this.name = name;
+	}
+
+	private WINDOWS_WIRELESS_MODE_OPTIONS(String name, String option) {
+	    this.option = option;
+	    this.name = name;
+	}
+
+    }
+
     /**
      * The hash map to store the Access point mapping with corresponding digits
      */
@@ -87,6 +126,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** String value for Wi-Fi */
     public static final String WIFI = "Wi-Fi";
+
+    /** String constant to hold wifi public */
+    public static final String WIFI_PUBLIC = "Public Wifi";
 
     /** Constant for 2.4GHZ band */
     public static final String BAND_2_4GHZ = "2.4GHZ";
@@ -500,9 +542,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Property key for expected response */
     public static final String PROP_KEY_EXPECTED_RESPONSE = "expected.response";
 
-    /** The partial property key for xconf ipv4 firmware location. */
-    public static final String PROP_KEY_XCONF_FIRMWARE_LOCATION_DAC15 = "xconf.firmware.location.";
-
     /** The property key for pamSearchLog message */
     public static final String PROP_KEY_PAMSEARCHLOG = "pamSearchLog.device.";
 
@@ -804,11 +843,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final int INTERGER_CONSTANT_60000 = 60000;
 
     public enum syndicationPartnerID {
-	PARTNER_DUMMY("dummy"),
-	PARTNER_COX("cox"),
-	PARTNER_ROGERS("rogers"),
-	PARTNER_SHAW("shaw"),
-	PARTNER_VIDEOTRON("videotron");
+	PARTNER_DUMMY("dummy");
 
 	String paramName;
 
@@ -1083,12 +1118,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Feature keyword to search in build name */
     public static final String STRING_FEATURE_IN_BUILD_NAME = "feature";
-
-    /** Constant to hold double Firmware Version as 4.4 */
-    public static final double FIRMWARE_VERSION_4_4 = 4.4;
-
-    /** Constant to hold double configparamgen Version as 2.17 */
-    public static final double CONFIGPARAMGEN_VERSION_2_17 = 2.17;
 
     /** Constant to hold core version from Regular release build Pattern Matcher */
     public static final String CORE_VERSION_FROM_REGULAR_RELEASE_BUILD_PATTERN_MATCHER = "_(\\d+.\\d+)";
@@ -1750,9 +1779,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** pattern to get self heal param values */
     public static final String PATTERN_GET_SELF_HEAL_PArAMETER_VALUES = "SNMPv2-SMI::enterprises.17270.44.1.1.";
-    
-    /** Key to get the xfinity wifi value to be set  */
-    public static String KEY_FOR_XFINITY_WIFI_WHITELISTING = "rdkb.whitelist.xfinitywifivalue";
 
     /** String value for 60 */
     public static final String SELF_HEAL_PING_INTERVAL = "60";
@@ -1958,8 +1984,14 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Pattern to get IPv4 Address */
     public static final String PATTERN_TO_GET_IPV4_ADDRESS = "(\\d+\\.\\d+\\.\\d+\\.\\d+)";
 
+    /** Constant for Primary remote endpoint */
+    public static final String PRIMARY_REMOTE_ENDPOINT = "";
+
+    /** Constant for Secondary remote endpoint */
+    public static final String SECONDARY_REMOTE_ENDPOINT = "";
+
     /** Pattern to get public wifi status from rfc config data */
-    public static final String PATTERN_GET_XFINITY_WIFI_STATUS_FROM_RFC_CONFIG = "tr181.Device.DeviceInfo.X_COMCAST_COM_xfinitywifiEnable\\W+(\\w+)";
+    public static final String PATTERN_GET_PUBLIC_WIFI_STATUS_FROM_RFC_CONFIG = "tr181.Device.DeviceInfo.X_COMCAST_COM_xfinitywifiEnable\\W+(\\w+)";
 
     /**
      * Default firmware maintenance upgrade window start time.
@@ -1970,6 +2002,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
      * Default firmware maintenance upgrade window end time.
      */
     public static final String DEFAULT_FIRMWARE_UPGRADE_MAINTENANCE_WINDOW_END_TIME = "14400";
+
+    /** Test constant for Global Dns IPv6 default value */
+    public static final String STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE = "";
 
     /** Constant for DSCPMarkPolicy */
     public static final String DSCP_MARK_POLICY = "44";
@@ -2261,12 +2296,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Constant for Out Of service */
     public static final String OUTOFSERVICE = "OutOfService";
 
-    /** Constant for Public wifi ssid for 5GHZ */
-    public static final String PUBLIC_WIFI_SSID_5 = "xfinitywifi_5";
-
-    /** Constant for Public wifi ssid for 2GHZ */
-    public static final String PUBLIC_WIFI_SSID_2 = "xfinitywifi_2";
-
     /** Command to grep MAC ADDRESS from Atom device */
     public static final String CMD_TO_GREP_MAC_ADDRESS_ATOM = " Access Point:\\s+(.*)\\s+Bit";
 
@@ -2425,6 +2454,12 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** File path for WEBPAlog.txt */
     public static final String RDKLOGS_LOGS_WEBPA_TXT_0 = "/rdklogs/logs/WEBPAlog.txt.0";
+
+    /** string for holding dummy first mac address for XDNS */
+    public static final String VALUE_MACADDRESS_FIRST_XDNS = "";
+
+    /** string for holding dummy second mac address for XDNS */
+    public static final String VALUE_MACADDRESS_SECOND_XDNS = "";
 
     /** Test constant for string value MacAddress */
     public static final String STRING_DNS_MAC_ADDRESS = "MacAddress";
@@ -2954,8 +2989,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** pattern to search server tag */
     public static final String PATTERN_SERVER_TAG = "server.tag\\s+=\\W+([\\w+\\s+]+)\\W+";
 
-    /** constant to store string value public Broadband Router Server */
-    public static final String CONSTANT_SERVER_TAG = "Xfinity Broadband Router Server";
 
     /** Constant to store file path lighttpd.conf */
     public static final String CONSTANT_LIGHTTPD_CONF = "/etc/lighttpd.conf";
@@ -3012,7 +3045,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String STRING_REGEX_DATE = "((Mon|Tue|Wed|Thu|Fri|Sat|Sun)\\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\s+\\d+\\s\\d{2}:\\d{2}:\\d{2}\\sUTC\\s\\d{4})";
 
     /** Command to get the used space for filename in the device */
-    public static final String COMMAND_TO_FETCH_USED_SPACE_FOR_FILENAME = "df | grep FILENAME | awk 'NR==1{print $5}'";
+    public static final String COMMAND_TO_FETCH_USED_SPACE_FOR_FILENAME = "df | grep FILENAME | awk 'NR==1{print \\$5}'";
 
     /** Constant for the filename nvram */
     public static final String NVRAM_FILE_NAME = "nvram";
@@ -3030,7 +3063,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String STRING_REGEX_TO_GET_PERCENTAGE_VALUE = "(\\w+)%";
 
     /** Command to get the Highest % of CPU consumption in the device */
-    public static final String COMMAND_TO_FETCH_CPU_PERCENTAGE = "top -n1 -- o %cpu | awk 'NR==6{print $7}'";
+    public static final String COMMAND_TO_FETCH_CPU_PERCENTAGE = "top -n1 -- o %cpu | awk 'NR==6{print \\$7}'";
 
     /** String value for 50 */
     public static final String STRING_VALUE_FIFTY = "50";
@@ -3052,11 +3085,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** String Variable to hold the Low constant value */
     public static final String STRING_CONSTANT_LOW = "Low";
-
-    /**
-     * Test constant for applying Dns ovverride at client MAC level IPv4 level one primary value
-     */
-    public static final String STRING_DNS_IPV4_VALUE_FOR_DNS_LEVEL_ONE_PRIMARY = "";
 
     /**
      * The constant holding command for seeing the process status of CCSPXDNSSSP process.
@@ -3110,6 +3138,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** String for protocol http */
     public static final String STRING_PROTOCOL_HTTP = "http";
+
+    /** String variable to store success status for config params tests */
+    public static final String PATTERN_GET_FAILURE_STEPS_FOR_CONFIGPARAM_TESTS = "Tests failed:\\s(\\d+)";
 
     public static final String STRING_TESTFILE = "testfile";
 
@@ -3299,6 +3330,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Pattern to check MB */
     public static final String VALUE_FOR_MB = "M";
+
+    /** String containing url of rdkb crash failover upload server */
+    public static final String RDKB_CRASH_FAILOVER_UPLOAD_URL = "";
 
     /** Log which indicates selfheal process is up and running */
     public static final String SELFHEAL_PROCESS_UP_LOG = "{self_heal_conne}";
@@ -3586,8 +3620,8 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String NC_ERROR_BAD_HOST = "Bad Host ";
 
     /** Constant for nc Connection error */
-    public static final String NC_CONNECTION_ERROR_LAN_IP = NC_ERROR_BAD_HOST + AutomaticsPropertyUtility
-    		.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_XB_LAN_IP);
+    public static final String NC_CONNECTION_ERROR_LAN_IP = NC_ERROR_BAD_HOST
+	    + AutomaticsPropertyUtility.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_XB_LAN_IP);
 
     /** Constant for nc Connection error */
     public static final String NC_CONNECTION_ERROR_IP_192 = NC_ERROR_BAD_HOST + "";
@@ -3878,6 +3912,12 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** String value for Regular expression (.*) */
     public static final String REG_EXPRESSION_DOT_STAR = "(.*)";
+
+    /** Valid Gateway local DHCP Start address in setting Gateway Ip */
+    public static final String TEST_GATEWAY_LOCAL_DHCP_START_ADDR = "";
+
+    /** Valid Gateway local DHCP Start address in setting Gateway Ip */
+    public static final String TEST_GATEWAY_LOCAL_DHCP_END_ADDR = "";
 
     /** Telescope Rest API URL. */
     public static final String TELESCOPIC_REST_API_URL = "telescopic.rest.api.url";
@@ -5553,14 +5593,14 @@ public class BroadBandTestConstants extends RDKBTestConstants {
      * SNMP.
      */
     public static final HashMap<String, String> WIFI_MODE_VALUE_FROM_SNMP_MAPPING = new HashMap<String, String>() {
-		{
+	{
 
-			put("g,n", "160");
-			put("a,n,ac", "448");
-			put("a,n", "192");
-			put("g,n,ax", "672");
-			put("a,n,ac,ax", "960");
-		}
+	    put("g,n", "160");
+	    put("a,n,ac", "448");
+	    put("a,n", "192");
+	    put("g,n,ax", "672");
+	    put("a,n,ac,ax", "960");
+	}
     };
 
     /** Constant for number 900 */
@@ -5624,22 +5664,22 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String COMMAND_TO_GET_SYSTEMD_LOGS_FOR_PROCESS_CRASH = "rm -rf /nvram/automation_sample.txt;tail -F /rdklogs/logs/systemd_processRestart.log > /nvram/automation_sample.txt";
 
     /** TELEMETRY STATUS STRING 'sendHttpRequestToServer returned 0' */
-    public static final String TELEMETRY_STATUS_STRING = "sendHttpRequestToServer returned 0";   
+    public static final String TELEMETRY_STATUS_STRING = "sendHttpRequestToServer returned 0";
 
     public static final String REBOOT_REASON_CRASH = "\"rdkb_rebootreason_split\":\"CR_crash\"";
-    
+
     /** String to store telemetry logs for PSM process crash */
     public static final String PSM_PROCESS_CRASH_TELEMETRY_LOGS = "RDKB_PROCESS_CRASHED : PSM_process is not running";
-    
+
     /** String to store telemetry logs for PAM process crash */
     public static final String PAM_PROCESS_CRASH_TELEMETRY_LOGS = "RDKB_PROCESS_CRASHED : PAM_process is not running";
-    
+
     /** String to store telemetry logs for TR069 process crash */
     public static final String TR069_PROCESS_CRASH_TELEMETRY_LOGS = "RDKB_PROCESS_CRASHED : TR69_process is not running";
-    
+
     /** Constant to get Uploaded Log file name Pattern Matcher */
     public static final String LOG_UPLOAD_PATTERN_MATCHER = "Logs_(.*)";
-    
+
     /** Constant to hold Uploaded Log file name with PM Pattern Matcher */
     public static final String LOG_UPLOAD_FILE_NAME_WITH_PM_PATTERN_MATCHER = "(\\d+-\\d+-\\d+-\\d+-\\d+PM)";
 
@@ -5657,11 +5697,13 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Constant to get seconds value from uptime value Pattern Matcher */
     public static final String GET_SECONDS_FROM_UPTIME_VALUE_PATTERN_MATCHER = "\\d+:\\d+:(\\d+)";
-    
+
     /** Constant for number 1800 */
     public static final int CONSTANT_1800 = 1800;
-    
-    /** Log Message for Received Upstream Event Radion Interface Statistics Report */
+
+    /**
+     * Log Message for Received Upstream Event Radion Interface Statistics Report
+     */
     public static final String LOG_MESSAGE_RECEIVED_UPSTREAM_EVENT_NETWORK_TRAFFIC_REPORT = ".*raw.kestrel.reports.NetworkDevicesTraffic";
 
     /** Pattern for Log NETWORK_TRAFFIC_REPORT Message */
@@ -5676,15 +5718,17 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** default value of TTL period for network device status in seconds */
     public static final int DEFAULT_VALUE_HARV_NETWORK_DEVICE_STATUS_TTL_PERIOD = 300;
 
-    /** value of reporting period/polling period to be set for network device status in seconds */
+    /**
+     * value of reporting period/polling period to be set for network device status in seconds
+     */
     public static final String VALUE_HARV_NETWORK_DEVICE_STATUS_REPORTING_POLLING_PERIOD = "30";
-    
+
     /** Schema name for single client report */
     public static final String SINGLE_CLIENT_REPORT_SCHEMA = "WifiSingleClient.avsc";
-    
+
     /** Default mac address for single client harvester report */
     public static final String DEFAULT_MAC_ADDRESS = "000000000000";
-    
+
     /** The constant for Not Triggered Status */
     public static final String STATUS_NOT_TRIGGERED = "Not triggered";
 
@@ -5693,27 +5737,24 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** The constant for In Progress Status */
     public static final String STATUS_INPROGRESS = "In Progress";
-   
+
     /** The constant for Complete Status */
     public static final String STATUS_COMPLETE = "Complete";
-    
+
     /** Pattern Matcher to retrieve the upload status */
     public static final String PATTERN_MATCHER_UPLOAD_STATUS = "(.*)\\s(Mon|Tue|Wed|Thu|Fri|Sat|Sun)";
 
-    /** String constant to hold wifi public/xfinity */
-    public static final String WIFI_XFINITY = "Xfinity Wifi";
-    
     /** Pattern Matcher to retrieve the dns name for ipv4 loopback */
     public static final String PATTERN_MATCHER_TO_GET_UPLOAD_LOG_TIME = ".*((Mon|Tue|Wed|Thu|Fri|Sat|Sun).*)";
-    
+
     /** The constant for UTC TimeZone Format */
     public static final String FORMAT_TIMEZONE_UTC = "E MMM dd HH:mm:ss zzz yyyy";
-    
+
     /**
      * Pattern matcher to retrieve Log File name to be Uploaded in ArmConsole
      */
     public static final String COMMAND_TO_RETRIEVE_LOG_FILE_NAME_ARM_CONSOLE = "grep -i \"File to be uploaded:\" /rdklogs/logs/ArmConsolelog.txt.0 | tail -1";
-    
+
     /**
      * Pattern matcher to retrieve Log File name to be Uploaded in Consolelog.txt.0
      */
@@ -5721,7 +5762,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Pattern Matcher to retrieve the timestamp from log message */
     public static final String PATTERN_MATCHER_LOG_FILENAME = "uploaded: (.*)";
-    
+
     /** The constant to add the dns names for blocking the Log upload */
     public static final String COMMAND_TO_ADD_DNS_NAMES = "echo \"::1   ccp-stbloglanding2.s3.dualstack.us-east-1.amazonaws.com\" >> /etc/hosts;echo \"127.0.0.1 ccp-stbloglanding2.s3.dualstack.us-east-1.amazonaws.com\" >> /etc/hosts";
 
@@ -5739,37 +5780,37 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** The constant to copy the host file content from temporary file */
     public static final String COPY_TMP_TO_HOSTS_FILE = "cat /tmp/hosts.tmp > /etc/hosts";
-    
+
     /** Pattern Matcher to retrieve the dns name for ipv6 loopback */
     public static final String PATTERN_MATCHER_DNS_NAME_FOR_IPV6_LOOPBACK = "(::1.*)";
 
     /** Pattern Matcher to retrieve the dns name for ipv4 loopback */
-    public static final String PATTERN_MATCHER_DNS_NAME_FOR_IPV4_LOOPBACK = "(127.*)";    
-   
+    public static final String PATTERN_MATCHER_DNS_NAME_FOR_IPV4_LOOPBACK = "(127.*)";
+
     /** Integer value 11 */
     public static final Integer INTEGER_VALUE_11 = 11;
-    
+
     /** Command to get wifi reset logs from pamlog file */
     public static final String CMD_GET_WIFI_RESET_LOG_FROM_PAMLOG_FILE = "tail -F /rdklogs/logs/PAMlog.txt.0 > /nvram/automation_sample.txt";
 
     /** Command to cat sample text file */
     public static final String CAT_SAMPLE_TEXT_FILE = "cat /nvram/automation_sample.txt";
-    
+
     /** String to store wifi module reset logs */
     public static final String STRING_WIFI_MODULE_RESET_LOGS = "RebootDevice:WiFi is going to reboot now";
-    
+
     /** Pattern to retrieve first 2 digits of IPv4 address */
     public static final String PATTERN_TO_RETRIEVE_FIRST_2_DIGITS_OF_IPv4_ADDRESS = "((\\d+\\.){2})\\d+\\.\\d+";
-    
+
     /** The constant holds the dcm server url property name */
     public static final String DCM_RFC_SERVER_URL_PROPERTY_NAME = "\"DCM_RFC_SERVER_URL\"";
-    
+
     /** Regular expression to grep server url */
     public static final String REG_EXPRESSION_DCM_SERVER_URL = "DCM_RFC_SERVER_URL=(\\w+.*)";
-    
+
     /** Constant to hold dmcli command of RABIDFRAMEWORK_ENABLE */
     public static final String RABID_FRAMEWORK_ENABLE = "tr181.Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.RabidFramework.Enable";
-    
+
     /** String for featureControl */
     public static final String STRING_FEATURECONTROL = "featureControl";
 
@@ -5778,7 +5819,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** String for configData */
     public static final String STRING_CONFIG_DATA = "configData";
-    
+
     /** RFC param String */
     public static final String RFC_PARAM = "\"RFC: For param";
 
@@ -5787,24 +5828,23 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** RFC updated param String */
     public static final String RFC_UPDATED_PARAM = "\"RFC:  updated for";
-    
+
     /** RFC updated param String */
     public static final String RFC_SET_PARAM = "\"RFC: dmcli SET called for RFC namespace param: ";
-    
+
     /**
      * String to store pattern matcher for access point for wifi
      */
     public static final String PATTER_MATCHER_FOR_WIFI_ACCESS_POINT = "Device.WiFi.AccessPoint.(\\d+).";
-    
+
     /**
      * String to store pattern matcher for wifi radio
      */
     public static final String PATTER_MATCHER_FOR_WIFI_RADIO = "Device.WiFi.Radio.(\\d+).";
-    
-	/** Holds error message when curl is not installed */
+
+    /** Holds error message when curl is not installed */
     public static final String PATTERN_TO_RETRIVE_IP_ADDRESS_FROM_NSLOOKUP_RESPONSE = ".*Address\\s+\\d+:\\s+(\\d+\\.\\d+\\.\\d+\\.\\d+)\\s+(.*)";
-    
- 													 
+
     /**
      * The hash map to store the wifi radio Access point mapping with corresponding digits
      */
@@ -5823,34 +5863,326 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	    }
 	};
-	
+
 	return Collections.unmodifiableMap(mapping);
     }
-	
-	/** Constant to hold string for Maximum Associated Devices */
-    public static final String STRING_MAX_ASSOCIATED_DEVICES = "MaxAssociatedDevices"; 
-    
+
+    /** Constant to hold string for Maximum Associated Devices */
+    public static final String STRING_MAX_ASSOCIATED_DEVICES = "MaxAssociatedDevices";
+
     /** Linux command to do stbssh to estb ipv6. */
     public static final String LINUX_CMD_SUDO_STB_SSH_IPV6 = "sudo -S stbsshv6";
-    
+
     /** constant for wifi Invalid password */
     public static final String INVALID_WIFI_PASSWORD = "Invalid123!";
-    
+
     /** Constant to hold URL of HTTP site: http://www.facebook.com */
     public static final String URL_HTTP_FACEBOOK = "http://www.facebook.com/";
-    
-	/** Interface for ATOM SYNC PRIVATE__2 GHZ */
-	public static final String INTERFACE_ATOM_PRIVATE_2 = "wl -i wl0 status";
 
-	/** Interface for ATOM SYNC PRIVATE_5 GHZ */
-	public static final String INTERFACE_ATOM_PRIVATE_5 = "wl -i wl1 status";
-	
-	/** Constant to hold regex to grep bssid */
-	public static final String REGEX_GREP_BSSID = ":\\s(\\w+:\\w+:\\w+:\\w+:\\w+:\\w+)";
+    /** Interface for ATOM SYNC PRIVATE__2 GHZ */
+    public static final String INTERFACE_ATOM_PRIVATE_2 = "wl -i wl0 status";
+
+    /** Interface for ATOM SYNC PRIVATE_5 GHZ */
+    public static final String INTERFACE_ATOM_PRIVATE_5 = "wl -i wl1 status";
+
+    /** Constant to hold regex to grep bssid */
+    public static final String REGEX_GREP_BSSID = ":\\s(\\w+:\\w+:\\w+:\\w+:\\w+:\\w+)";
+
+    /**
+     * String variable to store test_connection which is used to test ssh connectivity
+     */
+    public static final String STRING_TEST_CONNECTION = "test_connection";
+
+    /** Constant to hold command to get systeminfo_wireless */
+    public static final String CMD_GET_SYSTEM_INFO_WIRELESS = "systeminfo |grep -i \"wireless\"";
+
+    /** Constant to hold Intel */
+    public static final String WIFI_DRIVER_INTEL = "Intel";
+
+    /** The property key for device status. */
+    public static final String SPECIFIC_PLATFORM = "specific.platform.";
+
+    /** Constant to hold string 24 */
+    public static final String STRING_24_WIFI_SSID_PREFIX = "24_";
+
+    /** Constant to hold string 5 */
+    public static final String STRING_5_WIFI_SSID_PREFIX = "5_";
+
+    /** Constant to hold single under score character */
+    public static final String CHARACTER_UNDER_SCORE = "_";
+
+    /** Constant to hold character Colon. */
+    public static final String COLON = ":";
+
+    /** Constant to hold command to get band preference */
+    public static final String COMMAND_GET_WIRELESS_MODE = "PowerShell.exe -command Get-NetAdapterAdvancedProperty -RegistryKeyword \"WirelessMode\"";
+
+    /** Constant to hold command to set band preference */
+    public static final String COMMAND_SET_WIRELESS_MODE = "PowerShell.exe -command Set-NetAdapterAdvancedProperty -RegistryKeyword \"WirelessMode\" -RegistryValue \"<REPLACE>\"";
+
+    /** String to store nodev mount option */
+    public static final String MOUNT_OPTION_NODEV = "nodev";
+
+    /** String to store nosuid mount option */
+    public static final String MOUNT_OPTION_NOSUID = "nosuid";
+
+    /** String to store noexec mount option */
+    public static final String MOUNT_OPTION_NOEXEC = "noexec";
+
+    /** String variable to check atom accessibility */
+    public static final String STRING_VERIFY_ATOM_ACCESSIBILITY = "Atom is accessible from Arm";
+
+    /** The property key to obtain Atom console IP for specific devices. */
+    public static final String ATOM_CONSOLE_IP_SPECIFIC_DEVICES = "ip.atom.console.";
+
+    /** String constant to hold Non Default Login Password string */
+    public static final String NON_DEFAULT_LOGIN_PASSWORD = "password1";
+
+    /** Constant for HTTP URL */
+    public static final String URL_HTTP = "http://";
+
+    /** Constant to hold Gateway admin page SECURE UI DOMAIN */
+    public static final String GATEWAY_ADMIN_PAGE_SECURE_UI_DOMAIN = "myrouter.io";
+
+    /** Constant holds a password with proper standards */
+    public static final String PASSWORD_WITH_LETTERS_AND_NUMBERS = "testpassword123";
+
+    /** Constant holds the error message while password mismatch */
+    public static final String PASSWORD_MISMATCH_ERROR_MESSAGE = "Please enter the same value again.";
+
+    /** wait for 3 seconds */
+    public static final long THREE_SECOND_IN_MILLIS = 3000L;
+
+    /** Constant holds the error message while setting a password as blank */
+    public static final String PASSWORD_BLANK_FIELD_ERROR_MESSAGE = "This is a required field.";
+
+    /**
+     * Constant holds the error message for special characters/space in a password
+     */
+    public static final String PASSWORD_SPECIAL_CHARACTER_AND_SPACE_ERROR_MESSAGE = "Only letters and numbers are valid. No spaces or special characters.";
+
+    /** Static image name locator for DSL in stb.properties file */
+    public static final String DSL_IMAGE = "cdl.dsl.image";
+
+    /** Constant to hold Connected Devices */
+    public static final String CONNECTED_DEVICES = "Connected_Devices";
+
+    /**
+     * The constant for Pace Devices not applicable for IPV6 related steps
+     */
+    public static final String PACE_NOT_APPLICABLE_IPV6 = "Not Applicable For Pace Box as Gateway Device";
+
+    /** Pattern to get Mac Address */
+    public static final String PATTERN_TO_GET_MAC_ADDRESS = "(\\w{2}:\\w{2}:\\w{2}:\\w{2}:\\w{2}:\\w{2})";
+
+    /** Constant to hold the Row Number Place holder */
+    public static final String PLACE_HOLDER_FOR_ROW_NUMBER = "##ROW##";
+
+    /** Constant representing ERROR log level */
+    public static final String ERROR_LOG = "ERROR";
+
+    /** String for business class gateway IP */
+    public static final String STRING_BUSINESS_CLASS_GATEWAYIP = "10.1.10.1";
+
+    /** String for residential class gateway ip */
+    public static final String STRING_RESIDENTIAL_CLASS_GATEWAYIP = "10.0.0.1";
+
+    /** The array list of Ccsp Components for Atom based device in ATOM side */
+    public static final List<String> CCSP_COMPONENT_LIST_ATOM = new ArrayList<String>() {
+	{
+	    add("CcspCrSsp");
+	    add("CcspWifiSsp");
+	}
+    };
+
+    /** Constant for number 420 */
+    public static final int CONSTANT_420 = 420;
+
+    /** Constant for number 540 */
+    public static final int CONSTANT_540 = 540;
+
+    /** String to store colon */
+    public static final String ESCAPE_SEQUENCE_CHARACTER_COLON = "\\:";
     
+	/** String value containing IPv4 primary XDNS value to set */
+	public static final String VALUE_PRIMARY_IPV4_XDNS = "74.121.125.53";
+
+	/** String value containing IPv6 primary XDNS value to set */
+	public static final String VALUE_PRIMARY_IPV6_XDNS = "2620:104:a00b::53";
+
+	/** String value containing IPv4 secondary XDNS value to set */
+	public static final String VALUE_SECONDARY_IPV4_XDNS = "74.121.125.54";
+
+	/** String value containing IPv6 secondary XDNS value to set */
+	public static final String VALUE_SECONDARY_IPV6_XDNS = "2620:104:a00b::54";
+	
+	/** Constant to hold string for Security Edge */
+	public static final String STRING_XDNS_SECURITY_EDGE = "SecurityEdge";
+	
+	/** Constant to hold string for eenadu.net */
+	public static final String STRING_XDNS_BROWSE = "eenadu.net";
+	
+	/** Test constant for Global Dns IPv4 default value 75.75.75.75 */
+	public static final String STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE = "75.75.75.75";
+	
+	/** Constant to hold string for Security Edge Exclusion */
+	public static final String STRING_XDNS_SECURITY_EDGE_EXCLUSION = "SecurityEdge_Exclusion";
+	
+	/** String to store empty keyword */
+	public static final String EMPTY_KEYWORD = "EMPTY";
+	
+	/** Default value of Business Class devices Admin page */
+	public static final String STRING_BUSINESS_CLASS_DEFAULT_ADMIN_PWD = "highspeed";
+	
+	/** String constant to hold Password string */
+	public static final String STRING_PASSWORD = "password";
+	
+    /** Constant to hold Managed Services - Add Sites */
+    public static final String MANAGED_SITES_ADD_SITES = "Managed_Services_Add_Site";
+    
+    /** Constant to hold Managed Services - Add Keyword */
+    public static final String MANAGED_SITES_ADD_KEYWORD = "Managed_Services_Add_Keyword";
+    
+    /** Constant to hold Managed Services */
+    public static final String MANAGED_SERVICES = "Managed_Services";
+    
+    /** Constant to hold Start Port in Managed Service */
+    public static final String START_PORT = "21";
+    
+    /** Constant to hold End Port in Managed Service */
+    public static final String END_PORT = "21";
+    
+    /** Constant to hold Managed_Devices */
+    public static final String MANAGED_DEVICES = "Managed_Devices";
+    
+    /** Variable to hold Double Zero in Double quotes */
+    public static final String DOUBLE_ZERO_IN_DOUBLE_QUOTES = "00";
+    
+    /** Variable to hold AM */
+    public static final String TIME_AM = "AM";
+    
+	/** String for value */
+	public static String STRING_VALUE = "value";
+	
 	/**
-	 * String variable to store test_connection which is used to test ssh
-	 * connectivity
+	 * Constant to hold Parental Control - Managed Services Description as HTTP
 	 */
-	public static final String STRING_TEST_CONNECTION = "test_connection";
+	public static final String MNG_SERVICES_DESCRIPTION_AS_HTTP = "HTTP";
+	
+	/** Constant to hold HTTP value in dropdown */
+	public static final String HTTP_VALUE_IN_DROPDOWN = "80|80";
+	
+	/** Constant to hold 'Alert' popup title */
+	public static final String POPUP_TTILE_ALERT = "Alert";
+	
+    /** Variable to hold Pop Up message for Start Block time greater than End Block time in Parental Control */
+    public static final String POP_UP_MESSAGE_START_TIME_GREATER_THAN_END_TIME = "Start time should be smaller than End time !";
+
+    /** Constant to hold Managed Services - Add Service */
+    public static final String MANAGED_SERVICES_ADD_SERVICE = "Managed_Services_Add_Service";
+    
+	/** Constant to hold string new line character with escape character */
+	public static final String NEW_LINE_WITH_ESCAPE_CHARACTER = "\\n";
+	
+	/** Constant for number 28 */
+	public static final int CONSTANT_28 = 28;
+	
+	/** Constant to hold int value for number 19 */
+	public static final int CONSTANT_19 = 19;
+	
+	/** constant float value 0.0 */
+	public static final float CONSTANT_ZERO = 0.0f;
+	
+    /** Constant to hold Constant of Wifi Client Type */
+    public static final String CLIENT_TYPE_ETH = "ETHERNET";
+    
+    /** Constant to hold Add_Device_With_Reserved_Ip */
+    public static final String ADD_DEVICE_WITH_RESERVED_IP = "Add_Device_With_Reserved_Ip";
+    
+    /** String Constant to replace the value :/64 */
+	public static final String REPLACE_COLON_SLASH_64 = ":/64";
+
+	/** Constant for Tshark capture protocol-dhcpv6 */
+	public static final String PROTOCOL_DHCPV6 = "dhcpv6";
+
+	/** String to hold preferred lifetime packet capture constant */
+	public static final String STRING_PREFERRED_LIFETIME = "pltime:";
+
+	/** String to hold valid lifetime packet capture constant */
+	public static final String STRING_VALID_LIFETIME = "vltime:";
+	
+	/** Constant to hold URL of ebay */
+	public static final String URL_EBAY = "https://www.ebay.com";
+	
+	/**
+	 * List of website to generate the traffic by using curl
+	 */
+	public static final List<String> getListOfWebSitesToCurl() {
+		final List<String> listOfWebsitesToPing = new ArrayList<String>() {
+			{
+				add(URL_INSTAGRAM);
+				add(URL_EBAY);
+				add(URL_W3SCHOOLS);
+				add(URL_WIKIPEDIA);
+			}
+		};
+		return listOfWebsitesToPing;
+	}
+	
+	/** Constant for DHCPv6 beginning address */
+	public static final String DHCPIPV6_SET_BEGINNING_ADDRESS = "ffff:ffff:ffff:0001";
+
+	/** Constant for DHCPv6 ending address */
+	public static final String DHCPIPV6_SET_ENDING_ADDRESS = "ffff:ffff:ffff:ffff";
+	
+	/** Constant to hold Not applicable message for residential class devices */
+	public static final String NA_MSG_FOR_RESIDENTIAL_CLASS_DEVICES = "Test Step Not Applicable for Residential class devices";
+	
+	/**
+	 * The hash map to store the firewall modes with its corresponding Xpath
+	 */
+	public static final Map<String, String> FIREWALL_SETTINGS = createFirewallSettingsMap();
+	
+	/**
+	 * Method to create a map for firewall settings corresponding to its xpath
+	 * 
+	 * @return map with xpath as key and its Security Level as value
+	 */
+	private static Map<String, String> createFirewallSettingsMap() {
+		Map<String, String> mapping = new HashMap<String, String>() {
+			{
+				put("//*[@id=\"firewall_level_maximum\"]", "Maximum Security (High)");
+				put("//*[@id=\"firewall_level_typical\"]", "Typical Security (Medium)");
+				put("//*[@id=\"firewall_level_minimum\"]", "Minimum Security (Low)");
+				put("//*[@id=\"firewall_level_custom\"]", "Custom Security");
+				put("//*[@id=\"firewall_level_default\"]", "Typical Security (Default)");
+			}
+		};
+		return Collections.unmodifiableMap(mapping);
+	}
+	
+	/** Constant to hold default IPv4 Firewall Level */
+	public static final String DEFAULT_IPV4_FIREWALL_SECURITY = "Minimum Security (Low)";
+
+	/** Constant to hold default IPv6 Firewall Level */
+	public static final String DEFAULT_IPV6_FIREWALL_SECURITY = "Typical Security (Default)";
+	
+	/** Constant to hold Firewall IPv6 */
+	public static final String FIREWALL_IPV6 = "Firewall_IPv6";
+	
+	/** Constant to hold Firewall IPv4 */
+	public static final String FIREWALL_IPV4 = "Firewall_IPv4";
+	
+	/** Property key for invalid subnetmak values */
+    public static final String PROP_KEY_INVALID_SUBNETMAK_VALUES = "invalid.subnetmaks.values.";
+    
+    /** Three seconds in millisecond representation. */
+    public static final long THREE_SECONDS_IN_MILLIS = 3 * ONE_SECOND_IN_MILLIS;
+    
+    /** Property key for valid subnetmak values */
+    public static final String PROP_KEY_VALID_SUBNETMAK_VALUES = "valid.subnetmaks.values.";
+
+	
+
+
 }

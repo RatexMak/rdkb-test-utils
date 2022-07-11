@@ -29,7 +29,7 @@ public class BroadBandPropertyKeyConstants {
 
     /** The property key for syndication partner ID Names */
     public static final String PROP_KEY_SYNDICATION_PARTNER_ID_LIST = "syndicationpartner.id.list";
-    
+
     /** The property key for specific syndication partner ID Names */
     public static final String PROP_KEY_SPECIFIC_SYNDICATION_PARTNER_ID_LIST = "specific.syndicationpartner.id.list";
 
@@ -131,10 +131,14 @@ public class BroadBandPropertyKeyConstants {
 
     public static final String PROP_KEY_DUNFELL_DNSMASQ_VERSION = "dunfell.dnsmasq.version";
 
-    /** Constant for Property Key to fetch download url to access AutoVault service */
+    /**
+     * Constant for Property Key to fetch download url to access AutoVault service
+     */
     public static final String PROP_KEY_AUTOVAULT_DOWNLOAD_URL = "autovault.downloadURL";
 
-    /** Constant for Property Key to fetch credentails to access AutoVault service */
+    /**
+     * Constant for Property Key to fetch credentails to access AutoVault service
+     */
     public static final String PROP_KEY_AUTOVAULT_BASE64_CREDENTIALS = "autovault.base64.credentials";
 
     public static final String STRESS_TEST_FILE_PATH = "autovault.stress.test.file.path";
@@ -163,8 +167,8 @@ public class BroadBandPropertyKeyConstants {
     /** Command to store path of tcpdump **/
     public static final String FILE_PATH_TCPDUMP = "autovalut.tcpdump.file.path";
 
-    /** Property Key for DAC15 CDL URL */
-    public static final String PROP_KEY_DAC15_CDL_URL = "rdkb.cdl.dac15.url";
+    /** Property Key for CDL URL */
+    public static final String PROP_KEY_CDL_URL = "rdkb.cdl.url";
 
     public static final String OPERATIONAL_TRANSMISSION_RATE_2GHZ_FOR_DEVICES = "operational.transmission.rate.2ghz.";
 
@@ -196,7 +200,13 @@ public class BroadBandPropertyKeyConstants {
 
     public static final String SUPPORTED_DATA_TX_RATE_5GHZ_FOR_DEVICE = "supported.data.txrate.5ghz";
 
-    public static final String SUPPORTED_TX_RATE_2GHZ_FOR_DEVICE = "supported.txrate.2ghz";
+    public static final String SUPPORTED_TX_RATE_2GHZ_FOR_DEVICE = "supported.txrate.2ghz";    
+    
+    /** property to configure Public wifi ssid for 2GHZ */
+    public static final String PROP_KEY_PUBLIC_WIFI_SSID_2 = "public.wifi.ssid.2.4";
+    
+    /** property to configure Public wifi ssid for 5GHZ */
+    public static final String PROP_KEY_PUBLIC_WIFI_SSID_5 = "public.wifi.ssid.5";
 
     public static final String PARTIAL_DEVICE_CHECK_SELF_HEAL = "is.device.check.self.heal.";
 
@@ -261,6 +271,9 @@ public class BroadBandPropertyKeyConstants {
 
     /** String to store property of cert of rdkb_snmpd snmpv3 */
     public static final String FILE_SNMPV3_CERT_RDKB_SNMPD = "snmpv3.cert.rdkb.snmpd";
+    
+    /** property to configure  public Broadband Router Server */
+    public static final String PROP_KEY_CONSTANT_SERVER_TAG = "broadband.router.server";
 
     /** Property key models with corrupt image of same device class */
     public static final String MAP_MODEL_CORRUPT_IMAGE_SAME_DEVICE_CLASS = "map.model.corrupt.image.same.device.class.";
@@ -383,31 +396,28 @@ public class BroadBandPropertyKeyConstants {
     public static final String CAPTIVE_PORTAL_CONFIGURATION_SUCCESS_PAGE_HEADER_MESSAGE = "captive.portal.configuraion.success.message.partner.";
 
     public static final String TR69_NAMING_CONVENTION_PARAMETERS = "tr69.namingconvention.parameters";
-    
-    /** Property Key for DAC15 CDL URL for Business Class devices which are Atom Console*/
-    public static final String PROP_KEY_DAC15_CDL_URL_BUSINESS_ATOM = "rdkb.cdl.url.business.atom";
-    
+
+    /**
+     * Property Key for CDL URL for Business Class devices which are Atom Console
+     */
+    public static final String PROP_KEY_CDL_URL_BUSINESS_ATOM = "rdkb.cdl.url.business.atom";
+
     public static final String IS_SERVER_CONFIGURED_TO_UPLOAD_TO_SERVER = "is.logupload.server.configured";
-    
+
     /** property to configure the default partner */
     public static final String PROPERTY_DEFAULT_PARTNER = "default.partnerId";
-    
+
     /** platform based property for available syndication partners */
     public static final String PROPERTY_PLATFORM_BASED_PARTNER_LIST = "partners.list.";
-    
+
     /** property to configure AES encryption key **/
     public static final String PROP_KEY_AES_ENCRYPTION_KEY = "aes.encryption.key";
-    
+
     /** property to configure invalid certificates to verify L & F **/
     public static final String PROP_KEY_CERT_CA_CHAIN = "cert.ca.chain";
     public static final String PROP_KEY_CERT_VIDEO_CLIENT = "cert.video.client";
     public static final String PROP_KEY_VIDEO_CLIENT = "key.video.client";
-    
-    /** property to configure Primary remote endpoint */
-    public static final String PROP_KEY_PRIMARY_REMOTE_ENDPOINT = "primary.remote.endpoint";
-    /** property to configure secondary remote endpoint */
-    public static final String PROP_KEY_SECONDARY_REMOTE_ENDPOINT = "secondary.remote.endpoint";
-    
+
     /** property to configure snmpv3 dk kickstart security number 1 */
     public static final String PROP_KEY_SNMPV3_DH_KICK_START_SECURITY_NUMBER_1 = "snmpv3.dh.kickstart.seccurity.no1";
     /** property to configure snmpv3 dk kickstart security number 2 */
@@ -416,55 +426,155 @@ public class BroadBandPropertyKeyConstants {
     public static final String PROP_KEY_SNMPV3_DH_KICK_START_SECURITY_NUMBER_3 = "snmpv3.dh.kickstart.seccurity.no3";
     /** property to configure snmpv3 dk kickstart security number 4 */
     public static final String PROP_KEY_SNMPV3_DH_KICK_START_SECURITY_NUMBER_4 = "snmpv3.dh.kickstart.seccurity.no4";
-    
+
     /** property to configure dummy first mac address for XDNS */
     public static final String PROP_KEY_VALUE_MACADDRESS_FIRST_XDNS = "value.macaddress.first.xdns";
 
     /** property to configure dummy second mac address for XDNS */
     public static final String PROP_KEY_VALUE_MACADDRESS_SECOND_XDNS = "value.macaddress.second.xdns";
-    
-    /**  property to configure  Radius Server IPAddr */
+
+    /** property to configure Radius Server IPAddr */
     public static final String PROP_KEY_RADIUS_SERVER_IPADDR = "radius.server.ipaddr";
-    
+
     /** property to configure url of rdkb crash failover upload server */
     public static final String PROP_KEY_RDKB_CRASH_FAILOVER_UPLOAD_URL = "rdkd.crash.fallover.upload.url";
-    
+
     /** property to configure Broadband Device LAN IP */
     public static final String PROP_KEY_XB_LAN_IP = "xb.lan.ip";
-    
-	/** property to configure business calss gateway IP */
-	public static final String PROP_KEY_BUSINESS_CLASS_GATEWAYIP = "bussiness.class.gatewayip";
-	
-	/** property to configure residential class gateway ip */
-	public static final String PROP_KEY_RESIDENTIAL_CLASS_GATEWAYIP = "residential.class.gatewatip";
-	
-	/** property to configure DHCP min address for business class devices */
-	public static final String PROP_KEY_STRING_DHCP_MIN_ADDRESS_BUSSI = "dhcp.min.address.buss";
-	
-	/** property to configure DHCP min address for residential class devices */
-	public static final String PROP_KEY_STRING_DHCP_MIN_ADDRESS = "dhcp.min.address";	
-	
-	/** property to configure DHCP max address for business class devices */
-	public static final String PROP_KEY_STRING_DHCP_MAX_ADDRESS_BUSSI = "dhcp.max.address.buss";
-	
-	/** property to configure DHCP max address for residential class devices */
-	public static final String PROP_KEY_STRING_DHCP_MAX_ADDRESS = "dhcp.max.address";
-	
-	/** property to configure  plan ID of wifi blaster */
-	public static final String PROP_KEY_BLASTER_PLANID = "wifiblaster.plan.id";
-	
-	/** property to configure destination mac for wifi blaster */
-	public static final String PROP_KEY_BLASTER_DESTMAC = "wifiblaster.destmac";
-	
-	/** property to configure valid Gateway local Ip in setting Gateway Ip */
-	public static final String PROP_KEY_TEST_GATEWAY_LOCAL_IP_1 = "test.gateway.localip1";
-	
-	/** property to configure valid Gateway local DHCP Start address in setting Gateway Ip */
-	public static final String PROP_KEY_TEST_GATEWAY_LOCAL_DHCP_START_ADDR = "test.gateway.localdhcp.startaddr";
 
-	/** property to configure valid Gateway local DHCP end address in setting Gateway Ip */
-	public static final String PROP_KEY_TEST_GATEWAY_LOCAL_DHCP_END_ADDR = "test.gateway.localdhcp.endaddr";	
-	
-	/** property to configure WIFI Client MacAddress parameter */
-	public static final String PROP_KEY_MAC_ADDRESS_WIFICLIENT = "wificlient.macaddress";
+    /** property to configure business calss gateway IP */
+    public static final String PROP_KEY_BUSINESS_CLASS_GATEWAYIP = "bussiness.class.gatewayip";
+
+    /** property to configure residential class gateway ip */
+    public static final String PROP_KEY_STRING_RESIDENTIAL_CLASS_GATEWAYIP = "residential.class.gatewatip";
+
+    /** property to configure DHCP min address for business class devices */
+    public static final String PROP_KEY_STRING_DHCP_MIN_ADDRESS_BUSSI = "dhcp.min.address.buss";
+
+    /** property to configure DHCP min address for residential class devices */
+    public static final String PROP_KEY_STRING_DHCP_MIN_ADDRESS = "dhcp.min.address";
+
+    /** property to configure DHCP max address for business class devices */
+    public static final String PROP_KEY_STRING_DHCP_MAX_ADDRESS_BUSSI = "dhcp.max.address.buss";
+
+    /** property to configure DHCP max address for residential class devices */
+    public static final String PROP_KEY_STRING_DHCP_MAX_ADDRESS = "dhcp.max.address";
+
+    /** property to configure plan ID of wifi blaster */
+    public static final String PROP_KEY_BLASTER_PLANID = "wifiblaster.plan.id";
+
+    /** property to configure destination mac for wifi blaster */
+    public static final String PROP_KEY_BLASTER_DESTMAC = "wifiblaster.destmac";
+
+    /** property to configure valid Gateway local Ip in setting Gateway Ip */
+    public static final String PROP_KEY_TEST_GATEWAY_LOCAL_IP_1 = "test.gateway.localip1";
+
+    /**
+     * property to configure valid Gateway local DHCP Start address in setting Gateway Ip
+     */
+    public static final String PROP_KEY_TEST_GATEWAY_LOCAL_DHCP_START_ADDR = "test.gateway.localdhcp.startaddr";
+
+    /**
+     * property to configure valid Gateway local DHCP end address in setting Gateway Ip
+     */
+    public static final String PROP_KEY_TEST_GATEWAY_LOCAL_DHCP_END_ADDR = "test.gateway.localdhcp.endaddr";
+
+    /** property to configure WIFI Client MacAddress parameter */
+    public static final String PROP_KEY_MAC_ADDRESS_WIFICLIENT = "wificlient.macaddress";
+
+    /** property to configure command to access atom from arm console */
+    public static final String CMD_TOACCESS_ATOMCONSOLEFROMARM = "cmd.accesss.atomfromarm";
+
+    /** property Constant to holds a password with special character */
+    public static final String PROP_KEY_PASSWORD_WITH_SPECIAL_CHARACTER = "home.network.password.with.specialcharacter";
+
+    /** property Constant to holds a password with space */
+    public static final String PROP_KEY_PASSWORD_WITH_SPACE = "home.network.password.with.space";
+
+    /** property to configure wehgui heading of homepage */
+    public static final String PROP_KEY_WEB_GUI_HOME_PAGE_HEADING = "webgui.heading.homepage";
+
+    public static final String ADMIN_LOGIN_PAGE_TITLE = "lan.gui.admin.login.page.title";
+
+    public static final String PAGE_TITLE_AT_A_GLANCE = "lan.gui.page.title.at.a.glance";
+
+    /** property to configure link text for Reset / Restore Gateway page */
+    public static final String PROP_KEY_LINK_TEXT_HARDWARE_WIZARD = "lan.gui.link.text.hardware.wizard";
+
+    /** property to configure page url for hardware wizard page */
+    public static final String PROP_KEY_PAGE_URL_HARDWARE_WIZARD = "lan.gui.page.url.hardware.wizard";
+
+    /** property to configure page title for hardware wizard page */
+    public static final String PROP_KEY_PAGE_TITLE_HARDWARE_WIZARD = "lan.gui.page.title.hardware.wizard";
+
+    /** property Constant to holds a password with proper standards */
+    public static final String PROP_KEY_PASSWORD_MISMATCH = "home.network.password.with.proper.standards";
+
+    /**
+     * property to retrive a part of buildname to check its contains in the buildname
+     */
+    public static final String STRING_BUILDNAME_PART = "buildname.part.check";
+
+    /** property to configure Page Title of Connected Device page */
+    public static final String PAGE_TITLE_CONNECTED_DEVICE = "lan.gui.page.title.connected.devices";
+
+    /** property to configure captiveportal logo */
+    public static final String STRING_LOGO_CAPTIVEPORTAL = "logo.captivePortal";
+
+    /** property to configure Page Title of Connection wifi page */
+    public static final String PAGE_TITLE_CONNECTION_WIFI = "lan.gui.page.title.connection.wifi";
+
+    /** property Constant to store wifi edit 5 GHz page title */
+    public static String PROP_KEY_PAGE_TITLE_WIFI_CONFIG_PAGE = "lan.gui.page.title.wifi.configuration.page";
+    
+    public static final String CHANGE_PASSWORDPAGE_TITLE = "lan.gui.page.title.changepassword";
+    
+    public static final String PAGE_TITLE_PARENTAL_CONTROL_MANAGED_SITES = "lan.gui.page.title.parental.control.managed.sites";
+ 
+    public static final String PAGE_TITLE_PARENTAL_CONTROL_ADD_BLOCKED_DOMAIN = "lan.gui.page.title.parental.control.managed.sites.add.blocked.domain";
+
+    public static final String PAGE_TITLE_PARENTAL_CONTROL_ADD_BLOCKED_KEYWORD = "lan.gui.page.title.parental.control.managed.sites.add.blocked.keyword";
+
+    public static final String PAGE_TITLE_PARENTAL_CONTROL_MANAGED_SERVICE = "lan.gui.page.title.parental.control.managed.service";
+
+    public static final String PAGE_TITLE_PARENTAL_CONTROL_MANAGED_SERVICES_ADD_BLOCKED_SERVICE = "lan.gui.page.title.parental.control.managed.services.add.blocked.service";
+   
+    /** property to configure page title for connected devices page */
+    public static final String PROP_KEY_PAGE_TITLE_CONNECTED_DEVICE_PAGE = "lan.gui.page.title.connected.devices";
+    
+    /** property to configure link text for connected devices page */
+    public static final String PROP_KEY_LINK_TEXT_CONNECTED_DEVICE_PAGE = "lan.gui.link.text.connected.devices";
+    
+    /** property to configure page url for connected devices page */
+    public static final String PROP_KEY_PAGE_URL_CONNECTED_DEVICE_PAGE = "lan.gui.page.url.connected.devices";
+    
+    /** property to configure page url for connected devices page */
+    public static final String PROP_KEY_PAGE_TITLE_CONNECTED_DEVICE_EDIT_DEVICE_PAGE = "lan.gui.page.title.connected.devices.edit.devices";
+    
+    public static final String LINK_TEXT_LOCAL_IP_NETWORK = "lan.gui.link.text.connection.local.ip.network";
+
+    public static final String PAGE_URL_LOCAL_IP_NETWORK = "lan.gui.page.url.connection.local.ip.network";
+
+    public static final String PAGE_TITLE_LOCAL_IP_NETWORK = "lan.gui.page.title.connection.local.ip.network";
+
+    public static final String LINK_TEXT_PARTNER_NETWORK = "lan.gui.link.text.connection.partner.network";
+
+    public static final String PAGE_URL_PARTNER_NETWORK = "lan.gui.page.url.connection.partner.network";
+
+    public static final String PAGE_TITLE_PARTNER_NETWORK = "lan.gui.page.title.connection.partner.network";
+
+    public static final String PAGE_TITLE_FIREWALL_IPV4 = "lan.gui.page.title.firewall.ipv4";
+
+    public static final String PAGE_TITLE_PARENTAL_CONTROL = "lan.gui.page.title.parental.control";
+
+    public static final String PAGE_TITLE_MANAGED_DEVICES = "lan.gui.page.title.managed.devices";
+
+    public static final String PAGE_TITLE_FIREWALL_IPV6 = "lan.gui.page.title.firewall.ipv6";
+    
+    public static final String LINK_TEXT_CONNECTION_STATUS = "lan.gui.link.text.connection.status";
+
+    public static final String PAGE_URL_CONNECTION_STATUS = "lan.gui.page.url.connection.status";
+
+    public static final String PAGE_TITLE_CONNECTION_STATUS = "lan.gui.page.title.connection.status";
+ 
 }

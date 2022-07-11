@@ -132,4 +132,150 @@ public class DataMountUtils {
 	LOGGER.debug("ENDING METHOD verifyScriptExecutionAfterGrantingPermission");
 	return result;
     }
+    
+    /**
+     * Utility method that executes the created shell script using the dot operation after granting rwx permission to
+     * all users.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi} Reference
+     * @param device
+     *            {@link Dut} to be validated
+     * @param dataMount
+     *            String representing the mount; possible values like /nvram, /nvram2
+     * 
+     * @return Boolean representing result of Shell Script execution; true if the script cannot be executed
+     * 
+     * *refactor Athira
+     */
+    public static boolean verifyScriptExecutionAfterGrantingPermissiononNonProdBuild(AutomaticsTapApi tapEnv, Dut device,
+	    String dataMount) {
+	LOGGER.debug("ENTERING METHOD verifyScriptExecutionAfterGrantingPermissiononNonProdBuild");
+	// Grant 777 Permission
+	String command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_CHMOD,
+		BroadBandCommandConstants.CHMOD_777_VALUE, dataMount, BroadBandCommandConstants.FILE_TEST_SHELL_SCRIPT);
+	LOGGER.info("COMMAND TO BE EXECUTED: " + command);
+	String response = tapEnv.executeCommandUsingSsh(device, command);
+	boolean result = CommonMethods.isNull(response);
+	if (result) {
+	    command = BroadBandCommonUtils.concatStringUsingStringBuffer(dataMount, BroadBandTestConstants.DOT_OPERATOR,
+		    BroadBandTestConstants.SLASH_SYMBOL, BroadBandCommandConstants.FILE_TEST_SHELL_SCRIPT);
+	    LOGGER.info("COMMAND TO BE EXECUTED: " + command);
+	    response = tapEnv.executeCommandUsingSsh(device, command);
+	    result = CommonMethods.isNotNull(response)
+		    && CommonUtils.isGivenStringAvailableInCommandOutput(response,
+			    BroadBandTestConstants.ERROR_PERMISSION_DENIED)
+		    && !CommonUtils.isGivenStringAvailableInCommandOutput(response,
+			    BroadBandTestConstants.TEXT_HELLO_WORLD);
+	    LOGGER.info("SHELL SCRIPT EXECUTION FAILED: " + result);
+
+	}
+	LOGGER.info("SHELL SCRIPT EXECUTION FAILED (FINAL) : " + result);
+	LOGGER.debug("ENDING METHOD verifyScriptExecutionAfterGrantingPermissiononNonProdBuild");
+	return result;
+    }
+    
+    /**
+     * Utility method that executes the created shell script using the dot operation after granting rwx permission to
+     * all users.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi} Reference
+     * @param device
+     *            {@link Dut} to be validated
+     * @param dataMount
+     *            String representing the mount; possible values like /nvram, /nvram2
+     * 
+     * @return Boolean representing result of Shell Script execution; true if the script cannot be executed
+     * 
+     * @author RamaTeja Meduri
+     * @refactor Athira
+     */
+    public static boolean verifyScriptExecutionAfterGrantingPermissionOnAtom(AutomaticsTapApi tapEnv, Dut device,
+	    String dataMount) {
+	LOGGER.debug("ENTERING METHOD verifyScriptExecutionAfterGrantingPermissionOnAtom");
+	// Grant 777 Permission
+	String command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_CHMOD,
+		BroadBandCommandConstants.CHMOD_777_VALUE, dataMount, BroadBandCommandConstants.FILE_TEST_SHELL_SCRIPT);
+	LOGGER.info("COMMAND TO BE EXECUTED: " + command);
+	String response = tapEnv.executeCommandOnAtom(device, command);
+	boolean result = CommonMethods.isNull(response);
+	if (result) {
+	    command = BroadBandCommonUtils.concatStringUsingStringBuffer(dataMount, BroadBandTestConstants.DOT_OPERATOR,
+		    BroadBandTestConstants.SLASH_SYMBOL, BroadBandCommandConstants.FILE_TEST_SHELL_SCRIPT);
+	    LOGGER.info("COMMAND TO BE EXECUTED: " + command);
+	    response = tapEnv.executeCommandOnAtom(device, command);
+	    result = CommonMethods.isNotNull(response)
+		    && CommonUtils.isGivenStringAvailableInCommandOutput(response,
+			    BroadBandTestConstants.ERROR_PERMISSION_DENIED)
+		    && !CommonUtils.isGivenStringAvailableInCommandOutput(response,
+			    BroadBandTestConstants.TEXT_HELLO_WORLD);
+	    LOGGER.info("SHELL SCRIPT EXECUTION FAILED: " + result);
+	}
+	LOGGER.info("SHELL SCRIPT EXECUTION FAILED (FINAL) : " + result);
+	LOGGER.debug("ENDING METHOD verifyScriptExecutionAfterGrantingPermissionOnAtom");
+	return result;
+    }
+    
+    /**
+     * Utility method that executes the created shell script using 'sh ' command.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi} Reference
+     * @param device
+     *            {@link Dut} to be validated
+     * @param dataMount
+     *            String representing the mount; possible values like /nvram, /nvram2
+     * 
+     * @return Boolean representing result of Shell Script execution; true if the script cannot be executed
+     * 
+     * @author RamaTeja Meduri
+     * @refactor Athira
+     */
+    public static boolean verifyScriptExecutionOnAtom(AutomaticsTapApi tapEnv, Dut device, String dataMount) {
+	LOGGER.debug("ENTERING METHOD verifyScriptExecutionOnAtom");
+	String command = BroadBandCommonUtils.concatStringUsingStringBuffer(dataMount,
+		BroadBandTestConstants.DOT_OPERATOR, BroadBandTestConstants.SLASH_SYMBOL,
+		BroadBandCommandConstants.FILE_TEST_SHELL_SCRIPT);
+	LOGGER.info("COMMAND TO BE EXECUTED: " + command);
+	String response = tapEnv.executeCommandOnAtom(device, command);
+	boolean result = CommonMethods.isNotNull(response)
+		&& CommonUtils.isGivenStringAvailableInCommandOutput(response,
+			BroadBandTestConstants.ERROR_PERMISSION_DENIED)
+		&& !CommonUtils.isGivenStringAvailableInCommandOutput(response,
+			BroadBandTestConstants.TEXT_HELLO_WORLD);
+	LOGGER.info("SHELL SCRIPT EXECUTION FAILED: " + result);
+	LOGGER.debug("ENDING METHOD verifyScriptExecutionOnAtom");
+	return result;
+    }
+    
+    /**
+     * Utility method that creates a shell in the data only partition on Atom
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi} Reference
+     * @param device
+     *            {@link Dut} to be validated
+     * @param dataMount
+     *            String representing the mount; possible values like /nvram, /nvram2
+     * 
+     * @return Boolean representing result of Shell Script creation.
+     * 
+     * @author RamaTeja Meduri
+     * @refactor Athira
+     */
+    public static boolean createShellScriptOnAtom(AutomaticsTapApi tapEnv, Dut device, String dataMount) {
+	LOGGER.debug("ENTERING METHOD createShellScriptOnAtom");
+	String command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_ECHO_E,
+		BroadBandTestConstants.FILE_TEST_SHELL_SCRIPT_CONTENT, BroadBandTestConstants.REDIRECT_OPERATOR,
+		dataMount, BroadBandCommandConstants.FILE_TEST_SHELL_SCRIPT);
+	LOGGER.info("COMMAND TO BE EXECUTED: " + command);
+	String response = tapEnv.executeCommandOnAtom(device, command);
+	boolean result = CommonMethods.isNull(response)
+		&& BroadBandCommonUtils.isFileExistsonAtom(device, tapEnv, BroadBandCommonUtils
+			.concatStringUsingStringBuffer(dataMount, BroadBandCommandConstants.FILE_TEST_SHELL_SCRIPT));
+	LOGGER.info("SHELL SCRIPT CREATED FOR EXECUTION: " + result);
+	LOGGER.debug("ENDING METHOD createShellScriptOnAtom");
+	return result;
+    }
 }

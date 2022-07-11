@@ -62,11 +62,11 @@ public class BroadBandRegressionQuickTestUtils {
 
 	deviceInfo.setPrivate2ghzSsidName(("rdkb-" + macAddressWithoutColon + "-2.4-GHz").toLowerCase());
 	deviceInfo.setPrivate5ghzSsidName(("rdkb-" + macAddressWithoutColon + "-5-GHz").toLowerCase());
-	deviceInfo.setXfinityOpen2GhzSsidName(("xfinity-" + macAddressWithoutColon + "-2.4-GHz").toLowerCase());
-	deviceInfo.setXfinityOpen5GhzSsidName(("xfinity-" + macAddressWithoutColon + "-5-GHz").toLowerCase());
+	deviceInfo.setPublicOpen2GhzSsidName(("public-" + macAddressWithoutColon + "-2.4-GHz").toLowerCase());
+	deviceInfo.setPublicOpen5GhzSsidName(("public-" + macAddressWithoutColon + "-5-GHz").toLowerCase());
 	deviceInfo.setLnf2GhzSsidName("lnf-" + macAddressWithoutColon + "-2.4-GHz");
 	deviceInfo.setLnf5GhzSsidName("lnf-" + macAddressWithoutColon + "-5-GHz");
-	deviceInfo.setXfinitySecure5GhzSsidName("XFINITY-" + macAddressWithoutColon + "-5-GHz");
+	deviceInfo.setPublicSecure5GhzSsidName("PUBLIC-" + macAddressWithoutColon + "-5-GHz");
 
 	deviceInfo.setPrivate2ghzSsidPwd(devicePassword);
 	deviceInfo.setPrivate5ghzSsidPwd(devicePassword);
@@ -200,8 +200,7 @@ public class BroadBandRegressionQuickTestUtils {
 		genericComponents.add(defaultDeviceDnsIpv4);
 		WebPaParameter defaultDeviceDnsIpv6 = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 			BroadBandWebPaConstants.WEBPA_PARAM_TO_UPDATE_GLOBAL_XDNS_IPV6,
-			AutomaticsPropertyUtility
-			.getProperty(BroadBandPropertyKeyConstants.STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE), WebPaDataTypes.STRING.getValue());
+			BroadBandTestConstants.STRING_DEFAULT_GLOBAL_DNS_IPV6_VALUE, WebPaDataTypes.STRING.getValue());
 		genericComponents.add(defaultDeviceDnsIpv6);
 
 		WebPaParameter defaultDeviceDnsTag = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
@@ -296,17 +295,17 @@ public class BroadBandRegressionQuickTestUtils {
 		WebPaDataTypes.STRING.getValue());
 	genericComponents.add(dhcpMinAddress);
 
-	if ((!deviceStatus.isXfinityWiFi2GhzOpenStatus() || !deviceStatus.isXfinityWiFi5GhzOpenStatus()
-		|| !deviceStatus.isXfinityWiFi5GhzSecureStatus())) {
+	if ((!deviceStatus.isPublicWiFi2GhzOpenStatus() || !deviceStatus.isPublicWiFi5GhzOpenStatus()
+		|| !deviceStatus.isPublicWiFi5GhzSecureStatus())) {
 
 	    WebPaParameter ssid_name_2ghz = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PUBLIC_SSID,
-		    deviceInfo.getXfinityOpen2GhzSsidName(), WebPaDataTypes.STRING.getValue());
+		    deviceInfo.getPublicSeOpen2GhzSsidName(), WebPaDataTypes.STRING.getValue());
 	    wifiComponents.add(ssid_name_2ghz);
 
 	    WebPaParameter ssid_name_5ghz = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID,
-		    deviceInfo.getXfinityOpen5GhzSsidName(), WebPaDataTypes.STRING.getValue());
+		    deviceInfo.getPublicSeOpen5GhzSsidName(), WebPaDataTypes.STRING.getValue());
 	    wifiComponents.add(ssid_name_5ghz);
 
 	    WebPaParameter dhcpMarkPolicy = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
@@ -316,14 +315,12 @@ public class BroadBandRegressionQuickTestUtils {
 
 	    WebPaParameter primaryRemoteEndpoint = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 		    BroadBandWebPaConstants.WEBPA_PARAM_PRIMARY_REMOTE_ENDPOINT,
-		    AutomaticsPropertyUtility
-			.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_PRIMARY_REMOTE_ENDPOINT), WebPaDataTypes.STRING.getValue());
+		    BroadBandTestConstants.PRIMARY_REMOTE_ENDPOINT, WebPaDataTypes.STRING.getValue());
 	    wifiComponents.add(primaryRemoteEndpoint);
 
 	    WebPaParameter secondaryRemoteEndpoint = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 		    BroadBandWebPaConstants.WEBPA_PARAM_SECONDARY_REMOTE_ENDPOINT,
-		    AutomaticsPropertyUtility
-			.getProperty(BroadBandPropertyKeyConstants.PROP_KEY_SECONDARY_REMOTE_ENDPOINT), WebPaDataTypes.STRING.getValue());
+		    BroadBandTestConstants.SECONDARY_REMOTE_ENDPOINT, WebPaDataTypes.STRING.getValue());
 	    wifiComponents.add(secondaryRemoteEndpoint);
 
 	    WebPaParameter ssidAdvEnable_2ghz = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
@@ -337,26 +334,26 @@ public class BroadBandRegressionQuickTestUtils {
 	    wifiComponents.add(ssidAdvEnable_5ghz);
 	    if (!isBusinessGateway) {
 
-		WebPaParameter xfinitySecureSsid = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
-			"Device.WiFi.SSID.10105.SSID", deviceInfo.getXfinitySecure5GhzSsidName(),
+		WebPaParameter publicSecureSsid = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+			"Device.WiFi.SSID.10105.SSID", deviceInfo.getPublicSecure5GhzSsidName(),
 			WebPaDataTypes.STRING.getValue());
-		wifiComponents.add(xfinitySecureSsid);
+		wifiComponents.add(publicSecureSsid);
 
-		WebPaParameter xfinitySecureAdvStatus = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+		WebPaParameter publicSecureAdvStatus = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 			"Device.WiFi.AccessPoint.10105.SSIDAdvertisementEnabled", BroadBandTestConstants.TRUE,
 			WebPaDataTypes.BOOLEAN.getValue());
-		wifiComponents.add(xfinitySecureAdvStatus);
+		wifiComponents.add(publicSecureAdvStatus);
 
-		WebPaParameter xfinitySecureSecurityMode = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+		WebPaParameter publicSecureSecurityMode = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 			"Device.WiFi.AccessPoint.10105.Security.ModeEnabled",
 			BroadBandTestConstants.SECURITY_MODE_WPA2_ENTERPRISE, WebPaDataTypes.STRING.getValue());
-		wifiComponents.add(xfinitySecureSecurityMode);
+		wifiComponents.add(publicSecureSecurityMode);
 
-		WebPaParameter xfinitySecureEncryptionMethod = BroadBandWebPaUtils
+		WebPaParameter publicSecureEncryptionMethod = BroadBandWebPaUtils
 			.generateWebpaParameterWithValueAndType(
 				"Device.WiFi.AccessPoint.10105.Security.X_CISCO_COM_EncryptionMethod", "AES",
 				WebPaDataTypes.STRING.getValue());
-		wifiComponents.add(xfinitySecureEncryptionMethod);
+		wifiComponents.add(publicSecureEncryptionMethod);
 
 		WebPaParameter bssMaxNumSta = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 			BroadBandWebPaConstants.WEBPA_PARAM_ALLOWED_CLIENT_LIMIT_SECURE_SSID_5, "5",
@@ -432,7 +429,7 @@ public class BroadBandRegressionQuickTestUtils {
 		    BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI, WebPaDataTypes.BOOLEAN.getValue(),
 		    BroadBandTestConstants.TRUE);
 	    if (!isConfigured) {
-		LOGGER.error("Unable to enable xfinitywifi using WebPA or dmcli.");
+		LOGGER.error("Unable to enable Publicwifi using WebPA or dmcli.");
 	    }
 	/*
 	 * Some of the models it takes more than THREE minutes to initialize the Wi-Fi and come with the proper status.
@@ -474,7 +471,7 @@ public class BroadBandRegressionQuickTestUtils {
 	// status, ssid status,etc. for different SSID groups.
 	for (String ssidGroup : BroadBandTestConstants.DEVICE_WIFI_SSID_CONFIG_DETAILS.keySet()) {
 
-	    if (!((ssidGroup.contains("xfinity_secure_5ghz")) && isBusinessGateway || ssidGroup.contains("xfinity_secure_5ghz"))) {
+	    if (!((ssidGroup.contains("public_secure_5ghz")) && isBusinessGateway || ssidGroup.contains("public_secure_5ghz"))) {
 		WiFiSsidConfigStatus ssidConfigStatus = BroadBandWiFiUtils
 			.getWiFiSsidConfigurationStatusViaWebPaOrDmcli(tapEnv, device,
 				BroadBandTestConstants.DEVICE_WIFI_SSID_CONFIG_DETAILS.get(ssidGroup));

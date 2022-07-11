@@ -17,6 +17,10 @@
  */
 package com.automatics.rdkb.constants;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.automatics.rdkb.utils.snmp.BroadBandSnmpMib;
 import com.automatics.snmp.SnmpDataType;
 
 public class BroadBandSnmpConstants {
@@ -395,5 +399,30 @@ public class BroadBandSnmpConstants {
 	}
 
     }
+    
+    /**
+     * List for all rdk ssid index values
+     */
+    public static final List<String> RDKB_WIFI_STATUS_SNMP_MIBS = new ArrayList<String>() {
+	{
+	    add(BroadBandSnmpMib.ECM_STATUS_PRIVATE_WIFI_2_4_GHZ.getTableIndex());
+	    add(BroadBandSnmpMib.ECM_STATUS_PRIVATE_WIFI_5_GHZ.getTableIndex());
+	    add(BroadBandSnmpMib.HOME_SECURITY_2_4_SSID_STATUS.getTableIndex());
+	    add(BroadBandSnmpMib.HOME_SECURITY_5_SSID_STATUS.getTableIndex());
+	    add(BroadBandSnmpMib.HOT_SPOT_2_4_SSID_STATUS.getTableIndex());
+	    add(BroadBandSnmpMib.HOT_SPOT_5_SSID_STATUS.getTableIndex());
+	    add(BroadBandSnmpMib.LNF_2_4_SSID_STATUS.getTableIndex());
+	    add(BroadBandSnmpMib.LNF_5_SSID_STATUS.getTableIndex());
+	}
+    };
+    /**
+     * List for all rdk ssid index values for Business Class
+     */
+    public static final List<String> RDKB_WIFI_STATUS_SNMP_MIBS_BUSINESSCLASS = new ArrayList<String>() {
+	{
+	    add(BroadBandSnmpMib.ECM_STATUS_PRIVATE_WIFI_2_4_GHZ.getTableIndex());
+	    add(BroadBandSnmpMib.ECM_STATUS_PRIVATE_WIFI_5_GHZ.getTableIndex());
+	}
+    };
 
 }

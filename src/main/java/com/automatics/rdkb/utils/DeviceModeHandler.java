@@ -27,7 +27,7 @@ import com.automatics.utils.CommonMethods;
  * @author Govardhan
  */
 public class DeviceModeHandler {
-	
+
     /**
      * Method to get model name whether its a isDSLDevice or not
      * 
@@ -35,20 +35,24 @@ public class DeviceModeHandler {
      */
     public static boolean isDSLDevice(Dut device) {
 	boolean isDSLDevice = false;
-	String deviceModel = device.getModel();
-	if (CommonMethods.isNotNull(deviceModel)) {
-	    String dslModels = AutomaticsPropertyUtility.getProperty("dsl.device.models");
-	    String[] dslModelsList = dslModels.split(",");
-	    for (String model : dslModelsList) {
-		if (model.equalsIgnoreCase(deviceModel)) {
-		    isDSLDevice = true;
-		    break;
+	try {
+	    String deviceModel = device.getModel();
+	    if (CommonMethods.isNotNull(deviceModel)) {
+		String dslModels = AutomaticsPropertyUtility.getProperty("dsl.device.models");
+		String[] dslModelsList = dslModels.split(",");
+		for (String model : dslModelsList) {
+		    if (model.equalsIgnoreCase(deviceModel)) {
+			isDSLDevice = true;
+			break;
+		    }
 		}
 	    }
+	} catch (Exception e) {
+	    isDSLDevice = false;
 	}
 	return isDSLDevice;
     }
-    
+
     /**
      * Method to get model name whether its a isFibreDevice or not
      * 
@@ -56,14 +60,18 @@ public class DeviceModeHandler {
      */
     public static boolean isFibreDevice(Dut device) {
 	boolean isFibreDevice = false;
-	String deviceModel = device.getModel();
-	if ((CommonMethods.isNotNull(deviceModel))
-		&& (AutomaticsPropertyUtility.getProperty("fibre.device.models").contains(deviceModel))) {
-	    isFibreDevice = true;
+	try {
+	    String deviceModel = device.getModel();
+	    if ((CommonMethods.isNotNull(deviceModel))
+		    && (AutomaticsPropertyUtility.getProperty("fibre.device.models").contains(deviceModel))) {
+		isFibreDevice = true;
+	    }
+	} catch (Exception e) {
+	    isFibreDevice = false;
 	}
 	return isFibreDevice;
     }
-    
+
     /**
      * Method to get model name whether its a isBusinessClassDevice or not
      * 
@@ -71,21 +79,25 @@ public class DeviceModeHandler {
      */
     public static boolean isBusinessClassDevice(Dut device) {
 	boolean isBusinessClassDevice = false;
-	String deviceModel = device.getModel();
-	if (CommonMethods.isNotNull(deviceModel)) {
-	    String isBusinessClassDeviceValues = AutomaticsPropertyUtility.getProperty("businessclass.device.models");
+	try {
+	    String deviceModel = device.getModel();
+	    if (CommonMethods.isNotNull(deviceModel)) {
+		String isBusinessClassDeviceValues = AutomaticsPropertyUtility
+			.getProperty("businessclass.device.models");
 
-	    String[] businessClassModels = isBusinessClassDeviceValues.split(",");
+		String[] businessClassModels = isBusinessClassDeviceValues.split(",");
 
-	    for (String model : businessClassModels) {
-		if (model.equalsIgnoreCase(deviceModel)) {
-		    isBusinessClassDevice = true;
-		    break;
+		for (String model : businessClassModels) {
+		    if (model.equalsIgnoreCase(deviceModel)) {
+			isBusinessClassDevice = true;
+			break;
+		    }
 		}
 	    }
+	} catch (Exception e) {
+	    isBusinessClassDevice = false;
 	}
 	return isBusinessClassDevice;
     }
 
-	
 }

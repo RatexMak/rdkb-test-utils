@@ -57,16 +57,16 @@ public class BroadBandDeviceStatus {
 	/**
 	 * public Wi-Fi 2.4 GHz(open) SSID status.
 	 */
-	private boolean xfinityWiFi2GhzOpenStatus;
+	private boolean publicWiFi2GhzOpenStatus;
 	/**
 	 * public Wi-Fi 5 GHz(open) SSID status.
 	 */
-	private boolean xfinityWiFi5GhzOpenStatus;
+	private boolean publicWiFi5GhzOpenStatus;
 
 	/**
 	 * public Wi-Fi 5 GHz(secure) SSID status.
 	 */
-	private boolean xfinityWiFi5GhzSecureStatus;
+	private boolean publicWiFi5GhzSecureStatus;
 
 	/**
 	 * Aker enabled status.
@@ -268,45 +268,45 @@ public class BroadBandDeviceStatus {
 	}
 
 	/**
-	 * @return the xfinityWiFi2GhzOpenStatus
+	 * @return the publicWiFi2GhzOpenStatus
 	 */
-	public boolean isXfinityWiFi2GhzOpenStatus() {
-		return xfinityWiFi2GhzOpenStatus;
+	public boolean isPublicWiFi2GhzOpenStatus() {
+		return publicWiFi2GhzOpenStatus;
 	}
 
 	/**
-	 * @param xfinityWiFi2GhzOpenStatus the xfinityWiFi2GhzOpenStatus to set
+	 * @param publicWiFi2GhzOpenStatus the publicWiFi2GhzOpenStatus to set
 	 */
-	public void setXfinityWiFi2GhzOpenStatus(boolean xfinityWiFi2GhzOpenStatus) {
-		this.xfinityWiFi2GhzOpenStatus = xfinityWiFi2GhzOpenStatus;
+	public void setPublicWiFi2GhzOpenStatus(boolean publicWiFi2GhzOpenStatus) {
+		this.publicWiFi2GhzOpenStatus = publicWiFi2GhzOpenStatus;
 	}
 
 	/**
-	 * @return the xfinityWiFi5GhzOpenStatus
+	 * @return the publicWiFi5GhzOpenStatus
 	 */
-	public boolean isXfinityWiFi5GhzOpenStatus() {
-		return xfinityWiFi5GhzOpenStatus;
+	public boolean isPublicWiFi5GhzOpenStatus() {
+		return publicWiFi5GhzOpenStatus;
 	}
 
 	/**
-	 * @param xfinityWiFi5GhzOpenStatus the xfinityWiFi5GhzOpenStatus to set
+	 * @param publicWiFi5GhzOpenStatus the publicWiFi5GhzOpenStatus to set
 	 */
-	public void setXfinityWiFi5GhzOpenStatus(boolean xfinityWiFi5GhzOpenStatus) {
-		this.xfinityWiFi5GhzOpenStatus = xfinityWiFi5GhzOpenStatus;
+	public void setPublicWiFi5GhzOpenStatus(boolean publicWiFi5GhzOpenStatus) {
+		this.publicWiFi5GhzOpenStatus = publicWiFi5GhzOpenStatus;
 	}
 
 	/**
-	 * @return the xfinityWiFi5GhzSecureStatus
+	 * @return the publicWiFi5GhzSecureStatus
 	 */
-	public boolean isXfinityWiFi5GhzSecureStatus() {
-		return xfinityWiFi5GhzSecureStatus;
+	public boolean isPublicWiFi5GhzSecureStatus() {
+		return publicWiFi5GhzSecureStatus;
 	}
 
 	/**
-	 * @param xfinityWiFi5GhzSecureStatus the xfinityWiFi5GhzSecureStatus to set
+	 * @param publicWiFi5GhzSecureStatus the publicWiFi5GhzSecureStatus to set
 	 */
-	public void setXfinityWiFi5GhzSecureStatus(boolean xfinityWiFi5GhzSecureStatus) {
-		this.xfinityWiFi5GhzSecureStatus = xfinityWiFi5GhzSecureStatus;
+	public void setPublicWiFi5GhzSecureStatus(boolean publicWiFi5GhzSecureStatus) {
+		this.publicWiFi5GhzSecureStatus = publicWiFi5GhzSecureStatus;
 	}
 
 	/**
@@ -469,9 +469,9 @@ public class BroadBandDeviceStatus {
 		return new StringBuffer().append(" routerModeStatus : ").append(routerModeStatus).append(" | mocaStatus : ")
 				.append(mocaStatus).append(" | meshStatus : ").append(meshStatus).append(" | advanceSecurityStatus : ")
 				.append(advanceSecurityStatus).append(" | akerEnabled : ").append(akerEnabled)
-				.append(" | xfinityWiFi5GhzSecureStatus : ").append(xfinityWiFi5GhzSecureStatus)
-				.append(" | xfinityWiFi5GhzOpenStatus : ").append(xfinityWiFi5GhzOpenStatus)
-				.append(" | xfinityWiFi2GhzOpenStatus :  ").append(xfinityWiFi2GhzOpenStatus)
+				.append(" | publicWiFi5GhzSecureStatus : ").append(publicWiFi5GhzSecureStatus)
+				.append(" | publicWiFi5GhzOpenStatus : ").append(publicWiFi5GhzOpenStatus)
+				.append(" | publicWiFi2GhzOpenStatus :  ").append(publicWiFi2GhzOpenStatus)
 				.append(" | privateWiFi5GhzStatus :  ").append(privateWiFi5GhzStatus)
 				.append(" | privateWiFi2GhzStatus  : ").append(privateWiFi2GhzStatus).append(" | mocaEnable : ")
 				.append(mocaEnable).append(" |  radio2gChanNum : ").append(radio2gChanNum)

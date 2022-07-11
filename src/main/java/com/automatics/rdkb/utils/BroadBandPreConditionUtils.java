@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1029,32 +1030,32 @@ public class BroadBandPreConditionUtils {
      */
     public static Dut executePreConditionToVerifyLanClientStatus(Dut device, AutomaticsTapApi tapEnv)
 	    throws TestException {
-	String errorMessage = "";
-	boolean status = false;
+						  
+						
 
 	Dut deviceConnectedWithEthernet = executePreConditionToVerifyLanClientStatus(device, tapEnv,
 		BroadBandTestConstants.CONSTANT_1);
-	/**
-	 * PRECONDITION 6 : VERIFY THE GATEWAY ADDRESS IN LAN CLIENT
-	 */
+	
+															 
+	
 
-	status = false;
-	LOGGER.info("#######################################################################################");
-	LOGGER.info("PRE-CONDITION 2 : DESCRIPTION : VERIFY THE GATEWAY ADDRESS IN LAN CLIENT");
-	LOGGER.info(
-		"PRE-CONDITION 2 : ACTION : EXECUTE COMMAND, WINDOWS : ipconfig |grep -A 10 \"Wireless LAN adapter Wi-Fi\" |grep -i \"Default Gateway\", LINUX : ifconfig wlan0 |grep -i \"Default Gateway\" ON THE CONNECTED LAN CLIENT");
-	LOGGER.info("PRE-CONDITION 2 : EXPECTED : MUST RETURN THE DEFAULT GATEWAY ADDRESS ");
-	LOGGER.info("#######################################################################################");
-	errorMessage = "UNABLE TO VERIFY THE DEFAULT GATEWAY IP ADDRESS ON CONNECTED LAN CLIENT";
-	status = BroadBandConnectedClientUtils.verifyDefaultGatewayAddressInConnectedClient(device,
-		deviceConnectedWithEthernet, tapEnv);
-	if (status) {
-	    LOGGER.info("PRE-CONDITION 2 : ACTUAL :  DEFAULT GATEWAY IP ADDRESS IS VERIFED SUCCESSFULLY IN LAN CLENT");
-	} else {
-	    LOGGER.error("PRE-CONDITION 2 : ACTUAL : " + errorMessage);
-	    throw new TestException(
-		    BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION 2 : FAILED : " + errorMessage);
-	}
+				
+																										
+																						 
+			 
+																																																							 
+																					  
+																										
+																						  
+																							
+									   
+			  
+																												
+		 
+																
+							 
+																								 
+  
 
 	return deviceConnectedWithEthernet;
     }
@@ -1832,4 +1833,237 @@ public class BroadBandPreConditionUtils {
 	return isTelemetryEnabled;
     }
 
+    /**
+     * Pre-Condition method to get the default operating standard for 2.4 & 5 Ghz .
+     * 
+     * @param Dut
+     *            {@link device}
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param preConStepNumber
+     * @param wifiFrequencyBand
+     * 
+     * @refactor Athira          
+     */
+    public static String executePreConditionToGetDefaultOperStandard(Dut device, AutomaticsTapApi tapEnv,
+	    int preConStepNumber, String wifiFrequencyBand) throws TestException {
+	String defaultOperStandard = null;
+	String errorMessage = null;
+	boolean status = false;
+	/**
+	 * PRE-CONDITION :GET THE DEFAULT VALUE FOR OPERATING STANDARD 2.4 GHZ
+	 */
+	if (wifiFrequencyBand.equalsIgnoreCase(BroadBandTestConstants.BAND_2_4GHZ)) {
+	    errorMessage = null;
+	    status = false;
+	    LOGGER.info("#######################################################################################");
+	    LOGGER.info("PRE-CONDITION " + preConStepNumber
+		    + " : DESCRIPTION : GET THE DEFAULT VALUE FOR OPERATING STANDARD 2.4 GHZ ");
+	    LOGGER.info("PRE-CONDITION " + preConStepNumber
+		    + " : ACTION : GET THE DEFAULT VALUE FOR OPERATING STANDARD 'Device.WiFi.Radio.10000.OperatingStandards' 2.4 GHZ USING WEBPA ");
+	    LOGGER.info("PRE-CONDITION " + preConStepNumber
+		    + " : EXPTECTED : MUST RETURN THE DEFAULT OPERATING STANDARD VALUE FOR 2.4 GHZ");
+	    LOGGER.info("#######################################################################################");
+	    errorMessage = "UNABLE TO GET THE DEFAULT VALUE FOR OPERATING STANDARD 2.4 GHZ - HENCE BLOCKING THE EXECUTION.";
+	    defaultOperStandard = tapEnv.executeWebPaCommand(device,
+		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_2_4_GHZ_OPERATING_STANDARD);
+	    status = CommonMethods.isNotNull(defaultOperStandard);
+	    if (status) {
+		LOGGER.info("PRE-CONDITION " + preConStepNumber
+			+ " : ACTUAL : RETRIEVED THE DEFAULT VALUE FOR OPERATING STANDARD 2.4 GHZ SUCCESSFULLY.");
+	    } else {
+		LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL : " + errorMessage);
+		throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION : "
+			+ preConStepNumber + " FAILED : " + errorMessage);
+	    }
+	    LOGGER.info("#######################################################################################");
+	}
+	/**
+	 * PRE-CONDITION :GET THE DEFAULT VALUE FOR OPERATING STANDARD 5 GHZ
+	 */
+	if (wifiFrequencyBand.equalsIgnoreCase(BroadBandTestConstants.BAND_5GHZ)) {
+	    errorMessage = null;
+	    status = false;
+	    preConStepNumber++;
+	    LOGGER.info("#######################################################################################");
+	    LOGGER.info("PRE-CONDITION " + preConStepNumber
+		    + " : DESCRIPTION : GET THE DEFAULT VALUE FOR OPERATING STANDARD 5 GHZ ");
+	    LOGGER.info("PRE-CONDITION " + preConStepNumber
+		    + " : ACTION : GET THE DEFAULT VALUE FOR OPERATING STANDARD 'Device.WiFi.Radio.10100.OperatingStandards' 5 GHZ USING WEBPA ");
+	    LOGGER.info("PRE-CONDITION " + preConStepNumber
+		    + " : EXPTECTED : MUST RETURN THE DEFAULT OPERATING STANDARD VALUE FOR 5 GHZ");
+	    LOGGER.info("#######################################################################################");
+	    errorMessage = "UNABLE TO GET THE DEFAULT VALUE FOR OPERATING STANDARD 5 GHZ - HENCE BLOCKING THE EXECUTION.";
+	    defaultOperStandard = tapEnv.executeWebPaCommand(device,
+		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_RADIO_5GHZ_OPERATING_STANDARD);
+	    status = CommonMethods.isNotNull(defaultOperStandard);
+	    if (status) {
+		LOGGER.info("PRE-CONDITION " + preConStepNumber
+			+ " : ACTUAL : RETRIEVED THE DEFAULT VALUE FOR OPERATING STANDARD 5 GHZ SUCCESSFULLY.");
+	    } else {
+		LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL : " + errorMessage);
+		throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION : "
+			+ preConStepNumber + " FAILED : " + errorMessage);
+	    }
+	    LOGGER.info("#######################################################################################");
+	}
+	return defaultOperStandard;
+    }
+    
+    /**
+     * Pre-Condition method to get the both private ssid visible multiple Intel wifi adapter device
+     * 
+     * @param device
+     *            instance of{@link Dut}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param preCondNumber
+     *            Pre condition number
+     * @param requiredDevices
+     *            No of device to be verified
+     * @return deviceConnected instance of connected device(both private ssids are visible in the connected device)
+     * 
+     * @refactor yamini.s
+     * 
+     */
+    public static List<Dut> executePreConditionToGetBothPrivateWiFiSsidsVisibleIntelDevices(Dut device,
+	    AutomaticsTapApi tapEnv, int preCondNumber, int requiredDevices) throws TestException {
+	List<Dut> listOfCntdDevices = null;
+	String errorMessage = null;
+	boolean status = false;
+	List<Dut> ssidVisibleDevices = new ArrayList<Dut>();
+	boolean isIntelClient = false;
+	try {
+	    /**
+	     * PRE-CONDITION : VERIFY THE PRIVATE WIFI 2.4 GHZ AND 5 GHZ SSID'S ARE BROADCASTING IN INTEL WIFIF ADAPTER
+	     * CONNECTED CLIENT
+	     */
+	    status = false;
+	    errorMessage = null;
+	    LOGGER.info("#####################################################################################");
+	    LOGGER.info("PRE-CONDITION " + preCondNumber
+		    + " : DESCRIPTION : VERIFY THE PRIVATE WIFI 2.4 AND 5 GHZ SSID's ARE BROADCASTING IN INTEL WIFIF ADAPTER CONNECTED CLIENT ");
+	    LOGGER.info("PRE-CONDITION " + preCondNumber
+		    + " : ACTION : EXECUTE COMMAND FOR WINDOWS: 1.'NETSH WLAN SHOW NETWORKS | GREP -I '<PRIVATE_SSID_2GHZ>' 2.'NETSH WLAN SHOW NETWORKS | GREP -I '<PRIVATE_SSID_5GHZ>' OR LINUX : 'SUDO IWLIST WLAN0 SCAN' ");
+	    LOGGER.info("PRE-CONDITION " + preCondNumber
+		    + " : EXPECTED : PRIVATE WIFI 2.4 AND 5 GHZ SSID's SHOULD BE BROADCASTED IN INTEL WIFIF ADAPTER CONNECTED CLIENT");
+	    LOGGER.info("#####################################################################################");
+	    errorMessage = "UNABLE TO VERIFY PRIVATE WIFI 2.4 AND 5 GHZ SSID's BROADCASTING STATUS IN INTEL WIFIF ADAPTER CONNECTED CLIENT";
+	    listOfCntdDevices = ((Device) device).getConnectedDeviceList();
+	    LOGGER.info("PRE-CONDITION : LIST OF CONNECTED DEVICE :" + listOfCntdDevices.size());
+	    String connectionType = null;
+	    if (null != listOfCntdDevices) {
+		for (Dut ssidVisibleDevice : listOfCntdDevices) {
+		    try {
+			connectionType = ((Device) ssidVisibleDevice).getConnectedDeviceInfo().getConnectionType();
+			LOGGER.info("PRE-CONDITION : CLIENT MAC :"
+				+ ((Device) ssidVisibleDevice).getConnectedDeviceInfo().getWifiMacAddress());
+			LOGGER.info("PRE-CONDITION : CONNECTION TYPE :" + connectionType);
+			LOGGER.info("PRE-CONDITION : CLIENT IP :"
+				+ ((Device) ssidVisibleDevice).getConnectedDeviceInfo().getDeviceIpAddress());
+			LOGGER.info("PRE-CONDITION : CLIENT PORT :"
+				+ ((Device) ssidVisibleDevice).getConnectedDeviceInfo().getDevicePortAddress());
+
+			status = BroadBandWiFiUtils.validateIfWifiDriverIsIntelForClient(ssidVisibleDevice, tapEnv);
+			LOGGER.info("Status of validateIfWifiDriverIsIntelForClient is : " + status);
+
+			status = BroadBandWiFiUtils.validateVisibleStateOfBothSsidInConnectedClient(device, tapEnv,
+				ssidVisibleDevice, BroadBandTestConstants.WIFI_PRIVATE, true);
+			LOGGER.info("Status of validateVisibleStateOfBothSsidInConnectedClient is : " + status);
+
+			if (CommonMethods.isNotNull(connectionType)
+				&& connectionType.trim().equalsIgnoreCase(
+					BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI)
+				&& BroadBandWiFiUtils.validateIfWifiDriverIsIntelForClient(ssidVisibleDevice, tapEnv)
+				&& BroadBandWiFiUtils.validateVisibleStateOfBothSsidInConnectedClient(device, tapEnv,
+					ssidVisibleDevice, BroadBandTestConstants.WIFI_PRIVATE, true)) {
+			    LOGGER.info("PRE-CONDITION : ADDED INTEL CLIENT IN LIST");
+			    ssidVisibleDevices.add(ssidVisibleDevice);
+			    if (ssidVisibleDevices.size() >= requiredDevices) {
+				break;
+			    }
+			}
+		    } catch (Exception e) {
+			errorMessage = e.getMessage();
+			LOGGER.error("EXCEPTION IN VERIFYING SSID VISBILITY :" + errorMessage);
+		    }
+		}
+	    }
+	    status = (ssidVisibleDevices.size() >= requiredDevices);
+	    if (status) {
+		LOGGER.info("PRE-CONDITION " + preCondNumber
+			+ " : ACTUAL : PRIVATE WIFI 2.4 GHZ AND 5 GHZ SSID's ARE BROADCASTED IN "
+			+ ssidVisibleDevices.size() + " INTEL WIFIF ADAPTER CONNECTED SETUP");
+	    } else {
+		errorMessage = "PRIVATE WIFI 2.4 GHZ AND 5 GHZ SSID's ARE BROADCASTED IN " + ssidVisibleDevices.size()
+			+ " CONNECTED SETUP, MIMIMUM " + requiredDevices
+			+ " INTEL WIFIF ADAPTER CONNECTED SETUP IS REQUIRED ";
+		LOGGER.error("PRE-CONDITION " + preCondNumber + " : ACTUAL : " + errorMessage);
+		throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + " PRE-CONDITION " + preCondNumber
+			+ " : FAILED : " + errorMessage);
+	    }
+	} catch (Exception e) {
+	    errorMessage = e.getMessage();
+	    LOGGER.error("PRE-CONDITION: EXCEPTION OCCURRED WHILE VERIFYING THE SSID VISIBLE STATUS" + errorMessage);
+
+	}
+	return ssidVisibleDevices;
+    }
+    
+    /**
+     * Pre-Condition method to enable/disable the MESH status
+     * 
+     * @param device
+     *            instance of{@link Dut}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param isEnabled
+     *            True - To be Enabled,False- To be Disabled
+     * @param preCondNumber
+     *            Pre condition number
+     * @refactor Govardhan
+     */
+    public static void executePreConditionToToggleMeshEnableOrDisableStatus(Dut device, AutomaticsTapApi tapEnv,
+	    boolean isEnabled, int preConStepNumber) throws TestException {
+	String errorMessage = null;
+	boolean status = false;
+	/**
+	 * PRECONDITION : ENABLE/DISABLE THE MESH STATUS
+	 */
+	LOGGER.info("#######################################################################################");
+	LOGGER.info("PRE-CONDITION " + preConStepNumber + " : DESCRIPTION : " + (isEnabled ? "ENABLE" : "DISABLE")
+		+ " THE MESH STATUS");
+	LOGGER.info("PRE-CONDITION " + preConStepNumber + " : ACTION : " + (isEnabled ? "ENABLE" : "DISABLE")
+		+ " THE MESH STATUS " + BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_RDKCENTRAL_MESH_ENABLE
+		+ " STATUS AS " + (isEnabled ? "TRUE" : "FALSE") + " USING WEBPA");
+	LOGGER.info("PRE-CONDITION " + preConStepNumber + " : EXPECTED : MESH STATUS MUST BE "
+		+ (isEnabled ? "ENABLED" : "DISABLED"));
+	LOGGER.info("#######################################################################################");
+	errorMessage = "UNABLE TO " + (isEnabled ? "ENABLE" : "DISABLE") + " THE MESH STATUS";
+	JSONObject jsonAttribute = new JSONObject();
+	try {
+	    if (!isEnabled) {
+		jsonAttribute.put(BroadBandTestConstants.NOTIFY, BroadBandTestConstants.CONSTANT_0);
+		status = BroadBandWebPaUtils.setWebPaAttribute(device, tapEnv,
+			BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_RDKCENTRAL_MESH_ENABLE, jsonAttribute);
+		LOGGER.info("Notify status for disabling mesh= " + status);
+	    }
+	} catch (Exception exception) {
+	    errorMessage = "Unable to set Notify component to 0";
+	    LOGGER.error(errorMessage + " : " + exception.getMessage());
+	}
+
+	status = BroadBandWebPaUtils.setVerifyWebPAInPolledDuration(device, tapEnv,
+		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_RDKCENTRAL_MESH_ENABLE, WebPaDataTypes.BOOLEAN.getValue(),
+		isEnabled ? BroadBandTestConstants.TRUE : BroadBandTestConstants.FALSE,
+		BroadBandTestConstants.THREE_MINUTES, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+	if (status) {
+	    LOGGER.info("PRE-CONDITION " + preConStepNumber + " : ACTUAL : SUCCESSFULLY "
+		    + (isEnabled ? "ENABLED" : "DISABLED") + " THE MESH STATUS");
+	} else {
+	    LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL : " + errorMessage);
+	    throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION " + preConStepNumber
+		    + " : FAILED : " + errorMessage);
+	}
+    }
 }

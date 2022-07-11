@@ -18,7 +18,10 @@ package com.automatics.rdkb.webui.utils;
 
 import java.awt.image.BufferedImage;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +29,11 @@ import com.assertthat.selenium_shutterbug.core.PageSnapshot;
 import com.assertthat.selenium_shutterbug.core.Shutterbug;
 import com.assertthat.selenium_shutterbug.utils.web.ScrollStrategy;
 import com.automatics.device.Dut;
+import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.tap.AutomaticsTapApi;
+import com.automatics.rdkb.utils.BroadBandCommonUtils;
+import com.automatics.rdkb.webui.constants.BroadBandWebGuiElements;
+import com.automatics.rdkb.webui.page.BroadBandCommonPage;
 
 public class BroadBandWebUiUtils {
     
@@ -100,4 +107,147 @@ public class BroadBandWebUiUtils {
 	}
 	return bufferredImages[0];
     }
+    
+    /**
+     * Helper method to delete existing content from text box
+     * 
+     * @param cmnDriver
+     *            Web driver
+     * @param locationId
+     *            locatorId for the web element
+     * @author Govardhan
+     */
+    public static void deleteExistingContentFromTextBox(WebDriver cmnDriver, String locaionId) {
+	WebElement toClear = cmnDriver.findElement(By.name(locaionId));
+	toClear.sendKeys(Keys.CONTROL + "a");
+	toClear.sendKeys(Keys.DELETE);
+    }
+    
+    /**
+     * Utility method to validate the page title against current page title
+     * 
+     * @param driver,
+     *            webdriver instance
+     * @param string,
+     *            Page title
+     * @return true, if the string value is same as current page title
+     * @author Praveenkumar Paneerselvam
+     * @refactor Said Hisham
+     */
+    public static boolean validatePageLaunchedStatusWithPageTitle(WebDriver driver, String string) {
+	LOGGER.debug("STARTING METHOD: validatePageLaunchedStatusWithPageTitle() ");
+	// Variable to store page navigation status
+	boolean status = false;
+	AutomaticsTapApi tapEnv = AutomaticsTapApi.getInstance();
+	// Variable to store software page title
+	String pageTitle = null;
+	long startTimeStamp = System.currentTimeMillis();
+	do {
+	    pageTitle = driver.getTitle();
+	    LOGGER.info("Current Page title - " + pageTitle);
+	    LOGGER.info("Parameter string - " + string);
+	    if (null != (pageTitle)) {
+		status = pageTitle.toLowerCase().contains(string.toLowerCase());
+		LOGGER.info("Successfully verified page navigation status" + status);
+	    }
+	} while (!status && (System.currentTimeMillis() - startTimeStamp) < BroadBandTestConstants.TWO_MINUTE_IN_MILLIS
+		&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS));
+	LOGGER.info("Current URL: " + driver.getCurrentUrl());
+	LOGGER.debug("ENDING METHOD: validatePageLaunchedStatusWithPageTitle() ");
+	return status;
+    }
+    
+    /**
+     * @param xpath
+     *            xpath for the element
+     * @return return true if element not present,else false
+     * @author Deepa Bada
+     * @refactor Athira
+     */
+    public static boolean verifySaveOrRestoreConfigurationsButtonExists(String xpath,WebDriver driver) {
+	boolean status = false;
+	BroadBandCommonPage commonPage = new BroadBandCommonPage(driver);
+	status = !(commonPage.isElementByXpathAvailable(xpath));
+	LOGGER.info(" Is SAVE CURRENT CONFIGURATION button exists ?:"
+		+ (status ? "Button does not exist" : "Button exists"));
+	return status;
+    }
+    
+    /**
+     * Helper method to click element by id
+     * 
+     * @param webDriver
+     *            webDriver
+     * @param elementId
+     *            String containing element id
+     * 
+     * @return true if click is success
+     * @refactor Rakesh C N
+     */
+    public static boolean clickById(WebDriver webDriver, String elementId) {
+	LOGGER.debug("Entering method: clickById");
+	boolean result = false;
+	try {
+	    webDriver.findElement(By.id(elementId)).click();
+	    result = true;
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while clicking element with id '" + elementId + "' : " + e.getMessage());
+	}
+	LOGGER.debug("Exiting method: clickById");
+	return result;
+    }
+    
+    /**
+     * This method will to select stateless autoconfig in local Ip configuration page
+     * 
+     * @param TapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * 
+     * @param webDriver
+     *            {@link WebDriver}
+     * 
+     * @param toSelectStateless
+     *            To select or unselect SLAAC mode
+     * @return status of SLAAC Mode
+     * @refactor Said hisham
+     */
+
+    public static boolean selectSLAACMode(AutomaticsTapApi tapEnv, WebDriver webDriver, boolean toSelectStatelessMode) {
+	boolean status = false;
+	try {
+	    if (toSelectStatelessMode) {
+		if (webDriver.findElement(By.id(BroadBandWebGuiElements.ID_CHECKBOX_STATEFUL)).isSelected()) {
+		    webDriver.findElement(By.id(BroadBandWebGuiElements.ID_CHECKBOX_STATEFUL)).click();    
+		    webDriver.findElement(By.xpath(BroadBandWebGuiElements.XPATH_CHECKBOX_STATELESS)).click();
+		    
+			    
+		    tapEnv.waitTill(BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS);
+		    LOGGER.info("Stateless Auto config mode is clicked");
+		    status = !webDriver.findElement(By.id(BroadBandWebGuiElements.ID_CHECKBOX_STATEFUL)).isSelected();
+		} else {
+		    LOGGER.info("Already is in Stateless config mode");
+		    status = true;
+		}
+	    } else if (!toSelectStatelessMode) {
+		tapEnv.waitTill(BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS);
+		if (!webDriver.findElement(By.id(BroadBandWebGuiElements.ID_CHECKBOX_STATEFUL)).isSelected()) {
+		    webDriver.findElement(By.id(BroadBandWebGuiElements.ID_CHECKBOX_STATEFUL)).click();
+		    webDriver.findElement(By.xpath(BroadBandWebGuiElements.XPATH_CHECKBOX_STATELESS)).click();
+		    
+		    tapEnv.waitTill(BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS);
+		    LOGGER.info("Stateful config mode is clicked");
+		    status = webDriver.findElement(By.id(BroadBandWebGuiElements.ID_CHECKBOX_STATEFUL)).isSelected();
+		} else {
+		    LOGGER.info("Already is in Stateful config mode");
+		    status = true;
+		}
+	    }
+	} catch (Exception e) {
+	    LOGGER.error(
+		    " Exception occured while selecting SLAAC mode in Local Ip configuration page" + e.getMessage());
+	}
+	return status;
+    }
+    
+    
 }

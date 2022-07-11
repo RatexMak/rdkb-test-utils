@@ -1004,6 +1004,21 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
     
     /** Log Message for Curl Command */
     public static final String LOG_MESSAGE_CURL_COMMAND = "\"curl\"";
+ 
+    /** Log message for Cus admin password reset in the file "/rdklogs/logs/PAMlog.txt.0" */
+    public static final String LOG_MESSAGE_CUSADMIN_PWD_RESET = "Password reset done for cusadmin user";
     
+    /** Log Message to get telementry event upload to splunk in dcmscript.log file */
+    public static final String LOG_MESSAGE_DCA_CURL_CMD = "\"CURL_CMD:\"";
+    
+    /** Log Message for packet capture initialization */
+    public static final String LOG_MESSAGE_FOR_BRLAN_PACKET_CAPTURE_INIT = "tcpdump: listening on brlan0, link-type";  
+    
+    /** Log message for Setting valid LanSubnetMask value */
+    public static final String LOG_MESSAGE_SETTING_VAILD_SUBNET_MASK_VALUE = "RDKB_LAN_CONFIG_CHANGED: Setting new LanSubnetMask value";
+
+    /** Log message for Setting invalid LanSubnetMask value */
+    public static final String LOG_MESSAGE_SETTING_INVAILD_SUBNET_MASK_VALUE = "RDKB_LAN_CONFIG_CHANGED: Modified LanSubnetMask";
+
     
 }

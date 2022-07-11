@@ -507,7 +507,8 @@ public class BroadBandUploadLogsUtils {
 	boolean status = false;
 
 	long pollDuration = BroadBandTestConstants.TEN_MINUTE_IN_MILLIS;
-		do {
+	long startTime = System.currentTimeMillis();
+	do {
 	    loguploadStatusSnmp = BroadBandSnmpUtils.executeSnmpGetOnRdkDevices(tapApi, device,
 		    BroadBandSnmpMib.ECM_UPLOAD_STATUS.getOid());
 

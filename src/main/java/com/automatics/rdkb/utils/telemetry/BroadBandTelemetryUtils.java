@@ -33,7 +33,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.automatics.device.Dut;
+import com.automatics.error.GeneralError;
+import com.automatics.exceptions.FailedTransitionException;
 import com.automatics.exceptions.TestException;
+import com.automatics.rdkb.BroadBandResultObject;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
 import com.automatics.rdkb.constants.BroadBandTelemetryConstants;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
@@ -75,7 +78,7 @@ public class BroadBandTelemetryUtils {
 	 **/
 	private static String PROXY_DCM_XCONF_UPDATE_SETTINGS_KEYWORD = "updateSettings";
 
-	/** as per RDKB-13866,Cron interval should be 15 minutes **/
+	/**Cron interval should be 15 minutes **/
 	public static String SCHEDULE_CRON_JOB_TIME_FOR_TELEMETRY = "*/15 * * * *";
 
 	/** Telemetry upload URL **/
@@ -872,4 +875,187 @@ public class BroadBandTelemetryUtils {
 		return result;
 	}
 
+	   /**
+     * Utility method to get dca counter value from atom console
+     * 
+     * @param device
+     *            Dut instance
+     * @param tapEnv
+     *            AutomaticsTapApi instance
+     * @return null if returned value is not integer, else returns Integer value of it;
+     * @author Praveenkumar Paneerselvam
+     * @refcator Rakesh C N
+     */
+    public static int getDcaCounterValueForTelemetry(Dut device, AutomaticsTapApi tapEnv) {
+	LOGGER.debug("STARTING METHOD: getDcaCounterValueForTelemetry");
+	int dcaCounter = -1;
+	String response = null;
+	String command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.CAT_COMMAND,
+		BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandCommandConstants.FILE_TMP_DCACOUNTER);
+	response = BroadBandCommonUtils.executeCommandInAtomConsoleIfAtomIsPresentElseInArm(device, tapEnv, command);
+	LOGGER.info("Response in dca counter is : " + response);
+	try {
+	    if (CommonMethods.isNotNull(response)) {
+		dcaCounter = Integer
+			.parseInt(response.split(BroadBandTestConstants.NEW_LINE_WITH_ESCAPE_CHARACTER)[0].trim());
+	    }
+	} catch (Exception exception) {
+	    LOGGER.error("DCA COUNTER IS NOT A VALID NUMBER - " + response + " " + exception.getMessage());
+	}
+	LOGGER.info("DCA counter value is " + dcaCounter);
+	LOGGER.debug("ENDING METHOD: getDcaCounterValueForTelemetry");
+	return dcaCounter;
+    }
+    
+    /**
+     * Helper method to execute the commands for adding mock logs for telemetry throttle testing
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapApi
+     *            {@link AutomaticsTapApi}
+     * @param mocklogs
+     *            Mocklogs to add in the given file name
+     * @param fileName
+     *            File path
+     * @return true if commands are executed w/0 any issues, else false
+     * 
+     * @author Praveenkumar Paneerselvam
+     * @refcator Rakesh C N
+     */
+    public static boolean executeCommandsForMockingLogsForTelemetryThrottle(Dut device, AutomaticsTapApi tapApi,
+	    String mockLogs, String fileName) {
+	LOGGER.debug("STARTING METHOD: executeCommandsForMockingLogsForTelemetryThrottle");
+	boolean status = false;
+	String response = null;
+
+	String command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_ECHO_E,
+		BroadBandTestConstants.DOUBLE_QUOTE, mockLogs, BroadBandTestConstants.DOUBLE_QUOTE,
+		BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.RIGHT_SHIFT_OPERATOR, fileName);
+	LOGGER.info("Command to be executed - " + command);
+	response = tapApi.executeCommandUsingSsh(device, command);
+	status = CommonMethods.isNull(response);
+	LOGGER.info("Is the command executed successfully? - " + status);
+
+	LOGGER.debug("ENDING METHOD: executeCommandsForMockingLogsForTelemetryThrottle");
+	return status;
+    }
+    
+    /**
+     * 
+     * Helper method to verify whether telemetry log are getting printed as per the required throttling
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapApi
+     *            {@link AutomaticsTapApi}
+     * @param expectedPattern
+     *            Expected telemetry pattern to validate
+     * @param dcaCounter
+     *            dca couter value which determines the respective markers to be telemetry uploaded
+     * @return true if logs are getting printed as expected, else false
+     * @author Praveenkumar Paneerselvam
+     * @refcator Rakesh C N
+     */
+    public static BroadBandResultObject verifyTelemetryThrottleLogs(Dut device, AutomaticsTapApi tapEnv,
+	    String expectedPattern) {
+	LOGGER.debug("STARTING METHOD: verifyTelemetryThrottleLogs");
+	BroadBandResultObject executionStatus = new BroadBandResultObject();
+	boolean status = false;
+	String response = null;
+	String errorMessage = "";
+	LOGGER.info("verifyTelemetryThrottleLogs");
+	String command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.CMD_GREP_I,
+		BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTraceConstants.LOG_MESSAGE_DCA_CURL_CMD,
+		BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.DCMSCRIPT_LOG_FILE,
+		BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.SYMBOL_PIPE,
+		BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.CMD_TAIL_1);
+	LOGGER.info("Command to be executed : " + command);
+	long startTime = System.currentTimeMillis();
+	do {
+	    try {
+		LOGGER.info("Expected Pattern " + expectedPattern);
+		response = tapEnv.executeCommandUsingSsh(device, command);
+		status = CommonMethods.isNotNull(response) && CommonMethods.patternMatcher(response, expectedPattern);
+	    } catch (TestException exception) {
+		errorMessage = exception.getMessage();
+	    }
+	} while (!status && (System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIFTEEN_MINUTES_IN_MILLIS
+		&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+	if (!status) {
+	    errorMessage = " Following telemetry profile " + errorMessage + "dint upload as expected ";
+	}
+	LOGGER.info("Telemetry throttle log upload status is: " + status);
+	executionStatus.setStatus(status);
+	executionStatus.setErrorMessage(errorMessage);
+	LOGGER.debug("ENDING METHOD: verifyTelemetryThrottleLogs");
+	return executionStatus;
+    }
+    
+    /**
+     * Helper method to get cpu usage value.
+     * 
+     * @param device
+     *            Dut Instance
+     * @param tapEnv
+     *            tapapi instance
+     * @return cpu usage value in double, returns null if there is an error in fetching the value
+     * @author Praveenkumar Paneerselvam
+     * @refcator Rakesh C N
+     */
+    public static Double getCpuUsageInPercentage(Dut device, AutomaticsTapApi tapEnv) {
+	LOGGER.debug("STARTING METHOD: getCpuUsageInPercentage ");
+	Double cpuUsage = null;
+	String response = tapEnv.executeCommandUsingSsh(device, BroadBandTelemetryConstants.CMD_TOP_TO_GET_CPU_USAGE);
+	if (CommonMethods.isNotNull(response)) {
+	    cpuUsage = parseOutputToGetCpuUsage(response);
+	}
+	LOGGER.info("CPU usage is - " + cpuUsage);
+	LOGGER.debug("ENDING METHOD :getCpuUsageInPercentage ");
+	return cpuUsage;
+    }
+    
+    /**
+     * Utility method to parse the output of top command get the CPU usage percentage.
+     * 
+     * @param topCommandOutput
+     *            Top command output.
+     * 
+     * @return CPU usage percentage.
+     * 
+     * @author divya.rs
+     * @refcator Rakesh C N
+     */
+    public static double parseOutputToGetCpuUsage(String topCommandOutput) {
+	double cpuUsage = 0;
+	boolean isCpuUsageFound = false;
+
+	// For line by line parsing.
+	String[] splittedTopCommandOutput = topCommandOutput.split("\n");
+
+	for (String lineByLineOutput : splittedTopCommandOutput) {
+	    String trimedLineOutput = lineByLineOutput.trim();
+	    LOGGER.debug("Line by line output : " + trimedLineOutput);
+
+	    // Skipping empty line and line beginning with hash.
+	    if (!trimedLineOutput.startsWith(RDKBTestConstants.DELIMITER_HASH)
+		    && !RDKBTestConstants.EMPTY_STRING.equals(trimedLineOutput)) {
+
+		try {
+		    cpuUsage = Double.parseDouble(trimedLineOutput);
+		    isCpuUsageFound = true;
+		} catch (NumberFormatException numExc) {
+		    LOGGER.error(String.format("Failed to convert %s to double.", trimedLineOutput));
+		}
+	    }
+	}
+
+	// If non of the double value found on the output received failure need
+	// to be notified.
+	if (!isCpuUsageFound) {
+	    throw new FailedTransitionException(GeneralError.CONSOLE_OUTPUT_COMPARISON_FAILURE,
+		    "Failed to find the CPU usage detail on the top command output : " + topCommandOutput);
+	}
+	return cpuUsage;
+    }
 }

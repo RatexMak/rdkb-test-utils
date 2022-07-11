@@ -53,4 +53,7 @@ public class TestGroup {
 
     /** Test group for telemetry **/
     public static final String TELEMETRY = "telemetry";
+    
+    /** Test group for common download tests. */
+    public static final String CODE_DOWNLOAD = "cdl";
 }

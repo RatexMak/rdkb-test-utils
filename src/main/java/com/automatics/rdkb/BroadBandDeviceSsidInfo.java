@@ -32,9 +32,9 @@ public class BroadBandDeviceSsidInfo {
 	private String private5ghzSsidPwd;
 	private String private5ghzSsidSecurityMode;
 
-	private String xfinityOpen5GhzSsidName;
-	private String xfinityOpen2GhzSsidName;
-	private String xfinitySecure5GhzSsidName;
+	private String publicOpen5GhzSsidName;
+	private String publicOpen2GhzSsidName;
+	private String publicSecure5GhzSsidName;
 
 	private String lnf2GhzSsidName;
 	private String lnf2GhzSsidPwd;
@@ -109,48 +109,48 @@ public class BroadBandDeviceSsidInfo {
 	}
 
 	/**
-	 * @return the xfinityOpen5GhzSsidName
+	 * @return the publicOpen5GhzSsidName
 	 */
-	public String getXfinityOpen5GhzSsidName() {
-		return xfinityOpen5GhzSsidName;
+	public String getPublicSeOpen5GhzSsidName() {
+		return publicOpen5GhzSsidName;
 	}
 
 	/**
-	 * @param xfinityOpen5GhzSsidName
-	 *            the xfinityOpen5GhzSsidName to set
+	 * @param publicOpen5GhzSsidName
+	 *            the publicOpen5GhzSsidName to set
 	 */
-	public void setXfinityOpen5GhzSsidName(String xfinityOpen5GhzSsidName) {
-		this.xfinityOpen5GhzSsidName = xfinityOpen5GhzSsidName;
+	public void setPublicOpen5GhzSsidName(String publicOpen5GhzSsidName) {
+		this.publicOpen5GhzSsidName = publicOpen5GhzSsidName;
 	}
 
 	/**
-	 * @return the xfinityOpen2GhzSsidName
+	 * @return the publicOpen2GhzSsidName
 	 */
-	public String getXfinityOpen2GhzSsidName() {
-		return xfinityOpen2GhzSsidName;
+	public String getPublicSeOpen2GhzSsidName() {
+		return publicOpen2GhzSsidName;
 	}
 
 	/**
-	 * @param xfinityOpen2GhzSsidName
-	 *            the xfinityOpen2GhzSsidName to set
+	 * @param publicOpen2GhzSsidName
+	 *            the publicOpen2GhzSsidName to set
 	 */
-	public void setXfinityOpen2GhzSsidName(String xfinityOpen2GhzSsidName) {
-		this.xfinityOpen2GhzSsidName = xfinityOpen2GhzSsidName;
+	public void setPublicOpen2GhzSsidName(String publicOpen2GhzSsidName) {
+		this.publicOpen2GhzSsidName = publicOpen2GhzSsidName;
 	}
 
 	/**
-	 * @return the xfinitySecure5GhzSsidName
+	 * @return the publicSecure5GhzSsidName
 	 */
-	public String getXfinitySecure5GhzSsidName() {
-		return xfinitySecure5GhzSsidName;
+	public String getPublicSecure5GhzSsidName() {
+		return publicSecure5GhzSsidName;
 	}
 
 	/**
-	 * @param xfinitySecure5GhzSsidName
-	 *            the xfinitySecure5GhzSsidName to set
+	 * @param publicSecure5GhzSsidName
+	 *            the publicSecure5GhzSsidName to set
 	 */
-	public void setXfinitySecure5GhzSsidName(String xfinitySecure5GhzSsidName) {
-		this.xfinitySecure5GhzSsidName = xfinitySecure5GhzSsidName;
+	public void setPublicSecure5GhzSsidName(String publicSecure5GhzSsidName) {
+		this.publicSecure5GhzSsidName = publicSecure5GhzSsidName;
 	}
 
 	/**

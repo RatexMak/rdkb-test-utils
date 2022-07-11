@@ -51,6 +51,7 @@ public enum BroadBandSnmpMib {
     ESTB_FACTORY_RESET_DEVICE("factoryResetDevice", "1.3.6.1.4.1.17270.50.2.1.1.1002.0"),
     ECM_STATUS_PRIVATE_WIFI_2_4_GHZ("privateWifiStatus2.4", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.2", "10001"),
     HOME_SECURITY_2_4_SSID_STATUS("HomeSecurityssidStatus2.4", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.2", "10002"),
+    HOME_SECURITY_5_SSID_STATUS("HomeSecurityssidStatus5", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.2", "10102"),
     HOT_SPOT_2_4_SSID_STATUS("HotSpotStatus2.4", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.2", "10004"),
     LNF_2_4_SSID_STATUS("LnfStatus2.4", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.2", "10006"),
     ECM_STATUS_PRIVATE_WIFI_5_GHZ("privateWifiStatus5", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.2", "10101"),
@@ -189,7 +190,9 @@ public enum BroadBandSnmpMib {
     ECM_BSSID_MAC_ADDRESS_5_GHZ_PRIVATE_SSID(
 	    "bssidMacaddressFor5GHzPrivateSsid",
 	    "1.3.6.1.4.1.17270.50.2.2.2.1.1.1",
-	    "10101");
+	    "10101"),
+    ECM_WIFI_2_4_SSID_RADIO_STATUS_ENABLE("radioStatus1", ".1.3.6.1.4.1.17270.50.2.2.6.1.1.1.10000"),
+    ECM_WIFI_5_SSID_RADIO_STATUS_ENABLE("radioStatus2", ".1.3.6.1.4.1.17270.50.2.2.6.1.1.1.10100");
 
     private String mibName;
 

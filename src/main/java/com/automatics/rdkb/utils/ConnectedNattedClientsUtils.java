@@ -687,7 +687,7 @@ public class ConnectedNattedClientsUtils {
      */
     public static boolean connectSsidWifiOnMacOS(Dut device, AutomaticsTapApi tapEnv, String interfaceName, String ssid,
 	    String passWord, String securityMode) {
-	LOGGER.debug("STARTING METHOD : connectXfinityWifiOnMacOS()");
+	LOGGER.debug("STARTING METHOD : connectSsidWifiOnMacOS()");
 	boolean isConnected = false;
 	if (disConnectSsidOnMacOS(device, tapEnv, interfaceName)) {
 	    String command = BroadBandConnectedClientTestConstants.CMD_MAC_OS_CONNECT_SSID
@@ -704,7 +704,7 @@ public class ConnectedNattedClientsUtils {
 	    isConnected = CommonMethods.isNotNull(connectedSsid)
 		    && CommonUtils.patternSearchFromTargetString(ssid, connectedSsid);
 	}
-	LOGGER.debug("ENDING METHOD : connectXfinityWifiOnMacOS()");
+	LOGGER.debug("ENDING METHOD : connectSsidWifiOnMacOS()");
 	return isConnected;
     }
 

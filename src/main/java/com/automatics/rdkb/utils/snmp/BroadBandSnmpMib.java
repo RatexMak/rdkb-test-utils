@@ -192,7 +192,11 @@ public enum BroadBandSnmpMib {
 	    "1.3.6.1.4.1.17270.50.2.2.2.1.1.1",
 	    "10101"),
     ECM_WIFI_2_4_SSID_RADIO_STATUS_ENABLE("radioStatus1", ".1.3.6.1.4.1.17270.50.2.2.6.1.1.1.10000"),
-    ECM_WIFI_5_SSID_RADIO_STATUS_ENABLE("radioStatus2", ".1.3.6.1.4.1.17270.50.2.2.6.1.1.1.10100");
+    ECM_WIFI_5_SSID_RADIO_STATUS_ENABLE("radioStatus2", ".1.3.6.1.4.1.17270.50.2.2.6.1.1.1.10100"),
+    ECM_DHCP_START_IP("dhcpstartip", ".1.3.6.1.4.1.17270.50.2.3.3.1.2", "32"),
+    ECM_DHCP_END_IP("dhcpendip", ".1.3.6.1.4.1.17270.50.2.3.3.1.4", "32"),
+    ECM_DHCP_LEASE_TIME("dhcpleasetime", ".1.3.6.1.4.1.17270.50.2.3.3.1.5", "32"),
+    ECM_SUBNET_MASK("subnetmask", ".1.3.6.1.4.1.17270.50.2.3.2.1.5", "32");
 
     private String mibName;
 

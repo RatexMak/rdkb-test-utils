@@ -125,7 +125,7 @@ public class BroadBandSnmpUtils {
 	snmpParam.setSnmpCommand(SnmpCommand.GET);
 	snmpParam.setSnmpCommunity("CUSTOM");
 	snmpParam.setMibOid(mibOrOid.trim());
-	snmpParam.setCommandOption("t 30 ");
+	snmpParam.setCommandOption("-t 30 ");
 
 	LOGGER.info("snmpParam  is : " + snmpParam);
 	result = tapEnv.executeSnmpCommand(device, snmpParam, tableIndex);
@@ -136,7 +136,7 @@ public class BroadBandSnmpUtils {
 	    snmpParam.setSnmpCommand(SnmpCommand.GET);
 	    snmpParam.setSnmpCommunity("CUSTOM");
 	    snmpParam.setMibOid(mibOrOid.trim());
-	    snmpParam.setCommandOption("t 30 ");
+	    snmpParam.setCommandOption("-t 30 ");
 
 	    result = tapEnv.executeSnmpCommand(device, snmpParam, tableIndex);
 	}

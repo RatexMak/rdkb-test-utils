@@ -86,6 +86,21 @@ public class BroadBandWebGuiTestConstant {
     /** Click Ok button after saving password Xpath */
     public static final String XPATH_CLICK_OK_AFTER_SAVING_NEW_PASSWORD = "//*[@id=\"popup_ok\"]";
 
+    /** Variable to store the xpath for clicking typical security */
+    public static String XPATH_FOR_TYPICAL_SECURITY = "//*[@id='default']/label";
+
+    /** Variable to store the save settings of Custom firewall */
+    public static String XPATH_FOR_SAVE_SETTINGS = "//*[@id='submit_firewall']";
+
+    /** Xpath for ipv4 subnet mask common id name */
+    public static final String XPATH_IPV4_SUBNET_MASK = "ipv4_subnet_mask_";
+
+    /** xpath for custom security */
+    public static final String XPATH_FOR_CUSTOM_SECURITY = "//*[text() = 'Custom Security']";
+
+    /** Variable to store the xpath for block icmp */
+    public static String XPATH_FOR_BLOCK_ICMP = "//*[@id='block_icmp'] | //*[@id=\"firmess13\"]";
+
     /** AdminUI Connection > Wifi Xpath */
     public static final String XPATH_LAN_UI_WIFI_PAGE = "//a[@href='wireless_network_configuration.php']";
 
@@ -145,62 +160,154 @@ public class BroadBandWebGuiTestConstant {
 
     /** variable to store wifi edit 5 GHz page title */
     public static String UI_WIFI_5_GHZ_EDIT_PAGE_TITLE = "lan.gui.page.title.wifi.5.GHZ_EDIT";
-    
-	/** Variable to store the input type password attribute */
-	public static String INPUT_TYPE_PASSWORD = "password";
-	
-	/**
-	 * Variable to store SSH command to get the admin page default hash password for
-	 * business class device
-	 */
-	public static final String SSH_GET_DEFAULT_HASH_PASSWORD_BUSINESS_CLASS = "syscfg get hash_password_2";
 
-	/**
-	 * Variable to store SSH command to get the admin page default hash password
-	 */
-	public static final String SSH_GET_DEFAULT_HASH_PASSWORD = "syscfg get hash_password_3";
-	
-	/** Link text for Parental Control */
-	public static final String LINK_TEXT_PARENTAL_CONTROL = "Parental Control";
-	
+    /** Variable to store the input type password attribute */
+    public static String INPUT_TYPE_PASSWORD = "password";
+
+    /**
+     * Variable to store SSH command to get the admin page default hash password for business class device
+     */
+    public static final String SSH_GET_DEFAULT_HASH_PASSWORD_BUSINESS_CLASS = "syscfg get hash_password_2";
+
+    /**
+     * Variable to store SSH command to get the admin page default hash password
+     */
+    public static final String SSH_GET_DEFAULT_HASH_PASSWORD = "syscfg get hash_password_3";
+
+    /** Link text for Parental Control */
+    public static final String LINK_TEXT_PARENTAL_CONTROL = "Parental Control";
+
     /** Attribute aria checked */
     public static final String ARIA_CHECKED_ATTRIBUTE = "aria-checked";
-    
+
     /** variable to store string google */
     public static final String STRING_GOOGLE = "google";
-    
+
     /** String to store user defined service */
-    public static final String STRING_USER_DEFINED_SERVICE = "user_defined_service"; 
-    
+    public static final String STRING_USER_DEFINED_SERVICE = "user_defined_service";
+
     /** UI Link text for Managed Services */
     public static final String LINK_TEXT_MANAGED_SERVICES = "Managed Services";
-    
+
     /** Connection Type Wifi in web ui */
-	public static final String CONNECTION_TYPE_WIFI = "Wi-Fi";
+    public static final String CONNECTION_TYPE_WIFI = "Wi-Fi";
 
-	/** Connection Type Ethernet in web ui */
-	public static final String CONNECTION_TYPE_ETHERNET = "Ethernet";
-	
-	/** Variable to store DSL DEVICE page URL */
-	public static final String DSL_PAGE_URL = "dsl.page.url";
-	
-	/** Variable to store webui home page page heading */
-	public static String STRING_WEB_GUI_HOME_PAGE_HEADING = "Gateway > At a Glance";
-	
-	public static final String LINK_TEXT_FIREWALL = "Firewall";
-	
-	/** Link text for IPv4 page in FIREWALL Menu */
-	public static final String LINK_TEXT_IPV4 = "IPv4";
-	
-	/** Link text for IPv4 page in FIREWALL Menu */
-	public static final String LINK_TEXT_IPV6 = "IPv6";
-	
-	/** Link text for Content Filtering */
-	public static final String LINK_TEXT_CONTENT_FILTERING = "Content Filtering";
+    /** Connection Type Ethernet in web ui */
+    public static final String CONNECTION_TYPE_ETHERNET = "Ethernet";
 
-	/** Link text for Managed Devices */
-	public static final String LINK_TEXT_MANAGED_DEVICES = "Managed Devices";
+    /** Variable to store DSL DEVICE page URL */
+    public static final String DSL_PAGE_URL = "dsl.page.url";
 
+    /** Variable to store webui home page page heading */
+    public static String STRING_WEB_GUI_HOME_PAGE_HEADING = "Gateway > At a Glance";
 
+    public static final String LINK_TEXT_FIREWALL = "Firewall";
 
+    /** Link text for IPv4 page in FIREWALL Menu */
+    public static final String LINK_TEXT_IPV4 = "IPv4";
+
+    /** Link text for IPv4 page in FIREWALL Menu */
+    public static final String LINK_TEXT_IPV6 = "IPv6";
+
+    /** Link text for Content Filtering */
+    public static final String LINK_TEXT_CONTENT_FILTERING = "Content Filtering";
+
+    /** Link text for Managed Devices */
+    public static final String LINK_TEXT_MANAGED_DEVICES = "Managed Devices";
+
+    /** String text for firewall high */
+    public static final String FIREWALL_MAXIMUM_TEXT = "High Security";
+
+    /** String text for firewall low */
+    public static final String FIREWALL_MINIMUM_TEXT = "Low Security";
+
+    /** LOCAL IP NETWORK name in Connection tab */
+    public static String STRING_NAME_LOCAL_IP_NETWORK = "Local IP Network";
+
+    /** 2.4 GHZ Network Password Save Xpath */
+    public static final String XPATH_SAVE_2_4_GHZ_NETWORK_PASSWORD = "//*[@id=\"save_settings\"]";
+
+    /** Enum to get the WiFi access band */
+    public enum RestoreGateWay {
+
+	RESTART_GATEWAY("RESET"),
+
+	RESTART_ONLY_WIFI_MODULE("RESET Wi-Fi MODULE"),
+
+	RESTART_ONLY_WIFI_ROUTER("RESET Wi-Fi ROUTER"),
+
+	RESTORE_WIFI_SETTINGS("RESTORE Wi-Fi SETTINGS"),
+
+	RESET_PASSWORD("RESET PASSWORD"),
+
+	RESTORE_FACTORY_SETTINGS("RESTORE FACTORY SETTINGS"),
+
+	RESTORE_FACTORY_SETTINGS_ITALIAN("REIMPOSTA IMPOSTAZIONI DI FABBRICA"),
+
+	RESET_MTA_MODULE("RESET MTA MODULE");
+
+	private String resetType;
+
+	private RestoreGateWay(String resetType) {
+	    this.resetType = resetType;
+	}
+
+	public String getValue() {
+	    return resetType;
+	}
+    }
+
+    /** variable to store the xpath for pop ups */
+    public static String XPATH_FOR_POP_UPS = "/html/body/div[@id='__alertLiveCont']/div[@id='popup_container']/h2[@id='popup_title']";
+
+    /** variable to store the validation text for "Operation In Progress" */
+    public static String VALIDATION_TEXT_FOR_OPERATION_IN_PROGRESS = "Operation In Progress";
+
+    /** variable to store the xpath for pop ups for Italian alert */
+    public static String XPATH_FOR_POP_UPS_ITALIAN = "//*[@id=\"popUp_container\"]/div/div[1]";
+
+    /** variable to store the validation text for "Operation in Progress" */
+    public static String VALIDATION_TEXT_FOR_OPERATION_IN_PROGRESS_MODAL = "Operation in Progress";
+
+    /** Web element ID to store factory reset pop up */
+    public static String WEBELEMENT_ID_FACTORY_RESET_ALERT_MESSAGE = "/html/body/div[@id='__alertLiveCont']/div[@id='popup_container']/h2[@id='popup_title']";
+
+    /** variable to store the xpath for pop ups */
+    public static String XPATH_FOR_POP_UP_MODAL = "//*[@id='popUp_container']/div/div[1]/h2";
+
+    /** Web element id for ipv4 connectivity check */
+    public static final String WEB_ELEMENT_ID_IPV4_CONNECTIVITY_CHECK = "check_ipv4";
+
+    /** Web element id to get ipv4 connectivity status */
+    public static final String WEB_ELEMENT_ID_GET_IPV4_CONNECTIVITY_STATUS = "connectivity_ipv4";
+
+    /** Pattern for Public Wi-Fi Network block */
+    public static final String PATTERN_PUBLIC_WIFI_NETWORK = "Public Wi-Fi Network";
+    
+    /** Constant to hold up and down stream header lock status */
+    public static final String UP_AND_DOWN_STREAM_PARAM_LOCK_STATUS = "Lock Status";
+    
+    /** Constant to hold up and down stream header Frequency */
+    public static final String UP_AND_DOWN_STREAM_PARAM_FREQUENCY = "Frequency";
+    
+    /** Constant to hold up and down stream header SNR */
+    public static final String UP_AND_DOWN_STREAM_PARAM_SNR = "SNR";
+
+    /** Constant to hold up and down stream header Power Level */
+    public static final String UP_AND_DOWN_STREAM_PARAM_POWER_LEVEL = "Power Level";
+
+    /** Constant to hold up and down stream header Modulation */
+    public static final String UP_AND_DOWN_STREAM_PARAM_MODULATION = "Modulation";
+    
+    /** Constant to hold up and down stream header Symbol Rate */
+    public static final String UP_AND_DOWN_STREAM_PARAM_SYMBOL_RATE = "Symbol Rate";
+    
+    /** Constant to hold up and down stream header Channel Type */
+    public static final String UP_AND_DOWN_STREAM_PARAM_CHANNEL_TYPE = "Channel Type";
+    
+    /** Variable to store the xpath for Prefer private Wifi */
+    public static String XPATH_FOR_PREFER_PRIVATE = "//*[@id='prefer_private']";
+    
+	/** Property to get command to trigger firmware download for devices **/
+	public static final String SH_COMMAND_TO_TRIGGER_FIRMWARE_DOWNLOAD_DSL = "sh.command.totrigger.fwdownload.dsl";
 }

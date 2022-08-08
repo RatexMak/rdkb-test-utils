@@ -569,9 +569,6 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 	/** Command to get current epoch time */
 	public static final String CMD_CURRENT_EPOCH_TIME = "date +%s";
 
-	/** Command to trigger firmware download for devices **/
-	public static final String SH_COMMAND_TO_TRIGGER_FIRMWARE_DOWNLOAD_DSL = "/bin/sh /nvram/hub4_triggerFirmwareDownload.sh";
-
 	/** Command to get sysevent status */
 	public static final String CMD_SYSEVENT_GET = "sysevent get ";
 
@@ -1492,17 +1489,8 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 	/** Cmd to remove dummy file from /tmp */
 	public static final String CMD_REMOVE_DUMMY_FILE = "rm /tmp/dummy.txt";
 
-	/** Cmd to grep valid primary ip from tcpdump to /tmp/cpature.txt */
-	public static final String CMD_TO_GET_DNS_PRIMARY_IP_TCPDUMP = "grep -E \"74.121.125.54|2620:104:a00b::53\" /tmp/capture.txt";
-
 	/** Cmd to remove dummy file from /tmp */
 	public static final String CMD_REMOVE_CAPTURE_FILE = "rm /tmp/capture.txt";
-
-	/** Cmd to grep valid secondary ip from tcpdump to /tmp/cpature.txt */
-	public static final String CMD_TO_GET_DNS_SECONDARY_IP_TCPDUMP = "grep -E \"74.121.125.55|2620:104:a00b::54\" /tmp/capture.txt";
-
-	/** Cmd to grep invalid primary ip from tcpdump to /tmp/cpature.txt */
-	public static final String CMD_TO_GET_INVALID_DNS_PRIMARY_IP_TCPDUMP = "grep -E \"13.13.12.12|2621:104:a00b::4\" /tmp/capture.txt";
 
 	/** Constant to hold file path for dcmscriptl og file */
 	public static final String FILE_TMP_DCMSCRIPT_LOG = "/tmp/dcmscript";
@@ -1674,5 +1662,50 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command to read the the captured packet */
     public static final String CMD_TO_READ_PACKET_CAPTURE = "-v -r";
+    
+    /** String ti store pattern for /etc/server.pem */
+    public static final String CMD_PATTERN_SERVER = "(\\/\\w+\\/server\\.pem)";
+
+    /** Command to list server.pem */
+    public static final String CMD_LIST_SERVER_PEM = "ls -ltr /etc/ | grep -i  server.pem";
+
+    /** command to check soft link */
+    public static final String CMD_SOFT_LINK = "[l]";
+
+    /** command to check /fss/gw/etc/server.pem */
+    public static final String CMD_FSS_GW_SERVER_PEM = "/fss/gw/etc/server.pem";
+
+    /** command to check "/etc/server.pem" */
+    public static final String STRING_SERVER_LOCATION = "/etc/server.pem";
+
+    /** command to check "ls -ltr /fss/gw/etc/ | grep -i server.pem" */
+    public static final String CMD_LIST_FSS_GW_SERVER_PEM = "ls -ltr /fss/gw/etc/ | grep -i  server.pem";
+    
+    /** Command to get the parodus process execution path */
+    public static final String CMD_PARODUS_EXECUTION_PATH = "ps -ww | grep -i parodus | grep -v grep | grep -v tail";
+
+    /** Constant to hold web config file path */
+    public static final String FILE_RDKLOGS_WEBCONFIG_LOG = "/rdklogs/logs/WEBCONFIGlog.txt.0";
+
+    /** Command to export the paths in device */
+    public static final String EXPORT_PATHS = "export PATH=$PATH:/bin:/sbin;export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/bin:/sbin; ";
+
+    /** Command to execute curl */
+    public static final String CURL_CMD_HTTP = "curl -w \"%{http_code}\" --output \"";
+
+    /** Command curl option -E */
+    public static final String OPTION_E = "\" -E \"";
+
+    /** Command curl header mac address */
+    public static final String XMIDT_MAC_ADDRESS = "\" --header X-Midt-Mac-Address: \"";
+
+    /** Command curl header partner id */
+    public static final String XMIDT_PARTNER_ID = "\" --header X-Midt-Partner-Id: \"*,";
+
+    /** Webconfig curl token path */
+    public static final String FILE_PATH_TMP_CURL_RESPONSE = "/tmp/.cURLresponse";
+    
+    /** Full path of themis server decrypted client cert file */
+    public static final String FILE_THEMIS_DECRYPTED_CLIENT_CERT = "/tmp/adzvfchig-res.mch";
 
 }

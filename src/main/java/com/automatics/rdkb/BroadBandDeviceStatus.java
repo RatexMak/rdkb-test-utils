@@ -67,7 +67,6 @@ public class BroadBandDeviceStatus {
 	 * public Wi-Fi 5 GHz(secure) SSID status.
 	 */
 	private boolean publicWiFi5GhzSecureStatus;
-
 	/**
 	 * Aker enabled status.
 	 */
@@ -308,6 +307,7 @@ public class BroadBandDeviceStatus {
 	public void setPublicWiFi5GhzSecureStatus(boolean publicWiFi5GhzSecureStatus) {
 		this.publicWiFi5GhzSecureStatus = publicWiFi5GhzSecureStatus;
 	}
+
 
 	/**
 	 * @return the wps2gEnabled

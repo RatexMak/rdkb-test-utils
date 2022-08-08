@@ -170,6 +170,9 @@ public class BroadBandPropertyKeyConstants {
     /** Property Key for CDL URL */
     public static final String PROP_KEY_CDL_URL = "rdkb.cdl.url";
 
+    /** property to configure public Broadband Router Server */
+    public static final String PROP_KEY_CONSTANT_SERVER_TAG = "broadband.router.server";
+
     public static final String OPERATIONAL_TRANSMISSION_RATE_2GHZ_FOR_DEVICES = "operational.transmission.rate.2ghz.";
 
     public static final String SUPPORTED_TRANSMISSION_RATE_2GHZ_FOR_DEVICES = "supported.transmission.rate.2ghz.";
@@ -200,13 +203,13 @@ public class BroadBandPropertyKeyConstants {
 
     public static final String SUPPORTED_DATA_TX_RATE_5GHZ_FOR_DEVICE = "supported.data.txrate.5ghz";
 
-    public static final String SUPPORTED_TX_RATE_2GHZ_FOR_DEVICE = "supported.txrate.2ghz";    
-    
     /** property to configure Public wifi ssid for 2GHZ */
     public static final String PROP_KEY_PUBLIC_WIFI_SSID_2 = "public.wifi.ssid.2.4";
-    
+
     /** property to configure Public wifi ssid for 5GHZ */
     public static final String PROP_KEY_PUBLIC_WIFI_SSID_5 = "public.wifi.ssid.5";
+
+    public static final String SUPPORTED_TX_RATE_2GHZ_FOR_DEVICE = "supported.txrate.2ghz";
 
     public static final String PARTIAL_DEVICE_CHECK_SELF_HEAL = "is.device.check.self.heal.";
 
@@ -271,9 +274,6 @@ public class BroadBandPropertyKeyConstants {
 
     /** String to store property of cert of rdkb_snmpd snmpv3 */
     public static final String FILE_SNMPV3_CERT_RDKB_SNMPD = "snmpv3.cert.rdkb.snmpd";
-    
-    /** property to configure  public Broadband Router Server */
-    public static final String PROP_KEY_CONSTANT_SERVER_TAG = "broadband.router.server";
 
     /** Property key models with corrupt image of same device class */
     public static final String MAP_MODEL_CORRUPT_IMAGE_SAME_DEVICE_CLASS = "map.model.corrupt.image.same.device.class.";
@@ -478,6 +478,15 @@ public class BroadBandPropertyKeyConstants {
      * property to configure valid Gateway local DHCP end address in setting Gateway Ip
      */
     public static final String PROP_KEY_TEST_GATEWAY_LOCAL_DHCP_END_ADDR = "test.gateway.localdhcp.endaddr";
+    
+	/** Property key to fetch Cmd to grep valid primary ip from tcpdump to /tmp/cpature.txt */
+	public static final String PROP_KEY_CMD_TO_GET_DNS_PRIMARY_IP_TCPDUMP = "cmd.dns.primaryip.tcpdump";
+	
+	/** Property key to fetch Cmd to grep valid secondary ip from tcpdump to /tmp/cpature.txt */
+	public static final String PROP_KEY_CMD_TO_GET_DNS_SECONDARY_IP_TCPDUMP = "cmd.dns.secondaryip.tcpdump";
+	
+	/** Property key to fetch Cmd to grep invalid primary ip from tcpdump to /tmp/cpature.txt */
+	public static final String PROP_KEY_CMD_TO_GET_INVALID_DNS_PRIMARY_IP_TCPDUMP = "cmd.dns.invalid.primaryip.tcpdump";
 
     /** property to configure WIFI Client MacAddress parameter */
     public static final String PROP_KEY_MAC_ADDRESS_WIFICLIENT = "wificlient.macaddress";
@@ -526,11 +535,11 @@ public class BroadBandPropertyKeyConstants {
 
     /** property Constant to store wifi edit 5 GHz page title */
     public static String PROP_KEY_PAGE_TITLE_WIFI_CONFIG_PAGE = "lan.gui.page.title.wifi.configuration.page";
-    
+
     public static final String CHANGE_PASSWORDPAGE_TITLE = "lan.gui.page.title.changepassword";
-    
+
     public static final String PAGE_TITLE_PARENTAL_CONTROL_MANAGED_SITES = "lan.gui.page.title.parental.control.managed.sites";
- 
+
     public static final String PAGE_TITLE_PARENTAL_CONTROL_ADD_BLOCKED_DOMAIN = "lan.gui.page.title.parental.control.managed.sites.add.blocked.domain";
 
     public static final String PAGE_TITLE_PARENTAL_CONTROL_ADD_BLOCKED_KEYWORD = "lan.gui.page.title.parental.control.managed.sites.add.blocked.keyword";
@@ -538,19 +547,19 @@ public class BroadBandPropertyKeyConstants {
     public static final String PAGE_TITLE_PARENTAL_CONTROL_MANAGED_SERVICE = "lan.gui.page.title.parental.control.managed.service";
 
     public static final String PAGE_TITLE_PARENTAL_CONTROL_MANAGED_SERVICES_ADD_BLOCKED_SERVICE = "lan.gui.page.title.parental.control.managed.services.add.blocked.service";
-   
+
     /** property to configure page title for connected devices page */
     public static final String PROP_KEY_PAGE_TITLE_CONNECTED_DEVICE_PAGE = "lan.gui.page.title.connected.devices";
-    
+
     /** property to configure link text for connected devices page */
     public static final String PROP_KEY_LINK_TEXT_CONNECTED_DEVICE_PAGE = "lan.gui.link.text.connected.devices";
-    
+
     /** property to configure page url for connected devices page */
     public static final String PROP_KEY_PAGE_URL_CONNECTED_DEVICE_PAGE = "lan.gui.page.url.connected.devices";
-    
+
     /** property to configure page url for connected devices page */
     public static final String PROP_KEY_PAGE_TITLE_CONNECTED_DEVICE_EDIT_DEVICE_PAGE = "lan.gui.page.title.connected.devices.edit.devices";
-    
+
     public static final String LINK_TEXT_LOCAL_IP_NETWORK = "lan.gui.link.text.connection.local.ip.network";
 
     public static final String PAGE_URL_LOCAL_IP_NETWORK = "lan.gui.page.url.connection.local.ip.network";
@@ -570,11 +579,151 @@ public class BroadBandPropertyKeyConstants {
     public static final String PAGE_TITLE_MANAGED_DEVICES = "lan.gui.page.title.managed.devices";
 
     public static final String PAGE_TITLE_FIREWALL_IPV6 = "lan.gui.page.title.firewall.ipv6";
-    
+
     public static final String LINK_TEXT_CONNECTION_STATUS = "lan.gui.link.text.connection.status";
 
     public static final String PAGE_URL_CONNECTION_STATUS = "lan.gui.page.url.connection.status";
 
     public static final String PAGE_TITLE_CONNECTION_STATUS = "lan.gui.page.title.connection.status";
- 
+
+    /** property to configure link text for Reset / Restore Gateway page */
+    public static final String LINK_TEXT_RESET_RESTORE_GATEWAY = "lan.gui.link.text.reset.restore.gateway";
+
+    /** property to configure page url for hardware wizard page */
+    public static final String PAGE_URL_RESET_RESTORE_GATEWAY = "lan.gui.page.url.reset.restore.gateway";
+
+    /** property to configure page title for Reset / Restore Gateway page */
+    public static final String PAGE_TITLE_RESET_RESTORE_GATEWAY = "lan.gui.page.title.reset.restore.gateway";
+
+    /** property to configure page title for network diagnostics page */
+    public static final String PROP_KEY_PAGE_TITLE_NW_DIAG_PAGE = "lan.gui.page.title.network.diagnostics";
+
+    /** property to configure page title for network diagnostics page */
+    public static final String PROP_KEY_LINK_TEXT_NW_DIAG_PAGE = "lan.gui.link.text.network.diagnostics";
+
+    /** property to configure page title for network diagnostics page */
+    public static final String PROP_KEY_PAGE_URL_NW_DIAG_PAGE = "lan.gui.page.url.network.diagnostics";
+
+    public static final String DEVICE_CHECK_WIFI_DRIVER_COMMANDS = "wifi.driver.commands.";
+
+    public static final String COMMANDS_TO_GET_INTERFACE_VALUES_FOR_DEVICES = "commands.get.interface.values.for.devices";
+
+    public static final String COMMANDS_TO_GET_INTERFACE_VALUES_FOR_DEVICES_5GHZ = "commands.get.interface.values.for.devices.5ghz";
+
+    public static final String RESPONSE_OF_COMMANDS_TO_GET_INTERFACE_VALUES_FOR_DEVICES = "response.of.commands.get.interface.values.for.devices";
+
+    public static final String PAGE_URL_MoCA = "lan.gui.page.url.connection.moca";
+
+    public static final String PAGE_TITLE_MoCA = "lan.gui.page.title.connection.moca";
+
+    public static final String LINK_TEXT_MoCA = "lan.gui.link.text.connection.moca";
+
+    public static final String PAGE_URL_SOFTWARE = "lan.gui.page.url.software";
+
+    public static final String PAGE_TITLE_SOFTWARE = "lan.gui.page.title.software";
+
+    public static final String LINK_TEXT_SOFTWARE = "lan.gui.link.text.software";
+
+    public static final String PAGE_URL_HARDWARE = "lan.gui.page.url.hardware";
+
+    public static final String LINK_TEXT_HARDWARE = "lan.gui.link.text.hardware";
+
+    public static final String PAGE_URL_SYSTEM_HARDWARE = "lan.gui.page.url.system.hardware";
+
+    public static final String PAGE_TITLE_SYSTEM_HARDWARE = "lan.gui.page.title.system.hardware";
+
+    public static final String LINK_TEXT_SYSTEM_HARDWARE = "lan.gui.link.text.system.hardware";
+
+    public static final String PAGE_URL_HARDWARE_LAN = "lan.gui.page.url.hardware.lan";
+
+    public static final String PAGE_TITLE_HARDWARE_LAN = "lan.gui.page.title.hardware.lan";
+
+    public static final String LINK_TEXT_HARDWARE_LAN = "lan.gui.link.text.hardware.lan";
+
+    public static final String PAGE_URL_HARDWARE_WIRELESS = "lan.gui.page.url.hardware.wireless";
+
+    public static final String PAGE_TITLE_HARDWARE_WIRELESS = "lan.gui.page.title.hardware.wireless";
+
+    public static final String LINK_TEXT_HARDWARE_WIRELESS = "lan.gui.link.text.hardware.wireless";
+
+    public static final String PAGE_URL_MANAGED_SERVICES = "lan.gui.page.url.managed.services";
+
+    public static final String PAGE_TITLE_MANAGED_SERVICES = "lan.gui.page.title.managed.services";
+
+    public static final String PAGE_URL_REPORTS = "lan.gui.page.url.reports";
+
+    public static final String PAGE_TITLE_REPORTS = "lan.gui.page.title.reports";
+
+    public static final String LINK_TEXT_REPORTS = "lan.gui.link.text.reports";
+
+    public static final String PAGE_URL_ADVANCED = "lan.gui.page.url.advanced";
+
+    public static final String PAGE_TITLE_ADVANCED = "lan.gui.page.title.advanced";
+
+    public static final String LINK_TEXT_ADVANCED = "lan.gui.link.text.advanced";
+
+    public static final String PAGE_URL_ADVANCED_REMOTE_MGMT = "lan.gui.page.url.advanced.remote.mgmt";
+
+    public static final String PAGE_TITLE_ADVANCED_REMOTE_MGMT = "lan.gui.page.title.advanced.remote.mgmt";
+
+    public static final String LINK_TEXT_ADVANCED_REMOTE_MGMT = "lan.gui.link.text.advanced.remote.mgmt";
+
+    public static final String PAGE_URL_ADVANCED_DMZ = "lan.gui.page.url.advanced.dmz";
+
+    public static final String PAGE_TITLE_ADVANCED_DMZ = "lan.gui.page.title.advanced.dmz";
+
+    public static final String LINK_TEXT_ADVANCED_DMZ = "lan.gui.link.text.advanced.dmz";
+
+    public static final String PAGE_URL_ADVANCED_DEVICE_DISCOVER = "lan.gui.page.url.advanced.device.discover";
+
+    public static final String PAGE_TITLE_ADVANCED_DEVICE_DISCOVER = "lan.gui.page.title.advanced.device.discover";
+
+    public static final String LINK_TEXT_ADVANCED_DEVICE_DISCOVER = "lan.gui.link.text.advanced.device.discover";
+
+    public static final String PAGE_URL_TROUBLESHOOTING_LOGS = "lan.gui.page.url.troubleshooting.logs";
+
+    public static final String PAGE_TITLE_TROUBLESHOOTING_LOGS = "lan.gui.page.title.troubleshooting.logs";
+
+    public static final String LINK_TEXT_TROUBLESHOOTING_LOGS = "lan.gui.link.text.troubleshooting.logs";
+
+    public static final String PAGE_URL_TROUBLESHOOTING_WIFI_SPECTRUM_ANALYZER = "lan.gui.page.url.troubleshooting.wifi.spectrum.analyzer";
+
+    public static final String PAGE_TITLE_TROUBLESHOOTING_WIFI_SPECTRUM_ANALYZER = "lan.gui.page.title.troubleshooting.wifi.spectrum.analyzer";
+
+    public static final String LINK_TEXT_TROUBLESHOOTING_WIFI_SPECTRUM_ANALYZER = "lan.gui.link.text.troubleshooting.wifi.spectrum.analyzer";
+
+    public static final String PAGE_URL_TROUBLESHOOTING_MOCA_DIAGNOSTICS = "lan.gui.page.url.troubleshooting.moca.diagnostics";
+
+    public static final String PAGE_TITLE_TROUBLESHOOTING_MOCA_DIAGNOSTICS = "lan.gui.page.title.troubleshooting.moca.diagnostics";
+
+    public static final String LINK_TEXT_TROUBLESHOOTING_MOCA_DIAGNOSTICS = "lan.gui.link.text.troubleshooting.moca.diagnostics";
+
+    public static final String PAGE_URL_TROUBLESHOOTING_CHANGE_PWD = "lan.gui.page.url.troubleshooting.change.pwd";
+
+    public static final String PAGE_TITLE_TROUBLESHOOTING_CHANGE_PWD = "lan.gui.page.title.troubleshooting.change.pwd";
+
+    public static final String LINK_TEXT_TROUBLESHOOTING_CHANGE_PWD = "lan.gui.link.text.troubleshooting.change.pwd";
+
+    public static final String PAGE_URL_MANAGED_SITES = "lan.gui.page.url.managed.sites";
+
+    public static final String PAGE_TITLE_MANAGED_SITES = "lan.gui.page.title.managed.sites";
+
+    public static final String LINK_TEXT_MANAGED_SITES = "lan.gui.link.text.managed.sites";
+    
+    public static final String LINK_TEXT_MANAGED_SERVICES = "lan.gui.link.managed.services";
+    
+    public static final String PAGE_TITLE_PARENTAL_CONTROL_MANAGED_DEVICES = "lan.gui.page.title.parental.control.managed.devices";
+    
+    /** property to configure page title for port triggering page */
+    public static final String PROP_KEY_LINK_TEXT_PORT_TRIGGERING = "lan.gui.link.text.port.triggering";
+    
+    /** property to configure page title for port triggering page */
+    public static final String PROP_KEY_PAGE_URL_PORT_TRIGGERING = "lan.gui.page.url.port.triggering";
+    
+    /** property to configure page title for port triggering page */
+    public static final String PROP_KEY_PAGE_TITLE_PORT_TRIGGERING = "lan.gui.page.title.port.triggering";
+    
+    /** The property key to hold parodus token server url */
+    public static final String PROP_KEY_INVALID_PARODUS_TOKEN_SERVER_URL = "parodus.invalid.token.server.url";
+
 }

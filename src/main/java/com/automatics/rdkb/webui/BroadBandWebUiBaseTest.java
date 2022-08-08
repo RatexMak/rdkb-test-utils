@@ -18,6 +18,9 @@
 
 package com.automatics.rdkb.webui;
 
+import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.automatics.test.AutomaticsTestBase;
 
 /**
@@ -27,5 +30,18 @@ import com.automatics.test.AutomaticsTestBase;
  * @Refactor Alan_Bivera
  */
 public class BroadBandWebUiBaseTest extends AutomaticsTestBase{
+    
+    /** SLF4j logger. */
+    public static final Logger LOGGER = LoggerFactory.getLogger(BroadBandWebUiBaseTest.class);
+
+    /**
+     * System property which decides which browser should we use for validation.
+     */
+    private static final String BROWSER_SWITCH_CHROME_BROWSER = "USE_CHROME_BROWSER";
+
+
+    private static final String SELENIUM_FIREFOX_DEFAULT_BINARY_PATH = "/usr/local/bin/geckodriver";
+
+    protected WebDriver driver;
 
 }

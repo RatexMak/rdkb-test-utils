@@ -2943,333 +2943,366 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 		LOGGER.debug("ENDING METHOD: validateIfWifiDriverIsIntelForClient ");
 		return result;
 	}
-	
-    /**
-     * Verify the both ssid's are visible in connected client
-     * 
-     * @param device
-     *            {@link Dut} Reference
-     * @param tapEnv
-     *            {@link AutomaticsTapApi} Reference
-     * @param deviceToVerify
-     *            Connected client device device instance
-     * @param wifiType
-     *            Type will be Public WiFi or Private WiFi
-     * @param isSsidVisible
-     *            Status of radio 2.4/5 GHz band is enable/disabled
-     * @return true if SSID is visible/invisible in client device based on isSsidVisible
-     * 
-     * @refactor Athira
-     */
-    public static boolean validateVisibleStateOfBothSsidInConnectedClient(Dut device, AutomaticsTapApi tapEnv,
-	    Dut deviceToVerify, String wifiType, boolean isSsidVisible) {
-	boolean visibleStatus2Ghz = false;
-	boolean visibleStatus5Ghz = false;
-	String ssid2Ghz = null;
-	String ssid5Ghz = null;
-	LOGGER.info("validateVisibleStateOfBothSsidInConnectedClient started ");
-	LOGGER.info("SSID 5GHZ :" + ssid5Ghz);
-	LOGGER.info("wifiType :" + wifiType);
-	LOGGER.info("SSID 5GHZ :" + ssid5Ghz);
-	
-	if (wifiType.equalsIgnoreCase(BroadBandTestConstants.WIFI_PRIVATE)) {
-	    ssid2Ghz = BroadBandConnectedClientUtils.getSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv,
-		    WiFiFrequencyBand.WIFI_BAND_2_GHZ);
-	    ssid5Ghz = BroadBandConnectedClientUtils.getSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv,
-		    WiFiFrequencyBand.WIFI_BAND_5_GHZ);
-	} else if (wifiType.equalsIgnoreCase(BroadBandTestConstants.PUBLIC_WIFI_TYPE)) {
-	    ssid2Ghz = BroadBandConnectedClientUtils.getPublicSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv,
-		    WiFiFrequencyBand.WIFI_BAND_2_GHZ);
-	    ssid5Ghz = BroadBandConnectedClientUtils.getPublicSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv,
-		    WiFiFrequencyBand.WIFI_BAND_5_GHZ);
-	} else if (wifiType.equalsIgnoreCase(BroadBandTestConstants.SECURED_WIFI_PUBLIC)) {
-	    ssid2Ghz = BroadBandConnectedClientUtils.getSecuredPublicSsidNameFromGatewayUsingWebPaOrDmcli(device,
-		    tapEnv, WiFiFrequencyBand.WIFI_BAND_2_GHZ);
-	    ssid5Ghz = BroadBandConnectedClientUtils.getSecuredPublicSsidNameFromGatewayUsingWebPaOrDmcli(device,
-		    tapEnv, WiFiFrequencyBand.WIFI_BAND_5_GHZ);
+
+	/**
+	 * Verify the both ssid's are visible in connected client
+	 * 
+	 * @param device         {@link Dut} Reference
+	 * @param tapEnv         {@link AutomaticsTapApi} Reference
+	 * @param deviceToVerify Connected client device device instance
+	 * @param wifiType       Type will be Public WiFi or Private WiFi
+	 * @param isSsidVisible  Status of radio 2.4/5 GHz band is enable/disabled
+	 * @return true if SSID is visible/invisible in client device based on
+	 *         isSsidVisible
+	 * 
+	 * @refactor Athira
+	 */
+	public static boolean validateVisibleStateOfBothSsidInConnectedClient(Dut device, AutomaticsTapApi tapEnv,
+			Dut deviceToVerify, String wifiType, boolean isSsidVisible) {
+		boolean visibleStatus2Ghz = false;
+		boolean visibleStatus5Ghz = false;
+		String ssid2Ghz = null;
+		String ssid5Ghz = null;
+		LOGGER.info("validateVisibleStateOfBothSsidInConnectedClient started ");
+		LOGGER.info("SSID 5GHZ :" + ssid5Ghz);
+		LOGGER.info("wifiType :" + wifiType);
+		LOGGER.info("SSID 5GHZ :" + ssid5Ghz);
+
+		if (wifiType.equalsIgnoreCase(BroadBandTestConstants.WIFI_PRIVATE)) {
+			ssid2Ghz = BroadBandConnectedClientUtils.getSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv,
+					WiFiFrequencyBand.WIFI_BAND_2_GHZ);
+			ssid5Ghz = BroadBandConnectedClientUtils.getSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv,
+					WiFiFrequencyBand.WIFI_BAND_5_GHZ);
+		} else if (wifiType.equalsIgnoreCase(BroadBandTestConstants.PUBLIC_WIFI_TYPE)) {
+			ssid2Ghz = BroadBandConnectedClientUtils.getPublicSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv,
+					WiFiFrequencyBand.WIFI_BAND_2_GHZ);
+			ssid5Ghz = BroadBandConnectedClientUtils.getPublicSsidNameFromGatewayUsingWebPaOrDmcli(device, tapEnv,
+					WiFiFrequencyBand.WIFI_BAND_5_GHZ);
+		} else if (wifiType.equalsIgnoreCase(BroadBandTestConstants.SECURED_WIFI_PUBLIC)) {
+			ssid2Ghz = BroadBandConnectedClientUtils.getSecuredPublicSsidNameFromGatewayUsingWebPaOrDmcli(device,
+					tapEnv, WiFiFrequencyBand.WIFI_BAND_2_GHZ);
+			ssid5Ghz = BroadBandConnectedClientUtils.getSecuredPublicSsidNameFromGatewayUsingWebPaOrDmcli(device,
+					tapEnv, WiFiFrequencyBand.WIFI_BAND_5_GHZ);
+		}
+		LOGGER.info("SSID 2GHZ :" + ssid2Ghz);
+		LOGGER.info("SSID 5GHZ :" + ssid5Ghz);
+		visibleStatus2Ghz = BroadBandWiFiUtils.scanAndVerifyVisibleSsidInCnctdClintDeviceWithPollDuration(
+				deviceToVerify, tapEnv, ssid2Ghz, isSsidVisible, BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS);
+		if (visibleStatus2Ghz) {
+			visibleStatus5Ghz = BroadBandWiFiUtils.scanAndVerifyVisibleSsidInCnctdClintDeviceWithPollDuration(
+					deviceToVerify, tapEnv, ssid5Ghz, isSsidVisible, BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS);
+		}
+		LOGGER.info(" VALIDATED "
+				+ (wifiType.equalsIgnoreCase(BroadBandTestConstants.WIFI_PRIVATE)
+						? BroadBandTestConstants.WIFI_PRIVATE.toUpperCase()
+						: BroadBandTestConstants.WIFI_PUBLIC.toUpperCase())
+				+ " 2.4 GHZ SSID BROADCASTED IN CONNECTED CLIENT : EXPECTED :"
+				+ (isSsidVisible ? " SHOULD BE " : " SHOULD NOT BE ") + " VISIBLE " + " ACTUAL : " + visibleStatus2Ghz);
+		LOGGER.info(" VALIDATED "
+				+ (wifiType.equalsIgnoreCase(BroadBandTestConstants.WIFI_PRIVATE)
+						? BroadBandTestConstants.WIFI_PRIVATE.toUpperCase()
+						: BroadBandTestConstants.WIFI_PUBLIC.toUpperCase())
+				+ " 5 GHZ SSID BROADCASTED IN CONNECTED CLIENT : EXPECTED :"
+				+ (isSsidVisible ? " SHOULD BE " : " SHOULD NOT BE ") + " VISIBLE " + " ACTUAL : " + visibleStatus5Ghz);
+		LOGGER.info("validateVisibleStateOfBothSsidInConnectedClient End ");
+		return visibleStatus2Ghz && visibleStatus5Ghz;
 	}
-	LOGGER.info("SSID 2GHZ :" + ssid2Ghz);
-	LOGGER.info("SSID 5GHZ :" + ssid5Ghz);
-	visibleStatus2Ghz = BroadBandWiFiUtils.scanAndVerifyVisibleSsidInCnctdClintDeviceWithPollDuration(
-		deviceToVerify, tapEnv, ssid2Ghz, isSsidVisible, BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS);
-	if (visibleStatus2Ghz) {
-	    visibleStatus5Ghz = BroadBandWiFiUtils.scanAndVerifyVisibleSsidInCnctdClintDeviceWithPollDuration(
-		    deviceToVerify, tapEnv, ssid5Ghz, isSsidVisible, BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS);
+
+	/**
+	 * Method to modify private wifi SSID and password for 2.4 and 5 Ghz
+	 * 
+	 * @param device
+	 * @return setResult
+	 * @refactor Athira
+	 */
+
+	public static boolean changeWiFiSsidAndPassphraseFor24And5Ghz(Dut device, WEBPA_AP_INDEXES indexes) {
+		boolean setResult = false;
+
+		List<WebPaParameter> webPaParameters = new ArrayList<WebPaParameter>();
+		Map<String, String> webpaResponse = null;
+		String ssid_24 = BroadBandTestConstants.STRING_24_WIFI_SSID_PREFIX + Long.toString(System.currentTimeMillis())
+				+ BroadBandTestConstants.CHARACTER_UNDER_SCORE + indexes.name();
+		String ssid_5 = BroadBandTestConstants.STRING_5_WIFI_SSID_PREFIX + Long.toString(System.currentTimeMillis())
+				+ BroadBandTestConstants.CHARACTER_UNDER_SCORE + indexes.name();
+		LOGGER.info("The SSIDs for 2.4 and 5 GHz " + indexes + ": 2.4 GHz - " + ssid_24 + " 5 GHz - " + ssid_5);
+		webPaParameters
+				.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+						BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_NAME
+								.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get24Ghz()),
+						ssid_24, WebPaDataTypes.STRING.getValue()));
+		webPaParameters
+				.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+						BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_NAME
+								.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get5Ghz()),
+						ssid_5, WebPaDataTypes.STRING.getValue()));
+		webPaParameters.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+				BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_ENABLE
+						.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get24Ghz()),
+				BroadBandTestConstants.TRUE, BroadBandTestConstants.CONSTANT_3));
+		webPaParameters.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+				BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_ENABLE
+						.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get5Ghz()),
+				BroadBandTestConstants.TRUE, BroadBandTestConstants.CONSTANT_3));
+		webPaParameters.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+				BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_SSIDADVERTISEMENT
+						.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get24Ghz()),
+				BroadBandTestConstants.TRUE, BroadBandTestConstants.CONSTANT_3));
+		webPaParameters.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
+				BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_SSIDADVERTISEMENT
+						.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get5Ghz()),
+				BroadBandTestConstants.TRUE, BroadBandTestConstants.CONSTANT_3));
+		webpaResponse = tapEnv.executeMultipleWebPaSetCommands(device, webPaParameters);
+		setResult = null != webpaResponse && !webpaResponse.isEmpty()
+				&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
+						BroadBandTestConstants.SUCCESS_TXT,
+						webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_NAME
+								.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get24Ghz())))
+				&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
+						BroadBandTestConstants.SUCCESS_TXT,
+						webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_NAME
+								.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get5Ghz())))
+				&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
+						BroadBandTestConstants.SUCCESS_TXT,
+						webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_ENABLE
+								.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get24Ghz())))
+				&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
+						BroadBandTestConstants.SUCCESS_TXT,
+						webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_ENABLE
+								.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get5Ghz())))
+				&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
+						BroadBandTestConstants.SUCCESS_TXT,
+						webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_SSIDADVERTISEMENT
+								.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get24Ghz())))
+				&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
+						BroadBandTestConstants.SUCCESS_TXT,
+						webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_SSIDADVERTISEMENT
+								.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get5Ghz())));
+
+		return setResult;
 	}
-	LOGGER.info(" VALIDATED "
-		+ (wifiType.equalsIgnoreCase(BroadBandTestConstants.WIFI_PRIVATE)
-			? BroadBandTestConstants.WIFI_PRIVATE.toUpperCase()
-			: BroadBandTestConstants.WIFI_PUBLIC.toUpperCase())
-		+ " 2.4 GHZ SSID BROADCASTED IN CONNECTED CLIENT : EXPECTED :"
-		+ (isSsidVisible ? " SHOULD BE " : " SHOULD NOT BE ") + " VISIBLE " + " ACTUAL : " + visibleStatus2Ghz);
-	LOGGER.info(" VALIDATED "
-		+ (wifiType.equalsIgnoreCase(BroadBandTestConstants.WIFI_PRIVATE)
-			? BroadBandTestConstants.WIFI_PRIVATE.toUpperCase()
-			: BroadBandTestConstants.WIFI_PUBLIC.toUpperCase())
-		+ " 5 GHZ SSID BROADCASTED IN CONNECTED CLIENT : EXPECTED :"
-		+ (isSsidVisible ? " SHOULD BE " : " SHOULD NOT BE ") + " VISIBLE " + " ACTUAL : " + visibleStatus5Ghz);
-	LOGGER.info("validateVisibleStateOfBothSsidInConnectedClient End ");
-	return visibleStatus2Ghz && visibleStatus5Ghz;
-    }
-    
-    /**
-     * Method to modify private wifi SSID and password for 2.4 and 5 Ghz
-     * 
-     * @param device
-     * @return setResult
-     * @refactor Athira
-     */
 
-    public static boolean changeWiFiSsidAndPassphraseFor24And5Ghz(Dut device, WEBPA_AP_INDEXES indexes) {
-	boolean setResult = false;
+	/**
+	 * Method to generate the traffic using ping or curl with multiple urls
+	 * 
+	 * @param device          {@link Dut}
+	 * @param deviceConnected Device Connected
+	 * @return status . Its return True,if ping or curl is success, Else False
+	 * @refactor Said Hisham
+	 */
+	public static boolean generateTrafficUsingCurlOrPing(Dut device, Dut deviceConnected) {
+		LOGGER.debug("STARTING METHOD : generateTrafficUsingCurlOrPing()");
+		boolean status = false;
+		int pingCount = 0;
+		BroadBandResultObject resultObject = new BroadBandResultObject();
+		List<String> listOfWebSitesToCurl = BroadBandTestConstants.getListOfWebSitesToCurl();
+		long startTime = System.currentTimeMillis();
+		LOGGER.info("Ping or Curl Operation startTime :" + startTime);
+		do {
+			for (String strUrl : listOfWebSitesToCurl) {
+				resultObject = BroadBandConnectedClientUtils.verifyInternetIsAccessibleInConnectedClientUsingCurl(
+						tapEnv, deviceConnected, strUrl, BroadBandTestConstants.IP_VERSION4);
+				status = resultObject.isStatus();
+				if (!status) {
+					status = ConnectedNattedClientsUtils.verifyPingConnectionForIpv4AndIpv6(deviceConnected, tapEnv,
+							strUrl.replace(BroadBandTestConstants.URL_HTTPS, ""), BroadBandTestConstants.IP_VERSION4);
+				}
+				if (status) {
+					pingCount = pingCount + 1;
+				}
+			}
+			LOGGER.info("PING OR CURL OPERATION COMPLETED");
+		} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TWO_MINUTES
+				&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.TEN_SECOND_IN_MILLIS));
+		LOGGER.info("Ping or Curl Operation EndTime :" + System.currentTimeMillis());
+		LOGGER.info("Ping or Curl Operation Count :" + pingCount);
+		if (pingCount > 0) {
+			status = true;
+		}
+		LOGGER.debug("ENDING METHOD : generateTrafficUsingCurlOrPing()");
+		return status;
+	}
 
-	List<WebPaParameter> webPaParameters = new ArrayList<WebPaParameter>();
-	Map<String, String> webpaResponse = null;
-	String ssid_24 = BroadBandTestConstants.STRING_24_WIFI_SSID_PREFIX + Long.toString(System.currentTimeMillis())
-		+ BroadBandTestConstants.CHARACTER_UNDER_SCORE + indexes.name();
-	String ssid_5 = BroadBandTestConstants.STRING_5_WIFI_SSID_PREFIX + Long.toString(System.currentTimeMillis())
-		+ BroadBandTestConstants.CHARACTER_UNDER_SCORE + indexes.name();
-	LOGGER.info("The SSIDs for 2.4 and 5 GHz " + indexes + ": 2.4 GHz - " + ssid_24 + " 5 GHz - " + ssid_5);
-	webPaParameters
-		.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
-			BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_NAME
-				.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get24Ghz()),
-			ssid_24, WebPaDataTypes.STRING.getValue()));
-	webPaParameters
-		.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
-			BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_NAME
-				.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get5Ghz()),
-			ssid_5, WebPaDataTypes.STRING.getValue()));
-	webPaParameters.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
-		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_ENABLE
-			.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get24Ghz()),
-		BroadBandTestConstants.TRUE, BroadBandTestConstants.CONSTANT_3));
-	webPaParameters.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
-		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_ENABLE
-			.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get5Ghz()),
-		BroadBandTestConstants.TRUE, BroadBandTestConstants.CONSTANT_3));
-	webPaParameters.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
-		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_SSIDADVERTISEMENT
-			.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get24Ghz()),
-		BroadBandTestConstants.TRUE, BroadBandTestConstants.CONSTANT_3));
-	webPaParameters.add(BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
-		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_SSIDADVERTISEMENT
-			.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get5Ghz()),
-		BroadBandTestConstants.TRUE, BroadBandTestConstants.CONSTANT_3));
-	webpaResponse = tapEnv.executeMultipleWebPaSetCommands(device, webPaParameters);
-	setResult = null != webpaResponse && !webpaResponse.isEmpty()
-		&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
-			BroadBandTestConstants.SUCCESS_TXT,
-			webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_NAME
-				.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get24Ghz())))
-		&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
-			BroadBandTestConstants.SUCCESS_TXT,
-			webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_NAME
-				.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get5Ghz())))
-		&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
-			BroadBandTestConstants.SUCCESS_TXT,
-			webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_ENABLE
-				.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get24Ghz())))
-		&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
-			BroadBandTestConstants.SUCCESS_TXT,
-			webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_ENABLE
-				.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get5Ghz())))
-		&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
-			BroadBandTestConstants.SUCCESS_TXT,
-			webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_SSIDADVERTISEMENT
-				.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get24Ghz())))
-		&& BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON,
-			BroadBandTestConstants.SUCCESS_TXT,
-			webpaResponse.get(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_SSIDADVERTISEMENT
-				.replace(BroadBandTestConstants.TR181_NODE_REF, indexes.get5Ghz())));
+	/**
+	 * Utility method used to validate the invalid subent mask values for
+	 * residential and commercial devices
+	 * 
+	 * @param settop {@link Instanceof Dut}
+	 * @return objResult {@link Instanceof BroadBandResultObject}
+	 * @refactor Said Hisham
+	 */
+	public static BroadBandResultObject validateInValidSubnetMaskValues(Dut settop, String previousSetValue) {
+		LOGGER.debug("STARTING METHOD : validateInValidSubnetMaskValues()");
+		BroadBandResultObject objResult = new BroadBandResultObject();
+		String errorMessage = "";
+		boolean status = false;
+		int resultCount = BroadBandTestConstants.CONSTANT_0;
+		boolean result = false;
+		String currentTimeStamp = null;
+		List<String> listOfSubnetMask = null;
+		String subnetMaskFromProperty = null;
+		try {
+			subnetMaskFromProperty = AutomaticsTapApi.getAutomaticsPropsValueByResolvingPlatform(settop,
+					BroadBandTestConstants.PROP_KEY_INVALID_SUBNETMAK_VALUES);
+			listOfSubnetMask = Arrays.asList(subnetMaskFromProperty.split(BroadBandTestConstants.COMMA));
+			LOGGER.info("Current subnetmask value:" + previousSetValue);
+			LOGGER.info("List of Invalid Subnet masks:" + listOfSubnetMask);
+			LOGGER.info("List of Invalid Subnet masks size:" + listOfSubnetMask.size());
+			if (listOfSubnetMask.size() > BroadBandTestConstants.CONSTANT_0) {
+				for (String subnetMask : listOfSubnetMask) {
+					currentTimeStamp = BroadBandCommonUtils.getCurrentTimeStampOnDevice(tapEnv, settop);
+					tapEnv.waitTill(BroadBandTestConstants.THREE_SECONDS_IN_MILLIS);
+					if (!BroadBandWebPaUtils.setVerifyWebPAInPolledDuration(settop, tapEnv,
+							BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_LAN_SUBNET, WebPaDataTypes.STRING.getValue(),
+							subnetMask, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS,
+							BroadBandTestConstants.TEN_SECOND_IN_MILLIS)) {
+						LOGGER.info("Unable to set the invalid subnet mask values");
+						if (BroadBandCommonUtils.validateLogMessageInPamLog(settop, tapEnv,
+								BroadBandTestConstants.BOOLEAN_VALUE_TRUE, currentTimeStamp)
+								&& BroadBandCommonUtils.validateLogMessageInPamLog(settop, tapEnv,
+										BroadBandTestConstants.BOOLEAN_VALUE_FALSE, currentTimeStamp)) {
+							LOGGER.info("Log message validation successful in "
+									+ BroadBandTestConstants.COMMAND_NTP_LOG_FILE);
+							result = BroadBandWebPaUtils.getAndVerifyWebpaValueInPolledDuration(settop, tapEnv,
+									BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_LAN_SUBNET, previousSetValue,
+									BroadBandTestConstants.ONE_MINUTE_IN_MILLIS,
+									BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+							if (result) {
+								LOGGER.info("Successfully verified the previouse set subnet mask value is persisted "
+										+ subnetMask);
+								resultCount = resultCount + 1;
+							} else {
+								errorMessage += "Failed to verify the previouse set subnet mask value is persisted "
+										+ subnetMask + " \n";
+							}
+						} else {
+							errorMessage += "Failed to validate the log message in "
+									+ BroadBandTestConstants.COMMAND_NTP_LOG_FILE + " for " + subnetMask + " \n";
+						}
+					} else {
+						errorMessage += "Failed to set and verify the invalid subnet mask " + subnetMask
+								+ " using webpa \n";
+					}
+				}
+				LOGGER.info("Subnet masks success Count:" + resultCount);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Exception occurres while validating invalid subnet mask values" + e.getMessage());
+			errorMessage = e.getMessage();
+		}
+		status = (resultCount == listOfSubnetMask.size());
+		objResult.setStatus(status);
+		objResult.setErrorMessage(errorMessage);
+		LOGGER.debug("ENDING METHOD: validateInValidSubnetMaskValues()");
+		return objResult;
+	}
 
-	return setResult;
-    }
-    
-    /**
-     * Method to generate the traffic using ping or curl with multiple urls
-     * 
-     * @param device
-     *            {@link Dut}
-     * @param deviceConnected
-     *            Device Connected
-     * @return status . Its return True,if ping or curl is success, Else False
-     * @refactor Said Hisham
-     */
-    public static boolean generateTrafficUsingCurlOrPing(Dut device, Dut deviceConnected) {
-	LOGGER.debug("STARTING METHOD : generateTrafficUsingCurlOrPing()");
-	boolean status = false;
-	int pingCount = 0;
-	BroadBandResultObject resultObject = new BroadBandResultObject();
-	List<String> listOfWebSitesToCurl = BroadBandTestConstants.getListOfWebSitesToCurl();
-	long startTime = System.currentTimeMillis();
-	LOGGER.info("Ping or Curl Operation startTime :" + startTime);
-	do {
-	    for (String strUrl : listOfWebSitesToCurl) {
-		resultObject = BroadBandConnectedClientUtils.verifyInternetIsAccessibleInConnectedClientUsingCurl(
-			tapEnv, deviceConnected, strUrl, BroadBandTestConstants.IP_VERSION4);
-		status = resultObject.isStatus();
-		if (!status) {
-		    status = ConnectedNattedClientsUtils.verifyPingConnectionForIpv4AndIpv6(deviceConnected, tapEnv,
-			    strUrl.replace(BroadBandTestConstants.URL_HTTPS, ""), BroadBandTestConstants.IP_VERSION4);
+	/**
+	 * Utility method used to validate the valid subnet mask values
+	 * 
+	 * @param device          instance of {@link Dut}
+	 * @param deviceConnected * @param device instance of {@link Dut}
+	 * @return objResult- instance of {@link BroadBandResultObject}
+	 * @refactor Said Hisham
+	 */
+	public static BroadBandResultObject validateValidSubnetMaskValues(Dut device, AutomaticsTapApi tapEnv) {
+		LOGGER.debug("STARTING METHOD : validateValidSubnetMaskValues()");
+		BroadBandResultObject objResult = new BroadBandResultObject();
+		String errorMessage = "";
+		boolean status = false;
+		int resultCount = BroadBandTestConstants.CONSTANT_0;
+		boolean result = false;
+		String currentTimeStamp = null;
+		List<String> listOfSubnetMask = null;
+		String subnetMaskFromProperty = null;
+		try {
+			subnetMaskFromProperty = AutomaticsTapApi.getAutomaticsPropsValueByResolvingPlatform(device,
+					BroadBandTestConstants.PROP_KEY_VALID_SUBNETMAK_VALUES);
+			listOfSubnetMask = Arrays.asList(subnetMaskFromProperty.split(BroadBandTestConstants.COMMA));
+			LOGGER.info("List of Valid Subnet masks:" + listOfSubnetMask);
+			LOGGER.info("List of Valid Subnet masks size:" + listOfSubnetMask.size());
+			if (listOfSubnetMask.size() > BroadBandTestConstants.CONSTANT_0) {
+				for (String subnetMaskAddress : listOfSubnetMask) {
+					LOGGER.info("SUBNET MASK ADDRESS:" + subnetMaskAddress);
+					currentTimeStamp = BroadBandCommonUtils.getCurrentTimeStampOnDevice(tapEnv, device);
+					tapEnv.waitTill(BroadBandTestConstants.FIVE_SECONDS_IN_MILLIS);
+					if (BroadBandWebPaUtils.setVerifyWebPAInPolledDuration(device, tapEnv,
+							BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_LAN_SUBNET, BroadBandTestConstants.CONSTANT_0,
+							subnetMaskAddress, BroadBandTestConstants.TWO_MINUTE_IN_MILLIS,
+							BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS)) {
+						LOGGER.info("Subnet Mask set successfully ");
+						result = BroadBandCommonUtils.validateLogMessageInPamLog(device, tapEnv,
+								BroadBandTestConstants.BOOLEAN_VALUE_TRUE, currentTimeStamp)
+								&& !BroadBandCommonUtils.validateLogMessageInPamLog(device, tapEnv,
+										BroadBandTestConstants.BOOLEAN_VALUE_FALSE, currentTimeStamp);
+						LOGGER.info("Log message validation completed");
+						if (result) {
+							LOGGER.info("Successfully set the subnet mask value " + subnetMaskAddress);
+							resultCount = resultCount + BroadBandTestConstants.CONSTANT_1;
+						} else {
+							errorMessage += "Failed to set the subnet mask value " + subnetMaskAddress;
+							LOGGER.error(errorMessage);
+						}
+					} else {
+						errorMessage += "Failed to set and verify the subnet mask " + subnetMaskAddress
+								+ " using webpa \n";
+						LOGGER.error(errorMessage);
+					}
+				}
+				LOGGER.info("List of Subnet masks:" + listOfSubnetMask.size());
+				LOGGER.info("Subnet masks success Count:" + resultCount);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Excepton Occured in validateValidSubnetMaskValues() " + e.getMessage());
+		}
+		status = (resultCount == listOfSubnetMask.size());
+		objResult.setStatus(status);
+		objResult.setErrorMessage(errorMessage);
+		LOGGER.debug("ENDING METHOD: validateValidSubnetMaskValues()");
+		return objResult;
+	}
+
+	/**
+	 * Method to VERIFY DISCONNECTING THE WIFI CLIENT FROM THE GATEWAY DEVICE
+	 * 
+	 * @param device          {@link Dut}
+	 * @param testId          Test case ID
+	 * @param deviceConnected Device Connected
+	 * @param wifiBand
+	 * @param stepNumber      Step Number
+	 * 
+	 * @refactor Athira
+	 */
+	public static void verifyClientMacInGateway(Dut device, String testId, Dut deviceConnected,
+			WiFiFrequencyBand wifiBand, int stepNumber) throws TestException {
+		String testStepNumber = "S" + stepNumber;
+		boolean status = false;
+		LOGGER.info("#######################################################################################");
+		LOGGER.info("STEP :  " + stepNumber + " : DESCRIPTION : VERIFY " + wifiBand
+				+ " CONNECTED CLIENT'S MAC ADDRESS IN GATEWAY");
+		LOGGER.info("STEP :  " + stepNumber + " : ACTION : EXECUTE COMMAND arp -n IN THE GATEWAY DEVICE");
+		LOGGER.info("STEP :  " + stepNumber + " : EXPECTED: MUST RETURN HAVE CONNECTED CLIENT MAC ADDRESS");
+		LOGGER.info("#######################################################################################");
+		String errorMessage = "THE GATEWAY DOESN'T HAVE THE CLIENT'S MAC ADDRESS WHILE EXECUTING COMMAND : '/sbin/arp -n | grep -i <MAC ADDRESS>'";
+		try {
+			// getConnectedClientIpOrMacFromTheDevice API GETS THE MAC ADDRESS FROM THE
+			// CLIENT AND VERIFIES
+			// IF THE GATEWAY HAS THE SAME MAC ADDRESS USING COMMAND : "/sbin/arp -n | grep
+			// -i <MAC ADDRESS>"
+			String macAddressRetrievedFromClient = BroadBandConnectedClientUtils
+					.getConnectedClientIpOrMacFromTheDevice(device, deviceConnected, tapEnv, false);
+			status = CommonMethods.isNotNull(macAddressRetrievedFromClient);
+		} catch (TestException exp) {
+			errorMessage = exp.getMessage();
 		}
 		if (status) {
-		    pingCount = pingCount + 1;
+			LOGGER.info("STEP " + stepNumber
+					+ " : ACTUAL : SUCCESSFULLY VERIFIED THE MAC ADDRESS OF THE CLIENT IN THE GATEWAY");
+		} else {
+			LOGGER.error("STEP " + stepNumber + " : ACTUAL : " + errorMessage);
 		}
-	    }
-	    LOGGER.info("PING OR CURL OPERATION COMPLETED");
-	} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TWO_MINUTES
-		&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.TEN_SECOND_IN_MILLIS));
-	LOGGER.info("Ping or Curl Operation EndTime :" + System.currentTimeMillis());
-	LOGGER.info("Ping or Curl Operation Count :" + pingCount);
-	if (pingCount > 0) {
-	    status = true;
+		LOGGER.info("#######################################################################################");
+		tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
 	}
-	LOGGER.debug("ENDING METHOD : generateTrafficUsingCurlOrPing()");
-	return status;
-    }
-    
-    /**
-     * Utility method used to validate the invalid subent mask values for residential and commercial devices
-     * 
-     * @param settop
-     *            {@link Instanceof Dut}
-     * @return objResult {@link Instanceof BroadBandResultObject}
-     * @refactor Said Hisham
-     */
-    public static BroadBandResultObject validateInValidSubnetMaskValues(Dut settop, String previousSetValue) {
-	LOGGER.debug("STARTING METHOD : validateInValidSubnetMaskValues()");
-	BroadBandResultObject objResult = new BroadBandResultObject();
-	String errorMessage = "";
-	boolean status = false;
-	int resultCount = BroadBandTestConstants.CONSTANT_0;
-	boolean result = false;
-	String currentTimeStamp = null;
-	List<String> listOfSubnetMask = null;
-	String subnetMaskFromProperty = null;
-	try {
-	    subnetMaskFromProperty = AutomaticsTapApi.getAutomaticsPropsValueByResolvingPlatform(settop,
-		    BroadBandTestConstants.PROP_KEY_INVALID_SUBNETMAK_VALUES);
-	    listOfSubnetMask = Arrays.asList(subnetMaskFromProperty.split(BroadBandTestConstants.COMMA));
-	    LOGGER.info("Current subnetmask value:" + previousSetValue);
-	    LOGGER.info("List of Invalid Subnet masks:" + listOfSubnetMask);
-	    LOGGER.info("List of Invalid Subnet masks size:" + listOfSubnetMask.size());
-	    if (listOfSubnetMask.size() > BroadBandTestConstants.CONSTANT_0) {
-		for (String subnetMask : listOfSubnetMask) {
-		    currentTimeStamp = BroadBandCommonUtils.getCurrentTimeStampOnDevice(tapEnv, settop);
-		    tapEnv.waitTill(BroadBandTestConstants.THREE_SECONDS_IN_MILLIS);
-		    if (!BroadBandWebPaUtils.setVerifyWebPAInPolledDuration(settop, tapEnv,
-			    BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_LAN_SUBNET, WebPaDataTypes.STRING.getValue(),
-			    subnetMask, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS,
-			    BroadBandTestConstants.TEN_SECOND_IN_MILLIS)) {
-			LOGGER.info("Unable to set the invalid subnet mask values");
-			if (BroadBandCommonUtils.validateLogMessageInPamLog(settop, tapEnv,
-				BroadBandTestConstants.BOOLEAN_VALUE_TRUE, currentTimeStamp)
-				&& BroadBandCommonUtils.validateLogMessageInPamLog(settop, tapEnv,
-					BroadBandTestConstants.BOOLEAN_VALUE_FALSE, currentTimeStamp)) {
-			    LOGGER.info("Log message validation successful in "
-				    + BroadBandTestConstants.COMMAND_NTP_LOG_FILE);
-			    result = BroadBandWebPaUtils.getAndVerifyWebpaValueInPolledDuration(settop, tapEnv,
-				    BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_LAN_SUBNET, previousSetValue,
-				    BroadBandTestConstants.ONE_MINUTE_IN_MILLIS,
-				    BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
-			    if (result) {
-				LOGGER.info("Successfully verified the previouse set subnet mask value is persisted "
-					+ subnetMask);
-				resultCount = resultCount + 1;
-			    } else {
-				errorMessage += "Failed to verify the previouse set subnet mask value is persisted "
-					+ subnetMask + " \n";
-			    }
-			} else {
-			    errorMessage += "Failed to validate the log message in "
-				    + BroadBandTestConstants.COMMAND_NTP_LOG_FILE + " for " + subnetMask + " \n";
-			}
-		    } else {
-			errorMessage += "Failed to set and verify the invalid subnet mask " + subnetMask
-				+ " using webpa \n";
-		    }
-		}
-		LOGGER.info("Subnet masks success Count:" + resultCount);
-	    }
-	} catch (Exception e) {
-	    LOGGER.error("Exception occurres while validating invalid subnet mask values" + e.getMessage());
-	    errorMessage = e.getMessage();
-	}
-	status = (resultCount == listOfSubnetMask.size());
-	objResult.setStatus(status);
-	objResult.setErrorMessage(errorMessage);
-	LOGGER.debug("ENDING METHOD: validateInValidSubnetMaskValues()");
-	return objResult;
-    }
-    
-    /**
-     * Utility method used to validate the valid subnet mask values
-     * 
-     * @param device
-     *            instance of {@link Dut}
-     * @param deviceConnected
-     *            * @param device instance of {@link Dut}
-     * @return objResult- instance of {@link BroadBandResultObject}
-     * @refactor Said Hisham
-     */
-    public static BroadBandResultObject validateValidSubnetMaskValues(Dut device, AutomaticsTapApi tapEnv) {
-	LOGGER.debug("STARTING METHOD : validateValidSubnetMaskValues()");
-	BroadBandResultObject objResult = new BroadBandResultObject();
-	String errorMessage = "";
-	boolean status = false;
-	int resultCount = BroadBandTestConstants.CONSTANT_0;
-	boolean result = false;
-	String currentTimeStamp = null;
-	List<String> listOfSubnetMask = null;
-	String subnetMaskFromProperty = null;
-	try {
-	    subnetMaskFromProperty = AutomaticsTapApi.getAutomaticsPropsValueByResolvingPlatform(device,
-		    BroadBandTestConstants.PROP_KEY_VALID_SUBNETMAK_VALUES);
-	    listOfSubnetMask = Arrays.asList(subnetMaskFromProperty.split(BroadBandTestConstants.COMMA));
-	    LOGGER.info("List of Valid Subnet masks:" + listOfSubnetMask);
-	    LOGGER.info("List of Valid Subnet masks size:" + listOfSubnetMask.size());
-	    if (listOfSubnetMask.size() > BroadBandTestConstants.CONSTANT_0) {
-		for (String subnetMaskAddress : listOfSubnetMask) {
-		    LOGGER.info("SUBNET MASK ADDRESS:" + subnetMaskAddress);
-		    currentTimeStamp = BroadBandCommonUtils.getCurrentTimeStampOnDevice(tapEnv, device);
-		    tapEnv.waitTill(BroadBandTestConstants.FIVE_SECONDS_IN_MILLIS);
-		    if (BroadBandWebPaUtils.setVerifyWebPAInPolledDuration(device, tapEnv,
-			    BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_LAN_SUBNET, BroadBandTestConstants.CONSTANT_0,
-			    subnetMaskAddress, BroadBandTestConstants.TWO_MINUTE_IN_MILLIS,
-			    BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS)) {
-			LOGGER.info("Subnet Mask set successfully ");
-			result = BroadBandCommonUtils.validateLogMessageInPamLog(device, tapEnv,
-				BroadBandTestConstants.BOOLEAN_VALUE_TRUE, currentTimeStamp)
-				&& !BroadBandCommonUtils.validateLogMessageInPamLog(device, tapEnv,
-					BroadBandTestConstants.BOOLEAN_VALUE_FALSE, currentTimeStamp);
-			LOGGER.info("Log message validation completed");
-			if (result) {
-			    LOGGER.info("Successfully set the subnet mask value " + subnetMaskAddress);
-			    resultCount = resultCount + BroadBandTestConstants.CONSTANT_1;
-			} else {
-			    errorMessage += "Failed to set the subnet mask value " + subnetMaskAddress;
-			    LOGGER.error(errorMessage);
-			}
-		    } else {
-			errorMessage += "Failed to set and verify the subnet mask " + subnetMaskAddress
-				+ " using webpa \n";
-			LOGGER.error(errorMessage);
-		    }
-		}
-		LOGGER.info("List of Subnet masks:" + listOfSubnetMask.size());
-		LOGGER.info("Subnet masks success Count:" + resultCount);
-	    }
-	} catch (Exception e) {
-	    LOGGER.error("Excepton Occured in validateValidSubnetMaskValues() " + e.getMessage());
-	}
-	status = (resultCount == listOfSubnetMask.size());
-	objResult.setStatus(status);
-	objResult.setErrorMessage(errorMessage);
-	LOGGER.debug("ENDING METHOD: validateValidSubnetMaskValues()");
-	return objResult;
-    }
-    
 
-    
 }

@@ -17,10 +17,11 @@
 */
 package com.automatics.rdkb.utils.wifi;
 
+import com.automatics.device.Dut;
 import com.automatics.rdkb.webui.BroadBandWebUiBaseTest;
 
 public class BroadBandWifiBaseTest extends BroadBandWebUiBaseTest {
-	
+
 	
 
 }

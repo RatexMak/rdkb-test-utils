@@ -110,8 +110,8 @@ public class LanSideWiFiPage extends LanSideBasePage {
 			isJst = BroadBandCommonUtils.isWebUiUsesJst(tapEnv, device);
 			// Clicking on WiFi link
 			driver.findElement(By.xpath((isJst)
-					? BroadBandWebGuiTestConstant.XPATH_LAN_UI_WIFI_PAGE
-							.replace(BroadBandWebGuiTestConstant.DOT_PHP, BroadBandWebGuiTestConstant.DOT_JST)
+					? BroadBandWebGuiTestConstant.XPATH_LAN_UI_WIFI_PAGE.replace(BroadBandWebGuiTestConstant.DOT_PHP,
+							BroadBandWebGuiTestConstant.DOT_JST)
 					: BroadBandWebGuiTestConstant.XPATH_LAN_UI_WIFI_PAGE)).click();
 			tapEnv.waitTill(BroadBandTestConstants.TEN_SECOND_IN_MILLIS);
 
@@ -239,51 +239,88 @@ public class LanSideWiFiPage extends LanSideBasePage {
 		LOGGER.debug("Exiting method: navigateToWiFiEditPage");
 		return result;
 	}
-	
-    /**
-     * Method to edit wifi SSID and password Save settings
-     * 
-     * @param settop
-     * @param tapEnv
-     * @param driver
-     * @param networkName
-     * @param networkPassword
-     * @param is5Ghz
-     * @param bandwidthOption
-     * @return status
-     * @author Ashiwn Sankara
-     * @refactor Govardhan
-     */
-    public BroadBandResultObject editWifiPageAndSaveSettings(Dut device, AutomaticsTapApi tapEnv, WebDriver driver,
-	    String networkName, String networkPassword, boolean is5Ghz, String bandwidthOption) {
-	LOGGER.debug("Starting method: editWifiPageAndSaveSettings");
-	boolean status = false;
-	String errorMessage = "Unable to navigate to wifi edit page";
-	BroadBandResultObject broadBandResultObject = new BroadBandResultObject();
-	try {
-	    if (navigateToWiFiEditPage(device, tapEnv, is5Ghz)) {
-		errorMessage = "Unable to edit wifi settings in wifi edit page";
-		driver.findElement(By.id(BroadBandWebGuiElements.ELEMENT_ID_WIFI_EDIT_PAGE_SSID_NAME)).clear();
-		LanSideWiFiPage.sendKeys(By.id(BroadBandWebGuiElements.ELEMENT_ID_WIFI_EDIT_PAGE_SSID_NAME),
-			networkName);
-		driver.findElement(By.id(BroadBandWebGuiElements.ELEMENT_ID_SHOW_PWD_CHECKBOX)).click();
-		driver.findElement(By.id(BroadBandWebGuiElements.ELEMENT_ID_WIFI_EDIT_PAGE_SSID_PASSWORD)).clear();
-		LanSideWiFiPage.sendKeys(By.id(BroadBandWebGuiElements.ELEMENT_ID_WIFI_EDIT_PAGE_SSID_PASSWORD),
-			networkPassword);
-		// Add channel bandwidth
-		LanSideWiFiPage.click(By.id(bandwidthOption));
-		LanSideWiFiPage.click(By.id(BroadBandWebGuiElements.ELEMENT_ID_WIFI_EDIT_PAGE_SAVE_SETTING));
-		LOGGER.info("Waiting for two minutes to affect changes");
-		tapEnv.waitTill(BroadBandTestConstants.TWO_MINUTE_IN_MILLIS);
-		driver.navigate().refresh();
-		status = true;
-	    }
-	} catch (Exception exception) {
-	    LOGGER.error("Exception in Saving wifi settings \n" + exception.getMessage());
+
+	/**
+	 * Method to edit wifi SSID and password Save settings
+	 * 
+	 * @param settop
+	 * @param tapEnv
+	 * @param driver
+	 * @param networkName
+	 * @param networkPassword
+	 * @param is5Ghz
+	 * @param bandwidthOption
+	 * @return status
+	 * @author Ashiwn Sankara
+	 * @refactor Govardhan
+	 */
+	public BroadBandResultObject editWifiPageAndSaveSettings(Dut device, AutomaticsTapApi tapEnv, WebDriver driver,
+			String networkName, String networkPassword, boolean is5Ghz, String bandwidthOption) {
+		LOGGER.debug("Starting method: editWifiPageAndSaveSettings");
+		boolean status = false;
+		String errorMessage = "Unable to navigate to wifi edit page";
+		BroadBandResultObject broadBandResultObject = new BroadBandResultObject();
+		try {
+			if (navigateToWiFiEditPage(device, tapEnv, is5Ghz)) {
+				errorMessage = "Unable to edit wifi settings in wifi edit page";
+				driver.findElement(By.id(BroadBandWebGuiElements.ELEMENT_ID_WIFI_EDIT_PAGE_SSID_NAME)).clear();
+				LanSideWiFiPage.sendKeys(By.id(BroadBandWebGuiElements.ELEMENT_ID_WIFI_EDIT_PAGE_SSID_NAME),
+						networkName);
+				driver.findElement(By.id(BroadBandWebGuiElements.ELEMENT_ID_SHOW_PWD_CHECKBOX)).click();
+				driver.findElement(By.id(BroadBandWebGuiElements.ELEMENT_ID_WIFI_EDIT_PAGE_SSID_PASSWORD)).clear();
+				LanSideWiFiPage.sendKeys(By.id(BroadBandWebGuiElements.ELEMENT_ID_WIFI_EDIT_PAGE_SSID_PASSWORD),
+						networkPassword);
+				// Add channel bandwidth
+				LanSideWiFiPage.click(By.id(bandwidthOption));
+				LanSideWiFiPage.click(By.id(BroadBandWebGuiElements.ELEMENT_ID_WIFI_EDIT_PAGE_SAVE_SETTING));
+				LOGGER.info("Waiting for two minutes to affect changes");
+				tapEnv.waitTill(BroadBandTestConstants.TWO_MINUTE_IN_MILLIS);
+				driver.navigate().refresh();
+				status = true;
+			}
+		} catch (Exception exception) {
+			LOGGER.error("Exception in Saving wifi settings \n" + exception.getMessage());
+		}
+		LOGGER.debug("Ending method: editWifiPageAndSaveSettings");
+		broadBandResultObject.setErrorMessage(errorMessage);
+		broadBandResultObject.setStatus(status);
+		return broadBandResultObject;
 	}
-	LOGGER.debug("Ending method: editWifiPageAndSaveSettings");
-	broadBandResultObject.setErrorMessage(errorMessage);
-	broadBandResultObject.setStatus(status);
-	return broadBandResultObject;
-    }
+
+	/**
+	 * Utility method to select Connection from Gateway menu in GUI Home page
+	 * 
+	 * @param device Dut instance
+	 * @param tapEnv instance of {@link AutomaticsTapApi}
+	 * @return true if navigated to connection page and verified title
+	 * 
+	 * @author Ashiwn Sankara
+	 * @refactor Govardhan
+	 */
+	public boolean navigateToConnection(Dut device, AutomaticsTapApi tapEnv) {
+		LOGGER.debug("STARTING METHOD: navigateToConnection");
+		// Variable declaration starts
+		boolean result = false;
+		String pageTitle = "";
+		String errorMessage = "";
+		String partnerId = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+				BroadBandWebPaConstants.WEBPA_PARAM_FOR_SYNDICATION_PARTNER_ID);
+		// Variable declaration ends
+		try {
+
+			pageTitle = BroadbandPropertyFileHandler.getAtAGlancePageTitle();
+			LOGGER.info("STEP 2:pageTitle is " + pageTitle);
+
+			driver.findElement(By.linkText(BroadBandWebGuiTestConstant.LINK_TEXT_CONNECTION)).click();
+			tapEnv.waitTill(BroadBandTestConstants.TEN_SECOND_IN_MILLIS);
+			result = BroadBandWebUiUtils.validatePageLaunchedStatusWithPageTitle(driver, pageTitle);
+			LOGGER.info("STEP 2:result is " + result);
+		} catch (Exception exception) {
+			errorMessage = "Exception occured while clicking on Connection Link." + exception.getMessage();
+			LOGGER.error(errorMessage);
+		}
+		LOGGER.debug("ENDING METHOD: navigateToConnection");
+		return result;
+	}
+
 }

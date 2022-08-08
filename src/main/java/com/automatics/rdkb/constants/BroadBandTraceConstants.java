@@ -1019,6 +1019,18 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
 
     /** Log message for Setting invalid LanSubnetMask value */
     public static final String LOG_MESSAGE_SETTING_INVAILD_SUBNET_MASK_VALUE = "RDKB_LAN_CONFIG_CHANGED: Modified LanSubnetMask";
+    
+    /** Log message for partner id in parodus and webconfig log file */
+    public static final String LOG_MESSAGE_XMIDT_PARTNER_ID = "X-Midt-Partner-Id";
+
+    /** Log message for http code 200 response */
+    public static final String LOG_MESSAGE_WEBCONFIG_HTTP_200 = "ret = 0 http_code: 200";
+    
+    /** Log message for web config token path */
+    public static final String LOG_MESSAGE_WEBCONFIG_CURL_PATH = "CURL_RESPONSE path is /tmp/.cURLresponse";
+    
+    /** Log message for failed to create new token */
+    public static final String LOG_MESSAGE_THEMIS_TOKEN_FAILURE = "Failed to create new token";
 
     
 }

@@ -5911,7 +5911,7 @@ public class BroadBandConnectedClientUtils {
 				tapEnv.updateExecutionStatus(device, testCaseId, stepNum, status, errorMessage, false);
 			} else {
 				tapEnv.updateExecutionForAllStatus(device, testCaseId, stepNum, ExecutionStatus.NOT_APPLICABLE,
-						BroadBandTestConstants.PACE_NOT_APPLICABLE_IPV6, false);
+						BroadBandTestConstants.FIBRE_NOT_APPLICABLE_IPV6, false);
 			}
 			LOGGER.info("**********************************************************************************");
 
@@ -5936,7 +5936,7 @@ public class BroadBandConnectedClientUtils {
 					status = result.isStatus();
 					errorMessage = result.getErrorMessage();
 					if (!status) {
-						errorMessage = "PIGN OPERATION FAILED TO ACCESS THE SITE 'www.google.com' USING IPV4 ";
+						errorMessage = "PING OPERATION FAILED TO ACCESS THE SITE 'www.google.com' USING IPV4 ";
 						status = ConnectedNattedClientsUtils.verifyPingConnectionForIpv4AndIpv6(connectedClientDevice,
 								tapEnv, BroadBandTestConstants.PING_TO_GOOGLE, BroadBandTestConstants.IP_VERSION4);
 					}
@@ -6012,7 +6012,7 @@ public class BroadBandConnectedClientUtils {
 		return resultObject;
 
 	}
-	
+
 	/**
 	 * Method to disconnect and reconnect same WiFi client
 	 * 
@@ -6059,7 +6059,7 @@ public class BroadBandConnectedClientUtils {
 		LOGGER.debug("ENDING METHOD: disconnectAndReconnectWiFiClient()");
 		return result;
 	}
-	
+
 	/**
 	 * Method verify DHCP IP6 Address of connected client after IP renew
 	 * 
@@ -6129,7 +6129,7 @@ public class BroadBandConnectedClientUtils {
 		LOGGER.debug("ENDING METHOD : verifyConnectedClientIpv6AddressInDhcpAfterRenew");
 		return result;
 	}
-	
+
 	/**
 	 * Utils method to verify if the IP address assigned to the connected client is
 	 * between DHCP V6 configured range
@@ -6199,7 +6199,7 @@ public class BroadBandConnectedClientUtils {
 		LOGGER.debug("ENDING METHOD : verifyIpv6AddressOFConnectedClientIsBetweenDhcpRange");
 		return result;
 	}
-	
+
 	/**
 	 * Helper method to get the list of ipv6 address of the connected client
 	 * 
@@ -6239,56 +6239,76 @@ public class BroadBandConnectedClientUtils {
 		LOGGER.debug("ENDING METHOD: getListIpv6AddressFromConnClient");
 		return ipv6Value;
 	}
-	
-    /**
-     * Check IPV6 address in the ethernet Interface of the device
-     * 
-     * @param device
-     *            - instance of {@link Dut}
-     * @param tapEnv
-     *            - instance of {@link AutomaticsTapApi}
-     * @return result object
-     * @refactor Said Hisham
-     */
-    public static BroadBandResultObject verifyIpv6AddressOfEthInterfaceConnectedWithBroadbandDevice(Dut device,
-	    AutomaticsTapApi tapEnv) {
-	String command = null;
-	String response = null;
-	String lanIpv6Address = null;
-	// List to store the ipv6 address
-	List<String> ipAddress = new ArrayList<>();
-	String errorMessage = null;
-	String patternForIpv6 = null;
-	BroadBandResultObject result = new BroadBandResultObject();
-	errorMessage = "unable to get the IPv6 address from the Ethernet interface";
-	if (((Device) device).getOsType().equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_RASPBIAN_LINUX)
-		|| ((Device) device).getOsType()
-			.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)) {
-	    lanIpv6Address = getIpv6AddressFromLinuxOrRaspbianConnClient(tapEnv, device);
-	} else if (((Device) device).getOsType()
-		.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_WINDOWS)) {
-	    // command for windows client
-	    command = BroadBandCommandConstants.COMMAND_IPCONFIG;
-	    // pattern for windows client
-	    patternForIpv6 = BroadBandTestConstants.PATTERN_TO_RETRIVE_IPV6_ADDRESS_FROM_IPCONFIG;
-	    response = tapEnv.executeCommandOnOneIPClients(device, command);
-	    ipAddress = BroadBandCommonUtils.patternFinderForMultipleMatches(response, patternForIpv6,
-		    BroadBandTestConstants.CONSTANT_1);
-	    for (String ipv6Addr : ipAddress) {
-		if (CommonMethods.isIpv6Address(ipv6Addr)) {
-		    lanIpv6Address = ipv6Addr;
-		    break;
+
+	/**
+	 * Check IPV6 address in the ethernet Interface of the device
+	 * 
+	 * @param device - instance of {@link Dut}
+	 * @param tapEnv - instance of {@link AutomaticsTapApi}
+	 * @return result object
+	 * @refactor Said Hisham
+	 */
+	public static BroadBandResultObject verifyIpv6AddressOfEthInterfaceConnectedWithBroadbandDevice(Dut device,
+			AutomaticsTapApi tapEnv) {
+		String command = null;
+		String response = null;
+		String lanIpv6Address = null;
+		// List to store the ipv6 address
+		List<String> ipAddress = new ArrayList<>();
+		String errorMessage = null;
+		String patternForIpv6 = null;
+		BroadBandResultObject result = new BroadBandResultObject();
+		errorMessage = "unable to get the IPv6 address from the Ethernet interface";
+		if (((Device) device).getOsType().equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_RASPBIAN_LINUX)
+				|| ((Device) device).getOsType().equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)) {
+			lanIpv6Address = getIpv6AddressFromLinuxOrRaspbianConnClient(tapEnv, device);
+		} else if (((Device) device).getOsType().equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_WINDOWS)) {
+			// command for windows client
+			command = BroadBandCommandConstants.COMMAND_IPCONFIG;
+			// pattern for windows client
+			patternForIpv6 = BroadBandTestConstants.PATTERN_TO_RETRIVE_IPV6_ADDRESS_FROM_IPCONFIG;
+			response = tapEnv.executeCommandOnOneIPClients(device, command);
+			ipAddress = BroadBandCommonUtils.patternFinderForMultipleMatches(response, patternForIpv6,
+					BroadBandTestConstants.CONSTANT_1);
+			for (String ipv6Addr : ipAddress) {
+				if (CommonMethods.isIpv6Address(ipv6Addr)) {
+					lanIpv6Address = ipv6Addr;
+					break;
+				}
+			}
 		}
-	    }
+		result.setStatus(CommonMethods.isNotNull(lanIpv6Address));
+		result.setErrorMessage(errorMessage);
+		return result;
 	}
-	result.setStatus(CommonMethods.isNotNull(lanIpv6Address));
-	result.setErrorMessage(errorMessage);
-	return result;
-    }
 
+	/**
+	 * Method used to execute the command to renew the ip in connected client
+	 * 
+	 * @param deviceConnected Connected client Dut instance
+	 * @param tapEnv          AutomaticsTapApi instance
+	 * 
+	 * @refactor Athira
+	 */
+	public static void dhcpRenewInConnectedClient(Dut deviceConnected, AutomaticsTapApi tapEnv) {
+		LOGGER.debug("STARTING METHOD : dhcpRenewInConnectedClient()");
+		try {
+			Device connDevice = (Device) deviceConnected;
+			String osType = connDevice.getOsType();
+			if (osType.equals(BroadBandConnectedClientTestConstants.OS_WINDOWS)) {
+				tapEnv.executeCommandOnOneIPClients(deviceConnected,
+						BroadBandCommandConstants.CMD_TO_RENEW_IP_IN_WINDOWS);
+			} else {
+				String interfaceName = getSpecificDefaultInterfaceNameOfTheLinux(deviceConnected, tapEnv);
+				tapEnv.executeCommandOnOneIPClients(deviceConnected,
+						BroadBandCommonUtils.concatStringUsingStringBuffer(
+								BroadBandTestConstants.COMMAND_TO_GET_IP_CONFIGURATION_DETAILS,
+								BroadBandTestConstants.SINGLE_SPACE_CHARACTER, interfaceName));
+			}
+		} catch (Exception e) {
+			LOGGER.error("Exception Occured in dhcpRenewInConnectedClient():" + e.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD : dhcpRenewInConnectedClient()");
+	}
 
-
-	
-	
-	
 }

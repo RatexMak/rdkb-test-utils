@@ -43,6 +43,7 @@ import com.automatics.rdkb.constants.RDKBTestConstants;
 import com.automatics.rdkb.utils.snmp.BroadBandSnmpUtils;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
 import com.automatics.rdkb.utils.wifi.BroadBandWiFiUtils;
+import com.automatics.rdkb.webui.constants.BroadBandWebGuiTestConstant;
 import com.automatics.rdkb.utils.snmp.BroadBandSnmpMib;
 
 public class FirmwareDownloadUtils {
@@ -1454,7 +1455,7 @@ public class FirmwareDownloadUtils {
 	    if (status) {
 		// executing the script to start firmware upgrade
 		response = tapEnv.executeCommandUsingSsh(device,
-			BroadBandCommandConstants.SH_COMMAND_TO_TRIGGER_FIRMWARE_DOWNLOAD_DSL);
+				AutomaticsTapApi.getSTBPropsValue(BroadBandWebGuiTestConstant.SH_COMMAND_TO_TRIGGER_FIRMWARE_DOWNLOAD_DSL));
 
 		if (CommonMethods.isNotNull(response)) {
 		    status = response

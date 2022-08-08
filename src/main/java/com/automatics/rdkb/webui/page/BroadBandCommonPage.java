@@ -24,8 +24,10 @@ import java.util.NoSuchElementException;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.Select;
 
 import com.automatics.device.Dut;
+import com.automatics.exceptions.TestException;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
 import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
@@ -343,7 +345,7 @@ public class BroadBandCommonPage extends BroadBandBasePage {
 		}
 		return status;
 	}
-	
+
 	/**
 	 * Utility method to select Firewall in Gateway menu from GUI Home page
 	 * 
@@ -410,7 +412,7 @@ public class BroadBandCommonPage extends BroadBandBasePage {
 		LOGGER.debug("Exiting method: getFirewallSecurityLevel");
 		return firewallLevel;
 	}
-	
+
 	/**
 	 * Utility method to navigate to 'Managed Devices' page from 'At a Glance' page
 	 * 
@@ -440,5 +442,144 @@ public class BroadBandCommonPage extends BroadBandBasePage {
 		}
 		LOGGER.debug("Exiting method: navigateToManagedDevicesFromAtAGlance");
 		return result;
+	}
+
+	/**
+	 * Utility method to select Firewall in Gateway menu from GUI Home page
+	 * 
+	 * @param Dut    device instance
+	 * @param tapEnv instance of {@link AutomaticsTapApi}
+	 * @return true if navigated to Firewall page and verified title
+	 * @refactor Athira
+	 */
+	public static boolean navigateToFirewallFromPartnerPage(WebDriver driver, Dut device) {
+		LOGGER.debug("Entering method: navigateToFirewall");
+		boolean result = false;
+		try {
+
+			result = LanSideBasePage.isPageLaunched(BroadBandWebGuiTestConstant.LINK_TEXT_FIREWALL,
+					BroadbandPropertyFileHandler.getPageTitleForPartnerNetwork());
+			if (result)
+				result = LanSideBasePage.isPageLaunched(BroadBandWebGuiTestConstant.LINK_TEXT_IPV4,
+						BroadbandPropertyFileHandler.getFireWallIpv4PageTitle());
+		} catch (Exception e) {
+			LOGGER.error("Excepton Occured while navigating to Firewall Page");
+		}
+		LOGGER.debug("Exiting method: navigateToFirewall");
+		return result;
+	}
+
+	/**
+	 * Utility method to select Firewall in Gateway menu from GUI Home page
+	 * 
+	 * @param Dut    device instance
+	 * @param tapEnv instance of {@link AutomaticsTapApi}
+	 * @return true if navigated to Firewall page and verified title
+	 * @refactor Athira
+	 */
+	public static boolean navigateToFirewallIPv6(WebDriver driver, Dut device) {
+		LOGGER.debug("Entering method: navigateToFirewall");
+		boolean result = false;
+		try {
+
+			result = LanSideBasePage.isPageLaunched(BroadBandWebGuiTestConstant.LINK_TEXT_FIREWALL,
+					BroadbandPropertyFileHandler.getAtAGlancePageTitle());
+			if (result)
+				result = LanSideBasePage.isPageLaunched(BroadBandWebGuiTestConstant.LINK_TEXT_IPV6,
+						BroadbandPropertyFileHandler.getFireWallIpv6PageTitle());
+		} catch (Exception e) {
+			LOGGER.error("Excepton Occured while navigating to Firewall Page");
+		}
+		LOGGER.debug("Exiting method: navigateToFirewall");
+		return result;
+	}
+
+	/**
+	 * Utility method to modify Firewall setting for IPV4 or IPV6 from Firewall Page
+	 * 
+	 * @param tapEnv
+	 * @param settop
+	 * @param driver
+	 * @param elementId
+	 * @param securityLevel
+	 * @param ipInterface
+	 * @return True,if modifying and saving the firewall configuration is successful
+	 * 
+	 * @refactor Athira
+	 */
+	public static boolean configureFirewallSetting(AutomaticsTapApi tapEnv, Dut device, WebDriver driver,
+			String elementId, String securityLevel, String ipInterface) {
+
+		LOGGER.debug("STARTING METHOD : configureFirewallSetting()");
+
+		boolean status = false;
+
+		try {
+			LOGGER.info("Selecting Firewall setting by clicking the security level!");
+			driver.findElement(By.id(elementId)).click();
+			tapEnv.waitTill(BroadBandTestConstants.THREE_SECOND_IN_MILLIS);
+
+			LOGGER.info("clicking the 'Save Settings' button!");
+			driver.findElement(By.id(BroadBandWebGuiElements.ELEMENT_ID_SUBMIT_FIREWALL_BUTTON)).click();
+
+			LOGGER.info("Waiting for 20 seconds for the changes to reflect!");
+			tapEnv.waitTill(BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS);
+
+			status = BroadBandCommonUtils.compareValues(BroadBandTestConstants.CONSTANT_TXT_COMPARISON, securityLevel,
+					BroadBandCommonPage.getFirewallSecurityLevel(driver, device, ipInterface));
+
+		} catch (Exception e) {
+			LOGGER.error("Exception occured while configuring Firewall settings" + e.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD : configureFirewallSetting()");
+		return status;
+	}
+
+	/**
+	 * This method is to select an element using visible text
+	 * 
+	 * 
+	 * @param visibleTextId          id for the drop down element visible text
+	 * @param visibleText            drop down element visible text
+	 * @param validationText         Text to be validated while waiting for
+	 *                               navigation
+	 * @param XpathForValidationText Xpath for the text to be validated
+	 * 
+	 * @return returns status of the operation
+	 * 
+	 * @Refactor Sruthi Santhosh
+	 */
+	public boolean selectElementFromDropDownByVisibleText(String visibleTextId, String visibleText,
+			String validationText, String xPathForValidationText) throws TestException {
+		boolean status = false;
+		LOGGER.debug("STARTING METHOD: selectElementFromDropDownByVisibleText()");
+		try {
+			// Select visibleTextId passed
+			selectViaVisibleText(By.id(visibleTextId), visibleText);
+			// waiting for validationText
+			waitForTextToAppear(validationText, By.xpath(xPathForValidationText));
+			LOGGER.info("Successfully verified the presence of validation text : " + validationText);
+			status = true;
+		} catch (InterruptedException interruptedException) {
+			LOGGER.error("Interrupted Exception occured while selecting element : " + visibleTextId + ". Exception : "
+					+ interruptedException.getMessage());
+			throw new TestException("Interrupted Exception occured while selecting element : " + visibleTextId
+					+ ". Exception : " + interruptedException.getMessage());
+		} catch (Exception e) {
+			throw new TestException(
+					"Exception occured while selecting element : " + visibleTextId + ". Exception : " + e.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD: selectElementFromDropDownByVisibleText()");
+		return status;
+	}
+
+	/**
+	 * Method to click drop down icon and select the id based on visibility
+	 * 
+	 * @Refactor Sruthi Santhosh
+	 */
+	public void selectViaVisibleText(By elementId, String visibleText) throws Exception {
+		Select dropdown = new Select(driver.findElement(elementId));
+		dropdown.selectByVisibleText(visibleText);
 	}
 }

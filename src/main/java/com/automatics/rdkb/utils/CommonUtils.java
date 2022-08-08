@@ -1147,7 +1147,7 @@ public class CommonUtils {
 	LOGGER.debug("ENDING METHOD searchLogFiles");
 	return searchResponse;
     }
-    
+
     /**
      * Method to do Reboot and wait for IpAcquisition Usingwebpa
      * 
@@ -1162,10 +1162,9 @@ public class CommonUtils {
 	boolean status = false;
 	LOGGER.info("STARTING METHOD: rebootAndWaitForIpAcquisition()");
 	try {
-	    LOGGER.info("About to reboot the device..");  
-	    BroadBandWiFiUtils.setWebPaParams(device,
-		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_CONTROL_DEVICE_REBOOT, BroadBandTestConstants.DEVICE,
-		    BroadBandTestConstants.CONSTANT_0);
+	    LOGGER.info("About to reboot the device..");
+	    BroadBandWiFiUtils.setWebPaParams(device, BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_CONTROL_DEVICE_REBOOT,
+		    BroadBandTestConstants.DEVICE, BroadBandTestConstants.CONSTANT_0);
 	    tapEnv.waitTill(AutomaticsConstants.THREE_MINUTES);
 	    status = CommonMethods.waitForEstbIpAcquisition(tapEnv, device);
 	} catch (Exception e) {
@@ -1174,7 +1173,7 @@ public class CommonUtils {
 	LOGGER.info("Ending METHOD: rebootAndWaitForIpAcquisition()");
 	return status;
     }
-    
+
     /**
      * Helper method to get a process status
      * 
@@ -1201,7 +1200,8 @@ public class CommonUtils {
 	    }
 
 	} else {
-	    cmdOutput = tapEnv.executeCommandUsingSsh(device, BroadBandTestConstants.CMD_SYSTEMCTL_STATUS + processName);
+	    cmdOutput = tapEnv.executeCommandUsingSsh(device,
+		    BroadBandTestConstants.CMD_SYSTEMCTL_STATUS + processName);
 	    activeStatus = CommonMethods.patternFinder(cmdOutput, BroadBandTestConstants.PROCESS_STATUS);
 	}
 
@@ -1209,10 +1209,11 @@ public class CommonUtils {
 	LOGGER.info("ENDING METHOD: CommonUtils.getServiceStatus()");
 	return activeStatus;
     }
-    
+
     /**
      * Utility method to restart any service and verify that the service is active after restart This method is an
-     * overloaded version of restartServiceAndVerifyServiceStatus(Dut device, AutomaticsTapApi tapApi, String serviceName)
+     * overloaded version of restartServiceAndVerifyServiceStatus(Dut device, AutomaticsTapApi tapApi, String
+     * serviceName)
      * 
      * @param device
      *            instance of {@link Dut}
@@ -1233,22 +1234,21 @@ public class CommonUtils {
 	String response = null;
 	LOGGER.debug("STARTING METHOD:: restartServiceAndVerifyServiceStatus");
 	response = tapApi.executeCommandUsingSsh(device, BroadBandTestConstants.CMD_RESTART_SERVICE + serviceName);
-	if (CommonMethods.isNull(response)
-		|| !CommonUtils
-			.isGivenStringAvailableInCommandOutput(response, BroadBandTestConstants.SERVICE_FAILED_MESSAGE)) {
+	if (CommonMethods.isNull(response) || !CommonUtils.isGivenStringAvailableInCommandOutput(response,
+		BroadBandTestConstants.SERVICE_FAILED_MESSAGE)) {
 	    LOGGER.info("Waiting for " + String.valueOf(timeToRestart)
 		    + " milliseconds for the service to restart and then getting the service status");
 	    tapApi.waitTill(timeToRestart);
 	    // verifying that the service should be active
-	    status = CommonUtils.getServiceStatus(device, tapApi, serviceName).equalsIgnoreCase(
-	    		BroadBandTestConstants.STATUS_ACTIVE);
+	    status = CommonUtils.getServiceStatus(device, tapApi, serviceName)
+		    .equalsIgnoreCase(BroadBandTestConstants.STATUS_ACTIVE);
 	} else {
 	    LOGGER.error("FAILED to restart service ::" + serviceName);
 	}
 	LOGGER.debug("ENDING METHOD:: restartServiceAndVerifyServiceStatus");
 	return status;
     }
-	   
+
     /**
      * Method to verify the box date & time
      * 
@@ -1305,7 +1305,7 @@ public class CommonUtils {
 
 	return status;
     }
-    
+
     /**
      * Utility method to replace a particular text in a file with another text using sed command. This method will not
      * work if either textToReplace or textToBeReplaced has some special characters like ",',<,> etc
@@ -1355,5 +1355,25 @@ public class CommonUtils {
 	LOGGER.debug("ENDING METHOD::replaceTextInFileUsingSed()");
 	return status;
     }
-    
+
+    /**
+     * Method which will return device mac without colons and spaces
+     * 
+     * @param tapEnv
+     *            The {@link  AutomaticsTapApi} obj.
+     * @param device
+     *            The {@link Dut} object.
+     * 
+     * @return string device estbmac without colons.
+     * 
+     * @author Govardhan
+     */
+
+    public static String getDeviceMacWithoutColon(Dut device, AutomaticsTapApi tapEnv) {
+	LOGGER.debug("START METHOD: getDeviceMacWithoutSpaces");
+	String hostMac = device.getHostMacAddress();
+	return hostMac = hostMac.replaceAll(BroadBandTestConstants.DELIMITER_COLON, BroadBandTestConstants.EMPTY_STRING)
+		.toUpperCase();
+    }
+
 }

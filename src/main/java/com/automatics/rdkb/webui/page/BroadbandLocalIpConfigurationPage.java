@@ -18,10 +18,21 @@
 
 package com.automatics.rdkb.webui.page;
 
+import java.util.Map;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
+import com.automatics.device.Dut;
 import com.automatics.rdkb.BroadBandResultObject;
+import com.automatics.rdkb.constants.BroadBandTestConstants;
+import com.automatics.rdkb.utils.BroadBandCommonUtils;
+import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
+import com.automatics.rdkb.webui.constants.BroadBandWebGuiTestConstant;
+import com.automatics.rdkb.webui.menu.BroadBandWebUiGatewayEnum;
+import com.automatics.rdkb.webui.utils.BroadBandWebUiUtils;
+import com.automatics.tap.AutomaticsTapApi;
 
 public class BroadbandLocalIpConfigurationPage extends BroadBandBasePage {
 
@@ -62,4 +73,128 @@ public class BroadbandLocalIpConfigurationPage extends BroadBandBasePage {
 		LOGGER.debug("ENDING METHOD: enterValuesInSeriesIntoTextBoxUsingId");
 		return broadBandResultObject;
 	}
+	
+    /**
+     * Method takes Input Map and String to Iterate over given elements,verify text fields available to configure
+     * 
+     * @param valuesInMapToValidate
+     * @param valueElementIdToValidate
+     * @param webDriver
+     * @return broadbandresultobject
+     * 
+     * @refactor Athira
+     */
+    public static BroadBandResultObject validateTextFieldsIsAvailable(Map<String, String> valuesInMapToValidate,
+	    String valueElementIdToValidate, WebDriver webDriver) {
+	BroadBandResultObject broadBandResultObject = new BroadBandResultObject();
+	boolean status = false;
+	String errorMessage = "Unable to validate text fields";
+	try {
+	    for (int i = 1; i <= valuesInMapToValidate.size(); i++) {
+		switch (valuesInMapToValidate.get(valueElementIdToValidate + i)) {
+		case BroadBandTestConstants.STRING_ENABLED:
+		    status = webDriver.findElement(By.id(valueElementIdToValidate + i)).isEnabled()
+			    && webDriver.findElement(By.id(valueElementIdToValidate + i)).isDisplayed();
+		    LOGGER.info("ELEMENT AVAILABLE TO CONFIGURE STATUS :" + status);
+		    errorMessage = "ELEMENT TEXT BOX " + i + " IS NOT CONFIGURABLE ";
+		    break;
+
+		case BroadBandTestConstants.STRING_DISABLED:
+		    status = !webDriver.findElement(By.id(valueElementIdToValidate + i)).isEnabled()
+			    && webDriver.findElement(By.id(valueElementIdToValidate + i)).isDisplayed();
+		    LOGGER.info("ELEMENT NOT AVAILABLE TO CONFIGURE STATUS :" + status);
+		    errorMessage = "ELEMENT TEXT BOX " + i + " IS CONFIGURABLE ";
+		    break;
+
+		default:
+		    status = false;
+		    errorMessage = "ELEMENT NOT FOUND IN GIVEN MAP";
+		    break;
+		}
+		if (!status)
+		    break;
+
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception caught while validating fields");
+	}
+	broadBandResultObject.setStatus(status);
+	broadBandResultObject.setErrorMessage(errorMessage);
+	return broadBandResultObject;
+    }
+    
+	/**
+	 * Helper method to navigate to local ip page from At Glance page
+	 * 
+	 * @param tapEnv AutomaticstapApi instance
+	 * @return true if navigation to local ip page is success.
+	 * 
+	 * @Refactor Sruthi Santhosh
+	 */
+	public boolean navigateToLocalIpPage(AutomaticsTapApi tapEnv, Dut device) {
+		LOGGER.debug("STARTING METHOD: navigateToLocalIpPage()");
+		boolean localIpPageNavigationStatus = false;
+		try {
+
+			LOGGER.info("Clicking on Connection Expand button");
+			LanSideBasePage.click(By.linkText(BroadBandWebUiGatewayEnum.CONNECTION.getCommand()));
+			tapEnv.waitTill(BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+			LOGGER.info("Clicking on Local Ip Network button");
+			WebElement localIpButton = driver
+					.findElement(By.linkText(BroadBandWebGuiTestConstant.STRING_NAME_LOCAL_IP_NETWORK));
+			if (null != localIpButton) {
+				localIpButton.click();
+				LOGGER.info("Validating local IP page navigation");
+				long startTime = System.currentTimeMillis();
+				do {
+					localIpPageNavigationStatus = BroadBandWebUiUtils.validatePageLaunchedStatusWithPageTitle(driver,
+							BroadbandPropertyFileHandler.getPageTitleForLocalIpNetwork());
+				} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.THREE_MINUTE_IN_MILLIS
+						&& !localIpPageNavigationStatus && BroadBandCommonUtils.hasWaitForDuration(tapEnv,
+								BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+			} else {
+				LOGGER.error("Local IP Tab not present. Failed to navigate to Local IP Page");
+			}
+		} catch (Exception exception) {
+			localIpPageNavigationStatus = false;
+			LOGGER.error("Failed to navigate to local IP page. Error - " + exception.getMessage());
+		}
+		LOGGER.info("Is navigation to Local IP page success - " + localIpPageNavigationStatus);
+		LOGGER.debug("Ending METHOD: navigateToLocalIpPage()");
+		return localIpPageNavigationStatus;
+
+	}
+	
+    /**
+     * Method to retrieve text with parameter which ID's are in series
+     * 
+     * @param webDriver
+     * @param textArrayToEnter
+     * @param elementId
+     * @param counterOfTextSeries
+     * @return value
+     * 
+     * @refactor Athira
+     */
+    public static String retrieveValuesInSeriesFromTextBoxUsingId(WebDriver webDriver, String elementId,
+	    Integer startCounter, Integer endCounter, String delimiter) {
+	LOGGER.debug("STARTING METHOD: retrieveValuesInSeriesFromTextBoxUsingId");
+	String valueRetrieved = "";
+	try {
+	    for (int count = startCounter; count <= endCounter; count++) {
+		valueRetrieved = valueRetrieved + webDriver.findElement(By.id(elementId + count))
+			.getAttribute(BroadBandTestConstants.STRING_VALUE);
+		if (count != endCounter) {
+		    valueRetrieved = valueRetrieved + delimiter;
+		}
+	    }
+	} catch (Exception e) {
+	    valueRetrieved = null;
+	    LOGGER.error("Exception while retrieving values into Element ID " + e.getMessage());
+	}
+
+	LOGGER.debug("ENDING METHOD: retrieveValuesInSeriesFromTextBoxUsingId");
+	return valueRetrieved;
+    }
+	
 }

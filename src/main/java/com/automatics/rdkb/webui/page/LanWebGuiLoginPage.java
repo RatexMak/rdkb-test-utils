@@ -28,6 +28,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.automatics.connection.handler.SeleniumNodeConnectionHandler;
 import com.automatics.device.Device;
 import com.automatics.device.Dut;
 import com.automatics.enums.Browser;
@@ -48,13 +49,12 @@ import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
 import com.automatics.rdkb.utils.wifi.connectedclients.BroadBandConnectedClientUtils;
 import com.automatics.rdkb.constants.WebPaParamConstants.WebPaDataTypes;
 
+public class LanWebGuiLoginPage extends LanSideBasePage {
 
-public class LanWebGuiLoginPage  extends LanSideBasePage {
-	
     /** SLF4j logger. */
     public static final Logger LOGGER = LoggerFactory.getLogger(LanWebGuiLoginPage.class);
     public static String ADMIN_PASSWORD = "";
-	
+
     /**
      * 
      * Method to Login to Lan Page
@@ -143,7 +143,7 @@ public class LanWebGuiLoginPage  extends LanSideBasePage {
 	LOGGER.debug("ENDING METHOD : logintoLanPage()");
 	return loginStatus;
     }
-    
+
     /**
      * 
      * Method to Launch browser and login to Lan Page with given username and password
@@ -165,12 +165,12 @@ public class LanWebGuiLoginPage  extends LanSideBasePage {
 	boolean loginStatus = false;
 	// Variable to store page launched status
 	boolean adminPageLaunchedStatus = false;
-	Device ecatsSettop = (Device) clientSettop;
+	Device connDevice = (Device) clientSettop;
 	try {
 	    // http://10.0.0.1/captiveportal.php
 	    // Invoke browser in the Connected Client Setop
 	    // Modified as part of DSL Devices to invoke the chromium browser in Linux Client
-	    if (DeviceModeHandler.isDSLDevice(device) && (ecatsSettop.isLinux() || ecatsSettop.isRaspbianLinux())) {
+	    if (DeviceModeHandler.isDSLDevice(device) && (connDevice.isLinux() || connDevice.isRaspbianLinux())) {
 		invokeBrowserinConnectedClient(clientSettop, Browser.CHROME.toString());
 	    } else {
 		invokeBrowserinConnectedClient(clientSettop);
@@ -206,7 +206,9 @@ public class LanWebGuiLoginPage  extends LanSideBasePage {
 			if (loginStatus) {
 			    try {
 
-				waitForTextToAppear(AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_WEB_GUI_HOME_PAGE_HEADING),
+				waitForTextToAppear(
+					AutomaticsTapApi.getSTBPropsValue(
+						BroadBandPropertyKeyConstants.PROP_KEY_WEB_GUI_HOME_PAGE_HEADING),
 					By.xpath(BroadBandWebGuiTestConstant.ELEMENT_ID_HOME_PAGE_HEADING));
 			    } catch (Exception e) {
 				LOGGER.info(
@@ -256,14 +258,14 @@ public class LanWebGuiLoginPage  extends LanSideBasePage {
 	    LOGGER.error("Exception occured invokeBrowserinConnectedClient:" + e.getMessage());
 	}
     }
-    
+
     /**
      * Utility method used to validate the LAN admin login page
      * 
      * @param device
      *            instance of {@link Dut}
      * @param tapEnv
-     *            instance of {@link ECatsTapApi}
+     *            instance of {@link AutomaticsTapApi}
      * @param userName
      *            Username for LAN Admin Page
      * @param password
@@ -311,12 +313,12 @@ public class LanWebGuiLoginPage  extends LanSideBasePage {
 	}
 	return loginStatus;
     }
-    
+
     /**
      * Utility method is used to validate the presence of Alert message
      * 
      * @param tapEnv
-     *            instance of {@link ECatsTapApi}
+     *            instance of {@link AutomaticsTapApi}
      * @param device
      *            instance of {@link Dut}
      * @return True-Alert present ,Eles -False
@@ -454,7 +456,7 @@ public class LanWebGuiLoginPage  extends LanSideBasePage {
 	}
 	return changeStatus;
     }
-    
+
     /**
      * Helper method to validate Default Password change prompt in admin page
      * 
@@ -511,7 +513,7 @@ public class LanWebGuiLoginPage  extends LanSideBasePage {
 			    LOGGER.info("Element not found" + ex.getMessage());
 			}
 		    } else {
-			
+
 			try {
 			    waitForTextToAppear(BroadBandWebGuiTestConstant.STRING_WEB_GUI_LOGIN_PAGE_HEADING,
 				    By.xpath(BroadBandWebGuiTestConstant.ELEMENT_ID_LOGIN_PAGE_HEADING));
@@ -554,14 +556,14 @@ public class LanWebGuiLoginPage  extends LanSideBasePage {
 	LOGGER.debug("ENDING METHOD : validateDefaultPasswordChangePromptInAdminPage()");
 	return loginStatus;
     }
-    
+
     /**
      * Helper method to change password from password change prompt
      * 
      * @param settop
      *            Dut instance
      * @param tapEnv
-     *            AutomaticsTapApi  instance
+     *            AutomaticsTapApi instance
      * @param oldPassword
      *            old password for the user
      * @param newPassword
@@ -571,15 +573,15 @@ public class LanWebGuiLoginPage  extends LanSideBasePage {
      * @author Praveenkumar Paneerselvam
      * @refactor Rakesh C N
      */
-    public static boolean changePasswordFromPasswordChangePrompt(Dut device, AutomaticsTapApi tapEnv, String oldPassword,
-	    String newPassword) {
+    public static boolean changePasswordFromPasswordChangePrompt(Dut device, AutomaticsTapApi tapEnv,
+	    String oldPassword, String newPassword) {
 	LOGGER.debug("STARTING METHOD : changePasswordFromPasswordChangePrompt()");
 	boolean status = false;
-	//String key = BroadBandCommonUtils.getPartnerValue(device, tapEnv);
+	// String key = BroadBandCommonUtils.getPartnerValue(device, tapEnv);
 	try {
-	   // String changePasswordPageTitle = BroadBandWebGuiTestConstant.DEVICE_MODEL_AND_TITLE_MAPPING.get(key)
-		//    .get(BroadBandTestConstants.CHANGE_PASSWORD);
-	    String changePasswordPageTitle=BroadbandPropertyFileHandler.getPageTitleForPasswordchange();
+	    // String changePasswordPageTitle = BroadBandWebGuiTestConstant.DEVICE_MODEL_AND_TITLE_MAPPING.get(key)
+	    // .get(BroadBandTestConstants.CHANGE_PASSWORD);
+	    String changePasswordPageTitle = BroadbandPropertyFileHandler.getPageTitleForPasswordchange();
 	    if (BroadBandWebUiUtils.validatePageLaunchedStatusWithPageTitle(driver, changePasswordPageTitle)) {
 		LOGGER.info("Redirected to Change the default Password Page");
 		// Change default password
@@ -604,7 +606,7 @@ public class LanWebGuiLoginPage  extends LanSideBasePage {
 	LOGGER.debug("ENDING METHOD : changePasswordFromPasswordChangePrompt()");
 	return status;
     }
-    
+
     /**
      * 
      * Method to Login to Lan Page username and default password
@@ -689,7 +691,7 @@ public class LanWebGuiLoginPage  extends LanSideBasePage {
 	LOGGER.debug("ENDING METHOD : logintoLanPageUsingDefaultPassWord()");
 	return loginStatus;
     }
-    
+
     /**
      * 
      * Method to Launch browser and login to Lan Page with given username and default password
@@ -705,7 +707,7 @@ public class LanWebGuiLoginPage  extends LanSideBasePage {
      * @refactor Said Hisham
      */
     public static boolean logintoLanPageinConnectedClientUsingDefaultPassWord(AutomaticsTapApi tapEnv, Dut device,
-	    Dut clientSettop, String url, String defaultUserName, String defaultPassword)
+	    Dut clientDevice, String url, String defaultUserName, String defaultPassword)
 	    throws PageTitleNotFoundException, TestException {
 	LOGGER.debug("STARTING METHOD :logintoLanPageinConnectedClientUsingDefaultPassWord() ");
 	// Variable to store login status
@@ -713,13 +715,13 @@ public class LanWebGuiLoginPage  extends LanSideBasePage {
 	// Variable to store page launched status
 	boolean adminPageLaunchedStatus = false;
 	boolean isAlertPresent = false;
-	Device ecatsSettop = (Device) clientSettop;
+	Device deviceConnected = (Device) clientDevice;
 	try {
 
-	    if (DeviceModeHandler.isDSLDevice(device) && (ecatsSettop.isLinux() || ecatsSettop.isRaspbianLinux())) {
-		invokeBrowserinConnectedClient(clientSettop, Browser.CHROME.toString());
+	    if (DeviceModeHandler.isDSLDevice(device) && (deviceConnected.isLinux() || deviceConnected.isRaspbianLinux())) {
+		invokeBrowserinConnectedClient(deviceConnected, Browser.CHROME.toString());
 	    } else {
-		invokeBrowserinConnectedClient(clientSettop);
+		invokeBrowserinConnectedClient(deviceConnected);
 	    }
 	    LOGGER.info("URL to be launched in ADMIN UI login page ==> " + url);
 	    if (null != driver) {
@@ -830,5 +832,332 @@ public class LanWebGuiLoginPage  extends LanSideBasePage {
 	return loginStatus;
     }
 
+    /**
+     * 
+     * Method to Launch to Lan Page and verify Negative Scenario
+     *
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param device
+     *            instance of {@link Dut}
+     * @param clientDevice
+     *            Connected client Dut instance
+     * @param wrongPassword
+     *            Password to verify negative Scenario
+     * @param adminPageLaunched
+     *            Admin page launched status
+     * @return true if negative scenerio is validated.
+     * 
+     * @refactor Athira
+     *
+     */
+    public static boolean launchWebguipageAndValidateNegativeScenario(AutomaticsTapApi tapEnv, Dut device,
+	    Dut conClientDevice, String wrongPassword, boolean adminPageLaunched)
+	    throws PageTitleNotFoundException, TestException {
+	LOGGER.debug("STARTING METHOD :launchWebguipageAndValidateNegativeScenario()");
+	// Variable declaration starts
+	String defaultUserName = null;
+	String url = null;
+	String lanipAddress = null;
+	boolean status = false;
+	Device clientDevice = (Device) conClientDevice;
+	// Variable declaration ends
+	try {
+	    lanipAddress = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+		    BroadBandWebPaConstants.WEBPA_PARAM_LAN_IP_ADDRESS);
+	    if (CommonMethods.isNotNull(lanipAddress) && CommonMethods.isIpv4Address(lanipAddress)) {
+		url = BroadBandTestConstants.URL_HTTP + lanipAddress + BroadBandTestConstants.SLASH_SYMBOL;
+		LOGGER.info("URL to be launched: " + url);
+		if (DeviceModeHandler.isBusinessClassDevice(device)) {
+		    defaultUserName = tapEnv.executeCommandUsingSsh(device,
+			    BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_USERNAME_BUSINESS_CLASS);
+		} else {
+		    defaultUserName = tapEnv.executeCommandUsingSsh(device,
+			    BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_USERNAME);
+		}
+	    } else {
+		LOGGER.error("Unable to get LAN Ip address to launch LAN Admin GUI URL.");
+		return status;
+	    }
+	    if (!adminPageLaunched) {
+		// http://10.0.0.1/captiveportal.php
+		// Invoke browser in the Connected Client Dut
+		// Modified as part of DSL device to invoke the chromium browser in Linux Client
+		if (DeviceModeHandler.isDSLDevice(device)
+			&& (clientDevice.isLinux() || clientDevice.isRaspbianLinux())) {
+		    invokeBrowserinConnectedClient(conClientDevice, Browser.CHROME.toString());
+		} else {
+		    invokeBrowserinConnectedClient(conClientDevice);
+		}
+		LOGGER.info("URL to be launched in lan gui login page ==> " + url);
+		if (CommonMethods.isNotNull(url)) {
+		    // Launch broad band admin web page in browser
+		    launchAdminPage(url);
+		    if (DeviceModeHandler.isBusinessClassDevice(device)) {
+			try {
+			    waitForTextToAppear(BroadBandWebGuiTestConstant.STRING_WEB_GUI_LOGIN_PAGE_HEADING_BCI,
+				    By.xpath(BroadBandWebGuiTestConstant.ELEMENT_ID_LOGIN_PAGE_HEADING_BCI));
+			} catch (Exception ex) {
+			    LOGGER.info("Element not found" + ex.getMessage());
+			}
+		    } else {
+			// As part of RDKB-21099 Code change
+			try {
+			    waitForTextToAppear(BroadBandWebGuiTestConstant.STRING_WEB_GUI_LOGIN_PAGE_HEADING,
+				    By.xpath(BroadBandWebGuiTestConstant.ELEMENT_ID_LOGIN_PAGE_HEADING));
+			} catch (Exception ex) {
+			    LOGGER.info("Element not found" + ex.getMessage());
+			}
+			try {
+			    waitForTextToAppear(BroadBandWebGuiTestConstant.STRING_WEB_GUI_LOGIN_PAGE_HEADING,
+				    By.xpath(BroadBandWebGuiTestConstant.ELEMENT_ID_LOGIN_PAGE_HEADING_BCI));
+			} catch (Exception ex) {
+			    LOGGER.info("Element not found" + ex.getMessage());
+			}
+		    }
+		} else {
+		    throw new TestException("Unable to launch the browser or LAN GUI page for login : Driver is null");
+		}
+	    }
+	    driver.navigate().refresh();
+	    if (validateLanPageLaunchedStatus()) {
+		// Delete existing contents from user name and password
+		BroadBandWebUiUtils.deleteExistingContentFromTextBox(driver,
+			BroadBandWebGuiElements.ADMINUI_LOGIN_PAGE_USER_NAME);
+		BroadBandWebUiUtils.deleteExistingContentFromTextBox(driver,
+			BroadBandWebGuiElements.ADMINUI_LOGIN_PAGE_PASSWORD);
+		PageFactory.initElements(driver, new LanWebGuiLoginPage());
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		try {
+		    LOGGER.info("Username :" + defaultUserName.trim());
+		    setUserName(defaultUserName.trim());
+		    LOGGER.info("Password :" + wrongPassword.trim());
+		    setPassword(wrongPassword);
+		} catch (Exception e) {
+		    LOGGER.error("Exception occured while setting username and password:" + e.getMessage());
+		}
+		try {
+		    status = CommonMethods.isNull(getText(By.id(BroadBandWebGuiElements.ADMINUI_LOGIN_PAGE_PASSWORD)))
+			    && getTextUsingAttribute(By.id(BroadBandWebGuiElements.ADMINUI_LOGIN_PAGE_PASSWORD),
+				    BroadBandTestConstants.STRING_VALUE).equals(wrongPassword)
+			    && getTextUsingAttribute(By.id(BroadBandWebGuiElements.ADMINUI_LOGIN_PAGE_PASSWORD),
+				    BroadBandTestConstants.JSON_ELEMENT_TYPE)
+					    .equals(BroadBandTestConstants.STRING_PASSWORD);
+		} catch (Exception e) {
+		    LOGGER.error("Exception occured while validating negative scenerio :" + e.getMessage());
+		}
+	    }
 
+	} catch (Exception e) {
+	    throw new TestException("" + ". Exception : " + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD : launchWebguipageAndValidateNegativeScenario()");
+	return status;
+    }
+
+    /**
+     * Method to Login to Lan Page using different browser
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param clientSettop
+     *            Connected client device instance
+     * @param browser
+     *            Browser to execute the steps
+     * @refactor Said Hisham
+     */
+    public static boolean logintoLanPage(AutomaticsTapApi tapEnv, Dut device, Dut clientSettop, Browser browser)
+	    throws PageTitleNotFoundException, TestException {
+	LOGGER.debug("STARTING METHOD :logintoLanPage() ");
+	// Variable to store login status
+	boolean loginStatus = false;
+	// Variable to store admin page default username
+	String defaultUserName = null;
+	// Variable to store admin page default password
+	String defaultPassword = null;
+	// Variable to store URL
+	String url = null;
+	// Variable to store admin page new password
+	String newPassword = null;
+	try {
+	    newPassword = AutomaticsTapApi.getSTBPropsValue(BroadBandWebGuiTestConstant.ADMIN_PAGE_PASSWORD);
+	    if (CommonMethods.isNull(newPassword)) {
+		newPassword = BroadBandTestConstants.NON_DEFAULT_LOGIN_PASSWORD;
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured while retrieving non default password : " + e.getMessage());
+	}
+	try {
+	    if (DeviceModeHandler.isBusinessClassDevice(device)) {
+		url = AutomaticsTapApi.getSTBPropsValue(BroadBandWebGuiTestConstant.ADMIN_PAGE_URL_BUSINESS_CLASS);
+		defaultUserName = tapEnv.executeCommandUsingSsh(device,
+			BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_USERNAME_BUSINESS_CLASS);
+		defaultPassword = tapEnv.executeCommandUsingSsh(device,
+			BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_PASSWORD_BUSINESS_CLASS);
+	    } else {
+		url = AutomaticsTapApi.getSTBPropsValue(BroadBandWebGuiTestConstant.ADMIN_PAGE_URL);
+		defaultUserName = tapEnv.executeCommandUsingSsh(device,
+			BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_USERNAME);
+		defaultPassword = tapEnv.executeCommandUsingSsh(device,
+			BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_PASSWORD);
+	    }
+	    if (CommonMethods.isNull(defaultPassword)) {
+		loginStatus = BroadBandWebPaUtils.setParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+			BroadBandWebPaConstants.WEBPA_PARAM_GUI_ADMIN_PASSWORD, WebPaDataTypes.STRING.getValue(),
+			newPassword);
+		if (loginStatus) {
+		    defaultPassword = newPassword;
+		} else {
+		    throw new TestException(
+			    "Unable to retrieve 'admin' password from device,unable to set using dmcli/webpa");
+		}
+	    }
+	    loginStatus = logintoLanPageinConnectedClient(tapEnv, device, clientSettop, url, defaultUserName,
+		    defaultPassword, browser);
+	} catch (Exception e) {
+	    throw new TestException("" + ". Exception : " + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD : logintoLanPage()");
+	return loginStatus;
+    }
+
+    /**
+     * Method to Login to Lan Page in Connected Client using different browser
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param clientSettop
+     *            Connected client device instance
+     * @param url
+     *            url to Launch the admin page
+     * @param defaultUserName
+     *            Default User Name for Admin page
+     * @param defaultPassword
+     *            Default Password for Admin page
+     * @param browser
+     *            Browser to execute the steps
+     * @refactor Said hisham
+     */
+    public static boolean logintoLanPageinConnectedClient(AutomaticsTapApi tapEnv, Dut device, Dut clientSettop,
+	    String url, String defaultUserName, String defaultPassword, Browser name)
+	    throws PageTitleNotFoundException, TestException {
+	LOGGER.debug("STARTING METHOD :logintoLanPage() ");
+	// Variable to store login status
+	boolean loginStatus = false;
+	// Variable to store page launched status
+	boolean adminPageLaunchedStatus = false;
+	// Variable to store admin page new password
+	String newPassword = null;
+	try {
+	    // http://10.0.0.1/captiveportal.php
+	    // Invoke browser in the Connected Client Setop
+	    SeleniumNodeConnectionHandler seleniumNode = new SeleniumNodeConnectionHandler();
+	    driver = seleniumNode.invokeBrowserInNode(clientSettop, name);
+	    LOGGER.info("URL to be launched in lan gui login page ==> " + url);
+	    if (null != driver) {
+		PageFactory.initElements(driver, new LanWebGuiLoginPage());
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		if (CommonMethods.isNotNull(defaultPassword) && CommonMethods.isNotNull(defaultUserName)) {
+		    // Launch broad band admin web page in browser
+		    launchAdminPage(url);
+		    if (DeviceModeHandler.isBusinessClassDevice(device)) {
+			waitForTextToAppear(BroadBandWebGuiTestConstant.STRING_WEB_GUI_LOGIN_PAGE_HEADING_BCI,
+				By.xpath(BroadBandWebGuiTestConstant.ELEMENT_ID_LOGIN_PAGE_HEADING_BCI));
+		    } else {
+			try {
+			    waitForTextToAppear(BroadBandWebGuiTestConstant.STRING_WEB_GUI_LOGIN_PAGE_HEADING,
+				    By.xpath(BroadBandWebGuiTestConstant.ELEMENT_ID_LOGIN_PAGE_HEADING));
+			} catch (Exception ex) {
+			    LOGGER.info("Element not found" + ex.getMessage());
+			}
+			try {
+			    waitForTextToAppear(BroadBandWebGuiTestConstant.STRING_WEB_GUI_LOGIN_PAGE_HEADING,
+				    By.xpath(BroadBandWebGuiTestConstant.ELEMENT_ID_LOGIN_PAGE_HEADING_BCI));
+			} catch (Exception ex) {
+			    LOGGER.info("Element not found" + ex.getMessage());
+			}
+
+		    }
+		    // Validate whether the login page is came or not
+		    adminPageLaunchedStatus = validateLanPageLaunchedStatus();
+		    if (adminPageLaunchedStatus) {
+			// Delete existing contents from user name and password
+			// text box
+			BroadBandWebUiUtils.deleteExistingContentFromTextBox(driver,
+				BroadBandWebGuiElements.LAN_GUI_LOGIN_PAGE_USER_NAME);
+			BroadBandWebUiUtils.deleteExistingContentFromTextBox(driver,
+				BroadBandWebGuiElements.LAN_GUI_LOGIN_PAGE_PASSWORD);
+			LOGGER.info("Default Username:" + defaultUserName.trim());
+			setUserName(defaultUserName.trim());
+			LOGGER.info("Default Password:" + defaultPassword.trim());
+			setPassword(defaultPassword.trim());
+			clickLogIn();
+			// Try & Catch to Handle exceptions if Alert box is not poped up
+			try {
+			    WebDriverWait wait = new WebDriverWait(driver, 30);
+			    if (wait.until(ExpectedConditions.alertIsPresent()) != null) {
+				alertAccept();
+				LOGGER.info("Redirected to Change the default Password Page");
+				// Get new password from the properties file
+				newPassword = AutomaticsTapApi
+					.getSTBPropsValue(BroadBandWebGuiTestConstant.ADMIN_PAGE_PASSWORD);
+				LOGGER.info("newPassword==" + newPassword);
+				// Change default password
+				sendKeys(By.xpath(BroadBandWebGuiTestConstant.XPATH_ENTER_OLD_PASSWORD),
+					defaultPassword);
+				LOGGER.info("Entered Old password");
+				sendKeys(By.xpath(BroadBandWebGuiTestConstant.XPATH_ENTER_NEW_USER_PASSWORD),
+					newPassword);
+				LOGGER.info("Entered New password");
+				sendKeys(By.xpath(BroadBandWebGuiTestConstant.XPATH_VERIFY_RE_ENTER_NEW_USER_PASSWORD),
+					newPassword);
+				LOGGER.info("Entered New password again");
+				click(By.xpath(BroadBandWebGuiTestConstant.XPATH_SAVE_NEW_USER_PASSWORD));
+				LOGGER.info("Save button pressed");
+				// Wait for 10 seconds to save settings
+				tapEnv.waitTill(BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS);
+				click(By.xpath(BroadBandWebGuiTestConstant.XPATH_CLICK_OK_AFTER_SAVING_NEW_PASSWORD));
+				LOGGER.info("OK button pressed");
+				LOGGER.info(
+					"#######################################################################################");
+				LOGGER.info("Default Password Changed Successfully to:" + newPassword);
+				LOGGER.info(
+					"#######################################################################################");
+				// Wait for 10 seconds to save settings
+				tapEnv.waitTill(BroadBandTestConstants.TEN_SECOND_IN_MILLIS);
+				// Login again with new password
+				setUserName(defaultUserName.trim());
+				setPassword(newPassword);
+				clickLogIn();
+			    }
+			} catch (Exception e) {
+			    LOGGER.info(
+				    "#######################################################################################");
+			    LOGGER.info("Alert box is not Poped up- Default Password was changed Already");
+			    LOGGER.info(
+				    "#######################################################################################");
+			}
+			// Verify login status
+			BroadBandAtGlancePage homepage = new BroadBandAtGlancePage(driver);
+			loginStatus = homepage.verifyAtGlancePageLaunchedStatus();
+
+		    } else {
+			throw new TestException("Default Password of the device is null");
+		    }
+		} else {
+		    throw new TestException("Unable to launch the browser or LAN GUI page for login");
+		}
+	    } else {
+		throw new TestException("Unable to launch the browser or LAN GUI page for login : Driver is null");
+	    }
+	} catch (Exception e) {
+	    throw new TestException("" + ". Exception : " + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD : logintoLanPageinConnectedClient()");
+	return loginStatus;
+    }
 }

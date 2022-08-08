@@ -17,6 +17,7 @@
  */
 package com.automatics.rdkb.utils.webpa;
 
+import java.awt.image.BufferedImage;
 import java.time.LocalTime;
 /**
  * 
@@ -39,6 +40,7 @@ import java.util.concurrent.Future;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +66,7 @@ import com.automatics.webpa.WebPaConnectionHandler;
 import com.automatics.webpa.WebPaParameter;
 import com.automatics.webpa.WebPaServerResponse;
 import com.automatics.rdkb.utils.wifi.BroadBandWiFiUtils;
+import com.automatics.rdkb.webui.utils.BroadBandWebUiUtils;
 import com.automatics.rdkb.constants.WebPaParamConstants.WebPaDataTypes;
 
 public class BroadBandWebPaUtils {
@@ -2132,27 +2135,31 @@ public class BroadBandWebPaUtils {
 		.equalsIgnoreCase(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID_ENABLE_STATUS)) {
 	    isPublicWifiSsidSet = BroadBandWiFiUtils.setWebPaParams(device,
 		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID,
-		    AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_PUBLIC_WIFI_SSID_5), BroadBandTestConstants.CONSTANT_0);
+		    AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_PUBLIC_WIFI_SSID_5),
+		    BroadBandTestConstants.CONSTANT_0);
 	    LOGGER.info("Setting the Public Wifi 5GHZ SSID name -" + isPublicWifiSsidSet);
 	} else if (parameter
 		.equalsIgnoreCase(BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PUBLIC_SSID_ENABLE_STATUS)) {
 	    isPublicWifiSsidSet = BroadBandWiFiUtils.setWebPaParams(device,
 		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PUBLIC_SSID,
-		    AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_PUBLIC_WIFI_SSID_2), BroadBandTestConstants.CONSTANT_0);
+		    AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_PUBLIC_WIFI_SSID_2),
+		    BroadBandTestConstants.CONSTANT_0);
 	    LOGGER.info("Setting the Public Wifi 2.4GHZ SSID name -" + isPublicWifiSsidSet);
 	} else if (parameter.equalsIgnoreCase(BroadBandTestConstants.DUAL_BAND)) {
 	    errorMessage = "Failed to set Public Wifi 2.4 Ghz using webpa parameter "
 		    + BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PUBLIC_SSID;
 	    isPublicWifiSsidSet = BroadBandWiFiUtils.setWebPaParams(device,
 		    BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PUBLIC_SSID,
-		    AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_PUBLIC_WIFI_SSID_2), BroadBandTestConstants.CONSTANT_0);
+		    AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_PUBLIC_WIFI_SSID_2),
+		    BroadBandTestConstants.CONSTANT_0);
 	    LOGGER.info("Setting the Public Wifi 2.4GHZ SSID name -" + isPublicWifiSsidSet);
 	    if (isPublicWifiSsidSet) {
 		errorMessage = "Failed to set Public Wifi 2.4 Ghz using webpa parameter "
 			+ BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID;
 		isPublicWifiSsidSet = BroadBandWiFiUtils.setWebPaParams(device,
 			BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID,
-			AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_PUBLIC_WIFI_SSID_5), BroadBandTestConstants.CONSTANT_0);
+			AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_PUBLIC_WIFI_SSID_5),
+			BroadBandTestConstants.CONSTANT_0);
 		LOGGER.info("Setting the Public Wifi 5GHZ SSID name -" + isPublicWifiSsidSet);
 	    }
 	}
@@ -2978,7 +2985,8 @@ public class BroadBandWebPaUtils {
 		BroadBandTestConstants.CONSTANT_0);
 	WebPaParameter webPaParam5ghzWifi = setAndReturnWebPaParameterObject(
 		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID,
-		AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_PUBLIC_WIFI_SSID_5), BroadBandTestConstants.CONSTANT_0);
+		AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_PUBLIC_WIFI_SSID_5),
+		BroadBandTestConstants.CONSTANT_0);
 	WebPaParameter webPaParam5GhzPublicSSIDEnableStatus = setAndReturnWebPaParameterObject(
 		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PUBLIC_SSID_ENABLE_STATUS,
 		BroadBandTestConstants.TRUE, BroadBandTestConstants.INCERMENTAL_THREE);
@@ -3617,7 +3625,8 @@ public class BroadBandWebPaUtils {
 		BroadBandTestConstants.THREE_MINUTE_IN_MILLIS, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
 	statusSetWifi = BroadBandWiFiUtils.setWebPaParams(device,
 		BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PUBLIC_SSID,
-		AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_PUBLIC_WIFI_SSID_2), BroadBandTestConstants.CONSTANT_0);
+		AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_PUBLIC_WIFI_SSID_2),
+		BroadBandTestConstants.CONSTANT_0);
 	// wait for two minutes
 	LOGGER.info("Waiting in set public wifi");
 	tapEnv.waitTill(BroadBandTestConstants.TWO_MINUTES);
@@ -3940,36 +3949,62 @@ public class BroadBandWebPaUtils {
 	LOGGER.debug("ENDING METHOD: setWebPaAttribute");
 	return status;
     }
-    
 
-	/**
-	 * Method to validate DHCPv6 webpa values
-	 * 
-	 * @param defaultDhcpWebpaOutput
-	 * @return broadBandResultObject
-	 * @refactor Said Hisham
-	 */
-	public static BroadBandResultObject verifyDhcpv6OutputValues(Map<String, String> defaultDhcpWebpaOutput) {
-		boolean status = false;
-		BroadBandResultObject broadBandResultObject = new BroadBandResultObject();
-		LOGGER.debug("STARTING METHOD verifyDhcpv6OutputValues()");
-		String errorMessage = "Output from device is empty";
-		if (!defaultDhcpWebpaOutput.isEmpty()) {
-			errorMessage = "Unable validate output values from device";
-			String beginningAddress = defaultDhcpWebpaOutput
-					.get(BroadBandWebPaConstants.WEB_PARAM_DELEGATED_PREFIX_IPV6)
-					.replace(BroadBandTestConstants.REPLACE_COLON_SLASH_64, "")
-					+ defaultDhcpWebpaOutput.get(BroadBandWebPaConstants.WEB_PARAM_DHCPV6_BEGINNING_ADDRESS);
-			String endingAddress = defaultDhcpWebpaOutput.get(BroadBandWebPaConstants.WEB_PARAM_DELEGATED_PREFIX_IPV6)
-					.replace(BroadBandTestConstants.REPLACE_COLON_SLASH_64, "")
-					+ defaultDhcpWebpaOutput.get(BroadBandWebPaConstants.WEB_PARAM_DHCPV6_ENDING_ADDRESS);
+    /**
+     * Method to validate DHCPv6 webpa values
+     * 
+     * @param defaultDhcpWebpaOutput
+     * @return broadBandResultObject
+     * @refactor Said Hisham
+     */
+    public static BroadBandResultObject verifyDhcpv6OutputValues(Map<String, String> defaultDhcpWebpaOutput) {
+	boolean status = false;
+	BroadBandResultObject broadBandResultObject = new BroadBandResultObject();
+	LOGGER.debug("STARTING METHOD verifyDhcpv6OutputValues()");
+	String errorMessage = "Output from device is empty";
+	if (!defaultDhcpWebpaOutput.isEmpty()) {
+	    errorMessage = "Unable validate output values from device";
+	    String beginningAddress = defaultDhcpWebpaOutput
+		    .get(BroadBandWebPaConstants.WEB_PARAM_DELEGATED_PREFIX_IPV6)
+		    .replace(BroadBandTestConstants.REPLACE_COLON_SLASH_64, "")
+		    + defaultDhcpWebpaOutput.get(BroadBandWebPaConstants.WEB_PARAM_DHCPV6_BEGINNING_ADDRESS);
+	    String endingAddress = defaultDhcpWebpaOutput.get(BroadBandWebPaConstants.WEB_PARAM_DELEGATED_PREFIX_IPV6)
+		    .replace(BroadBandTestConstants.REPLACE_COLON_SLASH_64, "")
+		    + defaultDhcpWebpaOutput.get(BroadBandWebPaConstants.WEB_PARAM_DHCPV6_ENDING_ADDRESS);
 
-			status = CommonMethods.isIpv6Address(beginningAddress) && CommonMethods.isIpv6Address(endingAddress);
-		}
-		LOGGER.debug("ENDING METHOD verifyDhcpv6OutputValues()");
-		broadBandResultObject.setStatus(status);
-		broadBandResultObject.setErrorMessage(errorMessage);
-		return broadBandResultObject;
+	    status = CommonMethods.isIpv6Address(beginningAddress) && CommonMethods.isIpv6Address(endingAddress);
 	}
+	LOGGER.debug("ENDING METHOD verifyDhcpv6OutputValues()");
+	broadBandResultObject.setStatus(status);
+	broadBandResultObject.setErrorMessage(errorMessage);
+	return broadBandResultObject;
+    }
 
+    /**
+     * Save Web page Images in jenkins and Update the execution status based on current test steps for RDKB webgui
+     * tests.
+     * 
+     * @param device
+     *            The Dut to be used.
+     * @param testId
+     *            The manual test ID
+     * @param testStepNumber
+     *            The manual test step number.
+     * @param status
+     *            The execution status.
+     * @param errorMessage
+     *            The error message.
+     * @param blockExecution
+     *            The flag to throw an exception to block further execution of test cases.
+     * @refactor Govardhan
+     */
+    public static void takeScreenShotForWebUIStep(WebDriver driver, AutomaticsTapApi tapEnv, Dut device, String testId,
+	    String testStepNumber, boolean status, String errorMessage, boolean blockExecution) {
+
+	BufferedImage img = BroadBandWebUiUtils.captureCurrentScreenFromDriver(driver);
+	if (null != img) {
+	    String imageName = System.currentTimeMillis() + "_" + "UI_after_" + testId + "_" + testStepNumber;
+	    AutomaticsTapApi.saveImages(device, img, imageName);
+	}
+    }
 }

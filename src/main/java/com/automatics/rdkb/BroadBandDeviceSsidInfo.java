@@ -107,7 +107,6 @@ public class BroadBandDeviceSsidInfo {
 	public void setPrivate5ghzSsidPwd(String private5ghzSsidPwd) {
 		this.private5ghzSsidPwd = private5ghzSsidPwd;
 	}
-
 	/**
 	 * @return the publicOpen5GhzSsidName
 	 */

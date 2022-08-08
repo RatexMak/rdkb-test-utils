@@ -1030,32 +1030,8 @@ public class BroadBandPreConditionUtils {
      */
     public static Dut executePreConditionToVerifyLanClientStatus(Dut device, AutomaticsTapApi tapEnv)
 	    throws TestException {
-						  
-						
-
 	Dut deviceConnectedWithEthernet = executePreConditionToVerifyLanClientStatus(device, tapEnv,
 		BroadBandTestConstants.CONSTANT_1);
-	
-															 
-	
-
-				
-																										
-																						 
-			 
-																																																							 
-																					  
-																										
-																						  
-																							
-									   
-			  
-																												
-		 
-																
-							 
-																								 
-  
 
 	return deviceConnectedWithEthernet;
     }
@@ -1648,7 +1624,7 @@ public class BroadBandPreConditionUtils {
 		    + " : FAILED : " + errorMessage);
 	}
     }
-    
+
     /**
      * Pre-Condition method to get the current firmware version on device.
      * 
@@ -1690,7 +1666,7 @@ public class BroadBandPreConditionUtils {
 	LOGGER.info("#######################################################################################");
 	return initialFirmwareVersion;
     }
-    
+
     /**
      * Pre-Condition method to verify the private SSID enabled status for 2.4 & 5 GHz .
      * 
@@ -1791,7 +1767,7 @@ public class BroadBandPreConditionUtils {
 	}
 	LOGGER.info("#######################################################################################");
     }
-    
+
     /**
      * Pre-Condition method to verify telemetry 2 is enabled.
      * 
@@ -1843,7 +1819,7 @@ public class BroadBandPreConditionUtils {
      * @param preConStepNumber
      * @param wifiFrequencyBand
      * 
-     * @refactor Athira          
+     * @refactor Athira
      */
     public static String executePreConditionToGetDefaultOperStandard(Dut device, AutomaticsTapApi tapEnv,
 	    int preConStepNumber, String wifiFrequencyBand) throws TestException {
@@ -1909,7 +1885,7 @@ public class BroadBandPreConditionUtils {
 	}
 	return defaultOperStandard;
     }
-    
+
     /**
      * Pre-Condition method to get the both private ssid visible multiple Intel wifi adapter device
      * 
@@ -2009,7 +1985,7 @@ public class BroadBandPreConditionUtils {
 	}
 	return ssidVisibleDevices;
     }
-    
+
     /**
      * Pre-Condition method to enable/disable the MESH status
      * 
@@ -2063,6 +2039,90 @@ public class BroadBandPreConditionUtils {
 	} else {
 	    LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL : " + errorMessage);
 	    throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION " + preConStepNumber
+		    + " : FAILED : " + errorMessage);
+	}
+    }
+
+    /**
+     * Pre-Condition method to enable the public wifi on Gateway
+     * 
+     * @param device
+     *            instance of{@link Dut}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param preCondNumber
+     *            Pre condition number
+     * @refactor Said Hisham
+     * 
+     */
+
+    public static void executePreConditionToEnableThePublicWifiOnGatewayDevice(Dut device, AutomaticsTapApi tapEnv,
+	    int preCondNumber) throws TestException {
+
+	String errorMessage = null;
+	boolean status = false;
+	BroadBandResultObject resultObject = null;
+	/**
+	 * PRE-CONDITION : SET AND VERIFY THE PUBLIC WIFI STATUS IS ENABLED
+	 */
+	LOGGER.info("#######################################################################################");
+	LOGGER.info("PRE-CONDITION " + preCondNumber
+		+ " : DESCRIPTION : SET  AND VERIFY THE PUBLIC WIFI STATUS IS ENABLED.");
+	LOGGER.info("PRE-CONDITION " + preCondNumber + " : ACTION : EXECUTE WEBPA COMMAND:"
+		+ BroadBandWebPaConstants.WEBPA_PARAM_ENABLING_PUBLIC_WIFI);
+	LOGGER.info("PRE-CONDITION " + preCondNumber
+		+ " : EXPECTED : PUBLIC WIFI MUST BE ENABLED AND IT MUST RETURN VALUE AS TRUE");
+	LOGGER.info("#######################################################################################");
+	errorMessage = "UNABLE TO ENABLE THE PUBLIC WIFI ON GATEWAY DEVICE";
+	List<WebPaParameter> webPaParameters = BroadBandWebPaUtils.getListOfWebpaParametersForBothPublicWifis();
+	resultObject = BroadBandWebPaUtils.executeSetAndGetOnMultipleWebPaGetParams(device, tapEnv, webPaParameters);
+	status = resultObject.isStatus();
+	errorMessage = resultObject.getErrorMessage();
+	if (status) {
+	    LOGGER.info("PRE-CONDITION " + preCondNumber
+		    + " : ACTUAL : SUCCESSFULLY ENABLED THE PUBLIC WIFI ON GATEWAY DEVICE ");
+	} else {
+	    LOGGER.error("PRE-CONDITION " + preCondNumber + " : ACTUAL : " + errorMessage);
+	    throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION " + preCondNumber
+		    + " : FAILED : " + errorMessage);
+	}
+    }
+
+    /**
+     * Pre-Condition method to verify the public wifi broadcasting status
+     * 
+     * @param device
+     *            instance of{@link Dut}
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * @param preCondNumber
+     *            Pre condition number
+     * 
+     */
+    public static void executePreConditionToVerifyPublicWifiBroadcastingStatus(Dut device, AutomaticsTapApi tapEnv,
+	    Dut deviceConnected, int preCondNumber) throws TestException {
+	String errorMessage = null;
+	boolean status = false;
+	/**
+	 * PRE-CONDITION : VERIFY THE PUBLIC WIFI 2.4 AND 5 GHZ SSID'S ARE BROADCASTING IN CONNECTED CLIENT
+	 */
+	LOGGER.info("#####################################################################################");
+	LOGGER.info("PRE-CONDITION " + preCondNumber
+		+ " : DESCRIPTION : VERIFY THE PUBLIC WIFI 2.4 AND 5 GHZ SSID'S ARE BROADCASTING IN CONNECTED CLIENT");
+	LOGGER.info("PRE-CONDITION " + preCondNumber
+		+ " : ACTION : EXECUTE COMMAND FOR WINDOWS: '1.NETSH WLAN SHOW NETWORKS | GREP -I '<PUBLIC_SSID_2_4GHZ>' ,2.NETSH WLAN SHOW NETWORKS | GREP -I '<PUBLIC_SSID_5GHZ>' OR LINUX : 'SUDO IWLIST WLAN0 SCAN'");
+	LOGGER.info("PRE-CONDITION " + preCondNumber
+		+ " : EXPECTED : PUBLIC WIFI 2.4 AND 5GHZ SSID'S SHOULD BE BROADCASTED IN CONNECTED CLIENT");
+	LOGGER.info("#####################################################################################");
+	errorMessage = "UNABLE TO VERIFY PUBLIC WIFI 2.4 AND 5 GHZ SSID'S ARE BROADCASTING STATUS IN CONNECTED CLIENT";
+	status = BroadBandWiFiUtils.validateBothSsidVisibleStateInConnectedClient(device, tapEnv, deviceConnected,
+		BroadBandTestConstants.PUBLIC_WIFI_TYPE, true);
+	if (status) {
+	    LOGGER.info("PRE-CONDITION " + preCondNumber
+		    + " : ACTUAL : PUBLIC WIFI 2.4 AND 5 GHZ SSID'S ARE BROADCASTED IN CONNECTED CLIENT");
+	} else {
+	    LOGGER.error("PRE-CONDITION " + preCondNumber + " : ACTUAL : " + errorMessage);
+	    throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION " + preCondNumber
 		    + " : FAILED : " + errorMessage);
 	}
     }

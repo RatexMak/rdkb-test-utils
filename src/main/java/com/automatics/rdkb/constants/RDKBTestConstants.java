@@ -98,6 +98,9 @@ public class RDKBTestConstants {
 
     /** Regular expression to get DMCLI command value. */
     public static final String REGULAR_EXPRESSION_DMCLI_COMMAND_VALUE = "value:\\s*(.*)";
+    
+    /** Constant for number 50 */
+    public static final int CONSTANT_50 = 50;
 
     /** Constant for number 60 */
     public static final int CONSTANT_60 = 60;

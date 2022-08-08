@@ -183,6 +183,10 @@ public enum BroadBandSnmpMib {
     ECM_CONFIG_WANMAC_ADDRESS("configWanMacAddress", "1.3.6.1.2.1.2.2.1.6", "1"),
     ECM_CONFIG_CHANNELSELECTION_2_4_GHZ("configChannelSelectionfor2.4GHz", "1.3.6.1.4.1.17270.50.2.2.6.1.1.3", "10000"),
     ECM_CONFIG_CHANNELSELECTION_5_GHZ("configChannelSelectionfor5GHz", "1.3.6.1.4.1.17270.50.2.2.6.1.1.3", "10100"),
+    ECM_DHCP_START_IP("dhcpstartip", ".1.3.6.1.4.1.17270.50.2.3.3.1.2", "32"),
+    ECM_DHCP_END_IP("dhcpendip", ".1.3.6.1.4.1.17270.50.2.3.3.1.4", "32"),
+    ECM_DHCP_LEASE_TIME("dhcpleasetime", ".1.3.6.1.4.1.17270.50.2.3.3.1.5", "32"),
+    ECM_SUBNET_MASK("subnetmask", ".1.3.6.1.4.1.17270.50.2.3.2.1.5", "32"),
     ECM_BSSID_MAC_ADDRESS_2_4_GHZ_PRIVATE_SSID(
 	    "bssidMacaddressFor2GHzPrivateSsid",
 	    "1.3.6.1.4.1.17270.50.2.2.2.1.1.1",
@@ -192,11 +196,7 @@ public enum BroadBandSnmpMib {
 	    "1.3.6.1.4.1.17270.50.2.2.2.1.1.1",
 	    "10101"),
     ECM_WIFI_2_4_SSID_RADIO_STATUS_ENABLE("radioStatus1", ".1.3.6.1.4.1.17270.50.2.2.6.1.1.1.10000"),
-    ECM_WIFI_5_SSID_RADIO_STATUS_ENABLE("radioStatus2", ".1.3.6.1.4.1.17270.50.2.2.6.1.1.1.10100"),
-    ECM_DHCP_START_IP("dhcpstartip", ".1.3.6.1.4.1.17270.50.2.3.3.1.2", "32"),
-    ECM_DHCP_END_IP("dhcpendip", ".1.3.6.1.4.1.17270.50.2.3.3.1.4", "32"),
-    ECM_DHCP_LEASE_TIME("dhcpleasetime", ".1.3.6.1.4.1.17270.50.2.3.3.1.5", "32"),
-    ECM_SUBNET_MASK("subnetmask", ".1.3.6.1.4.1.17270.50.2.3.2.1.5", "32");
+    ECM_WIFI_5_SSID_RADIO_STATUS_ENABLE("radioStatus2", ".1.3.6.1.4.1.17270.50.2.2.6.1.1.1.10100");
 
     private String mibName;
 

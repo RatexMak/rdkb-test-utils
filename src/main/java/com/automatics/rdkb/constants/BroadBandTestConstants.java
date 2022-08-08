@@ -246,6 +246,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Constant to hold 153 */
     public static final String CONSTANT_153 = "153";
 
+    /** String value for 255 */
+    public static final String STRING_VALUE_TWO_HUNDRED_AND_FIFTY_FIVE = "255";
+
     /** String value 40 */
     public static final String STRING_VALUE_FORTY = "40";
 
@@ -2989,7 +2992,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** pattern to search server tag */
     public static final String PATTERN_SERVER_TAG = "server.tag\\s+=\\W+([\\w+\\s+]+)\\W+";
 
-
     /** Constant to store file path lighttpd.conf */
     public static final String CONSTANT_LIGHTTPD_CONF = "/etc/lighttpd.conf";
 
@@ -4487,12 +4489,12 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String PATTERN_MATCHER_CHANNEL_LIST_WITH_COMMA = "[0-9]+(,[0-9]+)+";
 
     /**
-     * String to store pattern matcher for channel select of 2.4 GHZ retrieved from XFI & web GUI
+     * String to store pattern matcher for channel select of 2.4 GHZ retrieved from web GUI
      */
     public static final String PATTER_MATCHER_FOR_CHANNEL_SELECT_OF_2GHZ_PRIVATE_WIFI = "^(-1|[1-9]|10|11)$";
 
     /**
-     * String to store pattern matcher for channel select of 5 GHZ retrieved from XFI & web GUI
+     * String to store pattern matcher for channel select of 5 GHZ retrieved from web GUI
      */
     public static final String PATTER_MATCHER_FOR_CHANNEL_SELECT_OF_5GHZ_PRIVATE_WIFI = "^(-1|36|40|44|48|52|56|60|64|100|104|108|112|116|120|124|128|132|136|140|144|149|153|157|161)$";
 
@@ -4688,7 +4690,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** pattern for sucessful execution */
     public static final String RESPONSE_EXECUTION_SUCCEED = "Execution succeed";
 
-    /** path for CCSP_BUS_CLIENT_TOOL in CBR devices */
+    /** path for CCSP_BUS_CLIENT_TOOL in Business Class devices */
     public static final String PATH_CBR_CCSP_BUS_CLIENT_TOOL = "/usr/bin/";
 
     /** path for CCSP_BUS_CLIENT_TOOL in BWG devices */
@@ -5967,11 +5969,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Constant to hold Connected Devices */
     public static final String CONNECTED_DEVICES = "Connected_Devices";
 
-    /**
-     * The constant for Pace Devices not applicable for IPV6 related steps
-     */
-    public static final String PACE_NOT_APPLICABLE_IPV6 = "Not Applicable For Pace Box as Gateway Device";
-
     /** Pattern to get Mac Address */
     public static final String PATTERN_TO_GET_MAC_ADDRESS = "(\\w{2}:\\w{2}:\\w{2}:\\w{2}:\\w{2}:\\w{2})";
 
@@ -6003,186 +6000,262 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** String to store colon */
     public static final String ESCAPE_SEQUENCE_CHARACTER_COLON = "\\:";
-    
-	/** String value containing IPv4 primary XDNS value to set */
-	public static final String VALUE_PRIMARY_IPV4_XDNS = "74.121.125.53";
 
-	/** String value containing IPv6 primary XDNS value to set */
-	public static final String VALUE_PRIMARY_IPV6_XDNS = "2620:104:a00b::53";
+    /** String value containing IPv4 primary XDNS value to set */
+    public static final String VALUE_PRIMARY_IPV4_XDNS = "";
 
-	/** String value containing IPv4 secondary XDNS value to set */
-	public static final String VALUE_SECONDARY_IPV4_XDNS = "74.121.125.54";
+    /** String value containing IPv6 primary XDNS value to set */
+    public static final String VALUE_PRIMARY_IPV6_XDNS = "";
 
-	/** String value containing IPv6 secondary XDNS value to set */
-	public static final String VALUE_SECONDARY_IPV6_XDNS = "2620:104:a00b::54";
-	
-	/** Constant to hold string for Security Edge */
-	public static final String STRING_XDNS_SECURITY_EDGE = "SecurityEdge";
-	
-	/** Constant to hold string for eenadu.net */
-	public static final String STRING_XDNS_BROWSE = "eenadu.net";
-	
-	/** Test constant for Global Dns IPv4 default value 75.75.75.75 */
-	public static final String STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE = "75.75.75.75";
-	
-	/** Constant to hold string for Security Edge Exclusion */
-	public static final String STRING_XDNS_SECURITY_EDGE_EXCLUSION = "SecurityEdge_Exclusion";
-	
-	/** String to store empty keyword */
-	public static final String EMPTY_KEYWORD = "EMPTY";
-	
-	/** Default value of Business Class devices Admin page */
-	public static final String STRING_BUSINESS_CLASS_DEFAULT_ADMIN_PWD = "highspeed";
-	
-	/** String constant to hold Password string */
-	public static final String STRING_PASSWORD = "password";
-	
+    /** String value containing IPv4 secondary XDNS value to set */
+    public static final String VALUE_SECONDARY_IPV4_XDNS = "";
+
+    /** String value containing IPv6 secondary XDNS value to set */
+    public static final String VALUE_SECONDARY_IPV6_XDNS = "";
+
+    /** Constant to hold string for Security Edge */
+    public static final String STRING_XDNS_SECURITY_EDGE = "SecurityEdge";
+
+    /** Constant to hold string for eenadu.net */
+    public static final String STRING_XDNS_BROWSE = "eenadu.net";
+
+    /** Test constant for Global Dns IPv4 default value 75.75.75.75 */
+    public static final String STRING_DEFAULT_GLOBAL_DNS_IPV4_VALUE = "75.75.75.75";
+
+    /** Constant to hold string for Security Edge Exclusion */
+    public static final String STRING_XDNS_SECURITY_EDGE_EXCLUSION = "SecurityEdge_Exclusion";
+
+    /** String to store empty keyword */
+    public static final String EMPTY_KEYWORD = "EMPTY";
+
+    /** Default value of Business Class devices Admin page */
+    public static final String STRING_BUSINESS_CLASS_DEFAULT_ADMIN_PWD = "highspeed";
+
+    /** String constant to hold Password string */
+    public static final String STRING_PASSWORD = "password";
+
     /** Constant to hold Managed Services - Add Sites */
     public static final String MANAGED_SITES_ADD_SITES = "Managed_Services_Add_Site";
-    
+
     /** Constant to hold Managed Services - Add Keyword */
     public static final String MANAGED_SITES_ADD_KEYWORD = "Managed_Services_Add_Keyword";
-    
+
     /** Constant to hold Managed Services */
     public static final String MANAGED_SERVICES = "Managed_Services";
-    
+
     /** Constant to hold Start Port in Managed Service */
     public static final String START_PORT = "21";
-    
+
     /** Constant to hold End Port in Managed Service */
     public static final String END_PORT = "21";
-    
+
     /** Constant to hold Managed_Devices */
     public static final String MANAGED_DEVICES = "Managed_Devices";
-    
+
     /** Variable to hold Double Zero in Double quotes */
     public static final String DOUBLE_ZERO_IN_DOUBLE_QUOTES = "00";
-    
+
     /** Variable to hold AM */
     public static final String TIME_AM = "AM";
-    
-	/** String for value */
-	public static String STRING_VALUE = "value";
-	
-	/**
-	 * Constant to hold Parental Control - Managed Services Description as HTTP
-	 */
-	public static final String MNG_SERVICES_DESCRIPTION_AS_HTTP = "HTTP";
-	
-	/** Constant to hold HTTP value in dropdown */
-	public static final String HTTP_VALUE_IN_DROPDOWN = "80|80";
-	
-	/** Constant to hold 'Alert' popup title */
-	public static final String POPUP_TTILE_ALERT = "Alert";
-	
-    /** Variable to hold Pop Up message for Start Block time greater than End Block time in Parental Control */
+
+    /** String for value */
+    public static String STRING_VALUE = "value";
+
+    /**
+     * Constant to hold Parental Control - Managed Services Description as HTTP
+     */
+    public static final String MNG_SERVICES_DESCRIPTION_AS_HTTP = "HTTP";
+
+    /** Constant to hold HTTP value in dropdown */
+    public static final String HTTP_VALUE_IN_DROPDOWN = "80|80";
+
+    /** Constant to hold 'Alert' popup title */
+    public static final String POPUP_TTILE_ALERT = "Alert";
+
+    /**
+     * Variable to hold Pop Up message for Start Block time greater than End Block time in Parental Control
+     */
     public static final String POP_UP_MESSAGE_START_TIME_GREATER_THAN_END_TIME = "Start time should be smaller than End time !";
 
     /** Constant to hold Managed Services - Add Service */
     public static final String MANAGED_SERVICES_ADD_SERVICE = "Managed_Services_Add_Service";
-    
-	/** Constant to hold string new line character with escape character */
-	public static final String NEW_LINE_WITH_ESCAPE_CHARACTER = "\\n";
-	
-	/** Constant for number 28 */
-	public static final int CONSTANT_28 = 28;
-	
-	/** Constant to hold int value for number 19 */
-	public static final int CONSTANT_19 = 19;
-	
-	/** constant float value 0.0 */
-	public static final float CONSTANT_ZERO = 0.0f;
-	
+
+    /** Constant to hold string new line character with escape character */
+    public static final String NEW_LINE_WITH_ESCAPE_CHARACTER = "\\n";
+
+    /** Constant for number 28 */
+    public static final int CONSTANT_28 = 28;
+
+    /** Constant to hold int value for number 19 */
+    public static final int CONSTANT_19 = 19;
+
+    /** constant float value 0.0 */
+    public static final float CONSTANT_ZERO = 0.0f;
+
     /** Constant to hold Constant of Wifi Client Type */
     public static final String CLIENT_TYPE_ETH = "ETHERNET";
-    
+
     /** Constant to hold Add_Device_With_Reserved_Ip */
     public static final String ADD_DEVICE_WITH_RESERVED_IP = "Add_Device_With_Reserved_Ip";
-    
+
     /** String Constant to replace the value :/64 */
-	public static final String REPLACE_COLON_SLASH_64 = ":/64";
+    public static final String REPLACE_COLON_SLASH_64 = ":/64";
 
-	/** Constant for Tshark capture protocol-dhcpv6 */
-	public static final String PROTOCOL_DHCPV6 = "dhcpv6";
+    /** Constant for Tshark capture protocol-dhcpv6 */
+    public static final String PROTOCOL_DHCPV6 = "dhcpv6";
 
-	/** String to hold preferred lifetime packet capture constant */
-	public static final String STRING_PREFERRED_LIFETIME = "pltime:";
+    /** String to hold preferred lifetime packet capture constant */
+    public static final String STRING_PREFERRED_LIFETIME = "pltime:";
 
-	/** String to hold valid lifetime packet capture constant */
-	public static final String STRING_VALID_LIFETIME = "vltime:";
-	
-	/** Constant to hold URL of ebay */
-	public static final String URL_EBAY = "https://www.ebay.com";
-	
-	/**
-	 * List of website to generate the traffic by using curl
-	 */
-	public static final List<String> getListOfWebSitesToCurl() {
-		final List<String> listOfWebsitesToPing = new ArrayList<String>() {
-			{
-				add(URL_INSTAGRAM);
-				add(URL_EBAY);
-				add(URL_W3SCHOOLS);
-				add(URL_WIKIPEDIA);
-			}
-		};
-		return listOfWebsitesToPing;
-	}
-	
-	/** Constant for DHCPv6 beginning address */
-	public static final String DHCPIPV6_SET_BEGINNING_ADDRESS = "ffff:ffff:ffff:0001";
+    /** String to hold valid lifetime packet capture constant */
+    public static final String STRING_VALID_LIFETIME = "vltime:";
 
-	/** Constant for DHCPv6 ending address */
-	public static final String DHCPIPV6_SET_ENDING_ADDRESS = "ffff:ffff:ffff:ffff";
-	
-	/** Constant to hold Not applicable message for residential class devices */
-	public static final String NA_MSG_FOR_RESIDENTIAL_CLASS_DEVICES = "Test Step Not Applicable for Residential class devices";
-	
-	/**
-	 * The hash map to store the firewall modes with its corresponding Xpath
-	 */
-	public static final Map<String, String> FIREWALL_SETTINGS = createFirewallSettingsMap();
-	
-	/**
-	 * Method to create a map for firewall settings corresponding to its xpath
-	 * 
-	 * @return map with xpath as key and its Security Level as value
-	 */
-	private static Map<String, String> createFirewallSettingsMap() {
-		Map<String, String> mapping = new HashMap<String, String>() {
-			{
-				put("//*[@id=\"firewall_level_maximum\"]", "Maximum Security (High)");
-				put("//*[@id=\"firewall_level_typical\"]", "Typical Security (Medium)");
-				put("//*[@id=\"firewall_level_minimum\"]", "Minimum Security (Low)");
-				put("//*[@id=\"firewall_level_custom\"]", "Custom Security");
-				put("//*[@id=\"firewall_level_default\"]", "Typical Security (Default)");
-			}
-		};
-		return Collections.unmodifiableMap(mapping);
-	}
-	
-	/** Constant to hold default IPv4 Firewall Level */
-	public static final String DEFAULT_IPV4_FIREWALL_SECURITY = "Minimum Security (Low)";
+    /** Constant to hold URL of ebay */
+    public static final String URL_EBAY = "https://www.ebay.com";
 
-	/** Constant to hold default IPv6 Firewall Level */
-	public static final String DEFAULT_IPV6_FIREWALL_SECURITY = "Typical Security (Default)";
-	
-	/** Constant to hold Firewall IPv6 */
-	public static final String FIREWALL_IPV6 = "Firewall_IPv6";
-	
-	/** Constant to hold Firewall IPv4 */
-	public static final String FIREWALL_IPV4 = "Firewall_IPv4";
-	
-	/** Property key for invalid subnetmak values */
+    /**
+     * List of website to generate the traffic by using curl
+     */
+    public static final List<String> getListOfWebSitesToCurl() {
+	final List<String> listOfWebsitesToPing = new ArrayList<String>() {
+	    {
+		add(URL_INSTAGRAM);
+		add(URL_EBAY);
+		add(URL_W3SCHOOLS);
+		add(URL_WIKIPEDIA);
+	    }
+	};
+	return listOfWebsitesToPing;
+    }
+
+    /** Constant for DHCPv6 beginning address */
+    public static final String DHCPIPV6_SET_BEGINNING_ADDRESS = "ffff:ffff:ffff:0001";
+
+    /** Constant for DHCPv6 ending address */
+    public static final String DHCPIPV6_SET_ENDING_ADDRESS = "ffff:ffff:ffff:ffff";
+
+    /** Constant to hold Not applicable message for residential class devices */
+    public static final String NA_MSG_FOR_RESIDENTIAL_CLASS_DEVICES = "Test Step Not Applicable for Residential class devices";
+
+    /**
+     * The hash map to store the firewall modes with its corresponding Xpath
+     */
+    public static final Map<String, String> FIREWALL_SETTINGS = createFirewallSettingsMap();
+
+    /**
+     * Method to create a map for firewall settings corresponding to its xpath
+     * 
+     * @return map with xpath as key and its Security Level as value
+     */
+    private static Map<String, String> createFirewallSettingsMap() {
+	Map<String, String> mapping = new HashMap<String, String>() {
+	    {
+		put("//*[@id=\"firewall_level_maximum\"]", "Maximum Security (High)");
+		put("//*[@id=\"firewall_level_typical\"]", "Typical Security (Medium)");
+		put("//*[@id=\"firewall_level_minimum\"]", "Minimum Security (Low)");
+		put("//*[@id=\"firewall_level_custom\"]", "Custom Security");
+		put("//*[@id=\"firewall_level_default\"]", "Typical Security (Default)");
+	    }
+	};
+	return Collections.unmodifiableMap(mapping);
+    }
+
+    /** Constant to hold default IPv4 Firewall Level */
+    public static final String DEFAULT_IPV4_FIREWALL_SECURITY = "Minimum Security (Low)";
+
+    /** Constant to hold default IPv6 Firewall Level */
+    public static final String DEFAULT_IPV6_FIREWALL_SECURITY = "Typical Security (Default)";
+
+    /** Constant to hold Firewall IPv6 */
+    public static final String FIREWALL_IPV6 = "Firewall_IPv6";
+
+    /** Constant to hold Firewall IPv4 */
+    public static final String FIREWALL_IPV4 = "Firewall_IPv4";
+
+    /** Property key for invalid subnetmak values */
     public static final String PROP_KEY_INVALID_SUBNETMAK_VALUES = "invalid.subnetmaks.values.";
-    
+
     /** Three seconds in millisecond representation. */
     public static final long THREE_SECONDS_IN_MILLIS = 3 * ONE_SECOND_IN_MILLIS;
-    
+
     /** Property key for valid subnetmak values */
     public static final String PROP_KEY_VALID_SUBNETMAK_VALUES = "valid.subnetmaks.values.";
 
-	
+    /** Constant count to replace */
+    public static final String STRING_COUNT = "COUNT";
 
+    /** String disabled */
+    public static final String STRING_DISABLED = "DISABLED";
 
+    /** String enabled */
+    public static final String STRING_ENABLED = "ENABLED";
+
+    /** Constant holds a password with proper standards */
+    public static final String PASSWORD_MISMATCH = "testing12";
+
+    /** Wireless mode 802.11 n */
+    public static final String WIRELESS_MODE_N = "802.11 n";
+
+    /** Constant to hold Alert Title for deleting Port Forward Rule */
+    public static final String STRING_ARE_YOU_SURE_ALERT_MESSAGE = "Are You Sure?";
+
+    /** Wireless mode 802.11 a/n/ac */
+    public static final String WIRELESS_MODE_A_N_AC = "802.11 a/n/ac";
+
+    /** Constant to hold Weeks value in DHCP Lease time measure Minutes */
+    public static final String DHCP_DROP_DOWN_MINUTES = "Minutes";
+
+    /** String value 360 */
+    public static final String STRING_360 = "360";
+
+    /** String DHCP min address for business class devices */
+    public static final String STRING_DHCP_MIN_ADDRESS_BUSSI = "10.1.10.2";
+
+    /** Constant to hold LAN start IP default */
+    public static final String LAN_START_IP_ADDRESS_DEFAULT = "10.0.0.2";
+
+    /** Constant to hold LAN end IP */
+    public static final String LAN_END_IP_ADDRESS_DEFAULT = "10.0.0.253";
+
+    /** String DHCP min address for business class devices */
+    public static final String STRING_DHCP_MAX_ADDRESS_BCI = "10.1.10.253";
+
+    /** Ping Connectivity Test Message */
+    public static final String PING_CONNECTIVITY_TEST_MESSAGE = "OK";
+
+    /** TraceRoute Success Message */
+    public static final String TRACE_ROUTE_SUCCESS_MESSAGE = "Status: Complete !";
+
+    /** Delimiter Ampersand. */
+    public static final String DELIMITER_AMPERSAND = "&";
+
+    /** Process name lighttpd */
+    public static final String PROCESS_NAME_LIGHTTPD = "lighttpd";
+    
+    /** string to store value of server.pem */
+    public static final String STRING_SERVER = "server.pem";
+    
+    /** Pattern to get the parodus execution path */
+    public static final String PATTERN_PARODUS_EXECUTION_PATH = "(/usr/bin/parodus .*)";
+    
+    /** Pattern to get the parner id from parodus log file */
+    public static final String PATTERN_MATCHER_PARODUS_PARTNER_ID = "partnerid_header formed X-Midt-Partner-Id: +\\*,(\\w+)";
+    
+    /** Pattern to get the partner id from webconfig file */
+    public static final String PATTERN_MATCHER_WEBCONFIG_PARTNER_ID = "X-Midt-Partner-Id header is +\\*,(\\w+)";
+    
+    /** string invalid partner id */
+    public static final String TXT_INVALID_PARTNER_ID = "invalid partner id";
+    
+    /** String constant to hold value 200 */
+    public static final String STRING_200 = "200";
+    
+    /** Pattern to get the process id for parodus using ps command */
+    public static final String PATTERN_PROCESS_PARODUS = "(\\d+) +[\\w\\-?]+ +.*parodus";
+    
+    /** Constant to hold the deny status */
+    public static final String STRING_DENY = "Deny";
+    
+    /** Constant to hold the Allow All status */
+    public static final String STRING_ALLOW_ALL = "Allow-All";
 }

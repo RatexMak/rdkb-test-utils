@@ -160,7 +160,7 @@ public class BroadBandCommonUtils {
 	WebPaServerResponse response = tapEnv.setWebPaParameterValues(device, webPaParameters);
 	LOGGER.info("RESPONSE CODE: " + response.getStatusCode());
 	LOGGER.info("RESPONSE MESSAGE: " + response.getMessage());
-	boolean result = response.getStatusCode() == RDKBTestConstants.CONSTANT_200;
+	boolean result = response.getStatusCode() == RDKBTestConstants.CONSTANT_200 || response.getMessage().contains(BroadBandTestConstants.SUCCESS_TXT);
 	LOGGER.info("WEBPA PARAM - " + webPaParameter.getName() + " SET WITH VALUE - " + webPaParameter.getValue()
 		+ " IS SUCCESSFUL: " + result);
 	LOGGER.debug("ENDING METHOD setWebPaParam");

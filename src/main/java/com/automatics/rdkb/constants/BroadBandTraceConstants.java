@@ -215,7 +215,7 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
     public static final String LOG_MESSAGE_STARTING_WEBPA = "Starting component: com.cisco.spvtg.ccsp.webpaagent";
 
     /** Log Message in PARODUS log for Connected to server over SSL */
-    public static final String LOG_MESSAGE_SERVER_CONNECTION = "Connected to server over SSL";
+    public static final String LOG_MESSAGE_SERVER_CONNECTION = "Connected to server";
 
     /** The constant holding a log for http download request rejected status. */
     public static final String LOG_MESSAGE_HTTP_DOWNLOAD_REQUEST_REJECTED_WITH_SAME_VERSION = "no upgrade/downgrade required";

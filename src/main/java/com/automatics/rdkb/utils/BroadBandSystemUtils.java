@@ -810,4 +810,32 @@ public class BroadBandSystemUtils {
 	return domainNameAndIpAddress;
     }
     
+    /**
+     * Utility method to verify the log messages on given log file from Arm Console .
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi} Reference
+     * @param device
+     *            {@link Dut} to be validated
+     * @param deviceDateTime
+     *            Timestamp from Device
+     * @return Boolean representing the result of verification of Log file.
+     * 
+     * @refactor yamini.s
+     */
+    public static boolean verifyArmConsoleLog(String command, AutomaticsTapApi tapEnv, Dut device,
+	    String deviceDateTime) {
+	LOGGER.debug("ENTERING METHOD verifyArmConsoleLog");
+	boolean result = false;
+	String response = tapEnv.executeCommandUsingSsh(device, command);
+	LOGGER.info("response:" + response);
+	response = response.replaceAll("\n", "");
+	LOGGER.info("response after replace:" + response);
+	if (CommonMethods.isNotNull(response)) {
+	    result = BroadBandCommonUtils.verifyLogUsingTimeStamp(deviceDateTime, response);
+	}
+	LOGGER.debug("ENDING METHOD verifyArmConsoleLog");
+	return result;
+    }
+    
 }

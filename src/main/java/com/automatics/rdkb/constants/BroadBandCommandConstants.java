@@ -20,6 +20,7 @@ package com.automatics.rdkb.constants;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
 import com.automatics.tap.AutomaticsTapApi;
 
 public class BroadBandCommandConstants extends RDKBTestConstants {
@@ -1489,8 +1490,17 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 	/** Cmd to remove dummy file from /tmp */
 	public static final String CMD_REMOVE_DUMMY_FILE = "rm /tmp/dummy.txt";
 
+	/** Cmd to grep valid primary ip from tcpdump to /tmp/cpature.txt */
+	public static final String CMD_TO_GET_DNS_PRIMARY_IP_TCPDUMP = BroadbandPropertyFileHandler.getDNSPrimaryIpTcpDump();
+
 	/** Cmd to remove dummy file from /tmp */
 	public static final String CMD_REMOVE_CAPTURE_FILE = "rm /tmp/capture.txt";
+
+	/** Cmd to grep valid secondary ip from tcpdump to /tmp/cpature.txt */
+	public static final String CMD_TO_GET_DNS_SECONDARY_IP_TCPDUMP = BroadbandPropertyFileHandler.getDNSSecondaryIpTcpDump();
+
+	/** Cmd to grep invalid primary ip from tcpdump to /tmp/cpature.txt */
+	public static final String CMD_TO_GET_INVALID_DNS_PRIMARY_IP_TCPDUMP = BroadbandPropertyFileHandler.getInvalidDNSPrimaryIpTcpDump();
 
 	/** Constant to hold file path for dcmscriptl og file */
 	public static final String FILE_TMP_DCMSCRIPT_LOG = "/tmp/dcmscript";
@@ -1707,5 +1717,102 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     
     /** Full path of themis server decrypted client cert file */
     public static final String FILE_THEMIS_DECRYPTED_CLIENT_CERT = "/tmp/adzvfchig-res.mch";
+    
+    /** Command to grep zram log from zram.log file */
+    public static final String CMD_TO_GREP_ENABLE_AND_DISABLE_ZRAM_LOG = "cat /rdklogs/logs/zram.log | grep zram";
+    
+    /** restart RFC service **/
+    public static final String RFC_RESTART_SERVICE = "sh /lib/rdk/RFCbase.sh";
+
+    /** Command to get ZRAM Partition */
+    public static final String CMD_TO_GET_ZRAM_PARTITION = "cat /proc/swaps";
+    
+    /** File path for bootstrap.json file */
+    public static final String FILE_NVRAM_BOOTSTRAP_JSON = "/nvram/bootstrap.json";
+    
+    /** File path for bootstrap.json file in autoVault */
+    public static final String FILE_AUTOVAULT_BOOTSTRAP = "cpefiles/rdkb/bootstrap.json";
+    
+    /** Command to get one line before matching phrase */
+    public static final String CMD_GREP_B_I = "grep -B <<VALUE>> -i ";
+    
+    /** Command to change the version in bootstrap.json file */
+    public static final String COMMAND_SED_BOOTSTRAP_VERSION = "sed -i 's#4.0#3.0#g' ";
+
+    /** sed command with + symbol */
+    public static final String CMD_SED_WITH_SYMBOL_PLUS = "sed -i 's+";
+
+    /** sed command option g */
+    public static final String CMD_SED_OPTION_G = "+g' ";
+    
+    /** Command to get the certificate names */
+    public static final String CMD_TO_GET_CERTIFICATES_NAMES = "find / -name \"*.crt\"";
+    
+    /** Command to get one line before matching phrase */
+	public static final String CMD_GREP_A_I = "grep -A <<VALUE>> -i ";
+	
+	/** command to Grep all process Capabilities */
+	public static final String CMD_GET_ALL_PROCESS_CAPABILITIES = "cat /etc/security/caps/process-capabilities.json";
+	
+	/** CURL Command **/
+    public static final String CMD_CURL = "curl ";
+    
+	/** Argument for curl command */
+	public static final String CMD_TAG_FOR_CURL = "-T";
+	
+	/** Command constant for accountId from syscng.db file **/
+    public static final String CMD_FOR_ACCOUNTID = "AccountID";
+    
+    /** Command to verify the brlan0 bridge using psmcli command */
+	public static final String CMD_PSMCLI_GET_DMSB_L2NET_1_PORT_1_NAME = "psmcli get dmsb.l2net.1.Port.1.Name – brlan0";
+	
+	/** Command to verify the brlan0 interface/ports using psmcli command */
+	public static final String CMD_DMSB_L2NET_1_MEMBERS = "dmsb.l2net.1.Members.";
+	
+	/** PSM DB File in /tmp */
+	public static final String FILE_TMP_PSM_DB = "/tmp/bbhm_cur_cfg.xml";
+	
+	/** PSM DB File Name */
+	public static final String FILE_PSM_DB = "/tmp/bbhm_cur_cfg.xml";
+	
+	/** Log File for OvsAgentApi.log. */
+	public static final String FILE_PATH_OVSAGENTAPI_LOG = "/rdklogs/logs/OvsAgentApi.log";
+	
+	/** Log File for OvsAgentLog.txt.0. */
+	public static final String FILE_PATH_OVSAGENTLOG_TXT = "/rdklogs/logs/OvsAgentLog.txt.0";
+	
+	/** Log File for bridgeUtils.log. */
+	public static final String FILE_PATH_BRIDGEUTILS_LOG = "/rdklogs/logs/bridgeUtils.log";
+	
+	/** List of boot time logs */
+	public static final List<String> BOOTTIME_COMPONENT_LIST_OVS = new ArrayList<String>() {
+		{
+			add("boot_to_snmp_subagent_v2_uptime");
+			add("boot_to_MOCA_uptime");
+			add("boot_to_ETH_uptime");
+			add("boot_to_XHOME_uptime");
+			add("CM is Operational");
+			add("boot_to_wan_uptime");
+			add("boot_to_WIFI_uptime");
+			add("boot_to_WEBPA_READY_uptime");
+		}
+	};
+	
+	/** Command for tcp configurable packets */
+	public static final String CMD_TCP_PACKET_THRESHOLD = "cat /proc/sys/net/flowmgr/tcp_pkt_threshold";
+
+	/** Command for udp configurable packets */
+	public static final String CMD_UDP_PACKET_THRESHOLD = "cat /proc/sys/net/flowmgr/udp_pkt_threshold";
+	
+	/** Command to write in nvram directory */
+	public static final String COMMAND_WRITE_TO_NVRAM = "echo flash_write 8:0:60000> /proc/nvram";
+	
+	public static final String COMMAND_WRITE_TO_NVRAM_BOARID = "echo \"TEST\" > /proc/nvram/boardid";
+	
+    /** LM Log File */
+    public static final String LOCATION_LM_LOG_TXT_0 = "/rdklogs/logs/LM.txt.0";
+	
+	
+
 
 }

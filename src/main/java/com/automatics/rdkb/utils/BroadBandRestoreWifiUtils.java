@@ -35,6 +35,7 @@ import com.automatics.rdkb.constants.BroadBandWebPaConstants.NonDefaultWiFiParam
 import com.automatics.rdkb.constants.BroadBandWebPaConstants.RdkBSsidParameters;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants.WIFI_RESTORE_METHOD;
 import com.automatics.rdkb.constants.RDKBTestConstants.WiFiFrequencyBand;
+import com.automatics.rdkb.utils.cdl.CodeDownloadUtils;
 import com.automatics.rdkb.utils.snmp.BroadBandSnmpMib;
 import com.automatics.rdkb.utils.snmp.BroadBandSnmpUtils;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
@@ -428,4 +429,109 @@ public class BroadBandRestoreWifiUtils {
 	LOGGER.debug("Ending METHOD verifyDefaultSsidForAllPartners");
 	return broadBandResultObject;
     }
+    
+    /**
+     * This method will get the image name to be flashed and verify whether this image is already flashed
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param buildNameToBeTriggerred
+     *            Image which is going to be flashed
+     * @return
+     */
+    public static boolean verifyWhetherImageIsAlreadyFlashedInDevice(Dut device, AutomaticsTapApi tapEnv,
+	    String buildNameToBeTriggerred) {
+	boolean isImageAlreadyFlashed = false;
+	String buildNameWithoutExtension = null;
+	if (buildNameToBeTriggerred.contains(BroadbandPropertyFileHandler.getDeviceSpecificBuild1())) {
+	    buildNameWithoutExtension = buildNameToBeTriggerred.replace(BroadbandPropertyFileHandler.getDeviceSpecificBuild1(), "");
+	}  else if (buildNameToBeTriggerred.contains(BroadbandPropertyFileHandler.getDeviceSpecificBuild2())) {
+	    buildNameWithoutExtension = buildNameToBeTriggerred
+			    .replace(BroadbandPropertyFileHandler.getDeviceSpecificBuild2(), "");
+	}else if (buildNameToBeTriggerred.contains(BroadbandPropertyFileHandler.getDeviceSpecificBuild3())) {
+	    buildNameWithoutExtension = buildNameToBeTriggerred
+		    .replace(BroadbandPropertyFileHandler.getDeviceSpecificBuild3(), "");
+	} else if (buildNameToBeTriggerred.contains(BroadbandPropertyFileHandler.getDeviceSpecificBuild4())) {
+	    buildNameWithoutExtension = buildNameToBeTriggerred
+		    .replace(BroadbandPropertyFileHandler.getDeviceSpecificBuild4(), "");
+	}
+	isImageAlreadyFlashed = CodeDownloadUtils.verifyImageVersionFromVersionText(tapEnv, device,
+		buildNameWithoutExtension);
+	return isImageAlreadyFlashed;
+    }
+    
+    /**
+     * This method compares two webpa parameters before and after CDL
+     * 
+     * @param firstSetForComparision
+     *            set before CDL
+     * @param secondSetForComparision
+     *            set after CDL
+     * @return true if both webpa values are same
+     * @author anandam.s
+     * @refactor yamini.s
+     */
+    public static boolean compareWifiSettingsWithWebpaValuesBeforeAndAfterCDL(
+	    Map<String, String> firstSetForComparision, Map<String, String> secondSetForComparision,
+	    String webpaParameter) {
+	boolean status = false;
+	String errorMessage = null;
+	String parameterValueAfterCDL = secondSetForComparision.get(webpaParameter);
+	String parameterValueBeforeCDL = firstSetForComparision.get(webpaParameter);
+	LOGGER.info("Value before CDL : " + parameterValueBeforeCDL);
+	LOGGER.info("Value after CDL : " + parameterValueAfterCDL);
+	if (CommonMethods.isNotNull(parameterValueBeforeCDL) && CommonMethods.isNotNull(parameterValueAfterCDL)) {
+	    if (parameterValueBeforeCDL.equalsIgnoreCase(parameterValueAfterCDL)) {
+		LOGGER.info(webpaParameter + "Value did not change after CDL");
+		status = true;
+	    } else {
+		errorMessage = "2.4 GHz SSID has changed after CDL .Value before CDL : " + parameterValueBeforeCDL
+			+ " Value after CDL : " + parameterValueAfterCDL;
+		LOGGER.error(errorMessage);
+		throw new TestException(errorMessage);
+	    }
+	} else {
+	    errorMessage = "One /Both of the parameters obtained is null";
+	    LOGGER.error(errorMessage);
+	    throw new TestException(errorMessage);
+	}
+	return status;
+    }
+
+    /**
+     * This method compares two snmp parameters before and after CDL
+     * 
+     * @param firstSetForComparision
+     *            set before CDL
+     * @param secondSetForComparision
+     *            set after CDL
+     * @return true if both snmp values are same
+     * @author anandam.s
+     * @refactor yamini.s
+     */
+    public static boolean compareWifiSettingsWithSNMPParameterValuesBeforeAndAfterCDL(
+	    Map<String, String> firstSetForComparision, Map<String, String> secondSetForComparision, String OID) {
+	boolean status = false;
+	String errorMessage = null;
+	String parameterValueAfterCDL = secondSetForComparision.get(OID);
+	String parameterValueBeforeCDL = firstSetForComparision.get(OID);
+	if (CommonMethods.isNotNull(parameterValueBeforeCDL) && CommonMethods.isNotNull(parameterValueAfterCDL)) {
+	    if (parameterValueBeforeCDL.equals(parameterValueAfterCDL)) {
+		status = true;
+	    } else {
+		errorMessage = OID + "Parameter has changed after CDL .Value before CDL : " + parameterValueBeforeCDL
+			+ " Value after CDL : " + parameterValueAfterCDL;
+		LOGGER.error(errorMessage);
+		throw new TestException(errorMessage);
+	    }
+	} else {
+	    errorMessage = "One /Both of the parameters obtained is null";
+	    LOGGER.error(errorMessage);
+	    throw new TestException(errorMessage);
+	}
+	return status;
+    }
+
 }

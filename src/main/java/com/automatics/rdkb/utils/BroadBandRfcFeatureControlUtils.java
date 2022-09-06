@@ -760,6 +760,17 @@ public class BroadBandRfcFeatureControlUtils {
 			}
 			break;
 		}
+
+		case BroadBandTestConstants.CONFIGURABLE_NONROOT_BLOCKLIST_TELEMETRY: {
+			if (enableOrDisableFlag) {
+				rfcPayLoadData = AutomaticsTapApi
+						.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_NONROOT_SUPPORT_BLOCKLIST_TELEMETRY);
+			} else {
+				rfcPayLoadData = AutomaticsTapApi
+						.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PAYLOAD_NONROOT_BLOCKLIST);
+			}
+			break;
+		}
 		}
 
 		LOGGER.info("PAY LOAD DATA: " + rfcPayLoadData);
@@ -1027,41 +1038,38 @@ public class BroadBandRfcFeatureControlUtils {
 
 		return status;
 	}
-	
-	/**
-     * Method to validate the RFC config URL in nvram/rfc.properties
-     * 
-     * @param device
-     *            {@link Dut}
-     * @param tapEnv
-     *            {@link AutomaticsTapApi}
-     * 
-     * @return true if url retrived is same as that of url in dcmrfc.log
-     */
-    public static boolean validateRFCConfigURL(Dut device, AutomaticsTapApi tapEnv) {
-	String searchCommand = null;
-	String commandOutput = null;
-	String dcmServerUrl = null;
-	boolean status = false;
-	if (CommonUtils.isFileExists(device, tapEnv, BroadBandRfcFeatureControlUtils.NVRAM_RFC_PROPERTIES)) {
-	    searchCommand = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.CAT_COMMAND,
-		    BroadBandRfcFeatureControlUtils.NVRAM_RFC_PROPERTIES);
-	    LOGGER.info("Search Command is: " + searchCommand);
-	    commandOutput = tapEnv.executeCommandUsingSsh(device, searchCommand);
-	    if (CommonMethods.isNotNull(commandOutput)) {
-		dcmServerUrl = CommonMethods.patternFinder(commandOutput,
-			BroadBandRfcFeatureControlUtils.PATTERN_FOR_RFC_CONFIG_SERVER_URL);
-		if (CommonMethods.isNotNull(dcmServerUrl)) {
-		    searchCommand = BroadBandCommonUtils.concatStringUsingStringBuffer(
-			    BroadBandTestConstants.GREP_COMMAND, dcmServerUrl,
-			    BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.DCMRFC_LOG_FILE);
-		    LOGGER.info("Search Command is :" + searchCommand);
-		    status = CommonUtils.searchLogFiles(tapEnv, device, searchCommand);
-		}
-	    }
-	}
-	return status;
-    }
 
+	/**
+	 * Method to validate the RFC config URL in nvram/rfc.properties
+	 * 
+	 * @param device {@link Dut}
+	 * @param tapEnv {@link AutomaticsTapApi}
+	 * 
+	 * @return true if url retrived is same as that of url in dcmrfc.log
+	 */
+	public static boolean validateRFCConfigURL(Dut device, AutomaticsTapApi tapEnv) {
+		String searchCommand = null;
+		String commandOutput = null;
+		String dcmServerUrl = null;
+		boolean status = false;
+		if (CommonUtils.isFileExists(device, tapEnv, BroadBandRfcFeatureControlUtils.NVRAM_RFC_PROPERTIES)) {
+			searchCommand = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.CAT_COMMAND,
+					BroadBandRfcFeatureControlUtils.NVRAM_RFC_PROPERTIES);
+			LOGGER.info("Search Command is: " + searchCommand);
+			commandOutput = tapEnv.executeCommandUsingSsh(device, searchCommand);
+			if (CommonMethods.isNotNull(commandOutput)) {
+				dcmServerUrl = CommonMethods.patternFinder(commandOutput,
+						BroadBandRfcFeatureControlUtils.PATTERN_FOR_RFC_CONFIG_SERVER_URL);
+				if (CommonMethods.isNotNull(dcmServerUrl)) {
+					searchCommand = BroadBandCommonUtils.concatStringUsingStringBuffer(
+							BroadBandTestConstants.GREP_COMMAND, dcmServerUrl,
+							BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.DCMRFC_LOG_FILE);
+					LOGGER.info("Search Command is :" + searchCommand);
+					status = CommonUtils.searchLogFiles(tapEnv, device, searchCommand);
+				}
+			}
+		}
+		return status;
+	}
 
 }

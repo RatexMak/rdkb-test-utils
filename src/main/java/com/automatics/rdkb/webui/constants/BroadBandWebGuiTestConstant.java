@@ -283,13 +283,13 @@ public class BroadBandWebGuiTestConstant {
 
     /** Pattern for Public Wi-Fi Network block */
     public static final String PATTERN_PUBLIC_WIFI_NETWORK = "Public Wi-Fi Network";
-    
+
     /** Constant to hold up and down stream header lock status */
     public static final String UP_AND_DOWN_STREAM_PARAM_LOCK_STATUS = "Lock Status";
-    
+
     /** Constant to hold up and down stream header Frequency */
     public static final String UP_AND_DOWN_STREAM_PARAM_FREQUENCY = "Frequency";
-    
+
     /** Constant to hold up and down stream header SNR */
     public static final String UP_AND_DOWN_STREAM_PARAM_SNR = "SNR";
 
@@ -298,16 +298,45 @@ public class BroadBandWebGuiTestConstant {
 
     /** Constant to hold up and down stream header Modulation */
     public static final String UP_AND_DOWN_STREAM_PARAM_MODULATION = "Modulation";
-    
+
     /** Constant to hold up and down stream header Symbol Rate */
     public static final String UP_AND_DOWN_STREAM_PARAM_SYMBOL_RATE = "Symbol Rate";
-    
+
     /** Constant to hold up and down stream header Channel Type */
     public static final String UP_AND_DOWN_STREAM_PARAM_CHANNEL_TYPE = "Channel Type";
-    
+
     /** Variable to store the xpath for Prefer private Wifi */
     public static String XPATH_FOR_PREFER_PRIVATE = "//*[@id='prefer_private']";
+
+    /** Property to get command to trigger firmware download for devices **/
+    public static final String SH_COMMAND_TO_TRIGGER_FIRMWARE_DOWNLOAD_DSL = "sh.command.totrigger. fwdownload_dsl";
+
+    /** port forwarding mode */
+    /**
+     * Xpath element to get the aria checked status of port forwarding mode enable button
+     */
+    public static String XPATH_FOR_PORT_FORWARDING_MODE_ENABLE_LINK = "//*[@id='forwarding-switch']/a[1]";
+
+    /**
+     * Xpath element to get the aria checked status of port forwarding mode disable button
+     */
+    public static String XPATH_FOR_PORT_FORWARDING_MODE_DISABLE_LINK = "//*[@id='forwarding-switch']/a[2]";
     
-	/** Property to get command to trigger firmware download for devices **/
-	public static final String SH_COMMAND_TO_TRIGGER_FIRMWARE_DOWNLOAD_DSL = "sh.command.totrigger.fwdownload.dsl";
+    /** Xpath element to get the area checked status of Https mode enable button */
+    public static String XPATH_FOR_HTTPS_MODE_ENABLE_LINK = "//*[@id='https-switch']/a[1]";
+
+    /** Xpath element to get the area checked status of Https mode disable button */
+    public static String XPATH_FOR_HTTPS_MODE_DISABLE_LINK = "//*[@id='https-switch']/a[2]";
+    
+    /** Variable to store the xpath for DHCP IPV4 Beginning Address */
+    public static String XPATH_FOR_DHCP_IPV4_BEGINNING_ADDRESS = "//*[@id='ipv4_dhcp_beginning_address_4']";
+    
+    /** Variable to store the xpath for DHCP IPV4 Ending Address */
+    public static String XPATH_FOR_DHCP_IPV4_ENDING_ADDRESS = "//*[@id='ipv4_dhcp_ending_address_4']";
+    
+    /** Variable to store the xpath for DHCP IPV4 Save Button */
+    public static String XPATH_FOR_DHCP_IPV4_SAVE_BUTTON = "//*[@id='submit_ipv4']";
+    
+    /** Variable to store the Connected devices edit page Header title */
+    public static final String HEADER_TITLE_CONNECTED_DEVICES_EDIT_PAGE = "Connected Devices > Devices > Edit Device";
 }

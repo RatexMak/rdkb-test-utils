@@ -5611,11 +5611,11 @@ public class BroadBandCommonUtils {
 	    BroadBandCommonUtils.getAtomSyncUptimeStatus(device, tapEnv);
 	}
 	if (DeviceModeHandler.isFibreDevice(device)) {
-	    /*
-	     * snmpOutput = BroadBandSnmpUtils.snmpSetOnEstb(tapEnv, device,
-	     * BroadBandSnmpMib.ESTB_FACTORY_RESET_DEVICE.getOid(), SnmpDataType.INTEGER,
-	     * BroadBandTestConstants.STRING_VALUE_ONE).trim();
-	     */
+	    
+	     snmpOutput = BroadBandSnmpUtils.snmpSetOnEstb(tapEnv, device,
+	     BroadBandSnmpMib.ESTB_FACTORY_RESET_DEVICE.getOid(), SnmpDataType.INTEGER,
+	     BroadBandTestConstants.STRING_VALUE_ONE).trim();
+	     
 	} else {
 	    snmpOutput = BroadBandSnmpUtils
 		    .snmpSetOnEcm(tapEnv, device, BroadBandSnmpMib.ESTB_FACTORY_RESET_DEVICE.getOid(),
@@ -8388,5 +8388,348 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("Ending of Method: retrieveACSStatusUsingSystemCommands");
 	return status;
     }
+    
+
+    /**
+     * Utils method to get the Ipv4 begining and ending Address
+     * 
+     * @return the List of INTEGER containig IPV4 address between DHCP min max values.
+     * 
+     * @refactor Athira
+     */
+    public static List<Integer> getRandomDhcpV4BeginningAndEndingAddress() {
+	LOGGER.debug("STARTING METHOD: getRandomDhcpV4BeginningAndEndingAddress");
+	int dhcpIpv4BeginningValue = 0;
+	int dhcpIpv4EndingValue = 0;
+	List<Integer> dhcpBeginningAndEndingValue = new ArrayList<Integer>();
+	dhcpIpv4BeginningValue = BroadBandSystemUtils.getRandomNumberBetweenRange(BroadBandTestConstants.CONSTANT_2,
+		BroadBandTestConstants.CONSTANT_253);
+	dhcpIpv4EndingValue = getIpv4EndingAddress(dhcpIpv4BeginningValue);
+	LOGGER.info("DHCP IPV4 Random Brginning Value to be set is: " + dhcpIpv4BeginningValue);
+	LOGGER.info("DHCP IPV4 Ending Value to be set is: " + dhcpIpv4EndingValue);
+	if (isValidBeginningAndEndingIpv4Value(dhcpIpv4BeginningValue, dhcpIpv4EndingValue)) {
+	    dhcpBeginningAndEndingValue.add(dhcpIpv4BeginningValue);
+	    dhcpBeginningAndEndingValue.add(dhcpIpv4EndingValue);
+	}
+	LOGGER.debug("ENDING METHOD: getRandomDhcpV4BeginningAndEndingAddress");
+	return dhcpBeginningAndEndingValue;
+    }
+    
+    /**
+     * Utils method to get the Ipv4 begining Address
+     * 
+     * @param beginingAddress
+     *            of DHCPV4 value
+     * 
+     * @return the IPV4 ending address between DHCP range
+     * 
+     * @refactor Athira
+     */
+
+    public static int getIpv4EndingAddress(int beginingAddress) {
+	LOGGER.debug("ENTERING METHOD getIpv4EndingAddress");
+	int endingAddress = 0;
+	if (beginingAddress >= BroadBandTestConstants.CONSTANT_248)
+	    endingAddress = BroadBandTestConstants.CONSTANT_253;
+	else
+	    endingAddress = beginingAddress + BroadBandTestConstants.CONSTANT_5;
+
+	LOGGER.debug("ENDING METHOD getIpv4EndingAddress");
+	return endingAddress;
+    }
+
+
+    /**
+     * Utils method to get validate IPV4 beginning and ending value
+     * 
+     * @param dhcpIpv4BeginningValue
+     *            minimum value for DHCPV4 that is to be validated
+     * 
+     * @param dhcpIpv4EndingValue
+     *            maximum value for DHCPV4 that is to be validated
+     * 
+     * @return boolean true if valid.
+     * 
+     * @reafctor Athira
+     */
+    public static boolean isValidBeginningAndEndingIpv4Value(int dhcpIpv4BeginningValue, int dhcpIpv4EndingValue) {
+	boolean status = false;
+	status = (dhcpIpv4BeginningValue > BroadBandTestConstants.CONSTANT_1
+		&& dhcpIpv4EndingValue <= BroadBandTestConstants.CONSTANT_253)
+		&& (dhcpIpv4EndingValue >= dhcpIpv4BeginningValue);
+	return status;
+    }
+
+
+    /**
+     * Verify whether the Min and Max Value set in GUI matches With WEBPA value.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param dhcpIpv4BeginningValue
+     *            Dhcp Ipv4 Beginning Value set via UI.
+     * @param dhcpIpv4EndingValue
+     *            Dhcp Ipv4 Ending Value set via UI.
+     * 
+     * @refactor Athira
+     * 
+     */
+    public static boolean verifyMinMaxRangeSetUsingWebpa(AutomaticsTapApi tapEnv, Dut device,
+	    int dhcpIpv4BeginningValue, int dhcpIpv4EndingValue) {
+	boolean status = false;
+	String dhcpMinRange = null;
+	String dhcpMaxRange = null;
+	int minRange = 0;
+	int maxRange = 0;
+	try {
+	    dhcpMinRange = tapEnv.executeWebPaCommand(device,
+		    BroadBandWebPaConstants.WEBPA_PARAM_TO_RETRIEVE_DHCP_STARTING_IP_ADDRESS);
+	    dhcpMaxRange = tapEnv.executeWebPaCommand(device,
+		    BroadBandWebPaConstants.WEBPA_PARAM_TO_RETRIEVE_DHCP_ENDING_IP_ADDRESS);
+	    LOGGER.info("DHCP MINIMUM IP RANGE CONFIGURED FOR GATEWAY : " + dhcpMinRange);
+	    LOGGER.info("DHCP MAXIMUM IP RANGE CONFIGURED FOR GATEWAY : " + dhcpMaxRange);
+	    LOGGER.info("DHCP IPV4 Beginning Value set in UI is: " + dhcpIpv4BeginningValue);
+	    LOGGER.info("DHCP IPV4 Ending Value set in UI is: " + dhcpIpv4EndingValue);
+	    if (CommonMethods.isIpv4Address(dhcpMinRange) && CommonMethods.isIpv4Address(dhcpMaxRange)) {
+		minRange = Integer.parseInt(CommonMethods.patternFinder(dhcpMinRange,
+			BroadBandTestConstants.PATTERN_TO_RETRIEVE_LAST_DIGIT_OF_IPv4_ADDRESS));
+		maxRange = Integer.parseInt(CommonMethods.patternFinder(dhcpMaxRange,
+			BroadBandTestConstants.PATTERN_TO_RETRIEVE_LAST_DIGIT_OF_IPv4_ADDRESS));
+	    }
+	    status = (minRange == dhcpIpv4BeginningValue) && (maxRange == dhcpIpv4EndingValue);
+	} catch (Exception e) {
+	    LOGGER.info(e.getMessage());
+	}
+	return status;
+    }
+    
+    
+    /**
+     * Helper method to change partner id and to verify if it is changed
+     * 
+     * @param device
+     * @param tapEnv
+     * @param partnerId
+     * @return true if partner id changed, else false
+     */
+    public static boolean changePartnerIdAndVerify(Dut device, AutomaticsTapApi tapEnv, String partnerId) {
+	boolean status = false;
+	String errorMessage = null;
+	String partnerIdName = null;
+	try {
+	    errorMessage = "Failed to set syndication partner id " + partnerId;
+	    status = BroadBandWebPaUtils.setParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+		    BroadBandWebPaConstants.WEBPA_PARAM_FOR_SYNDICATION_PARTNER_ID, BroadBandTestConstants.CONSTANT_0,
+		    partnerId);
+	    if (status) {
+		errorMessage = "Box didn't go for the syndication factory reset after one minute of wait time";
+		status = BroadBandWebPaUtils.setParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+			BroadBandWebPaConstants.WEBPA_PARAM_ACTIVATE_PARTNER_ID, BroadBandTestConstants.CONSTANT_3,
+			BroadBandTestConstants.TRUE);
+		if (status) {
+		    long startTime = System.currentTimeMillis();
+		    status = false;
+		    do {
+			if (!CommonUtils.executeTestCommand(tapEnv, device)) {
+			    LOGGER.info("STB is not accessible!. Reboot has initiated successfully");
+			    status = CommonMethods.waitForEstbIpAcquisition(tapEnv, device);
+
+			}
+		    } while ((System.currentTimeMillis() - startTime) < AutomaticsConstants.FIVE_MINUTES && !status
+			    && BroadBandCommonUtils.hasWaitForDuration(tapEnv,
+				    BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+
+		    partnerIdName = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+			    BroadBandWebPaConstants.WEBPA_PARAM_FOR_SYNDICATION_PARTNER_ID).trim();
+		    status = status && CommonMethods.isNotNull(partnerIdName)
+			    && partnerIdName.equalsIgnoreCase(partnerId);
+
+		}
+	    }
+	} catch (Exception e) {
+	    errorMessage = errorMessage + e.getMessage();
+	    LOGGER.error(errorMessage);
+	}
+	return status;
+    }
+    
+    /**
+     * Utility method used to get the list of interface from bbhm_cur_cfg.xml
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @return listOfInterfaces . It will return the list of interfaces
+     * 
+     * @refactor yamini.s
+     */
+    public static List<String> getListOfInterfaces(Dut device, AutomaticsTapApi tapEnv) {
+	LOGGER.debug("STARTING METHOD : getListOfInterfaces()");
+	List<String> listOfInterfaces = new ArrayList<String>();
+	List<String> tempArray = new ArrayList<String>();
+	String response = null;
+	try {
+	    response = BroadBandCommonUtils.searchLogFiles(tapEnv, device,
+		    BroadBandCommandConstants.CMD_DMSB_L2NET_1_MEMBERS, BroadBandCommandConstants.FILE_TMP_PSM_DB);
+	    if (CommonMethods.isNull(response)) {
+		response = BroadBandCommonUtils.searchLogFiles(tapEnv, device,
+			BroadBandCommandConstants.CMD_DMSB_L2NET_1_MEMBERS, BroadBandCommandConstants.FILE_PSM_DB);
+	    }
+	    if (CommonMethods.isNotNull(response)) {
+		try {
+		    tempArray = CommonMethods.patternFinderToReturnAllMatchedString(response,
+			    BroadBandTestConstants.PATTERN_TO_GET_INTERFACE);
+		    for (String singleInterface : tempArray) {
+			System.out.println("interFace:" + singleInterface);
+			if (singleInterface.contains(BroadBandTestConstants.SINGLE_SPACE_CHARACTER)) {
+			    String strArray[] = singleInterface.split(BroadBandTestConstants.SINGLE_SPACE_CHARACTER);
+			    for (int iteration = BroadBandTestConstants.CONSTANT_0; iteration < strArray.length; iteration++) {
+				listOfInterfaces.add(strArray[iteration]);
+			    }
+			} else {
+			    listOfInterfaces.add(singleInterface);
+			}
+		    }
+		} catch (Exception e) {
+		    LOGGER.error("Failed to get the multiple interface details:" + e.getMessage());
+		}
+		LOGGER.info("listOfInterfaces:" + listOfInterfaces);
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Exception occurred in getListOfInterfaces():" + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD : getListOfInterfaces()");
+	return listOfInterfaces;
+    }
+
+    /**
+     * Utility method used to validate the list of log message
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param listOfLogInfo
+     *            List of log imformation
+     * @param logFilename
+     *            Log File Name
+     * @return status True- List of log information validation success,Else- False
+     * 
+     * @refactor yamini.s
+     */
+    public static boolean validateListOfLogInformation(Dut device, AutomaticsTapApi tapEnv, List<String> listOfLogInfo,
+	    String logFilename) {
+	LOGGER.debug("STARTING METHOD : validateListOfLogInformation()");
+	boolean status = false;
+	int resultCount = BroadBandTestConstants.CONSTANT_0;
+	String response = null;
+	try {
+	    for (String logInfo : listOfLogInfo) {
+		response = searchArmOrAtomLogFile(tapEnv, device, logInfo, logFilename);
+		if (CommonMethods.isNotNull(response)) {
+		    resultCount = resultCount + BroadBandTestConstants.CONSTANT_1;
+		} else {
+		    LOGGER.error("Failed to verify " + logInfo + " in " + logFilename);
+		}
+	    }
+	    status = listOfLogInfo.size() == resultCount;
+	} catch (Exception e) {
+	    LOGGER.error("Exception occured in validateListOfLogInformation(): " + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD : validateListOfLogInformation()");
+	return status;
+    }
+
+    /**
+     * Helper method to verify device rebooted status and wait for IP acquisition after reboot
+     * 
+     * @param device
+     *            Dut instance
+     * @param tapEnv
+     *            EcatsTapApi instance
+     * @return true, if device is accessile after reboot
+     * 
+     * @author Gnanaprakasham
+     * @refactor yamini.s
+     */
+    public static boolean verifyDeviceRebootedStatusAndWaitForIpAcquisition(Dut device, AutomaticsTapApi tapEnv,
+	    long maximumTime) {
+
+	boolean status = false;
+
+	LOGGER.debug("STARTING METHOD : verifyDeviceRebootedStatusAndWaitForIpAcquisition");
+	long startTime = System.currentTimeMillis();
+	do {
+	    // Verify device is in reboot state or not
+	    if (CommonUtils.verifyStbRebooted(device, tapEnv)) {
+		LOGGER.info("STB is not accessible!. Reboot has initiated successfully");
+		LOGGER.info("Wait for 2 minutes in seconds");
+		tapEnv.waitTill(BroadBandTestConstants.TWO_MINUTES);
+		if (CommonMethods.waitForEstbIpAcquisition(tapEnv, device)) {
+		    LOGGER.info("Waiting for one Minute for the device to come up with all properties");
+		    tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+		    status = true;
+		}
+	    }
+	} while ((System.currentTimeMillis() - startTime) < maximumTime && !status
+		&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.TEN_SECOND_IN_MILLIS));
+
+	LOGGER.debug("ENDING METHOD : verifyDeviceRebootedStatusAndWaitForIpAcquisition");
+	return status;
+
+    }
+
+    /**
+     * 
+     * Method to get the partner id from build appender
+     * 
+     * @param device
+     *            {@code Dut}
+     * @param tapEnv
+     *            {@code AutomaticsTapApi}
+     * @return partnerId
+     * 
+     * @author ArunKumar Jayachandran
+     * @refactor yamini.s
+     */
+    public static String getPartnerIdFromBuildAppender(Dut device, AutomaticsTapApi tapEnv) {
+
+	LOGGER.debug("Starting method getPartnerIdFromBuildAppender");
+	String[] appenderArray = null;
+	String[] partnerArray = null;
+	String partnerId = null;
+	String buildAppender = null;
+	buildAppender = System.getProperty(BroadBandTestConstants.BUILD_APPENDER, BroadBandTestConstants.EMPTY_STRING);
+	LOGGER.info("build appender :"+buildAppender);
+	if (CommonMethods.isNotNull(buildAppender)) {
+	    appenderArray = buildAppender.split(BroadBandTestConstants.COMMA);
+	    partnerArray = BroadbandPropertyFileHandler.getPartnerIDValues().split(BroadBandTestConstants.COMMA);
+	    for (String details : appenderArray) {
+		try {
+		    for (String partner : partnerArray) {
+			if (details.equalsIgnoreCase(partner)) {
+			    partnerId = partner;
+			    break;
+			} else
+			    continue;
+		    }
+		    break;
+		} catch (Exception exception) {
+		    continue;
+		}
+	    }
+	}
+	if (CommonMethods.isNull(partnerId) || partnerId.equalsIgnoreCase(BroadBandTestConstants.EMPTY_STRING)) {
+	    partnerId = BroadbandPropertyFileHandler.getDefaultPartnerID();
+	}
+	LOGGER.info("Partner id from build appender: " + partnerId);
+	LOGGER.debug("Ending method getPartnerIdFromBuildAppender");
+	return partnerId;
+    }
+
+
 
 }

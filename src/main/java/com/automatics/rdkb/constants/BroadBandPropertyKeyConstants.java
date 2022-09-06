@@ -478,15 +478,6 @@ public class BroadBandPropertyKeyConstants {
      * property to configure valid Gateway local DHCP end address in setting Gateway Ip
      */
     public static final String PROP_KEY_TEST_GATEWAY_LOCAL_DHCP_END_ADDR = "test.gateway.localdhcp.endaddr";
-    
-	/** Property key to fetch Cmd to grep valid primary ip from tcpdump to /tmp/cpature.txt */
-	public static final String PROP_KEY_CMD_TO_GET_DNS_PRIMARY_IP_TCPDUMP = "cmd.dns.primaryip.tcpdump";
-	
-	/** Property key to fetch Cmd to grep valid secondary ip from tcpdump to /tmp/cpature.txt */
-	public static final String PROP_KEY_CMD_TO_GET_DNS_SECONDARY_IP_TCPDUMP = "cmd.dns.secondaryip.tcpdump";
-	
-	/** Property key to fetch Cmd to grep invalid primary ip from tcpdump to /tmp/cpature.txt */
-	public static final String PROP_KEY_CMD_TO_GET_INVALID_DNS_PRIMARY_IP_TCPDUMP = "cmd.dns.invalid.primaryip.tcpdump";
 
     /** property to configure WIFI Client MacAddress parameter */
     public static final String PROP_KEY_MAC_ADDRESS_WIFICLIENT = "wificlient.macaddress";
@@ -725,5 +716,24 @@ public class BroadBandPropertyKeyConstants {
     
     /** The property key to hold parodus token server url */
     public static final String PROP_KEY_INVALID_PARODUS_TOKEN_SERVER_URL = "parodus.invalid.token.server.url";
+    
+    public static final String BUILD_EXTENSION_1 = "build.extension1";
+    
+    public static final String BUILD_EXTENSION_2 = "build.extension2";
+    
+    public static final String BUILD_EXTENSION_3 = "build.extension3";
+    
+    public static final String BUILD_EXTENSION_4 = "build.extension4";
+    
+    /** Command to get certificate issuer_name */
+	public static final String VALID_CERT_ISSUER_NAME = "certificate.issuers.name";
+
+	public static final String TELEMETRY_UPLOAD_URL = "telemetry.upload.url";
+
+	public static final String DNS_SECONDARY_IP_TCPDUMP = "cmd.dns.secondaryip.tcpdump";
+
+	public static final String DNS_PRIMARY_IP_TCPDUMP = "cmd.dns.primaryip.tcpdump";
+
+	public static final String INVALID_DNS_PRIMARY_IP_TCPDUMP = "cmd.dns.invalid.primaryip.tcpdump";
 
 }

@@ -3304,5 +3304,30 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 		LOGGER.info("#######################################################################################");
 		tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
 	}
+	
+	/**
+     * Test step method used change the Partner ID and Reactivate Wifi Settings.
+     * 
+     * @param device
+     *            instance of{@link Dut}
+     * @param partnerId
+     *            String partner Id to be set.
+     * @refactor yamini.s
+     */
+    public static boolean changePartnerIdAndReactivateTheDevice(Dut device, String partnerId) {
+	LOGGER.debug("ENTERING METHOD changePartnerIdAndReactivateTheDevice");
+	boolean status = false;
+	try {
+	    if (BroadBandCommonUtils.changePartnerIdAndVerify(device, tapEnv, partnerId)) {
+		reactivateDeviceUsingWebpaOrSnmp(tapEnv, device);
+		status = true;
+	    }
+	} catch (Exception e) {
+	    status = false;
+	    LOGGER.error("Exception Occured during Changing the Partner ID to " + partnerId + " :" + e.getMessage());
+	}
+	LOGGER.debug("EXITING METHOD changePartnerIdAndReactivateTheDevice");
+	return status;
+    }
 
 }

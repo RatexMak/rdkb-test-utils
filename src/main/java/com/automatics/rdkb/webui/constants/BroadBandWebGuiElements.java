@@ -755,4 +755,23 @@ public class BroadBandWebGuiElements {
     
     /** xpath for up and down stream table */
     public static final String XPATH_FOR_UPDOWNSTREAM_TABLE = "//*[@id=\"content\"]/div[<REPLACE>]/table";
+    
+    /** Variable to store Xpath for DHCP Ending Address Error message */
+    public static final String XPATH_FOR_DHCP_ENDING_ADDRESS_ERROR_MESSAGE = "//*[@id='dhcp-portion']/div[4]/p";
+    
+    /** Variable to store the web element Xpath Online Devices table cell */
+    public static final String XPATH_ONLINE_DEVICES_CELL_ELEMENT = "//div[@id='online-private']/table/tbody/tr[##DIV1##]/td[##DIV2##]/input";
+
+    /** Variable to store the web element Xpath Online Devices table cell */
+    public static final String XPATH_ONLINE_DEVICES_CELL_ELEMENT_PATH = "//div[@id='online-private']/table/tbody/tr[##DIV1##]/td[##DIV2##]";
+
+    /** Variable to store the web element Xpath Online Devices edit page header */
+    public static final String XPATH_ONLINE_DEVICES_EDIT_PAGE_HEADER = "//div[##ROW##]/h1";
+    
+    /** Variable to store the web element Xpath Online Devices edit page element */
+    public static final String XPATH_ONLINE_DEVICES_EDIT_PAGE_ELEMENT = "//div[##ROW##]/div[##DIV1##]/form//div[##DIV2##]/input";
+
+    /** Variable to store the web element Xpath Online Devices edit page reserved IP Radio button */
+    public static final String XPATH_ONLINE_DEVICES_EDIT_PAGE_RESERVED_IP_RADIO_BUTTON = "//div[##ROW##]/div[2]/form/div[3]/input[2]";
+ 
 }

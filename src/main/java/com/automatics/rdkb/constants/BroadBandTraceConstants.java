@@ -17,6 +17,9 @@
  */
 package com.automatics.rdkb.constants;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class BroadBandTraceConstants extends RDKBTraceConstants {
 
     /** Sample name to set XDNS Tag */
@@ -1032,5 +1035,105 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
     /** Log message for failed to create new token */
     public static final String LOG_MESSAGE_THEMIS_TOKEN_FAILURE = "Failed to create new token";
 
+    /** Log message for disabling memory swap using Zram */
+    public static final String LOG_MESSAGE_DISABLING_ZRAM = "zram is disabled";
+    
+    /** Log message for enabling memory swap using Zram */
+    public static final String LOG_MESSAGE_ENABLING_ZRAM = "enabling zram";
+    
+    /** Log message version */
+    public static final String LOG_MESSAGE_VERSION = "version";
+    
+    /** Log message for bootstrap version 3.0 */
+    public static final String LOG_MESSAGE_BOOTSTRAP_VERSION_3_0 = "3.0";
+    
+    /** Log message for RFC */
+    public static final String LOG_MESSAGE_RFC = "_RFC";
+
+    /** Log message to validate the endpoint in "TDMlog.txt.0" log file */
+    public static final String LOG_MESSAGE_END_POINT = "Endpoint:";
+
+    /** Log message to validate the ecm mac in "TDMlog.txt.0" log file */
+    public static final String LOG_MESSAGE_ECM_MAC = "CmMac:";
+    
+    /** Log message to validate the device Id in "TDMlog.txt.0" log file */
+    public static final String LOG_MESSAGE_DEVICE_ID = "DeviceId:";
+
+    /** Log message to validate the DeviceModel in "TDMlog.txt.0" log file */
+    public static final String LOG_MESSAGE_DEVICE_MODEL = "DeviceModel:";
+
+    /** Log message to validate the PartnerId in "TDMlog.txt.0" log file */
+    public static final String LOG_MESSAGE_PARTNER_ID = "PartnerId:";
+    
+    /** Log message to validate the average response time in "TDMlog.txt.0" log file */
+    public static final String LOG_MESSAGE_AVERAGE_RESPONSE_TIME = "AvgRtt:";
+
+    /** Trace constant to validate the SuccessCount in "TDMlog.txt.0" log file */
+    public static final String LOG_MESSAGE_SUCCESS_COUNT = "SuccessCount:";
+
+    /** Trace constant to validate ping test diagnostic state for invalid host address */
+    public static final String LOG_MESSAGE_INVALID_HOST_NAME = "Error_CannotResolveHostName";
+    
+    /** List of Log message for COvsAgentApi.log */
+    public static final ArrayList<String> OVSAGENTAPI_LOG = new ArrayList<String>(
+	    Arrays.asList("open_log successfully opened", "Socket connected successfully",
+		    "ovs_agent_api_init successfully initialized", "ovsdb_write successfully wrote",
+		    "ovsdb_monitor successfully wrote", "handle_transact_insert_request"));
+    
+    /** List of Log message for OvsAgentLog.txt */
+    public static final ArrayList<String> OVSAGENTLOG_TXT = new ArrayList<String>(Arrays.asList(
+	    "Ovs Agent Log Initialized", "Ovs Agent Api Initialized for Component", "Ovs Action Initialized",
+	    "Ovs Agent interact monitor table 0 succeeded", "gwconf_mon_cb interact transact table 1 succeeded"));
+    
+    /** Log Message for update bridge info in bridgeUtils.log */
+    public static final String LOG_MESSAGE_UPDATEB_RIDGE_INFO = "updateBridgeInfo : parent_ifname is  : if_name is <REPLACE> : bridge <<INTERFACE>>";
+    
+    /** Log Message for create_bridge_api in bridgeUtils.log */
+    public static final String LOG_MESSAGE_CREATE_BRIDGE_API = "create_bridge_api ovs is enabled, calling ovs api";
+    
+    /** Log message for ovs enable state */
+    public static final String LOG_MESSAGE_OVS_ENABLED_MESH = "OVS_RFC_changed_to_enabled";
+    
+    /** Log message for ovs disable state */
+    public static final String LOG_MESSAGE_OVS_DISABLED_MESH = "OVS_RFC_changed_to_disabled";
+    
+    /** Log message for uprivilege mode for telemetry2.0 */
+    public static final String LOG_MESSAGE_UNPRIVILEGE_MODE_T2 = "Dropping root privilege of telemetry2_0: runs as unprivilege mode";
+     
+    /** Log message for wifi band utilization telemetry in wifihealth log */
+    public static final String LOG_MESSAGE_WIFI_BANDUTILIZATION = "WIFI_BANDUTILIZATION_";
+    
+    /** Log message for wifi mac total count telemetry in wifihealth log */
+    public static final String LOG_MESSAGE_WIFI_MAC_TOTAL_COUNT = "WIFI_MAC_<REPLACE>_TOTAL_COUNT";
+    
+    /** Log message for wifi rx clients telemetry in wifihealth log */
+    public static final String LOG_MESSAGE_WIFI_RXCLIENTS = "WIFI_RXCLIENTS_";
+    
+    /** Log message for wifi tx clients telemetry in wifihealth log */
+    public static final String LOG_MESSAGE_WIFI_TXCLIENTS = "WIFI_TXCLIENTS_";
+    
+    /** Activation Journey - Wifi Broadcast */
+    public static final String ACTIVATION_WIFI_BROADCAST_COMPLETE = "Wifi_Broadcast_complete";
+
+    /** Activation Journey - Wifi Name Broadcast */
+    public static final String ACTIVATION_WIFI_NAME_BROADCAST = "Wifi_Name_Broadcasted";
+    
+    /** Log message for rdkb connected clients */
+    public static final String RDKB_CONNECTED_CLIENTS = "RDKB_CONNECTED_CLIENTS";
+    
+    /** String constant to validated connected client log */
+    public static final String STRING_LOG_MESSAGE = " Client type is WiFi, MacAddress is ";
+    
+    /** String constant for string Connected */
+    public static final String STRING_CONNECTED = "Connected";
+    
+    /** Log message for RDKB memory information telemetry in SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_RDKB_SYS_MEM_INFO_SYS = "RDKB_SYS_MEM_INFO_SYS";
+    
+    /** Log message for used memory telemetry in SelfHeal.txt.0 log */
+    public static final String LOG_MESSAGE_WIFI_USED_MEM = "USED_MEM";
+
+    /** Log message for free memory telemetry in SelfHeal.txt.0 log */
+    public static final String LOG_MESSAGE_WIFI_FREE_MEM = "FREE_MEM";
     
 }

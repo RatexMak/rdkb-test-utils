@@ -4007,4 +4007,71 @@ public class BroadBandWebPaUtils {
 	    AutomaticsTapApi.saveImages(device, img, imageName);
 	}
     }
+
+    /**
+     * Method to validate DHCPv4 webpa values
+     * 
+     * @param defaultDhcpWebpaOutput
+     * @return broadBandResultObject
+     * 
+     * @refactor Athira
+     */
+    public static BroadBandResultObject verifyDhcpv4OutputValues(Map<String, String> defaultDhcpWebpaOutput) {
+	boolean status = false;
+	int defaultLeaseTimeInSeconds = 0;
+	BroadBandResultObject broadBandResultObject = new BroadBandResultObject();
+	LOGGER.debug("STARTING METHOD verifyDhcpv4OutputValues()");
+	String errorMessage = "Output from device is empty";
+	if (!defaultDhcpWebpaOutput.isEmpty()) {
+	    String defaultBeginningValue = defaultDhcpWebpaOutput
+		    .get(BroadBandWebPaConstants.WEBPA_PARAM_TO_RETRIEVE_DHCP_STARTING_IP_ADDRESS);
+	    String defaultEndingValue = defaultDhcpWebpaOutput
+		    .get(BroadBandWebPaConstants.WEBPA_PARAM_TO_RETRIEVE_DHCP_ENDING_IP_ADDRESS);
+	    String defaultLeaseTime = defaultDhcpWebpaOutput
+		    .get(BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_DHCP_LEASETIME);
+	    try {
+		defaultLeaseTimeInSeconds = Integer.parseInt(defaultLeaseTime);
+	    } catch (NumberFormatException e) {
+		errorMessage = "NUMBER FORMAT EXCEPTION WHILE CONVERING DHCPv6 LEASE TIME FROM LOCAL IP NETWORK PAGE";
+	    }
+	    status = CommonMethods.isIpv4Address(defaultBeginningValue)
+		    && CommonMethods.isIpv4Address(defaultEndingValue) && CommonMethods.isNotNull(defaultLeaseTime)
+		    && (defaultLeaseTimeInSeconds >= BroadBandTestConstants.CONSTANT_0);
+	}
+	LOGGER.debug("ENDING METHOD verifyDhcpv4OutputValues()");
+	broadBandResultObject.setStatus(status);
+	broadBandResultObject.setErrorMessage(errorMessage);
+	return broadBandResultObject;
+    }
+    
+    /**
+	 * Method to get the verify default value for non root support list
+	 * 
+	 * @param device instance of {@link Dut}
+	 * 
+	 * @param tapEnv AutomaticsTapApi instance
+	 * 
+	 * @return Map value based on default value
+	 * 
+	 * 
+	 */
+
+	public static boolean verifyDefaultValueForNonRootSupportList(Dut device, AutomaticsTapApi tapEnv) {
+		LOGGER.debug("STARTING METHOD: verifyDefaultValueForNonRootSupportList()");
+		String response = null;
+		boolean status = false;
+		try {
+			response = tapEnv.executeWebPaCommand(device,
+					BroadBandWebPaConstants.TR181_PARAM_NONROOT_SUPPORT_BLOCKLIST);
+			LOGGER.info("response :" + response);
+			status = CommonMethods.isNull(response)
+					|| response.contains(BroadBandTestConstants.CMD_NO_BLOCKLIST_PROCESS)
+					|| response.equalsIgnoreCase(BroadBandTestConstants.STRING_NULL);
+		} catch (Exception exception) {
+			LOGGER.error("Exception caught while verifyDefaultValueForNonRootSupportList : " + exception.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD: verifyDefaultValueForNonRootSupportList()");
+		return status;
+	}
+
 }

@@ -82,7 +82,7 @@ public class BroadBandTelemetryUtils {
 	public static String SCHEDULE_CRON_JOB_TIME_FOR_TELEMETRY = "*/15 * * * *";
 
 	/** Telemetry upload URL **/
-	private static String TELEMTRY_UPLOAD_URL = " ";
+	private static String TELEMTRY_UPLOAD_URL = BroadbandPropertyFileHandler.getTelemetryUploadUrl();
 
 	/**
 	 * keyword to be appended for completing the proxy xconf url for retireving dcm

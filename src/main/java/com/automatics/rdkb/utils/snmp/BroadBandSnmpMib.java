@@ -100,6 +100,9 @@ public enum BroadBandSnmpMib {
     WIFI_APPLY_SETTINGS_WITH_INDEX("applySettings",".1.3.6.1.4.1.17270.50.2.2.1001.0"),
     WIFI_5_SSID_STATUS("ssidStatus5", ".1.3.6.1.4.1.17270.50.2.2.2.1.1.2", "10101"),
     ESTB_WIFI_RESTORE_DEVICE_WITH_INDEX("wifiRestoreDevice", ".1.3.6.1.4.1.17270.50.2.1.1.1003.0"),
+    ECM_WIFI_2_4_PASSPHRASE("ssidPassphrase2.4", ".1.3.6.1.4.1.17270.50.2.2.3.1.1.2.10001"),
+    ECM_WIFI_5_PASSPHRASE("ssidPassphrase5", ".1.3.6.1.4.1.17270.50.2.2.3.1.1.2.10101"),
+	
 
     /** OIDs for geting device serial number. */
     EMTA_TELEPHONE_LINE_RESET_NEGATIVE_SCENARIO("mtaReset", "1.3.6.1.2.1.2.2.1.7.9", "0"),

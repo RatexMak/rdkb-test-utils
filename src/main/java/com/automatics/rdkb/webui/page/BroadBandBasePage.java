@@ -55,4 +55,27 @@ public class BroadBandBasePage {
 		wait.until(ExpectedConditions.textToBePresentInElementLocated(element, textToAppear));
 	}
 
+	/**
+     * Method to clear inputs in certain web element ID
+     * 
+     */
+    public void clear(By elementId) {
+	driver.findElement(elementId).clear();
+    }
+    
+    /**
+     * Method to send user input to certain web element ID
+     * 
+     */
+    public void sendKeys(By elementId, String value) {
+	driver.findElement(elementId).sendKeys(value);
+    }
+    
+    /**
+     * Method to refresh current web page
+     * 
+     */
+    public void refresh() {
+	driver.navigate().refresh();
+    }
 }

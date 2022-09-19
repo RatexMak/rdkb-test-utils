@@ -2847,7 +2847,7 @@ public class BroadBandWebPaConstants {
 
     /** webpa parameter for Web config RFC enable */
     public static final String WEBPA_PARAM_WEBCONFIG_RFC_ENABLE = "Device.X_RDK_WebConfig.RfcEnable";
-    
+
     /** WebPA parameter Downstream channel LockStatus value */
     public static final String WEBPA_PARAM_DOWNSTREAM_CHANNEL_LOCKSTATUS = "Device.X_CISCO_COM_CableModem.DownstreamChannel.{i}.LockStatus";
 
@@ -2878,5 +2878,112 @@ public class BroadBandWebPaConstants {
      * WebPA Parameter to CHECK FILTERINGMODE FOR PRIVATE WIFI 5GHZ.
      */
     public static final String WEBPA_PARAM_DEVICE_WIFI_ACCESSPOINT_5_GHZ_COMCAST_COM_MAC_FILTERINGMODE = "Device.WiFi.AccessPoint.10103.X_COMCAST-COM_MAC_FilteringMode";
-   
+
+    /** WebPA parameter to enable memory swap */
+    public static final String WEBPA_PARAM_TO_ENABLE_MEMORY_SWAP = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.MEMSWAP.Enable";
+    
+    /** Bootstrap parameters remove list in enum */
+	public enum BootStrapParametersRfcList {
+		FOOTER_PARTNER_LINK("Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.Footer.PartnerLink"),
+		FOOTER_USER_GUIDE_LINK("Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.Footer.UserGuideLink"),
+		FOOTER_CUSTERCENTRAL_LINK(
+				"Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.Footer.CustomerCentralLink"),
+		FOOTER_USERGUIDE_TEXT("Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.Footer.UserGuideText"),
+		FOOTER_CUSTOMERCENTRAL_TEXT(
+				"Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.Footer.CustomerCentralText"),
+		CONNECTION_MSO_MENU("Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.Connection.MSOmenu"),
+		CONNECTION_MSO_INFO("Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.Connection.MSOinfo"),
+		CONNECTION_STATUS_TITLE(
+				"Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.Connection.StatusTitle"),
+		CONNECTION_STATUS_INFO("Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.Connection.StatusInfo"),
+		CONNECTIVITY_TEST_URL(
+				"Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.NetworkDiagnosticTools.ConnectivityTestURL"),
+		PARTNER_HELP_LINK(
+				"Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.WiFiPersonalization.PartnerHelpLink"),
+		DEFAULT_LANGUAGE("Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.RDKB_UIBranding.DefaultLanguage"),
+		PAUSE_SCREEN_FILE_LOCATION("Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.PauseScreenFileLocation");
+
+		private String parameterName;
+
+		BootStrapParametersRfcList(String paramter) {
+			this.parameterName = paramter;
+
+		}
+
+		public String getParameterName() {
+			return parameterName;
+		}
+
+		public void setParameterName(String parameterName) {
+			this.parameterName = parameterName;
+		}
+
+	}
+
+	/** Bootstrap parameters remove list in enum */
+	public enum BootStrapParametersRemoveList {
+		MTA_STARTUP_IP_MODE("Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.StartupIPMode"),
+		MTA_IPV4_PRIMARY_DHCP("Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv4PrimaryDhcpServerOptions"),
+		MTA_IPV4_SEC_DHCP("Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv4SecondaryDhcpServerOptions"),
+		MTA_IPV6_PRIMARY_DHCP("Device.X_RDKCENTRAL-COM_EthernetWAN_MTA.IPv6PrimaryDhcpServerOptions"),
+		NTP_SERVER_1("Device.Time.NTPServer1"), NTP_SERVER_2("Device.Time.NTPServer2"),
+		NTP_SERVER_3("Device.Time.NTPServer3"), NTP_SERVER_4("Device.Time.NTPServer4"),
+		NTP_SERVER_5("Device.Time.NTPServer5");
+
+		private String parameterName;
+
+		BootStrapParametersRemoveList(String paramter) {
+			this.parameterName = paramter;
+
+		}
+
+		public String getParameterName() {
+			return parameterName;
+		}
+
+		public void setParameterName(String parameterName) {
+			this.parameterName = parameterName;
+		}
+
+	}
+
+	/** WebPA Parameter to get ecmMAC */
+	public static final String WEBPA_PARAM_TO_GET_ECM_MAC = "Device.IP.Diagnostics.X_RDKCENTRAL-COM_PingTest.ecmMAC";
+
+	/** WebPA Parameter to get DeviceID */
+	public static final String WEBPA_PARAM_TO_GET_DEVICE_ID = "Device.IP.Diagnostics.X_RDKCENTRAL-COM_PingTest.DeviceID";
+
+	/** WebPA Parameter to get device model */
+	public static final String WEBPA_PARAM_TO_GET_DEVICE_MODEL = "Device.IP.Diagnostics.X_RDKCENTRAL-COM_PingTest.DeviceModel";
+
+	/** WebPA Parameter to get number of repetitions */
+	public static final String WEBPA_PARAM_TO_GET_NUMBER_OF_REPETITIONS = "Device.IP.Diagnostics.IPPing.NumberOfRepetitions";
+
+	/** WebPA Parameter to get timeout */
+	public static final String WEBPA_PARAM_TO_GET_TIMEOUT = "Device.IP.Diagnostics.IPPing.Timeout";
+
+	/** WebPA Parameter to get average ping response time */
+	public static final String WEBPA_PARAM_TO_GET_AVERAGE_RESPONSE_TIME = "Device.IP.Diagnostics.IPPing.AverageResponseTime";
+
+	/** WebPA Parameter to set interface */
+	public static final String WEBPA_PARAM_TO_SET_INTERFACE = "Device.IP.Diagnostics.IPPing.Interface";
+
+	/** WebPA Parameter to set host address */
+	public static final String WEBPA_PARAM_TO_SET_HOST_ADDRESS = "Device.IP.Diagnostics.IPPing.Host";
+
+	/** WebPA Parameter to trigger pingtest */
+	public static final String WEBPA_PARAM_TO_TRIGGER_PINGTEST = "Device.IP.Diagnostics.X_RDKCENTRAL-COM_PingTest.Run";
+
+	/** WebPA Parameter to get Pingtest Diagnostics State */
+	public static final String WEBPA_PARAM_TO_GET_DIAGNOSTICS_STATE = "Device.IP.Diagnostics.IPPing.DiagnosticsState";
+
+	/** WebPA Parameter to get PartnerID */
+	public static final String WEBPA_PARAM_TO_GET_PARTNERID = "Device.IP.Diagnostics.X_RDKCENTRAL-COM_PingTest.PartnerID";
+	
+	public static final String TR181_PARAM_NONROOT_SUPPORT_BLOCKLIST = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.NonRootSupport.Blocklist";
+	
+	/** Webpa Param for Device ethernet interface Broadcast packets received */
+    public static final String TR181_PARAM_TO_GET_ACCOUNT_ID = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.AccountInfo.AccountID";
+
+
 }

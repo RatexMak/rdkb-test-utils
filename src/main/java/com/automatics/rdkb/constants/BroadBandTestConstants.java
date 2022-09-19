@@ -6231,31 +6231,211 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Process name lighttpd */
     public static final String PROCESS_NAME_LIGHTTPD = "lighttpd";
-    
+
     /** string to store value of server.pem */
     public static final String STRING_SERVER = "server.pem";
-    
+
     /** Pattern to get the parodus execution path */
     public static final String PATTERN_PARODUS_EXECUTION_PATH = "(/usr/bin/parodus .*)";
-    
+
     /** Pattern to get the parner id from parodus log file */
     public static final String PATTERN_MATCHER_PARODUS_PARTNER_ID = "partnerid_header formed X-Midt-Partner-Id: +\\*,(\\w+)";
-    
+
     /** Pattern to get the partner id from webconfig file */
     public static final String PATTERN_MATCHER_WEBCONFIG_PARTNER_ID = "X-Midt-Partner-Id header is +\\*,(\\w+)";
-    
+
     /** string invalid partner id */
     public static final String TXT_INVALID_PARTNER_ID = "invalid partner id";
-    
+
     /** String constant to hold value 200 */
     public static final String STRING_200 = "200";
-    
+
     /** Pattern to get the process id for parodus using ps command */
     public static final String PATTERN_PROCESS_PARODUS = "(\\d+) +[\\w\\-?]+ +.*parodus";
-    
+
     /** Constant to hold the deny status */
     public static final String STRING_DENY = "Deny";
-    
+
     /** Constant to hold the Allow All status */
     public static final String STRING_ALLOW_ALL = "Allow-All";
+
+    /** String to store unknown **/
+    public static final String RFC_RESTART_SUCCEEDED = "Initial URL: https";
+
+    /** Pattern to get ZRAM partition file names */
+    public static final String PATTERN_TO_GET_ZRAM_PARTITION_FILE_NAMES = ".*(/dev/zram\\d).*";
+
+    /** Constant to integer value 253 */
+    public static final int CONSTANT_253 = 253;
+
+    /** Constant to integer value 248 */
+    public static final int CONSTANT_248 = 248;
+
+    /** Constant to hold Error Message for DHCP invalid address */
+    public static final String ERROR_MESSAGE_DHCP_INVALID_ADDRESS = "Beginning Address can't be larger than ending address!";
+
+    /** Constant to hold Error Message after adding Invalid Host IP */
+    public static final String ERROR_MESSAGE_DMZ_PAGE = "Please enter a value less than or equal to 253.";
+    
+    /** Constant to hold bootstrap config file active value */
+	public static final String KEY_ACTIVE_VALUE = "ActiveValue";
+
+	/** Pattern to get bootstrap version */
+	public static final String PATTERN_BOOTSTRAP_VERSION = "version\":\\s+\"([\\d+\\.]+)\"";
+
+	/** Constant for holding value in Xapi */
+	public static final String BUILD_APPENDER = "buildAppender";
+
+	/** String for TR69 ACS URL for partner ACS connection url parameter */
+	public static final String TR69_ACS_CONNECTION_URL_PARAMETER = "Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.TR69ACSConnectURL";
+
+	/** String File path /nvram/partner_default json */
+	public static final String FILE_NVRAM_PARTNERJSON = "/nvram/partners_defaults.json";
+
+	/** RFC payload for non-root support blocklist telemetry */
+	public static final String PROP_KEY_NONROOT_SUPPORT_BLOCKLIST_TELEMETRY = "rfc.rdkb.nonroot.support.blocklist.telemetry";
+
+	/** RFC payload for non-root support disable */
+	public static final String PROP_KEY_PAYLOAD_NONROOT_BLOCKLIST = "rfc.rdkb.nonroot.support.blocklist";
+
+	/** host address for pingtest in stb.properties file */
+	public static final String PROP_KEY_HOST_ADDRESS_FOR_PINGTEST = "pingtest.host.address";
+
+	/** invalid host address for pingtest in stb.properties file */
+	public static final String PROP_KEY_INVALID_HOST_ADDRESS_FOR_PINGTEST = "pingtest.invalid.host.address";
+
+	/** Test constant for pingtest log file */
+	public static final String LOG_FILE_PINGTEST = "/rdklogs/logs/TDMlog.txt.0";
+
+	/** Command to last n lines from a log. */
+	public static final String CMD_TAIL = "tail -";
+
+	/** Device lock success status. */
+	public static final int DEVICE_LOCK_SUCCESS = 1;
+
+	/** Ten seconds in millisecond representation. */
+	public static final long TEN_SECONDS = 10000;
+
+	/** WebPA Parameter to get PartnerID */
+	public static final String WEBPA_PARAM_TO_GET_PARTNERID = "Device.IP.Diagnostics.X_RDKCENTRAL-COM_PingTest.PartnerID";
+
+	/** Two seconds in millisecond representation. */
+	public static final long TWO_SECONDS = 2000;
+
+	/** Linux command to reboot the system. */
+	public static final String CMD_REBOOT = "/sbin/reboot";
+
+	/** String regex to check webpa response value */
+	public static final String STRING_REGEX_WEBPA_RESPONSE = "value\":\"";
+
+	/** Strings for wifihealth.txt */
+	public static final String STRING_WIFIHEALTH_LOG_FILE = "wifihealth.txt";
+
+	/** Constant to store tx overflow marker */
+	public static final String STRING_FOR_TX_OVERFLOW = "WiFi_TX_Overflow_SSID_";
+
+	/** Constant for temporary folder*/
+    public static final String TMP_FOLDER_LOCATION = "/tmp/";
+    
+    /** String pattern to check iper service */
+    public static final String PATTERN_TO_CHECK_IPERF = ".*iperf";
+    
+    /** Constant for number 600 */
+    public static final int CONSTANT_600 = 600;
+    
+    /** String telemetry market tx overflow */
+    public static final String TELEMETRY_MARKER_TX_OVERFLOW = "WIFI_TX_OF_{i}_split";
+    
+    /** Pattern for verifying the String. */
+    public static final String PATTERN_FOR_STRING = "[\\w-.]+";
+    
+    /** String for parameter */
+	public static String STRING_PARAMETERS = "parameters";
+	
+	/** Command to get valid certificate issuer **/
+	public static final String CERTIFICATE_ISSUER = "openssl crl2pkcs7 -nocrl -certfile /usr/share/ca-certificates/ca-certificates.crt | openssl pkcs7 -print_certs -text  | grep \"Issuer:\" > /tmp/issuer_details.txt";
+
+	/** Command to get the certificates issuers */
+	public static final String FILE_ISSUER_DETAILS = "/tmp/issuer_details.txt";
+
+	/** Comamnd to get Certfiicate issuer_name */
+	public static final String VALID_CERT_ISSUER_NAME = "certificate.issuers.name";
+
+	/** Regex string to remove json invalid string from recording started line. */
+	public static final String REGEX_CHECK_NEXT_LINE = "\r\n";
+
+	/** Extension the certificate need to has */
+	public static final String CERT_EXTENSION = ".crt";
+
+	/** Regex pattern for A-Z */
+	public static final String REGEX_PATTERN_CAPITAL_LETTERS = "([A-Z]+)=";
+	
+	/** Constant to hold No blocklisted process value */
+	public static final String CMD_NO_BLOCKLIST_PROCESS = "No blocklisted process";
+
+	/** String constant to store configurable non-root blocklist */
+	public static final String CONFIGURABLE_NONROOT_BLOCKLIST_TELEMETRY = "nonroot_blocklist_telemetry";
+	
+	/** String to store accountid **/
+    public static final String STRING_ACCOUNTID = "accountId=";
+
+    /** String to store unknown **/
+    public static final String STRING_UNKNOWN = "Unknown";
+    
+    /** String constant to hold response code 304 */
+    public static final String HTTP_RESPONSE_CODE_304 = "http_code: 304";
+    
+    /** String to hold Invaid Account ID */
+    public static final String INVAILD_ACCOUNT_ID = "1234567890";
+
+    /** String to hold AccountId mismatch */
+    public static final String ACCOUNT_ID_MISMATCH = "Account Id mismatch: old=1234567890";
+    
+    /** Pattern to get the list of single interface */
+	public static final String PATTERN_TO_GET_INTERFACE = "astr\">(.*?)</Record>";
+	
+	/** Constant to store brlan0 under ovs bridge control */
+	public static final String STRING_PORT_BRLAN0 = "Port brlan0";
+
+	/** Constant to store brlan0 under ovs bridge control */
+	public static final String STRING_BRIDGE_BRLAN0 = "Bridge brlan0";
+
+	/** Constant for port with name */
+	public static final String PORT_NAME = "Port <REPLACE>";
+
+	/** Constant for Interface with name */
+	public static final String INTERFACE_NAME = "Interface <REPLACE>";
+
+	/** interface name to brlan1 */
+	public static final String INTERFACE_NAME_BRLAN1 = "brlan1";
+
+	/** interface name to mta0 */
+	public static final String INTERFACE_NAME_HOST0 = "host0";
+	
+    /** String constant online */
+    public static final String STRING_ONLINE = "online";
+    
+    /** 45 minutes in milliseconds. */
+    public static final long FORTYFIVE_MINUTES_IN_MILLIS = 45 * ONE_MINUTE_IN_MILLIS;
+    
+    /** Pattern for verifying total memory. */
+    public static final String PATTERN_FOR_SYS_TOTAL_MEMEORY = "RDKB_SYS_MEM_INFO_SYS : Total memory in system is";
+
+    /** Pattern for verifying used memory. */
+    public static final String PATTERN_FOR_SYS_USED_MEMEORY = "RDKB_SYS_MEM_INFO_SYS : Used memory in system is";
+
+    /** Pattern for verifying free memory. */
+    public static final String PATTERN_FOR_SYS_FREE_MEMEORY = "RDKB_SYS_MEM_INFO_SYS : Free memory in system is";
+
+	/** Constant to hold the Div Number Place holder */
+	public static final String PLACE_HOLDER_FOR_DIV_1_NUMBER = "##DIV1##";
+	
+	/** Constant to hold the Div Number Place holder */
+	public static final String PLACE_HOLDER_FOR_DIV_2_NUMBER = "##DIV2##";
+	
+	/** Test Constant to store the string value Reseved IP */
+	public static final String RESERVED_IP = "Reserved IP";
+
+	/** Test Constant to store the string value DHCP */
+	public static final String STRING_DHCP = "DHCP";
 }

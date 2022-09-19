@@ -69,10 +69,10 @@ public class ConnectedNattedClientsUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectedNattedClientsUtils.class);
 
     /** Connect WIFI connection in Linux. */
-    private static final String CONNECT_LINUX = "nmcli d wifi connect <ssid> password <password> iface wlan0";
+    private static final String CONNECT_LINUX = "nmcli d wifi connect <ssid> password <password>";
 
     /** Connect WIFI connection in Linux success message. */
-    private static final String CONNECT_LINUX_SUCCESS_MESSAGE = "Device 'wlan0' successfully activated";
+    private static final String CONNECT_LINUX_SUCCESS_MESSAGE = "Device <INTERFACE> successfully activated";
 
     /** Connect to SSID in Windows. */
     private static final String CONNECT_PROFILE_WINDOWS = "netsh wlan connect name=\"<ssid>\"";
@@ -81,7 +81,7 @@ public class ConnectedNattedClientsUtils {
     private static final String CONNECT_WINDOWS_SUCCESS_MESSAGE = "Connection request was completed successfully";
 
     /** Verify WIFI connection in Linux. */
-    private static final String VERIFY_CONNECT_LINUX = "nmcli | grep connected |grep -i wlan0 ";
+    private static final String VERIFY_CONNECT_LINUX = "nmcli | grep connected |grep -i <INTERFACE> ";
 
     /** Verify WIFI connection in Linux success message. */
     private static final String VERIFY_CONNECT_LINUX_MESSAGE = "connected to";
@@ -303,7 +303,7 @@ public class ConnectedNattedClientsUtils {
 	boolean retrunStatus = false;
 	String command = CONNECT_LINUX.replaceAll("<ssid>", ssid).replaceAll("<password>", password);
 	String response = tapEnv.executeCommandOnOneIPClients(device, command);
-	if (CommonMethods.isNotNull(response) && response.contains(CONNECT_LINUX_SUCCESS_MESSAGE)) {
+	if (CommonMethods.isNotNull(response) && response.contains(CONNECT_LINUX_SUCCESS_MESSAGE.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxWifiInterface())) ) {
 	    retrunStatus = true;
 	}
 	return retrunStatus;
@@ -1569,7 +1569,7 @@ public class ConnectedNattedClientsUtils {
 	Device connDevice = (Device) device;
 	LOGGER.info("[TEST LOG] : Verifying conenctivitty with ssid " + ssid);
 	if (connDevice.isLinux()) {
-	    String response = tapEnv.executeCommandOnOneIPClients(connDevice, VERIFY_CONNECT_LINUX);
+	    String response = tapEnv.executeCommandOnOneIPClients(connDevice, VERIFY_CONNECT_LINUX.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxWifiInterface()));
 	    if (CommonMethods.isNotNull(response) && response.contains(VERIFY_CONNECT_LINUX_MESSAGE)) {
 		if (shouldVerifyConnectStat) {
 		    retrunStatus = true;
@@ -1738,7 +1738,7 @@ public class ConnectedNattedClientsUtils {
 	Device ecastDevice = (Device) device;
 	LOGGER.info("[TEST LOG] : Verifying conenctivitty with ssid " + ssid);
 	if (ecastDevice.isLinux()) {
-	    String response = tapEnv.executeCommandOnOneIPClients(ecastDevice, VERIFY_CONNECT_LINUX);
+	    String response = tapEnv.executeCommandOnOneIPClients(ecastDevice, VERIFY_CONNECT_LINUX.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxWifiInterface()));
 	    if (CommonMethods.isNotNull(response) && response.contains(VERIFY_CONNECT_LINUX_MESSAGE)) {
 		if (shouldVerifyConnectStat) {
 		    retrunStatus = true;

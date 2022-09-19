@@ -18,9 +18,16 @@
 
 package com.automatics.rdkb.webui;
 
+import java.util.ArrayList;
+
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
 import com.automatics.test.AutomaticsTestBase;
 
 /**
@@ -43,5 +50,36 @@ public class BroadBandWebUiBaseTest extends AutomaticsTestBase{
     private static final String SELENIUM_FIREFOX_DEFAULT_BINARY_PATH = "/usr/local/bin/geckodriver";
 
     protected WebDriver driver;
+    
+
+    /**
+     * 
+     * Method to invoke browser and set all the necessary preconditions
+     * 
+     */
+    public void invokeBrowser() throws Exception {
+
+	LOGGER.debug("STARTING METHOD :invokeBrowser() ");
+
+	String driverPath = BroadbandPropertyFileHandler.getBinaryPathOfSelenium();
+	DesiredCapabilities caps = DesiredCapabilities.phantomjs();
+
+	ArrayList<String> cliArgsCap = new ArrayList<String>();
+	cliArgsCap.add("--web-security=false");
+	cliArgsCap.add("--ssl-protocol=any");
+	cliArgsCap.add("--ignore-ssl-errors=true");
+	cliArgsCap.add("--webdriver-loglevel=NONE");
+
+	caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, cliArgsCap);
+	caps.setCapability("takesScreenshot", true);
+	caps.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, driverPath);
+
+	driver = new PhantomJSDriver(caps);
+
+	driver.manage().window().maximize();
+	driver.manage().deleteAllCookies();
+	LOGGER.debug("ENDING METHOD :invokeBrowser() ");
+    }
+
 
 }

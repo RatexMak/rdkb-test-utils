@@ -736,6 +736,6 @@ public class BroadBandPropertyKeyConstants {
 
 	public static final String INVALID_DNS_PRIMARY_IP_TCPDUMP = "cmd.dns.invalid.primaryip.tcpdump";
 	
-	public static final String LINUX_WIFI_INTERFACE = "linux.wifi.interface";
+	public static final String LINUX_CLIENT_WIFI_INTERFACE = "linux.client.wifi.interface";
 
 }

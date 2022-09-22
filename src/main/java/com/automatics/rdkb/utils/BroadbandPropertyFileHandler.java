@@ -2543,9 +2543,9 @@ public class BroadbandPropertyFileHandler {
      * 
      * @author Said Hisham
      */
-	public static CharSequence getLinuxWifiInterface() {
+	public static CharSequence getLinuxClientWifiInterface() {
 		return AutomaticsTapApi
-			    .getSTBPropsValue(BroadBandPropertyKeyConstants.LINUX_WIFI_INTERFACE);
+			    .getSTBPropsValue(BroadBandPropertyKeyConstants.LINUX_CLIENT_WIFI_INTERFACE);
 	}
 
 }

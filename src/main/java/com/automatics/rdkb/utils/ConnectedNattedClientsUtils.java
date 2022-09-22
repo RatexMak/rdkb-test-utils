@@ -301,9 +301,12 @@ public class ConnectedNattedClientsUtils {
      */
     private static boolean connectToLinux(Dut device, AutomaticsTapApi tapEnv, String ssid, String password) {
 	boolean retrunStatus = false;
-	String command = CONNECT_LINUX.replaceAll("<ssid>", ssid).replaceAll("<password>", password);
-	String response = tapEnv.executeCommandOnOneIPClients(device, command);
-	if (CommonMethods.isNotNull(response) && response.contains(CONNECT_LINUX_SUCCESS_MESSAGE.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxWifiInterface())) ) {
+	LOGGER.info("user password :"+ device.findExtraProperty("password"));
+	String command = BroadBandCommandConstants.CMD_SUDO + CONNECT_LINUX.replaceAll("<ssid>", ssid).replaceAll("<password>", password);
+	String[] commands = {command, device.findExtraProperty("password")};
+//	String response = tapEnv.executeCommandOnOneIPClients(device, command);
+	String response = tapEnv.executeCommandOnOneIPClients(device, commands);
+	if (CommonMethods.isNotNull(response) && response.contains(CONNECT_LINUX_SUCCESS_MESSAGE.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxClientWifiInterface())) ) {
 	    retrunStatus = true;
 	}
 	return retrunStatus;
@@ -1569,7 +1572,7 @@ public class ConnectedNattedClientsUtils {
 	Device connDevice = (Device) device;
 	LOGGER.info("[TEST LOG] : Verifying conenctivitty with ssid " + ssid);
 	if (connDevice.isLinux()) {
-	    String response = tapEnv.executeCommandOnOneIPClients(connDevice, VERIFY_CONNECT_LINUX.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxWifiInterface()));
+	    String response = tapEnv.executeCommandOnOneIPClients(connDevice, VERIFY_CONNECT_LINUX.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxClientWifiInterface()));
 	    if (CommonMethods.isNotNull(response) && response.contains(VERIFY_CONNECT_LINUX_MESSAGE)) {
 		if (shouldVerifyConnectStat) {
 		    retrunStatus = true;
@@ -1738,7 +1741,7 @@ public class ConnectedNattedClientsUtils {
 	Device ecastDevice = (Device) device;
 	LOGGER.info("[TEST LOG] : Verifying conenctivitty with ssid " + ssid);
 	if (ecastDevice.isLinux()) {
-	    String response = tapEnv.executeCommandOnOneIPClients(ecastDevice, VERIFY_CONNECT_LINUX.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxWifiInterface()));
+	    String response = tapEnv.executeCommandOnOneIPClients(ecastDevice, VERIFY_CONNECT_LINUX.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxClientWifiInterface()));
 	    if (CommonMethods.isNotNull(response) && response.contains(VERIFY_CONNECT_LINUX_MESSAGE)) {
 		if (shouldVerifyConnectStat) {
 		    retrunStatus = true;

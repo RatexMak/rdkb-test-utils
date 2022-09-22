@@ -301,9 +301,9 @@ public class ConnectedNattedClientsUtils {
      */
     private static boolean connectToLinux(Dut device, AutomaticsTapApi tapEnv, String ssid, String password) {
 	boolean retrunStatus = false;
-	LOGGER.info("user password :"+ device.findExtraProperty("password"));
+	LOGGER.info("user password :"+ device.getExtraProperties().get("password"));
 	String command = BroadBandCommandConstants.CMD_SUDO + CONNECT_LINUX.replaceAll("<ssid>", ssid).replaceAll("<password>", password);
-	String[] commands = {command, device.findExtraProperty("password")};
+	String[] commands = {command, "tel1234#"};
 //	String response = tapEnv.executeCommandOnOneIPClients(device, command);
 	String response = tapEnv.executeCommandOnOneIPClients(device, commands);
 	if (CommonMethods.isNotNull(response) && response.contains(CONNECT_LINUX_SUCCESS_MESSAGE.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxClientWifiInterface())) ) {

@@ -3065,7 +3065,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String STRING_REGEX_TO_GET_PERCENTAGE_VALUE = "(\\w+)%";
 
     /** Command to get the Highest % of CPU consumption in the device */
-    public static final String COMMAND_TO_FETCH_CPU_PERCENTAGE = "top -n1 -- o %cpu | awk 'NR==6{print \\$7}'";
+    public static final String COMMAND_TO_FETCH_CPU_PERCENTAGE = "top -n1 -- o %cpu | awk 'NR==6{print $7}'";
 
     /** String value for 50 */
     public static final String STRING_VALUE_FIFTY = "50";

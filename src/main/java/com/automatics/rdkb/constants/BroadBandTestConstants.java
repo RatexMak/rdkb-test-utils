@@ -2669,7 +2669,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String COMMAND_TO_FETCH_LIBCRYPTO_FILE = "ls /usr/lib/ | grep -i libcrypto.so";
 
     /** Command to get libssl used by all running processes */
-    public static final String COMMAND_TO_GET_LIBSSL_USED_IN_ALL_PROCESSES = "cat /proc/\\*/maps | grep -i \"libssl.so\" |awk ' {print \\$NF}' | uniq ";
+    public static final String COMMAND_TO_GET_LIBSSL_USED_IN_ALL_PROCESSES = "cat /proc/*/maps | grep -i libssl.so |awk ' {print $NF}' | uniq ";
 
     /**
      * pattern to get libssl location from COMMAND_TO_GET__LIBSSL_USED_IN_ALL_PROCESSES response
@@ -2677,7 +2677,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String PATTERN_TO_GET_LIBSSL = "(\\S+libssl\\S+)";
 
     /** Command to get libcrypto used by all running processes */
-    public static final String COMMAND_TO_GET_LIBCRYPTO_USED_IN_ALL_PROCESSES = "cat /proc/\\*/maps | grep -i \"libcrypto.so\" |awk ' {print \\$NF}' | uniq ";
+    public static final String COMMAND_TO_GET_LIBCRYPTO_USED_IN_ALL_PROCESSES = "cat /proc/*/maps | grep -i libcrypto.so |awk ' {print $NF}' | uniq ";
 
     /**
      * pattern to get libssl location from COMMAND_TO_GET__LIBCRYPTO_USED_IN_ALL_PROCESSES response
@@ -3047,7 +3047,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String STRING_REGEX_DATE = "((Mon|Tue|Wed|Thu|Fri|Sat|Sun)\\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\s+\\d+\\s\\d{2}:\\d{2}:\\d{2}\\sUTC\\s\\d{4})";
 
     /** Command to get the used space for filename in the device */
-    public static final String COMMAND_TO_FETCH_USED_SPACE_FOR_FILENAME = "df | grep FILENAME | awk 'NR==1{print \\$5}'";
+    public static final String COMMAND_TO_FETCH_USED_SPACE_FOR_FILENAME = "df | grep FILENAME | awk 'NR==1{print $5}'";
 
     /** Constant for the filename nvram */
     public static final String NVRAM_FILE_NAME = "nvram";
@@ -3111,7 +3111,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String PATTERN_TO_GET_YOCTO_VERSION = "YOCTO_VERSION=(\\S+)";
 
     /** Command to get latest dnsmasq binary file name used by all process */
-    public static final String CMD_TO_GET_DNSMASQ_BINARY_USED_BY_ALL_PROCESS = "cat /proc/\\*/maps | grep -i \"dnsmasq\" |  awk ' {print \\$NF}' | uniq";
+    public static final String CMD_TO_GET_DNSMASQ_BINARY_USED_BY_ALL_PROCESS = "cat /proc/*/maps | grep -i dnsmasq |  awk ' {print $NF}' | uniq";
 
     /** Command to get latest dnsmasq version from binary */
     public static final String CMD_TO_PARSE_DNSMASQ_VERSION_FROM_BINARY = "strings  <DNSMASQ-BINARY>  | grep -i dnsmasq-";

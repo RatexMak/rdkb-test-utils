@@ -469,7 +469,7 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 	public static final String LOG_FILE_AGENT = "/rdklogs/logs/agent.txt";
 
 	/** Command to get latest dnsmasq version on any device */
-	public static final String CMD_TO_GET_LATEST_DNSMASQ_VERSION = "\'dnsmasq -version | head -n 1 |cut -d' ' -f3\'";
+	public static final String CMD_TO_GET_LATEST_DNSMASQ_VERSION = "dnsmasq -version | head -n 1 |cut -d' ' -f3";
 
 	/** Command to ge the yocto version */
 	public static final String CMD_GREP_YOCTO_VER_FROM_VERSION_FILE = " grep \"YOCTO_VERSION[:=]\" /version.txt";

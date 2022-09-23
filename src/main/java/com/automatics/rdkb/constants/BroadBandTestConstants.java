@@ -1623,7 +1623,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /**
      * The constant holding command for seeing the process status of dnsmasq process.
      */
-    public static final String STRING_DNSMASQ_PROCESS = "dnsmasq -u";
+    public static final String STRING_DNSMASQ_PROCESS = "dnsmasq";
 
     /** String variable to store dnsmasq is not running */
     public static final String STRING_DNSMASQ_NOT_RUNNING = "dnsmasq is not running";
@@ -2657,7 +2657,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String COMMAND_FOR_OPENSSL_VERSION = "openssl version";
 
     /** Command to get the libssl.so file present in the build */
-    public static final String COMMAND_TO_FETCH_LIBSSL_FILE = "ls /usr/lib/ | grep -i \"libssl.so\" |awk ' {printf \"/usr/lib/\"\\$NF}'";
+    public static final String COMMAND_TO_FETCH_LIBSSL_FILE = "ls /usr/lib/ | grep -i libssl.so";
 
     /** prefix Command to read OpenSSL version in ssl library */
     public static final String PREFIX_COMMAND_TO_READ_OPENSSL_OF_SSL_LIBRARY = "strings";
@@ -2666,7 +2666,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String POSTFIX_COMMAND_TO_READ_OPENSSL_OF_SSL_LIBRARY = "| grep \"^OpenSSL.*[0-9][0-9][0-9]\"";
 
     /** Command to get the libcrypto.so file present in the build */
-    public static final String COMMAND_TO_FETCH_LIBCRYPTO_FILE = "ls /usr/lib/ | grep -i \"libcrypto.so\" |awk ' {printf \"/usr/lib/\"\\$NF}'";
+    public static final String COMMAND_TO_FETCH_LIBCRYPTO_FILE = "ls /usr/lib/ | grep -i libcrypto.so";
 
     /** Command to get libssl used by all running processes */
     public static final String COMMAND_TO_GET_LIBSSL_USED_IN_ALL_PROCESSES = "cat /proc/\\*/maps | grep -i \"libssl.so\" |awk ' {print \\$NF}' | uniq ";

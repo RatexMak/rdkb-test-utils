@@ -420,7 +420,7 @@ public class BroadBandCommonUtils {
 	    // Check if the device goes down.
 	    startTime = System.currentTimeMillis();
 	    do {
-		LOGGER.info("GOING TO WAIT FOR 1 MINUTE BEFORE EXECUTING TEST COMMAND.");
+//		LOGGER.info("GOING TO WAIT FOR 1 MINUTE BEFORE EXECUTING TEST COMMAND.");
 //		tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
 		result = !CommonMethods.isSTBAccessible(device);
 		// result = !CommonUtils.executeTestCommand(tapEnv, device);

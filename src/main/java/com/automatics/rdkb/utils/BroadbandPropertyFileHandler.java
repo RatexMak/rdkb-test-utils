@@ -2548,4 +2548,14 @@ public class BroadbandPropertyFileHandler {
 			    .getSTBPropsValue(BroadBandPropertyKeyConstants.LINUX_CLIENT_WIFI_INTERFACE);
 	}
 
+	/**
+     * This API will get the Default Resource Usage ComputeWindow of the device from properties
+     * 
+     * @author Said Hisham
+     */
+	public static String getResourceUsageComputeWindowFromProperty() {
+		return AutomaticsTapApi
+			    .getSTBPropsValue(BroadBandPropertyKeyConstants.RESOURCE_USAGE_COMPUTE_WINDOW_VALUE);
+	}
+
 }

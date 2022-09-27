@@ -738,4 +738,6 @@ public class BroadBandPropertyKeyConstants {
 	
 	public static final String LINUX_CLIENT_WIFI_INTERFACE = "linux.client.wifi.interface";
 
+	public static final String RESOURCE_USAGE_COMPUTE_WINDOW_VALUE = "resource.usage.compute.window.value";
+
 }

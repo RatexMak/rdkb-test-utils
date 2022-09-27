@@ -3780,10 +3780,10 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String LOG_CDL_STARTED = "### httpdownload started ###";
 
     /** Pattern for verifying the dev proto kernel scope link src . */
-    public static final String PATTERN_DEV_PROTO_KERNEL_SCOPE_LINK = "dev\\s+\\S+\\s+proto\\s+kernel\\s+scope\\s+link\\s+ src\\s+(\\d+\\.\\d+\\.\\d+\\.\\d)";
+    public static final String PATTERN_DEV_PROTO_KERNEL_SCOPE_LINK = "*dev\\s+\\S+\\s+proto\\s+kernel\\s+scope\\s+link\\s+ src\\s+(\\d+\\.\\d+\\.\\d+\\.\\d)";
 
     /** Pattern for verifying the dev scope link */
-    public static final String PATTERN_DEV_SCOPE_LINK = "dev\\s+\\S+\\s+scope\\s+link";
+    public static final String PATTERN_DEV_SCOPE_LINK = "*dev\\s+\\S+\\s+scope\\s+link";
 
     /** Pattern for verifying the dev default interface . */
     public static final String PATTERN_DEFAULT_DEV_IP = "default\\s+via\\s+(\\d+\\.\\d+\\.\\d+\\.\\d)\\s+dev";

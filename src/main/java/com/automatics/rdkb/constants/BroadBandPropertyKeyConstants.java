@@ -740,4 +740,8 @@ public class BroadBandPropertyKeyConstants {
 
 	public static final String RESOURCE_USAGE_COMPUTE_WINDOW_VALUE = "resource.usage.compute.window.value";
 
+	public static final String DEFAULT_SSID_VALUE_24_AFTER_FR = "default.ssid.value.24.after.factory.reset";
+	
+	public static final String DEFAULT_SSID_VALUE_5_AFTER_FR = "default.ssid.value.5.after.factory.reset";
+
 }

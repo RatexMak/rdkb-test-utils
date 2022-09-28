@@ -2558,4 +2558,24 @@ public class BroadbandPropertyFileHandler {
 			    .getSTBPropsValue(BroadBandPropertyKeyConstants.RESOURCE_USAGE_COMPUTE_WINDOW_VALUE);
 	}
 
+	/**
+     * This API will get the Default expected SSID value 2.4hgz of the device after factory reset from properties
+     * 
+     * @author Said Hisham
+     */
+	public static String getDefaultSsid24AfterFR() {
+		return AutomaticsTapApi
+			    .getSTBPropsValue(BroadBandPropertyKeyConstants.DEFAULT_SSID_VALUE_24_AFTER_FR);
+	}
+	
+	/**
+     * This API will get the Default expected SSID value 5hgz of the device after factory reset from properties
+     * 
+     * @author Said Hisham
+     */
+	public static String getDefaultSsid5AfterFR() {
+		return AutomaticsTapApi
+			    .getSTBPropsValue(BroadBandPropertyKeyConstants.DEFAULT_SSID_VALUE_5_AFTER_FR);
+	}
+
 }

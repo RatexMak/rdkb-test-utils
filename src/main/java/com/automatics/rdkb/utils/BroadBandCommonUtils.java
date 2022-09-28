@@ -5759,23 +5759,32 @@ public class BroadBandCommonUtils {
 		    }
 		    String wifiMAC = tapEnv.executeWebPaCommand(device, webpaParameter);
 		    LOGGER.info("wifiMAC  -" + wifiMAC);
-		    wifiMAC = wifiMAC.replace(BroadBandTestConstants.DELIMITER_COLON,
-			    BroadBandTestConstants.EMPTY_STRING);
-		    expectedSsid = wifiMAC.substring(wifiMAC.length() - BroadBandTestConstants.CONSTANT_6);
-		    LOGGER.info("wifiMAC last 6 digits -" + expectedSsid);
-		    if (CommonMethods.isNotNull(ssidValue) && CommonMethods.isNotNull(expectedSsid)) {
+			wifiMAC = wifiMAC.replace(BroadBandTestConstants.DELIMITER_COLON, BroadBandTestConstants.EMPTY_STRING);
+			expectedSsid = wifiMAC.substring(wifiMAC.length() - BroadBandTestConstants.CONSTANT_6);
+			LOGGER.info("wifiMAC last 6 digits -" + expectedSsid);
+			if (CommonMethods.isNotNull(ssidValue) && CommonMethods.isNotNull(expectedSsid)) {
+				status = ssidValue.equalsIgnoreCase(expectedSsid);
+				LOGGER.info("Is Expected and Actual SSID are equal :" + status);
+			}
+		}
+	}
+	if (!status) {
+		if (radio.equals((WiFiFrequencyBand.WIFI_BAND_2_GHZ))) {
+			expectedSsid = BroadbandPropertyFileHandler.getDefaultSsid24AfterFR();
+		} else if (radio.equals((WiFiFrequencyBand.WIFI_BAND_5_GHZ))) {
+			expectedSsid = BroadbandPropertyFileHandler.getDefaultSsid5AfterFR();
+		}
+		if (CommonMethods.isNotNull(expectedSsid) && CommonMethods.isNotNull(ssidValue)) {
 			status = ssidValue.equalsIgnoreCase(expectedSsid);
 			LOGGER.info("Is Expected and Actual SSID are equal :" + status);
-		    }
 		}
-	    }
-	} catch (Exception e) {
-	    LOGGER.error(
-		    "Caught exception while Validating the default SSid for Different Partners : " + e.getMessage());
 	}
-	LOGGER.debug("ENDING METHOD validateDefaultSsidforDifferentPartners");
-	return status;
-    }
+} catch (Exception e) {
+	LOGGER.error("Caught exception while Validating the default SSid for Different Partners : " + e.getMessage());
+}
+LOGGER.debug("ENDING METHOD validateDefaultSsidforDifferentPartners");
+return status;
+}
 
     /**
      * Utility method to verify the expected partner ID is available or not

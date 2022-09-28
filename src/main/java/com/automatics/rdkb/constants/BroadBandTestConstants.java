@@ -4024,7 +4024,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String TEST_VALUE_OVERLOAD_INACTIVE_TIME_5GHZ = "14";
 
     /** Constant to hold Null MAC address without delimeter */
-    public static final String NULL_MAC_ADDRESS_WITHOUT_DELIMETER = "000000000000";
+    public static final String NULL_MAC_ADDRESS_WITHOUT_DELIMETER = "00000000000d";
 
     /** Constant to hold WiFiClient Schema type */
     public static final String WIFICLIENT_SCHEMA_TYPE = "WifiSingleClient.avsc";

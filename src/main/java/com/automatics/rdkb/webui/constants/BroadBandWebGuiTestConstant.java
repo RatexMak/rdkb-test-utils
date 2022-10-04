@@ -339,4 +339,55 @@ public class BroadBandWebGuiTestConstant {
     
     /** Variable to store the Connected devices edit page Header title */
     public static final String HEADER_TITLE_CONNECTED_DEVICES_EDIT_PAGE = "Connected Devices > Devices > Edit Device";
+    
+    /** Variable to store trouble shooting page link text */
+    public static String ELEMENT_ID_TROUBLE_SHOOTING_PAGE = "Troubleshooting";
+    
+    /**
+     * Variable to store the web element ID for trouble shooting page heading
+     */
+    public static String ELEMENT_ID_TROUBLE_SHOOTING_PAGE_HEADING = "//*[@id=\"content\"]/h1";
+    
+    /** Variable to store gateway reset page link text */
+    public static String ELEMENT_ID_RESET_GATEWAY_IN_TROUBLESHOOTING_PAGE = "Reset/Restore Gateway";    
+
+    /** Variable to store the web element ID for gateway reset page heading */
+    public static String ELEMENT_ID_GATEWAY_RESET_PAGE_HEADING = "//*[@id=\"content\"]/h1";
+    
+    /** Variable to store trouble shooting page heading */
+    public static String STRING_TROUBLE_SHOOTING_PAGE_HEADING = "Troubleshooting > Logs";
+    
+    /** Variable to store gateway reset page heading */
+    public static String STRING_GATEWAY_RESET_PAGE_HEADING = "Troubleshooting > Reset / Restore Gateway";    
+ 
+    /** Variable to store reset/restore page title */
+    public static String RESET_RESTORE_GATEWAY_PAGE_TITLE_1 = "Troubleshooting > Reset / Restore Gateway -";
+    
+    /** String to hold the confirmation message on factory restore */
+    public static final String ARE_YOU_SURE_FACTORY_RESTORE = "Are you sure you want to Restore Factory settings?";
+    
+    /** Variable to store the web element id for factory reset */
+    public static final String ELEMENT_ID_FACTORY_RESET_BUTTON = "btn5";
+    
+    /** xpath for popup message obtained on clicking enable/disable buttons */
+    public static String STRING_XPATH_FOR_POPUP_MESSAGE = "//*[@id=\"popup_message\"]";
+    
+    /** Variable to store the web element id for ok button for pop up */
+    public static final String ELEMENT_ID_OK_BUTTON_POP_UP_MESSAGE = "popup_ok";
+    
+    /** Variable to store open square bracket symbol */
+    public static String OPEN_SQUARE_BRACKET = "[";
+    
+    /** Variable to store the closed square bracket symbol */
+    public static String CLOSE_SQAURE_BRACKET = "]";
+    
+    
+    /** Dynamic Xpath element to get edit button */
+    public static final String DYNAMIC_XPATH_FOR_EDIT_BTN = "//*[@id='btn-{i}']";
+
+    /** Dynamic Xpath element to get Radio button of Reserver IP */
+    public static final String DYNAMIC_XPATH_RESERVEDIP_RADIO = "//*[@id='ip_static-{i}']";
+
+    /** Dynamic Xpath element to Reserver IP Address */
+    public static final String DYNAMIC_XPATH_RESERVEDIP_ADDRESS = "//*[@id='staticIPAddress-{i}']";
 }

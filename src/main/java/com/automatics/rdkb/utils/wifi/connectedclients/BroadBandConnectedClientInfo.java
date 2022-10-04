@@ -73,4 +73,14 @@ public class BroadBandConnectedClientInfo {
 	public void setActiveStatus(boolean activeStatus) {
 		this.activeStatus = activeStatus;
 	}
+
+	public String toStringOfflineClients() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n----- Connected Clients Info -----\n");
+		sb.append("HOST NAME :" + getHostName() + "\n");
+		sb.append("MAC ADDRESS : " + getMacAddress() + "\n");
+		sb.append("ACTIVE STATUS : " + isActiveStatus() + "\n");
+		sb.append("*****************************");
+		return sb.toString();
+	}
 }

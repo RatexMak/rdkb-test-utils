@@ -204,6 +204,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Constant to integer value 34 */
     public static final int CONSTANT_34 = 34;
+    
+	/** String constant value 2000 */
+	public static final String STRING_CONSTANT_2000 = "2000";
 
     /** String value 2 */
     public static final String STRING_VALUE_TWO = "2";
@@ -254,6 +257,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** constant for Ping Interval as 15 mins */
     public static final String CONSTANT_PING_INTERVAL = "15";
+    
+	/** Constant for number 21 */
+	public static final int CONSTANT_21 = 21;
 
     /** Constant for Character Hyphen */
     public static final String CHARACTER_HYPHEN = "-";
@@ -356,6 +362,15 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Time value for DHCP lease time */
     public static final String STRING_LEASE_TIME_VALUE = "120";
 
+    /** REGEX for get BSSID in atom device */
+    public static final String REGEX_TO_GET_BSSID_MAC_ADDRESS_ATOM = "Access Point: (\\w+:\\w+:\\w+:\\w+:\\w+:\\w+)";
+
+    /** REGEX for get BSSID in Xf3 device */
+    public static final String REGEX_TO_GET_BSSID_MAC_ADDRESS_FIBRE = "BSSID: (\\w+:\\w+:\\w+:\\w+:\\w+:\\w+)";
+
+    /** String Constant for Process Name */
+    public static final String PROCESS_NAME = "PROCESS_NAME";
+
     /**
      * Constant to hold the value to set firewall IPv4 & IPv6 to 'Custom Security'
      */
@@ -393,6 +408,15 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Constant to hold the value to set firewall IPv4 to 'Maximum Security' */
     public static final String FIREWALL_IPV4_MAXIMUM_SECURITY = "High";
 
+    /** Constant to hold Typical Firewall Level */
+    public static final String TYPICAL_FIREWALL_SECURITY = "Typical Security (Medium)";
+
+    /** Constant to hold Maximum Firewall Level */
+    public static final String MAXIMUM_FIREWALL_SECURITY = "Maximum Security (High)";
+
+    /** Constant to hold custom IPv4 Firewall Level */
+    public static final String CUSTOM_IPV4_FIREWALL_SECURITY = "Custom Security";
+
     /** Constant to hold 2.4GHZ index */
     public static final String RADIO_24_GHZ_INDEX = "10000";
 
@@ -405,6 +429,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** active response of systemctl */
     public static final String SYSTEMCTL_ACTIVE_RESPONSE = "active";
 
+    /** String for wifi Process */
+    public static final String WIFI_PROCESS_NAME = "/usr/bin/CcspWifiSsp";
+
     /** Command to know the status of wifi mesh service */
     public static final String COMMAND_TO_CHECK_THE_RUNNING_STATUS_OF_WIFIMESH_SERVICE = "systemctl status meshwifi.service";
 
@@ -412,6 +439,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
      * Pattern to get the Active status of wifimesh service from systemctl response
      */
     public static final String PATTERN_TO_GET_STATUS_FROM_SYSTEMCTL_RESPONSE = "Active:\\s+(\\S+)";
+
+    /** Pattern Matcher to retrieve the Pid of Ccsp wifi process */
+    public static final String PATTERN_MATCHER_TO_GET_CCSP_WIFI_PROCESS_PID = "(\\d+)\\sroot\\s+[a-zA-Z0-9.]+\\sS\\s+/usr/bin/CcspWifiSsp\\s+";
 
     /** Constants to hold the bridge mode value bridge-static */
     public static final String CONSTANT_BRIDGE_STATIC = "bridge-static";
@@ -487,6 +517,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Constant to hold command to get wifi driver name */
     public static final String CMD_GET_WIFI_NAME = "netsh wlan show profiles |grep -i interface";
+
+    /** Constant for iwconfig */
+    public static final String CMD_IW_CONFIG_PATH = "/sbin/iwconfig";
 
     /** Constant to hold pattern finder to get driver name */
     public static final String REGEX_GREP_WIFI_NAME = "interface\\s+(.*):";
@@ -1252,6 +1285,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Test constant for string configurableSSH */
     public static final String CONFIGURABLE_SSH = "configurableSSH";
+
+    /** Constant to hold Custom Security pop up message */
+    public static final String CUSTOM_SECURITY_POP_UP_MESSAGE = "You are trying to disable the firewall. It is a security risk";
 
     /**
      * stb properties key for payload data to enable configurable ssh rfc in xconf to enable
@@ -6276,148 +6312,148 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Constant to hold Error Message after adding Invalid Host IP */
     public static final String ERROR_MESSAGE_DMZ_PAGE = "Please enter a value less than or equal to 253.";
-    
+
     /** Constant to hold bootstrap config file active value */
-	public static final String KEY_ACTIVE_VALUE = "ActiveValue";
+    public static final String KEY_ACTIVE_VALUE = "ActiveValue";
 
-	/** Pattern to get bootstrap version */
-	public static final String PATTERN_BOOTSTRAP_VERSION = "version\":\\s+\"([\\d+\\.]+)\"";
+    /** Pattern to get bootstrap version */
+    public static final String PATTERN_BOOTSTRAP_VERSION = "version\":\\s+\"([\\d+\\.]+)\"";
 
-	/** Constant for holding value in Xapi */
-	public static final String BUILD_APPENDER = "buildAppender";
+    /** Constant for holding value in Xapi */
+    public static final String BUILD_APPENDER = "buildAppender";
 
-	/** String for TR69 ACS URL for partner ACS connection url parameter */
-	public static final String TR69_ACS_CONNECTION_URL_PARAMETER = "Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.TR69ACSConnectURL";
+    /** String for TR69 ACS URL for partner ACS connection url parameter */
+    public static final String TR69_ACS_CONNECTION_URL_PARAMETER = "Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.TR69ACSConnectURL";
 
-	/** String File path /nvram/partner_default json */
-	public static final String FILE_NVRAM_PARTNERJSON = "/nvram/partners_defaults.json";
+    /** String File path /nvram/partner_default json */
+    public static final String FILE_NVRAM_PARTNERJSON = "/nvram/partners_defaults.json";
 
-	/** RFC payload for non-root support blocklist telemetry */
-	public static final String PROP_KEY_NONROOT_SUPPORT_BLOCKLIST_TELEMETRY = "rfc.rdkb.nonroot.support.blocklist.telemetry";
+    /** RFC payload for non-root support blocklist telemetry */
+    public static final String PROP_KEY_NONROOT_SUPPORT_BLOCKLIST_TELEMETRY = "rfc.rdkb.nonroot.support.blocklist.telemetry";
 
-	/** RFC payload for non-root support disable */
-	public static final String PROP_KEY_PAYLOAD_NONROOT_BLOCKLIST = "rfc.rdkb.nonroot.support.blocklist";
+    /** RFC payload for non-root support disable */
+    public static final String PROP_KEY_PAYLOAD_NONROOT_BLOCKLIST = "rfc.rdkb.nonroot.support.blocklist";
 
-	/** host address for pingtest in stb.properties file */
-	public static final String PROP_KEY_HOST_ADDRESS_FOR_PINGTEST = "pingtest.host.address";
+    /** host address for pingtest in stb.properties file */
+    public static final String PROP_KEY_HOST_ADDRESS_FOR_PINGTEST = "pingtest.host.address";
 
-	/** invalid host address for pingtest in stb.properties file */
-	public static final String PROP_KEY_INVALID_HOST_ADDRESS_FOR_PINGTEST = "pingtest.invalid.host.address";
+    /** invalid host address for pingtest in stb.properties file */
+    public static final String PROP_KEY_INVALID_HOST_ADDRESS_FOR_PINGTEST = "pingtest.invalid.host.address";
 
-	/** Test constant for pingtest log file */
-	public static final String LOG_FILE_PINGTEST = "/rdklogs/logs/TDMlog.txt.0";
+    /** Test constant for pingtest log file */
+    public static final String LOG_FILE_PINGTEST = "/rdklogs/logs/TDMlog.txt.0";
 
-	/** Command to last n lines from a log. */
-	public static final String CMD_TAIL = "tail -";
+    /** Command to last n lines from a log. */
+    public static final String CMD_TAIL = "tail -";
 
-	/** Device lock success status. */
-	public static final int DEVICE_LOCK_SUCCESS = 1;
+    /** Device lock success status. */
+    public static final int DEVICE_LOCK_SUCCESS = 1;
 
-	/** Ten seconds in millisecond representation. */
-	public static final long TEN_SECONDS = 10000;
+    /** Ten seconds in millisecond representation. */
+    public static final long TEN_SECONDS = 10000;
 
-	/** WebPA Parameter to get PartnerID */
-	public static final String WEBPA_PARAM_TO_GET_PARTNERID = "Device.IP.Diagnostics.X_RDKCENTRAL-COM_PingTest.PartnerID";
+    /** WebPA Parameter to get PartnerID */
+    public static final String WEBPA_PARAM_TO_GET_PARTNERID = "Device.IP.Diagnostics.X_RDKCENTRAL-COM_PingTest.PartnerID";
 
-	/** Two seconds in millisecond representation. */
-	public static final long TWO_SECONDS = 2000;
+    /** Two seconds in millisecond representation. */
+    public static final long TWO_SECONDS = 2000;
 
-	/** Linux command to reboot the system. */
-	public static final String CMD_REBOOT = "/sbin/reboot";
+    /** Linux command to reboot the system. */
+    public static final String CMD_REBOOT = "/sbin/reboot";
 
-	/** String regex to check webpa response value */
-	public static final String STRING_REGEX_WEBPA_RESPONSE = "value\":\"";
+    /** String regex to check webpa response value */
+    public static final String STRING_REGEX_WEBPA_RESPONSE = "value\":\"";
 
-	/** Strings for wifihealth.txt */
-	public static final String STRING_WIFIHEALTH_LOG_FILE = "wifihealth.txt";
+    /** Strings for wifihealth.txt */
+    public static final String STRING_WIFIHEALTH_LOG_FILE = "wifihealth.txt";
 
-	/** Constant to store tx overflow marker */
-	public static final String STRING_FOR_TX_OVERFLOW = "WiFi_TX_Overflow_SSID_";
+    /** Constant to store tx overflow marker */
+    public static final String STRING_FOR_TX_OVERFLOW = "WiFi_TX_Overflow_SSID_";
 
-	/** Constant for temporary folder*/
+    /** Constant for temporary folder */
     public static final String TMP_FOLDER_LOCATION = "/tmp/";
-    
+
     /** String pattern to check iper service */
     public static final String PATTERN_TO_CHECK_IPERF = ".*iperf";
-    
+
     /** Constant for number 600 */
     public static final int CONSTANT_600 = 600;
-    
+
     /** String telemetry market tx overflow */
     public static final String TELEMETRY_MARKER_TX_OVERFLOW = "WIFI_TX_OF_{i}_split";
-    
+
     /** Pattern for verifying the String. */
     public static final String PATTERN_FOR_STRING = "[\\w-.]+";
-    
+
     /** String for parameter */
-	public static String STRING_PARAMETERS = "parameters";
-	
-	/** Command to get valid certificate issuer **/
-	public static final String CERTIFICATE_ISSUER = "openssl crl2pkcs7 -nocrl -certfile /usr/share/ca-certificates/ca-certificates.crt | openssl pkcs7 -print_certs -text  | grep \"Issuer:\" > /tmp/issuer_details.txt";
+    public static String STRING_PARAMETERS = "parameters";
 
-	/** Command to get the certificates issuers */
-	public static final String FILE_ISSUER_DETAILS = "/tmp/issuer_details.txt";
+    /** Command to get valid certificate issuer **/
+    public static final String CERTIFICATE_ISSUER = "openssl crl2pkcs7 -nocrl -certfile /usr/share/ca-certificates/ca-certificates.crt | openssl pkcs7 -print_certs -text  | grep \"Issuer:\" > /tmp/issuer_details.txt";
 
-	/** Comamnd to get Certfiicate issuer_name */
-	public static final String VALID_CERT_ISSUER_NAME = "certificate.issuers.name";
+    /** Command to get the certificates issuers */
+    public static final String FILE_ISSUER_DETAILS = "/tmp/issuer_details.txt";
 
-	/** Regex string to remove json invalid string from recording started line. */
-	public static final String REGEX_CHECK_NEXT_LINE = "\r\n";
+    /** Comamnd to get Certfiicate issuer_name */
+    public static final String VALID_CERT_ISSUER_NAME = "certificate.issuers.name";
 
-	/** Extension the certificate need to has */
-	public static final String CERT_EXTENSION = ".crt";
+    /** Regex string to remove json invalid string from recording started line. */
+    public static final String REGEX_CHECK_NEXT_LINE = "\r\n";
 
-	/** Regex pattern for A-Z */
-	public static final String REGEX_PATTERN_CAPITAL_LETTERS = "([A-Z]+)=";
-	
-	/** Constant to hold No blocklisted process value */
-	public static final String CMD_NO_BLOCKLIST_PROCESS = "No blocklisted process";
+    /** Extension the certificate need to has */
+    public static final String CERT_EXTENSION = ".crt";
 
-	/** String constant to store configurable non-root blocklist */
-	public static final String CONFIGURABLE_NONROOT_BLOCKLIST_TELEMETRY = "nonroot_blocklist_telemetry";
-	
-	/** String to store accountid **/
+    /** Regex pattern for A-Z */
+    public static final String REGEX_PATTERN_CAPITAL_LETTERS = "([A-Z]+)=";
+
+    /** Constant to hold No blocklisted process value */
+    public static final String CMD_NO_BLOCKLIST_PROCESS = "No blocklisted process";
+
+    /** String constant to store configurable non-root blocklist */
+    public static final String CONFIGURABLE_NONROOT_BLOCKLIST_TELEMETRY = "nonroot_blocklist_telemetry";
+
+    /** String to store accountid **/
     public static final String STRING_ACCOUNTID = "accountId=";
 
     /** String to store unknown **/
     public static final String STRING_UNKNOWN = "Unknown";
-    
+
     /** String constant to hold response code 304 */
     public static final String HTTP_RESPONSE_CODE_304 = "http_code: 304";
-    
+
     /** String to hold Invaid Account ID */
     public static final String INVAILD_ACCOUNT_ID = "1234567890";
 
     /** String to hold AccountId mismatch */
     public static final String ACCOUNT_ID_MISMATCH = "Account Id mismatch: old=1234567890";
-    
+
     /** Pattern to get the list of single interface */
-	public static final String PATTERN_TO_GET_INTERFACE = "astr\">(.*?)</Record>";
-	
-	/** Constant to store brlan0 under ovs bridge control */
-	public static final String STRING_PORT_BRLAN0 = "Port brlan0";
+    public static final String PATTERN_TO_GET_INTERFACE = "astr\">(.*?)</Record>";
 
-	/** Constant to store brlan0 under ovs bridge control */
-	public static final String STRING_BRIDGE_BRLAN0 = "Bridge brlan0";
+    /** Constant to store brlan0 under ovs bridge control */
+    public static final String STRING_PORT_BRLAN0 = "Port brlan0";
 
-	/** Constant for port with name */
-	public static final String PORT_NAME = "Port <REPLACE>";
+    /** Constant to store brlan0 under ovs bridge control */
+    public static final String STRING_BRIDGE_BRLAN0 = "Bridge brlan0";
 
-	/** Constant for Interface with name */
-	public static final String INTERFACE_NAME = "Interface <REPLACE>";
+    /** Constant for port with name */
+    public static final String PORT_NAME = "Port <REPLACE>";
 
-	/** interface name to brlan1 */
-	public static final String INTERFACE_NAME_BRLAN1 = "brlan1";
+    /** Constant for Interface with name */
+    public static final String INTERFACE_NAME = "Interface <REPLACE>";
 
-	/** interface name to mta0 */
-	public static final String INTERFACE_NAME_HOST0 = "host0";
-	
+    /** interface name to brlan1 */
+    public static final String INTERFACE_NAME_BRLAN1 = "brlan1";
+
+    /** interface name to mta0 */
+    public static final String INTERFACE_NAME_HOST0 = "host0";
+
     /** String constant online */
     public static final String STRING_ONLINE = "online";
-    
+
     /** 45 minutes in milliseconds. */
     public static final long FORTYFIVE_MINUTES_IN_MILLIS = 45 * ONE_MINUTE_IN_MILLIS;
-    
+
     /** Pattern for verifying total memory. */
     public static final String PATTERN_FOR_SYS_TOTAL_MEMEORY = "RDKB_SYS_MEM_INFO_SYS : Total memory in system is";
 
@@ -6427,15 +6463,251 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Pattern for verifying free memory. */
     public static final String PATTERN_FOR_SYS_FREE_MEMEORY = "RDKB_SYS_MEM_INFO_SYS : Free memory in system is";
 
-	/** Constant to hold the Div Number Place holder */
-	public static final String PLACE_HOLDER_FOR_DIV_1_NUMBER = "##DIV1##";
-	
-	/** Constant to hold the Div Number Place holder */
-	public static final String PLACE_HOLDER_FOR_DIV_2_NUMBER = "##DIV2##";
-	
-	/** Test Constant to store the string value Reseved IP */
-	public static final String RESERVED_IP = "Reserved IP";
+    /** Constant to hold the Div Number Place holder */
+    public static final String PLACE_HOLDER_FOR_DIV_1_NUMBER = "##DIV1##";
 
-	/** Test Constant to store the string value DHCP */
-	public static final String STRING_DHCP = "DHCP";
+    /** Constant to hold the Div Number Place holder */
+    public static final String PLACE_HOLDER_FOR_DIV_2_NUMBER = "##DIV2##";
+
+    /** Test Constant to store the string value Reseved IP */
+    public static final String RESERVED_IP = "Reserved IP";
+
+    /** Test Constant to store the string value DHCP */
+    public static final String STRING_DHCP = "DHCP";
+
+    /**
+     * Constant to store models that has security mode as WPA3-Personal-Transition
+     */
+    public static final String WPA3_PERSONAL_TRANSITION_MODELS = "wpa3.personal.transition.models";
+
+    /** reboot reason log present in webpalog.txt.0 after reboot */
+    public static final String REBOOT_REASON_LOG_FROM_WEBPALOG = "Received reboot_reason as:factory-reset";
+
+    /** regular expression to get reboot reason from webpalog file */
+    public static final String REGULAR_EXPRESSION_TO_GET_REBOOT_REASON_FROM_WEBPALOG_FILE = "Received reboot_reason as:([\\S]*)";
+
+    /** Property key for Devices with ax mode enabled */
+    public static final String ENABLE_AX_MODE_DEVICES = "ax.mode.enable.models";
+
+    /** Pattern to get webpa parameter RFC Transition enable */
+    public static final String PATTERN_GET_WEBPA_PARAM_RFC_TRANSITION_ENABLE = "tr181.Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.WPA3_Personal_Transition.Enable\\\\\\\\W+(\\\\\\\\w+)";
+
+    /** stores the constant value for BOOL_CHECK */
+    public static final String CONSTANT_BOOL_CHECK = "BOOL_CHECK";
+
+    /** Constant to store models that support Operating standards a,n,ac and ax */
+    public static final String OPERATING_STD_AX_MODELS = "ax.mode.enable.models";
+
+    /** Test constant for FirewallDebug.txt file */
+    public static final String FIREWALLDEBUG_FILE = "/rdklogs/logs/FirewallDebug.txt";
+
+    /**
+     * Property key for rfc payload data in stb.props to set ForwardSSH with an invalid string
+     */
+    public static final String PROP_KEY_PAYLOAD_FORWARD_SSH_INVALID_STRING = "rfc.forwardssh.invalidstring";
+
+    /**
+     * Property key for rfc payload data in stb.props to set ForwardSSH with an invalid string
+     */
+    public static final String INVALID_STRING = "INVALIDSTRING";
+
+    /** Constant to hold WAN Default Gateway Address (IPv6) string */
+    public static final String STRING_WAN_IPV6_DEFAULT = "WAN Default Gateway Address (IPv6)";
+
+    /** Constant to hold Primary DNS Server (IPv6) string */
+    public static final String STRING_PRIMARY_IPV6_DNS = "Primary DNS Server (IPv6)";
+
+    /** Constant to hold Secondary DNS Server (IPv6) string */
+    public static final String STRING_SECONDARY_IPV6_DNS = "Secondary DNS Server (IPv6)";
+
+    /** Constant to hold WAN IP Address (IPv6) string */
+    public static final String STRING_WAN_IPV6_ADDRESS = "WAN IP Address (IPv6)";
+
+    /** Constant to hold WAN Link Local Address (IPv6) string */
+    public static final String STRING_WAN_LOCAL_IPV6 = "WAN Link Local Address (IPv6)";
+
+    /** String to store pattern for docsis ofdm SNR level */
+    public static final String PATTERN_FOR_PARAM_OFDM_SNR = "Device\\.X_RDKCENTRAL-COM_CableModem\\.DsOfdmChan\\.\\d+\\.SNRLevel";
+
+    /** String to store metric dB */
+    public static final String METRIC_DB = "dB";
+
+    /** String to store metric dBmV */
+    public static final String METRIC_DBMV = "dBmV";
+
+    /** String to store pattern for docsis ofdm PowerLevel level */
+    public static final String PATTERN_FOR_PARAM_OFDM_POWER = "Device\\.X_RDKCENTRAL-COM_CableModem\\.DsOfdmChan\\.\\d+\\.PowerLevel";
+
+    /** String to store pattern for docsis ofdm ChannelID level */
+    public static final String PATTERN_FOR_PARAM_OFDM_CHANNELID = "Device\\.X_RDKCENTRAL-COM_CableModem\\.DsOfdmChan\\.\\d+\\.ChannelID";
+
+    /** Regex pattern to get the Power Level from SNMP Response */
+    public static final String SNMP_POWER_LEVEL_RESPONSE_REGEX = "\\d.0\\s=\\s(-\\d+)";
+
+    /** Alternalte Regex pattern to get the Power Level from SNMP Response */
+    public static final String ALTERNATE_SNMP_POWER_LEVEL_RESPONSE_REGEX = "\\d.0\\s=\\s(\\d+)";
+
+    /** Regex pattern to get the Power Level from WEBPA Response */
+    public static final String POWER_LEVEL_RESPONSE_REGEX_FROM_WEBPA = "(-\\d+.\\d+)\\sdB";
+
+    /** Alternate Regex pattern to get the Power Level from WEBPA Response */
+    public static final String ALTERNATE_POWER_LEVEL_RESPONSE_REGEX_FROM_WEBPA = "(\\d+.\\d+)\\sdB";
+
+    /** Regex pattern to get the SNR Level from SNMP Response */
+    public static final String SNMP_SNR_LEVEL_RESPONSE_REGEX = ".\\d\\s=\\s(\\d+)";
+
+    /** Regex pattern to get the SNR Level from WEBPA Response */
+    public static final String SNR_LEVEL_RESPONSE_REGEX_FROM_WEBPA = "(\\d+)\\sdB";
+
+    /** Alternate Regex pattern to get the SNR Level from WEBPA Response */
+    public static final String ALTERNATE_SNR_LEVEL_RESPONSE_REGEX_FROM_WEBPA = "(\\d+.\\d+)\\sdB";
+
+    /**
+     * ENUM WHICH STORES ALL THE REQUIRED Public WiFi hotspot WEBPA PARAMS for predefined values
+     */
+    public static enum HotspotPublicInvalidParamsWEBPA {
+	DEVICE_HS_2_4GHZ_OPEN_SEC_MODE("Device.WiFi.AccessPoint.10003.Security.ModeEnabled", "2"),
+	DEVICE_HS_5GHZ_OPEN_SEC_MODE("Device.WiFi.AccessPoint.10103.Security.ModeEnabled", "2"),
+	DEVICE_HS_2_4GHZ_SEC_SEC_MODE("Device.WiFi.AccessPoint.10005.Security.ModeEnabled", "2"),
+	DEVICE_HS_5GHZ_SEC_SEC_MODE("Device.WiFi.AccessPoint.10105.Security.ModeEnabled", "2"),
+	DEVICE_RADIO_CHANNEL_ONE("Device.WiFi.Radio.10000.Channel", "4"),
+	DEVICE_RADIO_CHANNEL_TWO("Device.WiFi.Radio.10100.Channel", "4"),
+	DEVICE_RADIO_CHANNEL_ONE_FB("Device.WiFi.Radio.10000.OperatingFrequencyBand", "2"),
+	DEVICE_RADIO_CHANNEL_TWO_FB("Device.WiFi.Radio.10100.OperatingFrequencyBand", "2"),
+	DEVICE_RADIO_CHANNEL_ONE_BW("Device.WiFi.Radio.10000.OperatingChannelBandwidth", "2"),
+	DEVICE_RADIO_CHANNEL_TWO_BW("Device.WiFi.Radio.10100.OperatingChannelBandwidth", "2");
+
+	private String webpa;
+	private String value;
+
+	private HotspotPublicInvalidParamsWEBPA(String webpa, String value) {
+	    this.webpa = webpa;
+	    this.value = value;
+	}
+
+	/**
+	 * @return the valueToCheck
+	 */
+	public String getValue() {
+	    return value;
+	}
+
+	/**
+	 * @return the webpa
+	 */
+	public String getWebpa() {
+	    return webpa;
+	}
+    }
+
+    /** Constant to hold string for sec mode enabled */
+    public static final String STRING_FOR_SEC_MODE = "ModeEnabled";
+
+    /** Constant to hold invalid value for sec mode */
+    public static final String STRING_VALUE_INVALID_SEC_MODE = "WPE2-Persoanl";
+
+    /** Constant to hold string for operating frequency band */
+    public static final String STRING_FOR_OPERATINGBAND = "OperatingFrequencyBand";
+
+    /** Constant to hold invalid value for operating frequency band */
+    public static final String STRING_VALUE_INVALID_OPER_BAND = "2GHz";
+
+    /** Constant to hold string for channel */
+    public static final String STRING_FOR_CHANNEL = "Channel";
+
+    /** Constant to hold string for operating channel bandwidth */
+    public static final String STRING_FOR_BANDWIDTH = "OperatingChannelBandwidth";
+
+    /** Constant to hold invalid value for operating band width */
+    public static final String STRING_VALUE_INVALID_OPER_BW = "90MHz";
+
+    /** Constant to hold invalid value for channel */
+    public static final String STRING_VALUE_INVALID_CHANNEL = "35";
+
+    /** String to get CSRF Test Page */
+    public static final String CSRF_TEST_PAGE = "wireless_network_configuration.jst";
+
+    /** String Regex to validate CSRF Protection */
+    public static final String STRING_REGEX_CSRF_PROTECTION = "X-CSRF-Protection:(.*)\\s+";
+
+    /** String CSRF Version */
+    public static final String CSRFP_VERSION = "OWASP CSRFP 1.0.0";
+
+    /** String Regex to validate CSRF Token */
+    public static final String STRING_REGEX_CSRF_TOKEN = "csrfp_token=(.*);";
+
+    /** Constant representing GET local storage null response */
+    public static final String GET_LOCAL_STORAGE_NULL_TEXT = "null";
+
+    /**
+     * Constant to hold Not applicable message for Device in ETHWAN Execution Mode
+     */
+    public static final String Not_Applicable_For_Ethwan = "Test Step Not Applicable for device in ethwan mode";
+
+    /** String value of csrf library in lighttpd.conf file */
+    public static final String CSRF_LIBRARY = "mod_csrf";
+
+    /** String value Module Csrf */
+    public static final String MODULE_CSRF = "CSRF";
+
+    /** String to store rfc param pattern */
+    public static final String STRING_RFC_PARAM_PATTERN = "Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.";
+
+    /** String rfc */
+    public static final String STRING_RFC = "rfc";
+
+    /** stb properties key for getting proxy xconf rfc invalid url **/
+    public static final String PROP_KEY_PROXY_XCONF_INVALID_URL = "proxy.xconf.rfc.url.invalid";
+
+    /** Pattern to get list the of RFC feature enabled */
+    public static final String PATTERN_RFC_FEATURE_LIST = "(\\w+=\\w+),[\\s+]?";
+
+    /** Log message to verify URL connection is success in dcm script log file */
+    public static final String STRING_VALUE_HTTP_CODE_200 = "http_code: 200";
+
+    /** String constamt to hold pattern to search hash value form response */
+    public static final String PATTERN_TO_FIND_HASH_VALUE = "RFC: configsethash=";
+
+    /** String constant to hold pattern to fecth hash key value */
+    public static final String PATTERN_TO_FETCH_HASH_VALUE = "RFC: configsethash=(\\w*)";
+
+    /** Constant to store RFC_Reboot.sh script name */
+    public static final String RFC_REBOOT_SH = "RFC_Reboot.sh";
+    
+    /** String to store pattern */
+    public static final String PATTERN_FOR_ACCOUNTID = "\\d+";
+    
+    /** Constant to hold invalid AccountID value with special chars **/
+    public static final String INVALID_ACCOUNTID_VALUE_WITH_SPECIAL_CHARS = "1245666@3#1245666@3#^";
+    
+    /** Constant to hold invalid AccountID value with more than 32 chars **/
+    public static final String INVALID_ACCOUNTID_MORE_THAN_THIRTY_TWO = "123456789369852147159753123345691";
+    
+    /** Command to look for ntpd process */
+    public static final String COMMAND_NTPD_PROCESS = "ps | grep ntpd";
+    
+    public static final String EXPECTED_OUTPUT_FOR_NTPHOST = "ntp.ccp.xcal.tv";
+    
+    /** Variable for status value - 'Disabled' */
+    public static final String STATUS_VALUE_DISABLED = "Disabled";
+    
+    /** String to store NTPServerURL_Pattern value */
+    public static final String NTPServerURL_Pattern = "(\\w*.\\w*.\\w*.\\w*)";
+    
+	/** Pattern to match Crontab time interval */
+	public static final String PATTERN_TO_FETCH_CRONTAB_TIME_INTERVAL = "0\\s(0,(\\d+,)+\\d+)(\\s\\*){3}\\s/usr/ccsp/tad/log_buddyinfo.sh";
+
+	/** Pattern Matcher to Extract the Timestamp from the log messages */
+	public static final String PATTERN_MATCHER_LOG_MESSAGE_TIMESTAMP = "(^.*)\\.\\d+";
+	
+    /** String to store the path of /tmp/moca_initialized file */
+    public static final String PATH_FOR_MOCA_INITIALIZED_FILE = "/tmp/moca_initialized";
+    
+	/**
+	 * String to store the value for average cpu threshold value
+	 */
+	public static final String AVG_CPU_THRESHOLD_VALUE = "100";	
+
+	/** String constant value 56982 */
+	public static final String STRING_CONSTANT_56982 = "56982";
 }

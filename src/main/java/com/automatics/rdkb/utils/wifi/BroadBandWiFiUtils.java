@@ -3304,30 +3304,81 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 		LOGGER.info("#######################################################################################");
 		tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
 	}
-	
-	/**
-     * Test step method used change the Partner ID and Reactivate Wifi Settings.
-     * 
-     * @param device
-     *            instance of{@link Dut}
-     * @param partnerId
-     *            String partner Id to be set.
-     * @refactor yamini.s
-     */
-    public static boolean changePartnerIdAndReactivateTheDevice(Dut device, String partnerId) {
-	LOGGER.debug("ENTERING METHOD changePartnerIdAndReactivateTheDevice");
-	boolean status = false;
-	try {
-	    if (BroadBandCommonUtils.changePartnerIdAndVerify(device, tapEnv, partnerId)) {
-		reactivateDeviceUsingWebpaOrSnmp(tapEnv, device);
-		status = true;
-	    }
-	} catch (Exception e) {
-	    status = false;
-	    LOGGER.error("Exception Occured during Changing the Partner ID to " + partnerId + " :" + e.getMessage());
-	}
-	LOGGER.debug("EXITING METHOD changePartnerIdAndReactivateTheDevice");
-	return status;
-    }
 
+	/**
+	 * Test step method used change the Partner ID and Reactivate Wifi Settings.
+	 * 
+	 * @param device    instance of{@link Dut}
+	 * @param partnerId String partner Id to be set.
+	 * @refactor yamini.s
+	 */
+	public static boolean changePartnerIdAndReactivateTheDevice(Dut device, String partnerId) {
+		LOGGER.debug("ENTERING METHOD changePartnerIdAndReactivateTheDevice");
+		boolean status = false;
+		try {
+			if (BroadBandCommonUtils.changePartnerIdAndVerify(device, tapEnv, partnerId)) {
+				reactivateDeviceUsingWebpaOrSnmp(tapEnv, device);
+				status = true;
+			}
+		} catch (Exception e) {
+			status = false;
+			LOGGER.error("Exception Occured during Changing the Partner ID to " + partnerId + " :" + e.getMessage());
+		}
+		LOGGER.debug("EXITING METHOD changePartnerIdAndReactivateTheDevice");
+		return status;
+	}
+
+	/**
+	 * Method to verify the enable ax mode for the devices
+	 * 
+	 * @param device Dut instance
+	 * @param tapEnv instance of {@link AutomaticsTapApi}
+	 * @return status True-if ax mode is enabled for the device or else false
+	 * 
+	 */
+	public static boolean enableAxMode(Dut device, AutomaticsTapApi tapEnv) {
+		LOGGER.debug("STARTING METHOD :EnableAxMode");
+		boolean status = false;
+		if (BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcliAndVerify(device, tapEnv,
+				BroadBandWebPaConstants.WEBPA_PARAM_FOR_2_4_GHZ_AX_ENABLE, BroadBandTestConstants.FALSE)) {
+			status = BroadBandWebPaUtils.setAndVerifyParameterValuesUsingWebPaorDmcli(device, tapEnv,
+					BroadBandWebPaConstants.WEBPA_PARAM_FOR_2_4_GHZ_AX_ENABLE, WebPaDataTypes.BOOLEAN.getValue(),
+					BroadBandTestConstants.TRUE)
+					&& BroadBandWebPaUtils.setParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+							BroadBandWebPaConstants.WEBPA_PARAM_WIFI_2_4_APPLY_SETTING,
+							BroadBandTestConstants.CONSTANT_3, BroadBandTestConstants.TRUE);
+		}
+		LOGGER.debug("ENDING METHOD :EnableAxMode");
+		return status;
+	}
+
+	/**
+	 * Utility method to validate the allowed number of clients based on residential
+	 * or commercial device.
+	 * 
+	 * @param device {@link Dut}
+	 * 
+	 * @param output value allowed No of clients retrieved using snmp/webpa.
+	 * 
+	 * @return true if the output matches with the expected value
+	 * 
+	 * @Refactor Sruthi Santhosh
+	 */
+	public static boolean validateAllowedNoOfClientsValueRetrievedFromSnmp(Dut device, String output) {
+		boolean status = false;
+		String errorMessage = "Null value retrieved for the Device model";
+		String deviceModel = device.getModel();
+		boolean isBusinessDevice = DeviceModeHandler.isBusinessClassDevice(device);
+
+		try {
+			status = CommonMethods.isNotNull(deviceModel) ? ((DeviceModeHandler.isBusinessClassDevice(device))
+					? isBusinessDevice ? output.equals(BroadBandTestConstants.STRING_VALUE_FIVE)
+							: output.equals(BroadBandTestConstants.STRING_VALUE_FIFTEEN)
+					: output.equals(BroadBandTestConstants.STRING_VALUE_FIVE)) : false;
+		} catch (Exception exception) {
+			errorMessage = "Exception occured during execution : " + exception.getMessage();
+			LOGGER.error(errorMessage);
+		}
+		return status;
+	}
 }

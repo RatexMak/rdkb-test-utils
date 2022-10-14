@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import com.assertthat.selenium_shutterbug.core.PageSnapshot;
 import com.assertthat.selenium_shutterbug.core.Shutterbug;
 import com.assertthat.selenium_shutterbug.utils.web.ScrollStrategy;
+import com.automatics.device.Device;
 import com.automatics.device.Dut;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.tap.AutomaticsTapApi;
@@ -44,6 +45,7 @@ import com.automatics.rdkb.utils.snmp.BroadBandSnmpUtils;
 import com.automatics.rdkb.webui.page.BroadbandLocalIpConfigurationPage;
 import com.automatics.utils.CommonMethods;
 import com.automatics.rdkb.utils.CommonUtils;
+import com.automatics.rdkb.utils.DeviceModeHandler;
 
 public class BroadBandWebUiUtils {
 
@@ -435,111 +437,155 @@ public class BroadBandWebUiUtils {
 		LOGGER.debug("ENDING METHOD : verifyDhcpEndingAddressFromLocalIpNetworkPageAndSnmp()");
 		return status;
 	}
-	
-    /**
-     * Method used to validate DHCP Lease Time from local IP network page matches with the corresponding SNMP value
-     * retrieved
-     * 
-     * @param driver
-     *            instance of {@link Webdriver}
-     * @param TapEnv
-     *            instance of {@link AutomaticsTapApi}
-     * @param device
-     *            instance of {@link Dut}
-     *            
-     * @refactor Athira
-     **/
-    public static boolean verifyDhcpLeaseTimeFromLocalIpNetworkPageAndSnmp(WebDriver driver, AutomaticsTapApi tapEnv,
-	    Dut device) {
-	LOGGER.debug("STARTING METHOD : verifyDhcpLeaseTimeFromLocalIpNetworkPageAndSnmp()");
-	boolean status = false;
-	String dhcpLeaseExpireTime = null;
-	String dhcpLeaseTime = null;
-	int dhcpLeaseSecondsFromWebPa = 0;
-	int dhcpLeaseSeconds = 0;
-	try {
-	    dhcpLeaseExpireTime = driver.findElement(By.id(BroadBandWebGuiElements.ELEMENT_ID_DHCP_LEASE_TIME_AMOUNT))
-		    .getAttribute(BroadBandWebGuiElements.ELEMENT_GET_ATTRIBUTE_VALUE);
-	    LOGGER.info("THE DHCPv4 LEASE TIME FROM LOCAL IP NETWORK WEBGUI PAGE IS : " + dhcpLeaseExpireTime);
-	    String dhcpLeaseExpireMeasure = driver
-		    .findElement(By.id(BroadBandWebGuiElements.ELEMENT_ID_DHCP_LEASE_TIME_MEASURE))
-		    .getAttribute(BroadBandWebGuiElements.ELEMENT_GET_ATTRIBUTE_VALUE);
-	    LOGGER.info("THE DHCPv4 LEASE MEASUREMENT FROM WEBGUI PAGE IS : " + dhcpLeaseExpireMeasure);
-	    dhcpLeaseTime = BroadBandSnmpUtils.executeSnmpGetWithTableIndexOnRdkDevices(tapEnv, device,
-		    BroadBandSnmpMib.ECM_DHCP_LEASE_TIME.getOid(),
-		    BroadBandSnmpMib.ECM_DHCP_LEASE_TIME.getTableIndex());
-	    if (CommonMethods.isNotNull(dhcpLeaseTime) && CommonMethods.isNotNull(dhcpLeaseExpireMeasure)
-		    && CommonMethods.isNotNull(dhcpLeaseExpireTime)) {
+
+	/**
+	 * Method used to validate DHCP Lease Time from local IP network page matches
+	 * with the corresponding SNMP value retrieved
+	 * 
+	 * @param driver instance of {@link Webdriver}
+	 * @param TapEnv instance of {@link AutomaticsTapApi}
+	 * @param device instance of {@link Dut}
+	 * 
+	 * @refactor Athira
+	 **/
+	public static boolean verifyDhcpLeaseTimeFromLocalIpNetworkPageAndSnmp(WebDriver driver, AutomaticsTapApi tapEnv,
+			Dut device) {
+		LOGGER.debug("STARTING METHOD : verifyDhcpLeaseTimeFromLocalIpNetworkPageAndSnmp()");
+		boolean status = false;
+		String dhcpLeaseExpireTime = null;
+		String dhcpLeaseTime = null;
+		int dhcpLeaseSecondsFromWebPa = 0;
+		int dhcpLeaseSeconds = 0;
 		try {
-		    dhcpLeaseSecondsFromWebPa = Integer.parseInt(dhcpLeaseTime);
-		    dhcpLeaseSeconds = BroadBandCommonUtils.convertTimeToSeconds(Integer.parseInt(dhcpLeaseExpireTime),
-			    dhcpLeaseExpireMeasure);
-		    status = (dhcpLeaseSeconds == dhcpLeaseSecondsFromWebPa);
-		} catch (NumberFormatException e) {
-		    LOGGER.error(
-			    "NUMBER FORMAT EXCEPTION WHILE CONVERING DHCPv4 LEASE TIME FROM LOCAL IP NETWORK PAGE");
+			dhcpLeaseExpireTime = driver.findElement(By.id(BroadBandWebGuiElements.ELEMENT_ID_DHCP_LEASE_TIME_AMOUNT))
+					.getAttribute(BroadBandWebGuiElements.ELEMENT_GET_ATTRIBUTE_VALUE);
+			LOGGER.info("THE DHCPv4 LEASE TIME FROM LOCAL IP NETWORK WEBGUI PAGE IS : " + dhcpLeaseExpireTime);
+			String dhcpLeaseExpireMeasure = driver
+					.findElement(By.id(BroadBandWebGuiElements.ELEMENT_ID_DHCP_LEASE_TIME_MEASURE))
+					.getAttribute(BroadBandWebGuiElements.ELEMENT_GET_ATTRIBUTE_VALUE);
+			LOGGER.info("THE DHCPv4 LEASE MEASUREMENT FROM WEBGUI PAGE IS : " + dhcpLeaseExpireMeasure);
+			dhcpLeaseTime = BroadBandSnmpUtils.executeSnmpGetWithTableIndexOnRdkDevices(tapEnv, device,
+					BroadBandSnmpMib.ECM_DHCP_LEASE_TIME.getOid(),
+					BroadBandSnmpMib.ECM_DHCP_LEASE_TIME.getTableIndex());
+			if (CommonMethods.isNotNull(dhcpLeaseTime) && CommonMethods.isNotNull(dhcpLeaseExpireMeasure)
+					&& CommonMethods.isNotNull(dhcpLeaseExpireTime)) {
+				try {
+					dhcpLeaseSecondsFromWebPa = Integer.parseInt(dhcpLeaseTime);
+					dhcpLeaseSeconds = BroadBandCommonUtils.convertTimeToSeconds(Integer.parseInt(dhcpLeaseExpireTime),
+							dhcpLeaseExpireMeasure);
+					status = (dhcpLeaseSeconds == dhcpLeaseSecondsFromWebPa);
+				} catch (NumberFormatException e) {
+					LOGGER.error(
+							"NUMBER FORMAT EXCEPTION WHILE CONVERING DHCPv4 LEASE TIME FROM LOCAL IP NETWORK PAGE");
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error("EXCEPTION OCCURED WHILE RETRIEVING DHCPv4 LEASE TIME FROM LOCAL IP NETWORK PAGE IN LAN GUI. "
+					+ e.getMessage());
 		}
-	    }
-	} catch (Exception e) {
-	    LOGGER.error("EXCEPTION OCCURED WHILE RETRIEVING DHCPv4 LEASE TIME FROM LOCAL IP NETWORK PAGE IN LAN GUI. "
-		    + e.getMessage());
+		LOGGER.debug("ENDING METHOD : verifyDhcpLeaseTimeFromLocalIpNetworkPageAndSnmp()");
+		return status;
 	}
-	LOGGER.debug("ENDING METHOD : verifyDhcpLeaseTimeFromLocalIpNetworkPageAndSnmp()");
-	return status;
-    }
 
-    /**
-     * Method to verify preferred private check box button is enabled or not
-     * 
-     * @param driver,
-     *            webdriver instance
-     * @param value,
-     *            boolean value as true to enable and false to disable.
-     * 
-     * @return True, if enabled/disabled according to param passed
-     * @refactor Rakesh C N
-     */
+	/**
+	 * Method to verify preferred private check box button is enabled or not
+	 * 
+	 * @param driver, webdriver instance
+	 * @param value,  boolean value as true to enable and false to disable.
+	 * 
+	 * @return True, if enabled/disabled according to param passed
+	 * @refactor Rakesh C N
+	 */
 
-    public static boolean isPreferredPrivateCheckBoxEnabled(WebDriver driver, boolean toEnable) {
-	LOGGER.debug("STARTING METHOD: verifyPreferredPrivateCheckBoxEnabledOrDisabled");
-	boolean result = false;
-	WebElement element = null;
-	try {
-	    WebDriverWait wait = new WebDriverWait(driver, 30);
-	    wait.until(ExpectedConditions
-		    .presenceOfElementLocated((By.xpath(BroadBandWebGuiTestConstant.XPATH_FOR_PREFER_PRIVATE))));
-	    element = driver.findElement(By.xpath(BroadBandWebGuiTestConstant.XPATH_FOR_PREFER_PRIVATE));
+	public static boolean isPreferredPrivateCheckBoxEnabled(WebDriver driver, boolean toEnable) {
+		LOGGER.debug("STARTING METHOD: verifyPreferredPrivateCheckBoxEnabledOrDisabled");
+		boolean result = false;
+		WebElement element = null;
+		try {
+			WebDriverWait wait = new WebDriverWait(driver, 30);
+			wait.until(ExpectedConditions
+					.presenceOfElementLocated((By.xpath(BroadBandWebGuiTestConstant.XPATH_FOR_PREFER_PRIVATE))));
+			element = driver.findElement(By.xpath(BroadBandWebGuiTestConstant.XPATH_FOR_PREFER_PRIVATE));
 
-	    if (element.isSelected() && toEnable) {
-		LOGGER.info("prefer private wifi is already enabled ");
-		result = true;
-	    } else if (!element.isSelected() && toEnable) {
-		wait.until(ExpectedConditions
-			.presenceOfElementLocated((By.xpath(BroadBandWebGuiTestConstant.XPATH_FOR_PREFER_PRIVATE))));
-		driver.findElement(By.xpath(BroadBandWebGuiTestConstant.XPATH_FOR_PREFER_PRIVATE)).click();
-		LOGGER.info("clicking prefer private wifi to enable it");
-		result = true;
-	    }
+			if (element.isSelected() && toEnable) {
+				LOGGER.info("prefer private wifi is already enabled ");
+				result = true;
+			} else if (!element.isSelected() && toEnable) {
+				wait.until(ExpectedConditions
+						.presenceOfElementLocated((By.xpath(BroadBandWebGuiTestConstant.XPATH_FOR_PREFER_PRIVATE))));
+				driver.findElement(By.xpath(BroadBandWebGuiTestConstant.XPATH_FOR_PREFER_PRIVATE)).click();
+				LOGGER.info("clicking prefer private wifi to enable it");
+				result = true;
+			}
 
-	    else if (!element.isSelected() && !toEnable) {
-		LOGGER.info("prefer Private wifi is in already  disabled state");
-		result = true;
-	    }
+			else if (!element.isSelected() && !toEnable) {
+				LOGGER.info("prefer Private wifi is in already  disabled state");
+				result = true;
+			}
 
-	    else if (element.isSelected() && !toEnable) {
-		wait.until(ExpectedConditions
-			.presenceOfElementLocated((By.xpath(BroadBandWebGuiTestConstant.XPATH_FOR_PREFER_PRIVATE))));
-		driver.findElement(By.xpath(BroadBandWebGuiTestConstant.XPATH_FOR_PREFER_PRIVATE)).click();
-		LOGGER.info("clicking prefer private wifi to disable it");
-		result = true;
-	    }
+			else if (element.isSelected() && !toEnable) {
+				wait.until(ExpectedConditions
+						.presenceOfElementLocated((By.xpath(BroadBandWebGuiTestConstant.XPATH_FOR_PREFER_PRIVATE))));
+				driver.findElement(By.xpath(BroadBandWebGuiTestConstant.XPATH_FOR_PREFER_PRIVATE)).click();
+				LOGGER.info("clicking prefer private wifi to disable it");
+				result = true;
+			}
 
-	} catch (NoSuchElementException noSuchElementException) {
-	    // Log & Suppress the Exception
-	    LOGGER.info("Element is not present in UI");
+		} catch (NoSuchElementException noSuchElementException) {
+			// Log & Suppress the Exception
+			LOGGER.info("Element is not present in UI");
 
+		}
+		LOGGER.debug("ENDING METHOD: verifyPreferredPrivateCheckBoxEnabledOrDisabled");
+		return result;
 	}
-	LOGGER.debug("ENDING METHOD: verifyPreferredPrivateCheckBoxEnabledOrDisabled");
-	return result;
-    }
+
+	/**
+	 * This method will verify the IPv6 addresses in Admin UI network page
+	 * 
+	 * @param xpath       xpath of element
+	 * @param elementName name of element
+	 * @param webDriver   {@link WebDriver}
+	 * @return return true if retrieved ip is ipv6 address
+	 * 
+	 * @refactor Athira
+	 */
+
+	public static boolean verifyIpV6AddressElementInPartnerNetworkPage(String xpath, String elementName,
+			WebDriver webDriver) {
+		LOGGER.debug("STARTING METHOD : verifyIpV6AddressElementInPartnerNetworkPage()");
+		boolean status = false;
+		try {
+			String elementRetrieved = webDriver.findElement(By.xpath(xpath)).getText();
+
+			LOGGER.info(elementName + " retrieved from Web GUI : " + elementRetrieved);
+			status = CommonMethods.isNotNull(elementRetrieved) && CommonMethods.isIpv6Address(elementRetrieved);
+		} catch (Exception e) {
+			LOGGER.error(" Exception occured while getting " + elementName + " from Partner Admin UI Network page"
+					+ e.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD : verifyIpV6AddressElementInPartnerNetworkPage()");
+		return status;
+	}
+
+	/**
+	 * 
+	 * This method fetched the appropriate IP for RDKB devices to launch login page
+	 * 
+	 * @param device Dut Object
+	 * @param tapEnv Tap env
+	 * @return Returns the appropriate IP address.For all RDKB devices except fibre
+	 *         devices, ECMIP will be returned. For fibre device, Erouter IP address
+	 *         will be returned
+	 * @Refactor Sruthi Santhosh
+	 */
+	public static String getIPAddressForloginPage(Dut device, AutomaticsTapApi tapEnv) {
+		String ipAddressForloginPage = null;
+		if (DeviceModeHandler.isFibreDevice(device)) {
+			ipAddressForloginPage = ((Device) device).getErouterIpAddress();
+		} else {
+			ipAddressForloginPage = ((Device) device).getEcmIpAddress();
+		}
+		return ipAddressForloginPage;
+	}
 }

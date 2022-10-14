@@ -32,6 +32,7 @@ import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
 import com.automatics.rdkb.utils.DeviceModeHandler;
 import com.automatics.rdkb.utils.ServerUtils;
 import com.automatics.rdkb.utils.cdl.FirmwareDownloadUtils;
+import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.AutomaticsPropertyUtility;
 import com.automatics.utils.CommonMethods;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
@@ -121,6 +122,108 @@ public class BroadBandReverseSshUtils {
 	LOGGER.info("Is reverse ssh connection established - " + status);
 	LOGGER.debug("Exit method establishReverseSshConnectionInBroadBandDevice");
 	return status;
+    }
+    
+    /**
+     * Utility to method to search for the given text in the given log file based on Poll Interval & Poll Duration using
+     * Reverse SSH; returns String representing the search response.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param searchText
+     *            String representing the Search Text. It needs to be passed with the required escape character.
+     * @param logFile
+     *            String representing the log file.
+     * @param pollDuration
+     *            Long representing the duration for which polling needs to be performed.
+     * @param pollInterval
+     *            Long representing the polling interval.
+     * 
+     * @return String representing the search response.
+     * 
+     * @author Dipankar Nalui
+     * @refactor Said hisham
+     */
+    public static String searchLogFilesWithPollingIntervalUsingReverseSsh(AutomaticsTapApi tapEnv, Dut device,
+	    String searchText, String logFile, long pollDuration, long pollInterval) {
+	LOGGER.debug("STARTING METHOD searchLogFilesWithPollingIntervalUsingReverseSsh");
+	StringBuffer sbCommand = new StringBuffer(BroadBandTestConstants.GREP_COMMAND);
+	// In case the search text contains space and not wrapped with double quotes.
+	if (searchText.contains(BroadBandTestConstants.SINGLE_SPACE_CHARACTER)
+		&& !searchText.contains(BroadBandTestConstants.DOUBLE_QUOTE)) {
+	    sbCommand.append(BroadBandTestConstants.DOUBLE_QUOTE);
+	    sbCommand.append(searchText);
+	    sbCommand.append(BroadBandTestConstants.DOUBLE_QUOTE);
+	} else {
+	    sbCommand.append(searchText);
+	}
+	sbCommand.append(BroadBandTestConstants.SINGLE_SPACE_CHARACTER);
+	sbCommand.append(logFile);
+	String [] command =  new String [] {sbCommand.toString()};
+	LOGGER.info("COMMAND TO BE EXECUTED: " + command);
+	long startTime = System.currentTimeMillis();
+	String searchResponse = null;
+	do {
+	    tapEnv.waitTill(pollInterval);
+	    searchResponse = tapEnv.executeCommandUsingReverseSsh(device, command);
+	    LOGGER.info("searchResponse " + searchResponse);
+	    searchResponse = CommonMethods.isNotNull(searchResponse)
+		    && !searchResponse.contains(BroadBandTestConstants.NO_SUCH_FILE_OR_DIRECTORY) ? searchResponse.trim()
+			    : null;
+	} while ((System.currentTimeMillis() - startTime) < pollDuration && CommonMethods.isNull(searchResponse));
+	LOGGER.info(
+		"SEARCH RESPONSE FOR - " + searchText + " IN THE LOG FILE - " + logFile + " IS : " + searchResponse);
+	LOGGER.debug("ENDING METHOD searchLogFilesWithPollingIntervalUsingReverseSsh");
+	return searchResponse;
+    }
+    
+    /**
+     * Method to reboot the device with out wait and returns the verification status using reverse SSH
+     * 
+     * @param device
+     *            The device instance to be checked
+     * 
+     *            Returns true if its able to reboot the device
+     * @author Dipankar Nalui
+     * @refactor Said Hisham           
+     *            
+     */
+
+    public boolean rebootWithoutWaitAndGetTheRebootStatusUsingReverseSsh(AutomaticsTapApi tapEnv, Dut device) {
+
+	boolean rebootStatus = false;
+	String [] command = new String[] {BroadBandTestConstants.CMD_REBOOT};
+	LOGGER.info("Going to reboot.");
+	try {
+	    tapEnv.executeCommandUsingReverseSsh(device, command);
+	    if (CommonMethods.isSTBAccessible(device)) {
+		LOGGER.info("Going to reboot via command second time.");
+		tapEnv.executeCommandUsingReverseSsh(device, command);
+	    } else {
+		rebootStatus = true;
+	    }
+
+	    if (CommonMethods.isSTBAccessible(device)) {
+		try {
+		    LOGGER.info("Going to reboot via power code as command failed twice.");
+		    device.getPower().reboot();
+		    tapEnv.waitTill(BroadBandTestConstants.TWO_SECONDS);		    
+		} catch (Exception e) {
+		    LOGGER.info("Failed to reboot via all methods exiting");
+		} finally {
+		    rebootStatus = !CommonMethods.isSTBAccessible(device);
+		}
+	    } else {
+		AutomaticsTapApi.incrementKnownRebootCounter(device.getHostMacAddress());
+		rebootStatus = true;
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("Failed to reboot the box using the command. Rebooting using 'reboot' power switch");	   
+	} 
+	LOGGER.info("Final Reboot Status." + rebootStatus);
+	return rebootStatus;
     }
 
 }

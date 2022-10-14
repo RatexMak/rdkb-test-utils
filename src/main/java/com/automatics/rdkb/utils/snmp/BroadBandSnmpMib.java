@@ -199,7 +199,9 @@ public enum BroadBandSnmpMib {
 	    "1.3.6.1.4.1.17270.50.2.2.2.1.1.1",
 	    "10101"),
     ECM_WIFI_2_4_SSID_RADIO_STATUS_ENABLE("radioStatus1", ".1.3.6.1.4.1.17270.50.2.2.6.1.1.1.10000"),
-    ECM_WIFI_5_SSID_RADIO_STATUS_ENABLE("radioStatus2", ".1.3.6.1.4.1.17270.50.2.2.6.1.1.1.10100");
+    ECM_WIFI_5_SSID_RADIO_STATUS_ENABLE("radioStatus2", ".1.3.6.1.4.1.17270.50.2.2.6.1.1.1.10100"),
+    POWER_LEVEL("powerLevel", ".1.3.6.1.4.1.4491.2.1.28.1.11.1.3"),
+    SNR_LEVEL("snrLevel", ".1.3.6.1.4.1.4491.2.1.27.1.2.5.1.3");
 
     private String mibName;
 

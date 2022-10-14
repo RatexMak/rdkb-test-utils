@@ -33,6 +33,7 @@ import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandTraceConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
 import com.automatics.rdkb.constants.RDKBTestConstants;
+import com.automatics.rdkb.reversessh.BroadBandReverseSshUtils;
 import com.automatics.rdkb.utils.CommonUtils;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
 import com.automatics.tap.AutomaticsTapApi;
@@ -1072,4 +1073,168 @@ public class BroadBandRfcFeatureControlUtils {
 		return status;
 	}
 
+    /**
+     * Method used to enable or disable the forward ssh using RFC
+     * 
+     * @param tapEnv
+     *            The ecats device.
+     * @param device
+     *            The {@link Dut} object.
+     * @param featureName
+     *            Name of the feature that has to be enabling/disabling
+     * @param enableOrDisableFlag
+     *            Flag to set Feature enable or disable
+     * @return status True Enable/disable success based on enableOrDisableFlag
+     * @refactor Said Hisham
+     * 
+     */
+    public static boolean enableOrDisableForwardSshUsingRfc(AutomaticsTapApi tapEnv, Dut device, String featureName,
+	    boolean enableOrDisableFlag) {
+	LOGGER.debug("STARTING METHOD: enableOrDisableForwardSshUsingRfc");
+	boolean status = false;
+	boolean isRfcDataPosted = false;
+	// Variable declaration starts
+	String proxyXconfUrl = AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PROXY_XCONF_RFC_URL);
+	String response = null;
+	BroadBandReverseSshUtils broadBandReverseSshUtilsObject = new BroadBandReverseSshUtils();
+	// Variable declaration ends
+	try {
+	    isRfcDataPosted = BroadBandRfcFeatureControlUtils.enableOrDisableFeatureInProxyXconf(tapEnv, device,
+		    featureName, enableOrDisableFlag)
+		    && BroadBandRfcFeatureControlUtils.copyRfcPropertiesFromEtcToNVRAM(device, tapEnv)
+		    && BroadBandRfcFeatureControlUtils.copyAndUpdateRfcPropertiesNewXconfUrl(device, tapEnv,
+			    proxyXconfUrl);
+	    tapEnv.executeCommandUsingSsh(device, CMD_CLEAR_HASH_VALUE);
+	    if (isRfcDataPosted) {
+		tapEnv.executeCommandUsingSsh(device, BroadBandCommandConstants.CMD_CLEAR_DCMRFC_LOG);
+		BroadBandWebPaUtils.setVerifyWebPAInPolledDuration(device, tapEnv,
+			BroadBandWebPaConstants.WEBPA_PARAM_RFC_CONTROL, BroadBandTestConstants.CONSTANT_2,
+			BroadBandTestConstants.STRING_CONSTANT_1, BroadBandTestConstants.ONE_MINUTE_IN_MILLIS,
+			BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+		LOGGER.info("Wait for three minutes to dcmrfc.log get update");
+		tapEnv.waitTill(BroadBandTestConstants.THREE_MINUTE_IN_MILLIS);
+		LOGGER.info("Performing the Device Reboot");
+		status = (enableOrDisableFlag ? CommonMethods.rebootAndWaitForIpAccusition(device, tapEnv)
+			: broadBandReverseSshUtilsObject.rebootWithoutWaitAndGetTheRebootStatusUsingReverseSsh(tapEnv,
+				device))
+			&& BroadBandWebPaUtils.verifyWebPaProcessIsUp(tapEnv, device, true);
+		LOGGER.info("Forward ssh " + (enableOrDisableFlag ? "Disabled " : "Enabled ") + "Successfully");
+		if (status) {
+		    if (enableOrDisableFlag) {
+			LOGGER.info("Verifying 'COMPLETED RFC PASS' using Forward SSH");
+			response = CommonUtils.searchLogFilesWithPollingInterval(tapEnv, device,
+				BroadBandTraceConstants.LOG_MESSAGE_COMPLETED_RFC_PASS,
+				BroadBandCommandConstants.FILE_DCMRFC_LOG,
+				BroadBandTestConstants.FIFTEEN_MINUTES_IN_MILLIS,
+				BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+		    } else {
+			LOGGER.info("Verifying 'COMPLETED RFC PASS' using Revrse SSH");
+			response = BroadBandReverseSshUtils.searchLogFilesWithPollingIntervalUsingReverseSsh(tapEnv,
+				device, BroadBandTraceConstants.LOG_MESSAGE_COMPLETED_RFC_PASS,
+				BroadBandCommandConstants.FILE_DCMRFC_LOG,
+				BroadBandTestConstants.FIFTEEN_MINUTES_IN_MILLIS,
+				BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+		    }
+		    LOGGER.info("Response from RFC log :" + response);
+		    status = CommonMethods.isNotNull(response) && CommonUtils.patternSearchFromTargetString(response,
+			    BroadBandTraceConstants.LOG_MESSAGE_COMPLETED_RFC_PASS);
+		}
+	    } else {
+		throw new TestException("Error faced while copying dcm properties file from etc to nvram folder Or "
+			+ featureName + " not enabled/disbaled in XCONF");
+	    }
+	} catch (Exception exception) {
+	    errorMessage = exception.getMessage();
+	    LOGGER.error(errorMessage);
+	    throw new TestException(errorMessage);
+	}
+	LOGGER.debug("ENDING METHOD: enableOrDisableForwardSshUsingRfc");
+	return status;
+    }  
+    
+    /**
+     * Helper method to verify whether the feature logs are available in dcmrfc.log
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param tapApi
+     *            {@link AutomaticsTapApi}
+     * 
+     * @return string searched for given parameter and value in dcmrfc.log
+     */
+    public static String searchFeatureLogsInDcmRfcLog(Dut device, AutomaticsTapApi tapApi, String parameter,
+	    String value) {
+
+	LOGGER.debug("STARTING METHOD: BroadBandRfcFeatureControlUtils.searchFeatureLogsInDcmRfcLog");
+	// stores the command response
+	String response = null;
+	long startTime = System.currentTimeMillis();
+
+	do {
+	    response = tapApi.executeCommandUsingSsh(device,
+		    BroadBandCommandConstants.CMD_GREP_RFC_LOGS_FOR_PARAM
+			    .replaceAll(BroadBandTestConstants.STRING_REPLACE, parameter)
+			    .replaceAll(BroadBandTestConstants.TELEMTRY_MARKER_SET_VALUE, value));
+	    if (CommonMethods.isNotNull(response)
+		    // Polling until we get 5th line of RFC processing to grep complete logs
+		    && CommonMethods.patternMatcher(response,
+			    BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.RFC_LOG_PATTERN,
+				    parameter, BroadBandTestConstants.WITH_VALUE, value))) {
+		break;
+	    }
+
+	} while (System.currentTimeMillis() - startTime < BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS
+		&& BroadBandCommonUtils.hasWaitForDuration(tapApi, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+
+	LOGGER.debug("ENDING METHOD: BroadBandRfcFeatureControlUtils.searchFeatureLogsInDcmRfcLog");
+	return response;
+    }
+    
+    /**
+     * Method to POST the accountID in Proxy server
+     * 
+     * @param device
+     *            {@link Dut}
+     * @param accountID
+     *            account ID
+     * @param tapEnv
+     * 
+     * @return true if successfully set
+     * @refactor Said hisham
+     */
+    public static boolean setAccountIDInProxyXconf(Dut device, String accountID, AutomaticsTapApi tapEnv) {
+	LOGGER.debug("STARTING METHOD: setAccountIDInProxyXconf");
+	boolean result = false;
+	String rfcPayLoadData = null;
+	String stbMacAddress = device.getHostMacAddress();
+	LOGGER.info("Mac address: " + stbMacAddress);
+	String payload = BroadBandTestConstants.STRING_RFC_DATA_GENERIC_PAYLOAD;
+	JSONObject jsonObj = null;
+	try {
+	    jsonObj = new JSONObject();
+	    payload = payload.replace(BroadBandTestConstants.CONSTANT_REPLACE_STBMAC_LSAPAYLOADDATA, stbMacAddress);
+	    payload = payload.replace(BroadBandTestConstants.STRING_PAYLOAD_REPLACE, "AccountId");
+	    LOGGER.info("PAY LOAD DATA BEFORE REPLACE: " + payload);
+	    jsonObj.put(CommonMethods.concatStringUsingStringBuffer(BroadBandTestConstants.TR181_DOT,
+		    BroadBandWebPaConstants.TR181_PARAM_TO_GET_ACCOUNT_ID), accountID);
+	    if (null != jsonObj && CommonMethods.isNotNull(stbMacAddress)) {
+		rfcPayLoadData = payload.replace(BroadBandTestConstants.STRING_REPLACE, jsonObj.toString());
+		LOGGER.info("PAY LOAD DATA AFTER REPLACE: " + rfcPayLoadData);
+		int responseCode = BroadBandRfcFeatureControlUtils.postDataToProxyXconfDcmServer(device, tapEnv,
+			rfcPayLoadData);
+		LOGGER.info("RESPONSE CODE: " + responseCode);
+		if (responseCode == BroadBandTestConstants.CONSTANT_200) {
+		    result = true;
+		}
+	    } else {
+		LOGGER.error("Mac address is not obtained");
+	    }
+	} catch (JSONException e) {
+	    LOGGER.error("Exception while Posting RFC configuration");
+	    result = false;
+	}
+	LOGGER.info("Status of setting accountID in xconf: " + result);
+	LOGGER.debug("ENDING METHOD: setAccountIDInProxyXconf");
+	return result;
+    }
 }

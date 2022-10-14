@@ -4183,15 +4183,10 @@ public class BroadBandConnectedClientUtils {
 			LOGGER.info("OBTAINED CONNECTION TYPE IS : "
 					+ BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI);
 			connectionTypeLog = BroadBandConnectedClientTestConstants.LOG_PARAM_CLIENT_TYPE_WIFI;
-			LOGGER.info("connectionTypeLog if connectionType is " + connectionType + " IS : " + connectionTypeLog);// ADDED
-			// ATH
 			searchString = BroadBandTraceConstants.LOG_MESSAGE_TO_VERIFY_CONNECTED_CLIENT_ONLINE
 					.replace(BroadBandTestConstants.STRING_REPLACE, hostMacAddress);
-			LOGGER.info("searchString if connectionType is " + connectionType + " IS : " + searchString);// ADDED ATH
 			alternateString = BroadBandTraceConstants.LOG_MESSAGE_TO_VERIFY_CONNECTED_CLIENT_CONNECTED
 					.replace(BroadBandTestConstants.STRING_REPLACE, hostMacAddress);
-			LOGGER.info("alternateString if connectionType is " + connectionType + " IS : " + alternateString);// ADDED
-			// ATH
 		} else if (connectionType
 				.equalsIgnoreCase(BroadBandConnectedClientTestConstants.CLIENT_DEVICE_CONNECTION_TYPE_ETHERNET)) {
 			LOGGER.info("OBTAINED CONNECTION TYPE IS : "

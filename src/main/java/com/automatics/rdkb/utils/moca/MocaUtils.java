@@ -90,4 +90,36 @@ public class MocaUtils {
 			throw new TestException("Failed to validate moca status. Expected: " + status + "Actual: ");
 		}
 	}
+	
+    /**
+     * Method to validate the status of MoCA with wait time
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi}
+     * @param device
+     *            {@link Dut}
+     * @param statusTobeVerified
+     *            Status to be verified true/false
+     * @return status Its return true/false
+     * @author Susheela C
+     * 
+     * @Refactor Sruthi Santhosh
+     */
+
+    public static boolean validateMocaStatusWithWaitTime(AutomaticsTapApi tapEnv, Dut device, String statusTobeVerified) {
+	boolean status = false;
+	String response = null;
+	LOGGER.debug("STARTING METHOD: validateMocaStatusWithWaitTime");
+	long startTime = System.currentTimeMillis();
+	do {
+	    response = tapEnv.executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAM_ENABLE_MOCA);
+	    status = CommonMethods.isNotNull(response) && response.equals(statusTobeVerified);
+	    if (!status) {
+		LOGGER.info("WAITING THIRTY_SECOND TO GET THE MOCA STATUS");
+		tapEnv.waitTill(BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
+	    }
+	} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS && !status);
+	LOGGER.debug("ENDING METHOD: validateMocaStatusWithWaitTime");
+	return status;
+    }
 }

@@ -1721,5 +1721,50 @@ public class BroadBandPostConditionUtils {
 	    LOGGER.info(e.getMessage());
 	}
     }
+    
+    /**
+     * Post-Condition method to enable ForwardSsh via RFC.
+     * 
+     * @param device
+     *            {@link Dut}
+     * 
+     * @param tapEnv
+     *            instance of {@link AutomaticsTapApi}
+     * 
+     * @param postConditionNumber
+     *            int to hold post condition number.
+     * @refactor Said hisham           
+     */
+    public static void executePostConditionToSetForwardSshviaRFC(Dut device, AutomaticsTapApi tapEnv,
+	    int postConStepNumber) throws TestException {
+	String errorMessage = null;
+	boolean status = false;
+	LOGGER.info("#######################################################################################");
+	LOGGER.info("POST-CONDITION " + postConStepNumber + " : DESCRIPTION : Set ForwardSSH.Enable to true via RFC");
+	LOGGER.info("POST-CONDITION " + postConStepNumber
+		+ " : ACTION : Using POST method send JSON Payload data to RFC Config API Server.");
+	LOGGER.info("POST-CONDITION " + postConStepNumber
+		+ " : EXPTECTED : ForwardSSH.Enable should be set to true via RFC");
+	LOGGER.info("#######################################################################################");
+	errorMessage = "Failed to set to true via RFC and Device is not accessible through Forward SSH  ";
+	try {
+	    status = BroadBandRfcFeatureControlUtils.enableOrDisableForwardSshUsingRfc(tapEnv, device,
+		    BroadBandTestConstants.FEATURE_NAME_FORWARD_SSH, true);
+	    if (CommonUtils.isFileExists(device, tapEnv, BroadBandRfcFeatureControlUtils.NVRAM_RFC_PROPERTIES)) {
+		CommonUtils.removeFileandVerifyFileRemoval(tapEnv, device,
+			BroadBandRfcFeatureControlUtils.NVRAM_RFC_PROPERTIES);
+	    }
+	} catch (Exception e) {
+	    errorMessage += e.getMessage();
+	    LOGGER.error(errorMessage);
+	}
+	if (status) {
+	    LOGGER.info("POST-CONDITION " + postConStepNumber
+		    + " : ACTUAL : ForwardSsh.Enable set to true via RFC & Device is accessible through Forward SSH ");
+
+	} else {
+	    LOGGER.error("POST-CONDITION " + postConStepNumber + " : ACTUAL : " + errorMessage);
+	}
+    }
 
 }

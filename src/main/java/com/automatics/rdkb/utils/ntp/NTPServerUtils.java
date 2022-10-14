@@ -44,7 +44,7 @@ import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.test.AutomaticsTestBase;
 import com.automatics.utils.CommonMethods;
 import com.automatics.webpa.WebPaParameter;
-
+import com.automatics.rdkb.utils.ntp.DeviceTimeParams;
 /**
  * Class having Methods related to ntp automation.
  * 
@@ -331,4 +331,167 @@ public class NTPServerUtils extends AutomaticsTestBase {
 	return status;
     }
     
+    /**
+     * Method to Verify NTPD process if running or not
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi
+     * @param device
+     *            The {@link Dut} object.
+     * @return The validation result
+     * @author Susheela
+     * @Refactor Sruthi Santhosh
+     */
+    public static boolean verifyNTPDProcess(AutomaticsTapApi tapEnv, Dut device) {
+	LOGGER.debug("STARTING METHOD: NTPServerUtils.verifyNTPDProcess");
+	boolean status = false;
+	String response = tapEnv.executeCommandUsingSsh(device, BroadBandTestConstants.COMMAND_NTPD_PROCESS);
+	if (CommonUtils.isNotEmptyOrNull(response)
+		&& (response.split(BroadBandTestConstants.DELIMITER_NEW_LINE).length > 1)) {
+	    status = true;
+	} else {
+	    throw new TestException(
+		    "NTPD process is not running on the device, please start the process before execution");
+	}
+	LOGGER.debug("ENDING METHOD: NTPServerUtils.verifyNTPDProcess");
+	return status;
+    }
+    
+    /**
+     * Method to get value of TR181 param DEVICE.TIME.ENABLE using WEBPA
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi
+     * @param device
+     *            The {@link Dut} object.
+     * @return The validation result
+     * @author Susheela
+     * @Refactor Sruthi Santhosh
+     */
+    public static String getDeviceTimeEnableParamValue(AutomaticsTapApi tapEnv,  Dut device) {
+	LOGGER.debug("STARTING METHOD: NTPServerUtils.getDeviceTimeEnableParamValue");
+	String response = null;
+	try {
+	    response = tapEnv.executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_TIME_ENABLE);
+	} catch (Exception exp) {
+	    LOGGER.error("Exception thrown : " + exp.getMessage());
+	    response = null;
+	}
+	if (!CommonUtils.isNotEmptyOrNull(response)) {
+	    throw new TestException("Error WebPa response returned for the TR181 param Device.Time.Enable");
+	}
+	LOGGER.debug("ENDING METHOD: NTPServerUtils.getDeviceTimeEnableParamValue");
+	return response;
+    }
+    
+    /**
+     * Method to validate the default param values of TR181 param Device.Time.
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi
+     * @param device
+     *            The {@link Dut} object.
+     * @return The validation result
+     * @author Susheela
+     * @Refactor Sruthi Santhosh
+     */
+    public static boolean validateDefaultDeviceTimeParamValues(AutomaticsTapApi tapEnv, Dut device)
+	    throws TestException {
+	LOGGER.debug("STARTING METHOD: NTPServerUtils.validateDefaultDeviceTimeParamValues");
+	String upTime = null;
+	boolean defaultNTPServerUrlStatus = false;
+	try {
+	    upTime = tapEnv.executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_UPTIME);
+	    LOGGER.info("uptime-->" + Integer.parseInt(upTime) / BroadBandTestConstants.CONSTANT_60);
+	} catch (Exception e) {
+	    String errorMessage = e.getMessage();
+	    LOGGER.error(errorMessage);
+	}
+	DeviceTimeParams response = getDeviceTimeParamValue(tapEnv, device);
+	boolean defaultEnableStatus = !response.getDeviceTimeEnableValue() ? true : false;
+	boolean defaultStatus = response.getDeviceTimeStatus()
+		.equalsIgnoreCase(BroadBandTestConstants.STATUS_VALUE_DISABLED);
+	try {
+	    if (Integer.parseInt(upTime) / BroadBandTestConstants.CONSTANT_60 < BroadBandTestConstants.CONSTANT_15
+		    && CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
+
+		LOGGER.error("response " + response);
+		defaultNTPServerUrlStatus = CommonMethods.isNull(response.getDeviceTimeNTPServer1())
+			|| response.getDeviceTimeNTPServer1().isEmpty() ? true : false;
+
+	    } else {
+		defaultNTPServerUrlStatus = response.getDeviceTimeNTPServer1()
+			.equalsIgnoreCase(BroadBandTestConstants.EXPECTED_OUTPUT_FOR_NTPHOST) ? true : false;
+	    }
+	} catch (Exception e) {
+	    LOGGER.error("exception " + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: NTPServerUtils.validateDefaultDeviceTimeParamValues");
+	return (defaultEnableStatus && defaultStatus && defaultNTPServerUrlStatus);
+    }
+    
+    /**
+     * Method to get values of TR181 param DEVICE.TIME. using WEBPA
+     * 
+     * @param tapEnv
+     *            AutomaticsTapApi
+     * @param device
+     *            The {@link Dut} object.
+     * @return The validation result
+     * @author Susheela
+     * @Refactor Sruthi Santhosh
+     */
+    public static DeviceTimeParams getDeviceTimeParamValue(AutomaticsTapApi tapEnv, Dut device) {
+	LOGGER.debug("STARTING METHOD: NTPServerUtils.getDeviceTimeParamValue");
+	String response = null;
+	try {
+	    response = tapEnv.executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_TIME);
+	} catch (Exception exp) {
+	    LOGGER.error("Exception thrown : " + exp.getMessage());
+	    response = null;
+	}
+	if (!CommonUtils.isNotEmptyOrNull(response)) {
+	    throw new TestException("Error WebPa response returned for the TR181 param Device.Time.");
+	}
+	DeviceTimeParams deviceParamValues = null;
+	try {
+	    deviceParamValues = new DeviceTimeParams();
+	    String pattern = "Device.Time.Enable\",\"value\":\"(\\w*)";
+	    String defaultEnableBool = CommonMethods.patternFinder(response, pattern);
+	    LOGGER.info("Default Value for TR181 param Device.Time.Enable : " + defaultEnableBool);
+	    deviceParamValues.setDeviceTimeEnableValue(defaultEnableBool.equalsIgnoreCase("true") ? true : false);
+
+	    pattern = "Device.Time.Status\",\"value\":\"(\\w*)";
+	    String status = CommonMethods.patternFinder(response, pattern);
+	    LOGGER.info("Default Value for TR181 param Device.Time.Status : " + status);
+	    deviceParamValues.setDeviceTimeStatus(status);
+
+	    pattern = "Device.Time.NTPServer1\",\"value\":\"(\\S)\",";
+	    String ntpServer1 = CommonMethods.patternFinder(response, pattern);
+	    if (CommonMethods.isNull(ntpServer1)) {
+		deviceParamValues.setDeviceTimeNTPServer1("");
+		LOGGER.error("Default Value for TR181 param Device.Time.NTPServerUrl1 value is null or empty ");
+	    } else {
+		ntpServer1 = CommonMethods.patternFinder(ntpServer1, BroadBandTestConstants.NTPServerURL_Pattern);
+		deviceParamValues.setDeviceTimeNTPServer1(ntpServer1);
+	    }
+	    LOGGER.info("Default Value for TR181 param Device.Time.NTPServerUrl1 : " + ntpServer1);
+
+	    pattern = "Device.Time.NTPServer2\",\"value\":\"(\\S)\",";
+	    String ntpServer2 = CommonMethods.patternFinder(response, pattern);
+	    if (CommonMethods.isNull(ntpServer2)) {
+		deviceParamValues.setDeviceTimeNTPServer2("");
+		LOGGER.error("Default Value for TR181 param Device.Time.NTPServerUrl2 value is null or empty ");
+	    } else {
+		ntpServer2 = CommonMethods.patternFinder(ntpServer2, BroadBandTestConstants.NTPServerURL_Pattern);
+		deviceParamValues.setDeviceTimeNTPServer2(ntpServer2);
+	    }
+	    LOGGER.info("Default Value for TR181 param Device.Time.NTPServerUrl2 : " + ntpServer2);
+	} catch (Exception e) {
+	    LOGGER.error("Exception occurred while validating getDeviceTimeParamValue()" + e.getMessage());
+	}
+	LOGGER.debug("ENDING METHOD: NTPServerUtils.getDeviceTimeParamValue");
+	return deviceParamValues;
+    }
+
 }

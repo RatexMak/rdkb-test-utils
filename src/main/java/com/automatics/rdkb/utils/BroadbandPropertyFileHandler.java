@@ -2538,6 +2538,94 @@ public class BroadbandPropertyFileHandler {
 		}
 	}
 
+	/**
+	 * This API will return if the device is of a particular model
+	 * 
+	 * @author Athira
+	 */
+	public static Boolean isParticularDevice(Dut device) {
+		Boolean status = false;
+		String model = null;
+		try {
+			model = BroadbandPropertyFileHandler.getAutomaticsPropsValueByResolvingPlatform(device,
+					BroadBandPropertyKeyConstants.PROP_KEY_PARTICULAR_DEVICE);
+
+			if (CommonMethods.isNotNull(model)) {
+				status = true;
+			}
+		} catch (Exception e) {
+			LOGGER.info("No device specific value found");
+		}
+		return status;
+	}
+
+	/**
+	 * This API will return true if current device is in applicable list
+	 * 
+	 * @author Athira
+	 */
+	public static Boolean isApplicableDeviceModel(Dut device) {
+		Boolean status = false;
+		String model = null;
+		try {
+			model = BroadbandPropertyFileHandler.getAutomaticsPropsValueByResolvingPlatform(device,
+					BroadBandPropertyKeyConstants.PROP_KEY_DEVICE_APPLICABLE_MODEL);
+
+			if (CommonMethods.isNotNull(model)) {
+				status = true;
+			}
+		} catch (Exception e) {
+			LOGGER.info("No device specific value found");
+		}
+		return status;
+	}
+	
+    /**
+     * This API will return the payload to enable or disable snmpv2
+     * 
+     * @return payload to enable or disable snmpv2
+     * @author Rakesh C N
+     */
+    public static String getPayloadToEnableDisableSnmpv2() {
+	return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.PROP_KEY_TO_DISABLE_SNMPV2);
+    }
+    
+    /**
+     * This API will get log file for docsis reg
+     * 
+     * @author Sruthi Santhosh
+     */
+    public static String getLogFileForDocsisReg(Dut device) {
+	return getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.PROP_KEY_FILE_CONSOLELOG);
+    }
+    
+    /**
+     * This API will get the specific Device in which default values of OVS Bridge control and Linux Bridge Control values are expected as in test from properties
+     * 
+     * @author Said Hisham
+     */
+    public static boolean getDeviceForDefaultValuesCheckForOvsAndLinuxBridgeControl(Dut device) {
+	try{
+	return Boolean.parseBoolean(getAutomaticsPropsValueByResolvingPlatform(device,
+		BroadBandPropertyKeyConstants.DEVICE_CHECK_FOR_EXPECTED_DEFAULT_OVS_LINUXBRIDGE_CONTROL));
+	}
+	catch(Exception e) {
+	    LOGGER.info("device model not supported");
+	    return false;
+	}
+    }
+    
+    
+    /**
+     * This API will get the Default Bandsteering Enable value of the device from properties
+     * 
+     * @author Said Hisham
+     */
+    public static String getDefaultBandSteeringEnableValue() {
+	return AutomaticsTapApi
+		.getSTBPropsValue(BroadBandPropertyKeyConstants.DEFAULT_BANDSTEERING_ENABLE_VALUE);
+    }
     /**
      * This API will get the Linux Wifi Interface from properties
      * 

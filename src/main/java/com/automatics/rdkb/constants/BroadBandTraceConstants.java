@@ -1136,4 +1136,87 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
     /** Log message for free memory telemetry in SelfHeal.txt.0 log */
     public static final String LOG_MESSAGE_WIFI_FREE_MEM = "FREE_MEM";
     
+    /** Log message for parameter value same in dcmrfc.log */
+    public static final String LOG_MESSAGE_FORWARD_SSH_VALUE_SAME_TRUE = "RFC: For param Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.ForwardSSH.Enable new and old values are same value true";
+
+    /** Log message when ForwardSSH is enabled */
+    public static final String LOG_MESSAGE_TO_CHECK_FORWARD_SSH_ENABLED = "SSH: Forward SSH changed to enabled";
+    
+    /** Command to verify Log message for parameter value set failed in dcmrfc.log */
+    public static final String LOG_MESSAGE_FORWARD_SSH_VALUE_SET_FAILED = "RFC: dmcli SET failed for Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.ForwardSSH.Enable with value test";
+
+    /** Log message for Notification in webpa log */
+    public static final String LOG_MESSAGE_NOTIFICATION_EVENT_FROM_STACK = "Notification Event from stack";
+    
+    /** Log message for datatype in webpa log */
+    public static final String LOG_MESSAGE_DATATYPE = "Data Type";
+
+    /** Log message for parameter name in webpa log */
+    public static final String LOG_MESSAGE_PARAMETER_NAME = "Parameter Name";
+
+    /** Log message for Change Source in webpa log */
+    public static final String LOG_MESSAGE_CHANGE_SOURCE = "Change Source";
+    
+    /** Log message to get the RFC feature list as NONE */
+    public static final String LOG_MESSAGE_RFC_NONE = "\\[RFC\\]:: \\[Features Enabled\\]-\\[NONE\\]";
+    
+    /** Log message to get the http code as 404 */
+    public static final String LOG_MESSAGE_HTTP_CODE_404 = "http_code: 404";
+    
+    /** Log message to get the RFC STAGING feature list */
+    public static final String LOG_MESSAGE_RFC_STAGING = "\\[RFC\\]:: \\[Features Enabled\\]-\\[STAGING\\]";
+    
+    /** Log message to get the http code as 200 */
+    public static final String LOG_MESSAGE_RFC_HTTP_CODE_200 = "http_code: 200";
+    
+    /** Log message to get the RFC ACTIVE feature list */
+    public static final String LOG_MESSAGE_RFC_ACTIVE = "\\[RFC\\]:: \\[Features Enabled\\]-\\[ACTIVE\\]";
+    
+    /** Log message to get the http code as 304 */
+    public static final String LOG_MESSAGE_HTTP_CODE_304 = "http_code: 304";
+    
+    /** Log message for RFC value of SNMPv2 support in Arm/Consolelog */
+    public static final String LOG_MESSAGE_RFC_VALUE_SNMPV2_SUPPORT = "RFC value for SNMPV2 support";
+    
+    /** Log message for RFC reboot cron scheduled in dcmrfc.log */
+    public static final String LOG_MESSAGE_RFC_REBOOT_CRON_SCHEDULED = "RFC Reboot cron job scheduled";
+    
+    /** Log message for old parameter value in dcmrfc.log */
+    public static final String LOG_MESSAGE_OLD_PARAM_VALUE = "RFC: old parameter value ";
+
+    /** Log message for new parameter value in dcmrfc.log */
+    public static final String LOG_MESSAGE_NEW_PARAM_VALUE = "Parameter value  ";
+    
+    /** Log message for parameter value updated in dcmrfc.log */
+    public static final String LOG_MESSAGE_PARAM_VALUE_UPDATED = "RFC:  updated for Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.EncryptCloudUpload.Enable from value old=false, to new=true";
+
+    /** Log message for parameter value same in dcmrfc.log */
+    public static final String LOG_MESSAGE_PARAM_VALUE_SAME = "RFC: For param Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.EncryptCloudUpload.Enable new and old values are same value true";
+
+    /** Log message for wifi password fail */
+    public static final String LOG_MESSAGE_WIFI_PWD_FAIL = "WIFI_PASSWORD_FAIL:";
+
+    /** Activation Journey - LAN Initialization Start */
+    public static final String ACTIVATION_LAN_INITIALIZATION_START = "Lan_init_start";
+    
+    /** Activation Journey - LAN Initialization */
+    public static final String ACTIVATION_LAN_INITIALIZATION_COMPLETE_NEW = "Laninit_complete";
+    
+    /** Activation Journey - EPON Registration */
+    public static final String ACTIVATION_EPON_REGISTRATION = "EPON_Reg_Complete";
+    
+    /** Activation Journey - Docsis Registration */
+    public static final String ACTIVATION_DOCSIS_REGISTRATION = "Docsis_Reg_Complete";
+    
+    /** Activation Journey - WAN Initialization Start */
+    public static final String ACTIVATION_WAN_INITIALIZATION_START = "Wan_init_start";
+
+    /** Activation Journey - WAN Initialization */
+    public static final String ACTIVATION_WAN_INITIALIZATION_COMPLETE = "Wan_init_complete";
+    
+    /** Log message for CM DHCP initialization in bootfile log */
+    public static final String LOG_MESSAGE_CM_DHCP_START = "CM DHCP START";
+
+    /** Log message for CM DHCP initialization in bootfile log */
+    public static final String LOG_MESSAGE_CM_DHCP_END = "CM DHCP END";
 }

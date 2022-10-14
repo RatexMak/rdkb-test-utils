@@ -24,6 +24,9 @@ import com.automatics.device.Dut;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.utils.CommonMethods;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Utility class which handles the Logger Related Operations.
@@ -124,4 +127,56 @@ public class LoggerUtils {
 		return result;
 	}
 
+    /**
+     * Utility method to validate the messages have been logged at the stipulated interval.
+     * 
+     * @param initialSearchResponse
+     *            String representing the log message based on the initial search.
+     * @param finalSearchResponse
+     *            String representing the log message based on the search after stipulated duration.
+     * @param expectedTimeInterval
+     *            Long representing the logging interval in seconds.
+     * 
+     * @return Boolean representing the result of the logging interval.
+     * 
+     * @refactor Athira
+     */
+    public static boolean verifyLogInterval(String initialSearchResponse, String finalSearchResponse,
+	    long expectedTimeInterval) {
+	LOGGER.debug("ENTERING METHOD verifyLogInterval");
+	boolean result = false;
+	try {
+	    // Extract the Date Time from the Log Message.
+	    String strInitialTimeStamp = CommonMethods.patternFinder(initialSearchResponse,
+		    BroadBandTestConstants.PATTERN_MATCHER_LOG_MESSAGE_TIMESTAMP);
+	    LOGGER.info("INITIAL TIMESTAMP (EXTRACTED FROM LOG MESSAGE): " + strInitialTimeStamp);
+	    String strFinalTimeStamp = CommonMethods.patternFinder(finalSearchResponse,
+		    BroadBandTestConstants.PATTERN_MATCHER_LOG_MESSAGE_TIMESTAMP);
+	    LOGGER.info("FINAL TIMESTAMP (EXTRACTED FROM LOG MESSAGE): " + strFinalTimeStamp);
+	    Date initialTimeStamp = null;
+	    Date finalTimeStamp = null;
+	    // Parse the extracted Date Time to the required Date format.
+	    if (CommonMethods.isNotNull(strInitialTimeStamp) && CommonMethods.isNotNull(strFinalTimeStamp)) {
+		SimpleDateFormat logMessageDateTimeFormat = new SimpleDateFormat(
+			BroadBandTestConstants.TIMESTAMP_FORMAT_LOG_MESSAGE);
+		initialTimeStamp = logMessageDateTimeFormat.parse(strInitialTimeStamp);
+		LOGGER.info("INITIAL TIMESTAMP (DATE): " + initialTimeStamp);
+		finalTimeStamp = logMessageDateTimeFormat.parse(strFinalTimeStamp);
+		LOGGER.info("FINAL TIMESTAMP (DATE): " + finalTimeStamp);
+	    }
+	    // Compare the date objects created to find the logging interval
+	    if (null != initialTimeStamp && null != finalTimeStamp) {
+		long logInterval = finalTimeStamp.getTime() - initialTimeStamp.getTime();
+		logInterval /= 1000L;
+		LOGGER.info("LOG MESSAGE INTERVAL: " + logInterval);
+		long timeDiff = logInterval - expectedTimeInterval;
+		result = timeDiff >= 0L && timeDiff < 10L;
+	    }
+	} catch (ParseException parseException) {
+	    LOGGER.error("EXCEPTION OCCURRED WHILE PARSING THE DATE: " + parseException.getMessage());
+	}
+	LOGGER.info("LOG INTERVAL VALIDATION RESULT: " + result);
+	LOGGER.debug("ENDING METHOD verifyLogUsingTimeStamp");
+	return result;
+    }
 }

@@ -22,6 +22,7 @@ import java.util.ListIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.automatics.constants.AutomaticsConstants;
 import com.automatics.device.Dut;
 import com.automatics.rdkb.BroadBandResultObject;
 import com.automatics.rdkb.constants.BroadBandCommandConstants;
@@ -39,7 +40,7 @@ import com.automatics.utils.CommonMethods;
  * @refactor Govardhan
  */
 public class ParodusUtils {
-    
+
     /** SLF4J logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ParodusUtils.class);
 
@@ -63,20 +64,23 @@ public class ParodusUtils {
 	String verifyParodusLogMessage = tapEnv.executeCommandUsingSsh(device,
 		BroadBandTestConstants.COMMAND_TO_RETRIEVE_MANUFACTURER_NAME);
 	LOGGER.info("The Retrieved Device Manufacturer name: " + verifyParodusLogMessage);
-	String deviceManufacturerNameInParodusLog = CommonMethods.isNotNull(verifyParodusLogMessage) ? CommonMethods
-		.patternFinder(verifyParodusLogMessage, BroadBandTestConstants.PATTERN_MATCHER_MANUFACTURER_NAME)
+	String deviceManufacturerNameInParodusLog = CommonMethods.isNotNull(verifyParodusLogMessage)
+		? CommonMethods.patternFinder(verifyParodusLogMessage,
+			BroadBandTestConstants.PATTERN_MATCHER_MANUFACTURER_NAME)
 		: null;
 	result = CommonMethods.isNotNull(deviceManufacturerNameInParodusLog)
 		&& (deviceManufacturerName.trim().equals(deviceManufacturerNameInParodusLog.trim()));
-	if(result) {
-	    LOGGER.info("The Retrieved Device Manufacturer name: " + verifyParodusLogMessage + ", is same as expected Manufacturer name : "+deviceManufacturerName);
-	}else {
-	    LOGGER.error("The Retrieved Device Manufacturer name: " + verifyParodusLogMessage + ", is different from expected Manufacturer name : "+deviceManufacturerName);
+	if (result) {
+	    LOGGER.info("The Retrieved Device Manufacturer name: " + verifyParodusLogMessage
+		    + ", is same as expected Manufacturer name : " + deviceManufacturerName);
+	} else {
+	    LOGGER.error("The Retrieved Device Manufacturer name: " + verifyParodusLogMessage
+		    + ", is different from expected Manufacturer name : " + deviceManufacturerName);
 	}
 	LOGGER.info("ENDING METHOD compareDeviceManufacturerName");
 	return result;
     }
-    
+
     /**
      * Method to verify parodus reconnect messages having jitter algorithm
      * 
@@ -140,7 +144,7 @@ public class ParodusUtils {
 	LOGGER.debug("ENDING METHOD: verifyParodusReconnectJitter");
 	return result;
     }
-    
+
     /**
      * Method to verify parodus command output and dmcli response
      * 
@@ -171,7 +175,7 @@ public class ParodusUtils {
 	LOGGER.debug("Ending Method : verifyParodusAndDmcliCommandResponse");
 	return status;
     }
-    
+
     /**
      * Helper method to get Parodus boot time from cat /tmp/parodusCmd.cmd
      * 
@@ -194,7 +198,7 @@ public class ParodusUtils {
 	LOGGER.debug("Ending Method : getParodusBootTime");
 	return bootTime;
     }
-    
+
     /**
      * Helper method to verify Parodus Boot time with expected Value
      * 
@@ -237,7 +241,7 @@ public class ParodusUtils {
 	LOGGER.debug("Ending Method : verifyParodusBootTime");
 	return result;
     }
-    
+
     /**
      * Helper method to verify boot time retry wait in cat /tmp/parodusCmd.cmd
      * 
@@ -259,5 +263,34 @@ public class ParodusUtils {
 		BroadBandTestConstants.STRING_REGEX_PARODUS_BOOT_TIME_RETRY);
 	LOGGER.debug("Ending Method : verifyParodusBootRetryCountIsPresent");
 	return status;
+    }
+
+    /**
+     * Utility method to retrieve the Parodus URL from /etc/device.properties.
+     * 
+     * @param tapEnv
+     *            {@link AutomaticsTapApi} Reference
+     * @param device
+     *            {@link Dut} to be validated
+     * 
+     * @return String representing the Parodus URL.
+     * @refactor Govardhan
+     */
+    public static String getParodusUrl(AutomaticsTapApi tapEnv, Dut device) {
+	LOGGER.debug("ENTERING METHOD getParodusUrl");
+	String parodusUrl = null;
+	String command = BroadBandTestConstants.GREP_COMMAND + BroadBandTestConstants.PARAM_PARODUS_URL
+		+ BroadBandTestConstants.SINGLE_SPACE_CHARACTER + BroadBandCommandConstants.FILE_DEVICE_PROPERTIES;
+	LOGGER.info("COMMAND TO BE EXECUTED: " + command);
+	String response = tapEnv.executeCommandUsingSsh(device, command);
+	if (CommonMethods.isNotNull(response)) {
+	    String[] tempArray = response.split(AutomaticsConstants.DELIMITER_EQUALS);
+	    if (tempArray.length == 2) {
+		parodusUrl = tempArray[1].trim();
+	    }
+	}
+	LOGGER.info("PARODUS URL: " + parodusUrl);
+	LOGGER.debug("ENDING METHOD getParodusUrl");
+	return parodusUrl;
     }
 }

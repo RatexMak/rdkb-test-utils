@@ -37,157 +37,195 @@ import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.CommonMethods;
 import com.automatics.webpa.WebPaServerResponse;
 
-
 public class BroadBandParentalControlUtils {
-	
 
-    /** SLF4j logger instance. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(BroadBandParentalControlUtils.class);
-	
-    /**
-     * Method to Get connected client MAC address
-     * 
-     * @param tapEnv
-     *            Instance of {@link AutomaticsTapApi}
-     * @param deviceConnected
-     *            Connected client setup
-     * @param clientType
-     *            Connected client connection type(Ethernet or WiFi)
-     * @return Connected Client MAC address
-     * 
-     * @author prashant.mishra12
-     */
-    public static String getConnectedClientMACAddress(AutomaticsTapApi tapEnv, Dut deviceConnected, String clientType) {
-	LOGGER.debug("STARTING METHOD: getConnectedClientMACAddress()");
-	// Variable declaration starts
-	String connectedClientMacAddress = null;
-	String errorMessage = "";
-	// Variable declaration starts
-	try {
-	    if (clientType.equals(BroadBandTestConstants.CLIENT_TYPE_WIFI)) {
-		connectedClientMacAddress = ((Device) deviceConnected).getConnectedDeviceInfo()
-			.getWifiMacAddress();
-	    } else {
-		connectedClientMacAddress = ((Device) deviceConnected).getConnectedDeviceInfo()
-			.getEthernetMacAddress();
-	    }
-	} catch (Exception exception) {
-	    LOGGER.error("Exception occured while getting connected client MAC address.");
-	    errorMessage = exception.getMessage();
-	    LOGGER.error(errorMessage);
-	}
-	LOGGER.debug("ENDING METHOD: getConnectedClientMACAddress()");
-	return connectedClientMacAddress;
-    }
+	/** SLF4j logger instance. */
+	private static final Logger LOGGER = LoggerFactory.getLogger(BroadBandParentalControlUtils.class);
 
-    /**
-     * Utility method to get the Days which needs to be added in Parental Control Rule when 'Always block' is set to
-     * false
-     * 
-     * @param tapEnv
-     *            {@link AutomaticsTapApi}
-     * @param device
-     *            {@link Dut}
-     * @return the day/s which needs to be added in Parental Control Rule
-     * @refactor Govardhan
-     */
-    public static String getCurrentDayToAddParentalControlRuleWhenAlwaysBlockIsDisabled(AutomaticsTapApi tapEnv,
-	    Dut device) {
-	LOGGER.debug("ENTERING METHOD getCurrentDayToAddParentalControlRuleWhenAlwaysBlockIsDisabled");
-	String blockDays = null;
-	try {
-	    String date = tapEnv.executeCommandUsingSsh(device, BroadBandTestConstants.CMD_FOR_DATE);
-	    blockDays = CommonMethods.patternFinder(date,
-		    BroadBandTestConstants.PATTERN_TO_RETRIEVE_DAY_OF_THE_WEEK_FROM_TIMESTAMP);
-	    String currentTimeOnlyHours = CommonMethods.patternFinder(date,
-		    BroadBandTestConstants.PATTERN_TO_RETRIEVE_HOUR_FROM_TIMESTAMP);
-	    if (CommonMethods.isNotNull(currentTimeOnlyHours)
-		    && currentTimeOnlyHours.equals(BroadBandTestConstants.ONLY_HOURS_11_PM)) {
-		SimpleDateFormat formatter = new SimpleDateFormat(BroadBandTestConstants.FORMAT_FOR_DAY_OF_THE_WEEK);
-		Date day = formatter.parse(blockDays);
-		blockDays = BroadBandCommonUtils.concatStringUsingStringBuffer(blockDays, BroadBandTestConstants.COMMA,
-			formatter.format(DateUtils.addDays(day, 1)));
-	    }
-	} catch (Exception e) {
-	    LOGGER.error(
-		    "EXPECTION OCCCURED WHILE TRYING TO GET THE CURRENT DAY WHICH NEEDS TO BE ADDED IN PARENTAL CONTROL RULE: "
-			    + e.getMessage());
+	/**
+	 * Method to Get connected client MAC address
+	 * 
+	 * @param tapEnv          Instance of {@link AutomaticsTapApi}
+	 * @param deviceConnected Connected client setup
+	 * @param clientType      Connected client connection type(Ethernet or WiFi)
+	 * @return Connected Client MAC address
+	 * 
+	 * @author prashant.mishra12
+	 */
+	public static String getConnectedClientMACAddress(AutomaticsTapApi tapEnv, Dut deviceConnected, String clientType) {
+		LOGGER.debug("STARTING METHOD: getConnectedClientMACAddress()");
+		// Variable declaration starts
+		String connectedClientMacAddress = null;
+		String errorMessage = "";
+		// Variable declaration starts
+		try {
+			if (clientType.equals(BroadBandTestConstants.CLIENT_TYPE_WIFI)) {
+				connectedClientMacAddress = ((Device) deviceConnected).getConnectedDeviceInfo().getWifiMacAddress();
+			} else {
+				connectedClientMacAddress = ((Device) deviceConnected).getConnectedDeviceInfo().getEthernetMacAddress();
+			}
+		} catch (Exception exception) {
+			LOGGER.error("Exception occured while getting connected client MAC address.");
+			errorMessage = exception.getMessage();
+			LOGGER.error(errorMessage);
+		}
+		LOGGER.debug("ENDING METHOD: getConnectedClientMACAddress()");
+		return connectedClientMacAddress;
 	}
-	LOGGER.info("Block Days : "+blockDays);
-	LOGGER.debug("ENDING METHOD getCurrentDayToAddParentalControlRuleWhenAlwaysBlockIsDisabled");
-	return blockDays;
-    }
-    
-    /**
-     * Utility method to add a connected client to blocked list
-     * 
-     * @param tapEnv
-     *            instance of {@link AutomaticsTapApi}
-     * @param device
-     *            instance of {@link Dut}
-     * @param type
-     *            parental Control - Managed Device Type (Block\Allow)
-     * @param clientName
-     *            Name or Description of the connected client
-     * @param macAddress
-     *            Mac Address of the connected client
-     * @param alwaysBlock
-     *            Status of always block (true/false)
-     * @param startTime
-     *            If 'Always Block' is false, start time in HH:MM
-     * @param endTime
-     *            If 'Always Block' is false, end time in HH:MM
-     * @param blockDays
-     *            If 'Always Block' is false, particular day/s to be blocked
-     * 
-     * @return the row Number of the new entry in Blocked list table
-     * 
-     * @refactor yamini.s
-     */
-    public static String addConnectedClientToBlockList(AutomaticsTapApi tapEnv, Dut device, String type,
-	    String clientName, String macAddress, String alwaysBlock, String startTime, String endTime,
-	    String blockDays) {
-	LOGGER.debug("ENTERING METHOD addConnectedClientToBlockList");
-	String parentalControlManageDeviceTableAddRowResponse = null;
 
-	Map<String, List<String>> data = new HashMap<String, List<String>>();
-	List<String> Type = new ArrayList<String>();
-	Type.add(type);
-	List<String> ClientName = new ArrayList<String>();
-	ClientName.add(clientName);
-	List<String> MacAddress = new ArrayList<String>();
-	MacAddress.add(macAddress);
-	List<String> AlwaysBlock = new ArrayList<String>();
-	AlwaysBlock.add(alwaysBlock);
-	List<String> StartTime = new ArrayList<String>();
-	StartTime.add(startTime);
-	List<String> EndTime = new ArrayList<String>();
-	EndTime.add(endTime);
-	List<String> BlockDays = new ArrayList<String>();
-	BlockDays.add(blockDays);
-	data.put("Type", Type);
-	data.put("Description", ClientName);
-	data.put("MACAddress", MacAddress);
-	data.put("AlwaysBlock", AlwaysBlock);
-	if (CommonMethods.isNotNull(startTime) && CommonMethods.isNotNull(endTime)) {
-	    data.put("StartTime", StartTime);
-	    data.put("EndTime", EndTime);
+	/**
+	 * Utility method to get the Days which needs to be added in Parental Control
+	 * Rule when 'Always block' is set to false
+	 * 
+	 * @param tapEnv {@link AutomaticsTapApi}
+	 * @param device {@link Dut}
+	 * @return the day/s which needs to be added in Parental Control Rule
+	 * @refactor Govardhan
+	 */
+	public static String getCurrentDayToAddParentalControlRuleWhenAlwaysBlockIsDisabled(AutomaticsTapApi tapEnv,
+			Dut device) {
+		LOGGER.debug("ENTERING METHOD getCurrentDayToAddParentalControlRuleWhenAlwaysBlockIsDisabled");
+		String blockDays = null;
+		try {
+			String date = tapEnv.executeCommandUsingSsh(device, BroadBandTestConstants.CMD_FOR_DATE);
+			blockDays = CommonMethods.patternFinder(date,
+					BroadBandTestConstants.PATTERN_TO_RETRIEVE_DAY_OF_THE_WEEK_FROM_TIMESTAMP);
+			String currentTimeOnlyHours = CommonMethods.patternFinder(date,
+					BroadBandTestConstants.PATTERN_TO_RETRIEVE_HOUR_FROM_TIMESTAMP);
+			if (CommonMethods.isNotNull(currentTimeOnlyHours)
+					&& currentTimeOnlyHours.equals(BroadBandTestConstants.ONLY_HOURS_11_PM)) {
+				SimpleDateFormat formatter = new SimpleDateFormat(BroadBandTestConstants.FORMAT_FOR_DAY_OF_THE_WEEK);
+				Date day = formatter.parse(blockDays);
+				blockDays = BroadBandCommonUtils.concatStringUsingStringBuffer(blockDays, BroadBandTestConstants.COMMA,
+						formatter.format(DateUtils.addDays(day, 1)));
+			}
+		} catch (Exception e) {
+			LOGGER.error(
+					"EXPECTION OCCCURED WHILE TRYING TO GET THE CURRENT DAY WHICH NEEDS TO BE ADDED IN PARENTAL CONTROL RULE: "
+							+ e.getMessage());
+		}
+		LOGGER.info("Block Days : " + blockDays);
+		LOGGER.debug("ENDING METHOD getCurrentDayToAddParentalControlRuleWhenAlwaysBlockIsDisabled");
+		return blockDays;
 	}
-	if (CommonMethods.isNotNull(blockDays)) {
-	    data.put("BlockDays", BlockDays);
-	}
-	
-	WebPaServerResponse serverResponse = tapEnv.postWebpaTableParamUsingRestApi(device,
-		BroadBandWebPaConstants.WEBPA_PARAM_TO_GET_PARENTAL_CONTROL_MANAGED_DEVICES_TABLE, data);
 
-	LOGGER.info("WEBPA SERVER RESPONSE FOR ADDING A CONNECTED CLIENT TO BLOCKED LIST : " + serverResponse);
+	/**
+	 * Utility method to add a connected client to blocked list
+	 * 
+	 * @param tapEnv      instance of {@link AutomaticsTapApi}
+	 * @param device      instance of {@link Dut}
+	 * @param type        parental Control - Managed Device Type (Block\Allow)
+	 * @param clientName  Name or Description of the connected client
+	 * @param macAddress  Mac Address of the connected client
+	 * @param alwaysBlock Status of always block (true/false)
+	 * @param startTime   If 'Always Block' is false, start time in HH:MM
+	 * @param endTime     If 'Always Block' is false, end time in HH:MM
+	 * @param blockDays   If 'Always Block' is false, particular day/s to be blocked
+	 * 
+	 * @return the row Number of the new entry in Blocked list table
+	 * 
+	 * @refactor yamini.s
+	 */
+	public static String addConnectedClientToBlockList(AutomaticsTapApi tapEnv, Dut device, String type,
+			String clientName, String macAddress, String alwaysBlock, String startTime, String endTime,
+			String blockDays) {
+		LOGGER.debug("ENTERING METHOD addConnectedClientToBlockList");
+		String parentalControlManageDeviceTableAddRowResponse = null;
 
-	if (serverResponse != null) {
-	    parentalControlManageDeviceTableAddRowResponse = serverResponse.getRow();
-	} else {
-	    LOGGER.error("NULL RESPOSNE OBTAINED FOR SETTING PARENTAL CONTROL - MANAGED DEVICES RULE");
+		Map<String, List<String>> data = new HashMap<String, List<String>>();
+		List<String> Type = new ArrayList<String>();
+		Type.add(type);
+		List<String> ClientName = new ArrayList<String>();
+		ClientName.add(clientName);
+		List<String> MacAddress = new ArrayList<String>();
+		MacAddress.add(macAddress);
+		List<String> AlwaysBlock = new ArrayList<String>();
+		AlwaysBlock.add(alwaysBlock);
+		List<String> StartTime = new ArrayList<String>();
+		StartTime.add(startTime);
+		List<String> EndTime = new ArrayList<String>();
+		EndTime.add(endTime);
+		List<String> BlockDays = new ArrayList<String>();
+		BlockDays.add(blockDays);
+		data.put("Type", Type);
+		data.put("Description", ClientName);
+		data.put("MACAddress", MacAddress);
+		data.put("AlwaysBlock", AlwaysBlock);
+		if (CommonMethods.isNotNull(startTime) && CommonMethods.isNotNull(endTime)) {
+			data.put("StartTime", StartTime);
+			data.put("EndTime", EndTime);
+		}
+		if (CommonMethods.isNotNull(blockDays)) {
+			data.put("BlockDays", BlockDays);
+		}
+
+		WebPaServerResponse serverResponse = tapEnv.postWebpaTableParamUsingRestApi(device,
+				BroadBandWebPaConstants.WEBPA_PARAM_TO_GET_PARENTAL_CONTROL_MANAGED_DEVICES_TABLE, data);
+
+		LOGGER.info("WEBPA SERVER RESPONSE FOR ADDING A CONNECTED CLIENT TO BLOCKED LIST : " + serverResponse);
+
+		if (serverResponse != null) {
+			parentalControlManageDeviceTableAddRowResponse = serverResponse.getRow();
+		} else {
+			LOGGER.error("NULL RESPOSNE OBTAINED FOR SETTING PARENTAL CONTROL - MANAGED DEVICES RULE");
+		}
+		LOGGER.debug("ENDING METHOD addConnectedClientToBlockList");
+		return parentalControlManageDeviceTableAddRowResponse;
 	}
-	LOGGER.debug("ENDING METHOD addConnectedClientToBlockList");
-	return parentalControlManageDeviceTableAddRowResponse;
-    }
+
+	/**
+	 * Utility method to add a rule in Parental Control - Managed Services using
+	 * webpa
+	 * 
+	 * @param tapEnv      instance of {@link AutomaticsTapApi}
+	 * @param device      instance of {@link Dut}
+	 * @param description Description of the Service to block
+	 * @param protocol    Protocol which are used(TCP/UDP/BOTH)
+	 * @param startPort   Port no from which the blocking Starts
+	 * @param endPort     Port no at which the blocking ends
+	 * @param alwaysBlock Status of always block (true/false)
+	 * @param startTime   If 'Always Block' is false, start time in HH:MM
+	 * @param endTime     If 'Always Block' is false, end time in HH:MM
+	 * @param blockDays   If 'Always Block' is false, particular day/s to be blocked
+	 * 
+	 * @return the row Number of the new entry in Blocked list table
+	 * 
+	 * @refactor Sruthi Santhosh
+	 */
+	public static String addRuleToParentalControlManagedServicesviaWebpa(AutomaticsTapApi tapEnv, Dut device,
+			String description, String protocol, String startPort, String endPort, String alwaysBlock) {
+		LOGGER.debug("ENTERING METHOD addRuleToParentalControlManagedServicesviaWebpa");
+		String parentalControlManageServiceRuleTableAddRowResponse = null;
+
+		Map<String, List<String>> data = new HashMap<String, List<String>>();
+		List<String> descriptionList = new ArrayList<String>();
+		descriptionList.add(description);
+		List<String> protocolList = new ArrayList<String>();
+		protocolList.add(protocol);
+		List<String> startPortList = new ArrayList<String>();
+		startPortList.add(startPort);
+		List<String> endPortList = new ArrayList<String>();
+		endPortList.add(endPort);
+		List<String> alwaysBlockList = new ArrayList<String>();
+		alwaysBlockList.add(alwaysBlock);
+		data.put("Description", descriptionList);
+		data.put("Protocol", protocolList);
+		data.put("StartPort", startPortList);
+		data.put("EndPort", endPortList);
+		data.put("AlwaysBlock", alwaysBlockList);
+
+		WebPaServerResponse serverResponse = tapEnv.postWebpaTableParamUsingWebPa(device,
+				BroadBandWebPaConstants.WEBPA_PARAM_TO_ADD_A_PARENTAL_CONTROL_MANAGED_SERVICES_RULE, data);
+
+		LOGGER.info(
+				"WEBPA SERVER RESPONSE FOR ADDING A RULE TO PARENTAL CONTROL - MANAGED SERVICE : " + serverResponse);
+
+		if (serverResponse != null) {
+			parentalControlManageServiceRuleTableAddRowResponse = serverResponse.getRow();
+		} else {
+			LOGGER.error("NULL RESPOSNE OBTAINED FOR SETTING PARENTAL CONTROL - MANAGED SERVICES RULE");
+		}
+		LOGGER.debug("ENDING METHOD addRuleToParentalControlManagedServicesviaWebpa");
+		return parentalControlManageServiceRuleTableAddRowResponse;
+	}
 }

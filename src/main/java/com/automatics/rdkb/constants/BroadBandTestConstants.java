@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
 import com.automatics.rdkb.utils.snmp.BroadBandSnmpMib;
 import com.automatics.snmp.SnmpDataType;
 import com.automatics.utils.AutomaticsPropertyUtility;
@@ -204,9 +205,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Constant to integer value 34 */
     public static final int CONSTANT_34 = 34;
-    
-	/** String constant value 2000 */
-	public static final String STRING_CONSTANT_2000 = "2000";
+
+    /** String constant value 2000 */
+    public static final String STRING_CONSTANT_2000 = "2000";
 
     /** String value 2 */
     public static final String STRING_VALUE_TWO = "2";
@@ -257,9 +258,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** constant for Ping Interval as 15 mins */
     public static final String CONSTANT_PING_INTERVAL = "15";
-    
-	/** Constant for number 21 */
-	public static final int CONSTANT_21 = 21;
+
+    /** Constant for number 21 */
+    public static final int CONSTANT_21 = 21;
 
     /** Constant for Character Hyphen */
     public static final String CHARACTER_HYPHEN = "-";
@@ -816,6 +817,8 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String DEFAULT_MAX_RESET_COUNT_FOR_RELEASE_BUILD = "default.max.reset.count.release.build";
 
     public static final String DEFAULT_MAX_RESET_COUNT = "default.max.reset.count";
+
+    public static final String PARTNER_ID = "partner.id";
 
     /** constant for AvgCPUThreshold */
     public static final String CONSTANT_AVG_CPU_THRESHOLD = "100";
@@ -1659,7 +1662,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /**
      * The constant holding command for seeing the process status of dnsmasq process.
      */
-    public static final String STRING_DNSMASQ_PROCESS = "dnsmasq -u";
+    public static final String STRING_DNSMASQ_PROCESS = "dnsmasq";
 
     /** String variable to store dnsmasq is not running */
     public static final String STRING_DNSMASQ_NOT_RUNNING = "dnsmasq is not running";
@@ -2024,10 +2027,10 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String PATTERN_TO_GET_IPV4_ADDRESS = "(\\d+\\.\\d+\\.\\d+\\.\\d+)";
 
     /** Constant for Primary remote endpoint */
-    public static final String PRIMARY_REMOTE_ENDPOINT = "";
+    public static final String PRIMARY_REMOTE_ENDPOINT = BroadbandPropertyFileHandler.getPrimaryRemoteEndPoint();
 
     /** Constant for Secondary remote endpoint */
-    public static final String SECONDARY_REMOTE_ENDPOINT = "";
+    public static final String SECONDARY_REMOTE_ENDPOINT = BroadbandPropertyFileHandler.getSecondaryRemoteEndPoint();
 
     /** Pattern to get public wifi status from rfc config data */
     public static final String PATTERN_GET_PUBLIC_WIFI_STATUS_FROM_RFC_CONFIG = "tr181.Device.DeviceInfo.X_COMCAST_COM_xfinitywifiEnable\\W+(\\w+)";
@@ -2693,7 +2696,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String COMMAND_FOR_OPENSSL_VERSION = "openssl version";
 
     /** Command to get the libssl.so file present in the build */
-    public static final String COMMAND_TO_FETCH_LIBSSL_FILE = "ls /usr/lib/ | grep -i \"libssl.so\" |awk ' {printf \"/usr/lib/\"\\$NF}'";
+    public static final String COMMAND_TO_FETCH_LIBSSL_FILE = "ls /usr/lib/ | grep -i libssl.so";
 
     /** prefix Command to read OpenSSL version in ssl library */
     public static final String PREFIX_COMMAND_TO_READ_OPENSSL_OF_SSL_LIBRARY = "strings";
@@ -2702,10 +2705,10 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String POSTFIX_COMMAND_TO_READ_OPENSSL_OF_SSL_LIBRARY = "| grep \"^OpenSSL.*[0-9][0-9][0-9]\"";
 
     /** Command to get the libcrypto.so file present in the build */
-    public static final String COMMAND_TO_FETCH_LIBCRYPTO_FILE = "ls /usr/lib/ | grep -i \"libcrypto.so\" |awk ' {printf \"/usr/lib/\"\\$NF}'";
+    public static final String COMMAND_TO_FETCH_LIBCRYPTO_FILE = "ls /usr/lib/ | grep -i libcrypto.so";
 
     /** Command to get libssl used by all running processes */
-    public static final String COMMAND_TO_GET_LIBSSL_USED_IN_ALL_PROCESSES = "cat /proc/\\*/maps | grep -i \"libssl.so\" |awk ' {print \\$NF}' | uniq ";
+    public static final String COMMAND_TO_GET_LIBSSL_USED_IN_ALL_PROCESSES = "cat /proc/*/maps | grep -i libssl.so |awk ' {print $NF}' | uniq ";
 
     /**
      * pattern to get libssl location from COMMAND_TO_GET__LIBSSL_USED_IN_ALL_PROCESSES response
@@ -2713,7 +2716,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String PATTERN_TO_GET_LIBSSL = "(\\S+libssl\\S+)";
 
     /** Command to get libcrypto used by all running processes */
-    public static final String COMMAND_TO_GET_LIBCRYPTO_USED_IN_ALL_PROCESSES = "cat /proc/\\*/maps | grep -i \"libcrypto.so\" |awk ' {print \\$NF}' | uniq ";
+    public static final String COMMAND_TO_GET_LIBCRYPTO_USED_IN_ALL_PROCESSES = "cat /proc/*/maps | grep -i libcrypto.so |awk ' {print $NF}' | uniq ";
 
     /**
      * pattern to get libssl location from COMMAND_TO_GET__LIBCRYPTO_USED_IN_ALL_PROCESSES response
@@ -3083,7 +3086,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String STRING_REGEX_DATE = "((Mon|Tue|Wed|Thu|Fri|Sat|Sun)\\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\s+\\d+\\s\\d{2}:\\d{2}:\\d{2}\\sUTC\\s\\d{4})";
 
     /** Command to get the used space for filename in the device */
-    public static final String COMMAND_TO_FETCH_USED_SPACE_FOR_FILENAME = "df | grep FILENAME | awk 'NR==1{print \\$5}'";
+    public static final String COMMAND_TO_FETCH_USED_SPACE_FOR_FILENAME = "df | grep FILENAME | awk 'NR==1{print $5}'";
 
     /** Constant for the filename nvram */
     public static final String NVRAM_FILE_NAME = "nvram";
@@ -3101,7 +3104,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String STRING_REGEX_TO_GET_PERCENTAGE_VALUE = "(\\w+)%";
 
     /** Command to get the Highest % of CPU consumption in the device */
-    public static final String COMMAND_TO_FETCH_CPU_PERCENTAGE = "top -n1 -- o %cpu | awk 'NR==6{print \\$7}'";
+    public static final String COMMAND_TO_FETCH_CPU_PERCENTAGE = "top -n1 -- o %cpu | awk 'NR==6{print $7}'";
 
     /** String value for 50 */
     public static final String STRING_VALUE_FIFTY = "50";
@@ -4727,10 +4730,10 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String RESPONSE_EXECUTION_SUCCEED = "Execution succeed";
 
     /** path for CCSP_BUS_CLIENT_TOOL in Business Class devices */
-    public static final String PATH_CBR_CCSP_BUS_CLIENT_TOOL = "/usr/bin/";
+    public static final String PATH_BUSSINESSCLASS_CCSP_BUS_CLIENT_TOOL = "/usr/bin/";
 
     /** path for CCSP_BUS_CLIENT_TOOL in BWG devices */
-    public static final String PATH_BWG_CCSP_BUS_CLIENT_TOOL = "/fss/gw/usr/ccsp/";
+    public static final String PATH_BUSINESSGW_CCSP_BUS_CLIENT_TOOL = "/fss/gw/usr/ccsp/";
 
     /** pattern to get the wan ip address set in script */
     public static final String PATTERN_TO_GET_WAN_IP = "wan_ip_address (.*)";
@@ -6673,41 +6676,190 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Constant to store RFC_Reboot.sh script name */
     public static final String RFC_REBOOT_SH = "RFC_Reboot.sh";
-    
+
     /** String to store pattern */
     public static final String PATTERN_FOR_ACCOUNTID = "\\d+";
-    
+
     /** Constant to hold invalid AccountID value with special chars **/
     public static final String INVALID_ACCOUNTID_VALUE_WITH_SPECIAL_CHARS = "1245666@3#1245666@3#^";
-    
+
     /** Constant to hold invalid AccountID value with more than 32 chars **/
     public static final String INVALID_ACCOUNTID_MORE_THAN_THIRTY_TWO = "123456789369852147159753123345691";
-    
+
     /** Command to look for ntpd process */
     public static final String COMMAND_NTPD_PROCESS = "ps | grep ntpd";
-    
+
     public static final String EXPECTED_OUTPUT_FOR_NTPHOST = "ntp.ccp.xcal.tv";
-    
+
     /** Variable for status value - 'Disabled' */
     public static final String STATUS_VALUE_DISABLED = "Disabled";
-    
+
     /** String to store NTPServerURL_Pattern value */
     public static final String NTPServerURL_Pattern = "(\\w*.\\w*.\\w*.\\w*)";
-    
-	/** Pattern to match Crontab time interval */
-	public static final String PATTERN_TO_FETCH_CRONTAB_TIME_INTERVAL = "0\\s(0,(\\d+,)+\\d+)(\\s\\*){3}\\s/usr/ccsp/tad/log_buddyinfo.sh";
 
-	/** Pattern Matcher to Extract the Timestamp from the log messages */
-	public static final String PATTERN_MATCHER_LOG_MESSAGE_TIMESTAMP = "(^.*)\\.\\d+";
-	
+    /** Pattern to match Crontab time interval */
+    public static final String PATTERN_TO_FETCH_CRONTAB_TIME_INTERVAL = "0\\s(0,(\\d+,)+\\d+)(\\s\\*){3}\\s/usr/ccsp/tad/log_buddyinfo.sh";
+
+    /** Pattern Matcher to Extract the Timestamp from the log messages */
+    public static final String PATTERN_MATCHER_LOG_MESSAGE_TIMESTAMP = "(^.*)\\.\\d+";
+
     /** String to store the path of /tmp/moca_initialized file */
     public static final String PATH_FOR_MOCA_INITIALIZED_FILE = "/tmp/moca_initialized";
-    
-	/**
-	 * String to store the value for average cpu threshold value
-	 */
-	public static final String AVG_CPU_THRESHOLD_VALUE = "100";	
 
-	/** String constant value 56982 */
-	public static final String STRING_CONSTANT_56982 = "56982";
+    /**
+     * String to store the value for average cpu threshold value
+     */
+    public static final String AVG_CPU_THRESHOLD_VALUE = "100";
+
+    /** String constant value 56982 */
+    public static final String STRING_CONSTANT_56982 = "56982";
+
+    /** Constant to hold ebay in uppercase */
+    public static final String EBAY_UPPERCASE = "EBAY";
+
+    /**
+     * Pattern to check syndication flow control forward mark
+     */
+    public static final String DSCP_INITIAL_FORWARDED_MARK = "DSCP_InitialForwardedMark=<REPLACE>";
+
+    /**
+     * Pattern to check syndication flow control output mark
+     */
+    public static final String DSCP_INITIAL_OUTPUT_MARK = "DSCP_InitialOutputMark=<REPLACE>";
+
+    /**
+     * Pattern to check syndication flow control status
+     */
+    public static final String STRING_SYNDICATION_FLOW_CONTROL = "SyndicationFlowControlEnable=<REPLACE>";
+
+    /** stb properties key for payload data to disable ntp in xconf **/
+    public static final String PROP_KEY_PAYLOAD_NTP_DISABLE_MOCK_XCONF = "rfc.ntp.disable.payload";
+
+    /** stb properties key for payload data to enable ntp in xconf **/
+    public static final String PROP_KEY_PAYLOAD_NTP_ENABLE_MOCK_XCONF = "rfc.ntp.enable.payload";
+
+    /** Device.Time.NTPServer1 Log string to search dcmrfc.log */
+    public static final String NTP_SERVER_URL_LOG_STRING = "Device.Time.NTPServer1 from value";
+
+    /**
+     * Constant to hold Parental Control - Managed Services Description as FTP
+     */
+    public static final String MNG_SERVICES_DESCRIPTION_AS_FTP = "FTP";
+
+    /** Constant to hold FTP Service Port Number */
+    public static final String FTP_PORT_NUMBER = "21";
+
+    /** Constant to hold URL of FTP site: ftp.hp.com */
+    public static final String URL_FTP_HP = "ftp://ftp.hp.com/";
+
+    /** command to grep the snmp reboot telemetry marker from rdklogs folder */
+    public static final String URL_ENCODED_CHAR = "%3A";
+
+    /** String constant to store configurable telemetry feature name value */
+    public static final String CONFIGURABLE_TELEMETRY_ENDPOINT = "TelemetryNewEndpoint";
+
+    /** Constant to Hold the Security mode */
+    public static final String WPA_WPA2_SECURITY_MODE = "WPA-WPA2-Personal";
+
+    /** Constant holding the location of swupdate.conf file. */
+    public static final String SOFTWARE_UPDATE_CONF_FILE_2 = "/nvram/swupdate.conf";
+
+    /** Constant for dlcertbundle value */
+    public static final String CONSTANT_DLCERTBUNDLE = "dlCertBundle";
+
+    /*** File nvram path for myrouter.io.cert.pem ***/
+    public static final String FILE_NVRAM_MYROUTER_IO_CERT_WEBUI = "/nvram/certs/myrouter.io.cert.pem";
+
+    /** String to hold myreouter certificate before validity time */
+    public static final String STRING_MYROUTER_CERTIFICATE_BEFORE_VALIDITY_DATE = "notBefore=Jun 23 00:00:00 2021";
+
+    /** String to hold myreouter certificate after validity time */
+    public static final String STRING_MYROUTER_CERTIFICATE_AFTER_VALIDITY_DATE = "notAfter=Jun 23 23:59:59 2022";
+
+    /** Constant for nc Connection error */
+    public static final String NC_CONNECTION_ERROR_IP_1 = NC_ERROR_BAD_HOST
+	    + BroadbandPropertyFileHandler.getNCPrivateIPOutsideRange1();
+
+    /** Constant for nc Connection error */
+    public static final String NC_CONNECTION_ERROR_IP_2 = NC_ERROR_BAD_HOST
+	    + BroadbandPropertyFileHandler.getNCPrivateIPOutsideRange2();
+
+    /** Constant for nc Connection error */
+    public static final String NC_CONNECTION_ERROR_IP_3 = NC_ERROR_BAD_HOST
+	    + BroadbandPropertyFileHandler.getNCPrivateIPOutsideRange3();
+
+    /** Constant for nc Connection error */
+    public static final String NC_CONNECTION_ERROR_IP_4 = NC_ERROR_BAD_HOST
+	    + BroadbandPropertyFileHandler.getNCPrivateIPOutsideRange4();
+
+    /** Constant for Netcat console */
+    public static final String NC_NETCAT_CONSOLE = "Login:";
+
+    /** SESHAT IP from stb.properties */
+    public final static String SESHAT_IP_PROPERTY_FILE_KEY = "seshat.4090.interface.ip";
+
+    /** SESHAT IP from stb.properties */
+    public final static String SESHAT_PORT_PROPERTY_FILE_KEY = "seshat.4090.interface.port";
+
+    /** SESHAT IP from stb.properties */
+    public final static String PARODUS_IP_PROPERTY_FILE_KEY = "parodus.4090.interface.ip";
+
+    /** SESHAT IP from stb.properties */
+    public final static String PARODUS_PORT_PROPERTY_FILE_KEY = "parodus.4090.interface.port";
+
+    /** Parodus URL Parameter in device.properties */
+    public static final String PARAM_PARODUS_URL = "PARODUS_URL";
+
+    /** Constant to hold TCP */
+    public static final String TCP_PROTOCOL = "tcp";
+
+    /** String value SESHAT_URL */
+    public static final String STRING_SESHAT_URL = "SESHAT_URL";
+
+    /** String value PARODUS_URL */
+    public static final String STRING_PARODUS_URL = "PARODUS_URL";
+
+    /** Regex value for SESHAT URL */
+    public static final String REGEX_SESHAT_URL = "SESHAT_URL=(.*)";
+
+    /** String value for INPUT */
+    public static final String STRING_INPUT = "INPUT";
+
+    /** String value for FORWARD */
+    public static final String STRING_FORWARD = "FORWARD";
+
+    /** String value for ACCEPT */
+    public static final String STRING_ACCEPT = "ACCEPT";
+
+    /** Pattern Finder to confirm the 4090 Interface communication in iptable input rule */
+    public static final String PATTER_MATCHER_IPTABLE_INPUT_RULE = "(INPUT.*)(.*"
+	    + BroadbandPropertyFileHandler.get4090InterfaceToValidateInIptables() + ".*)(.*ACCEPT)";
+
+    /** Pattern Finder to confirm the 4090 Interface communication in iptable forward rule */
+    public static final String PATTERN_MATCHER_IPTABLE_FORWARD_RULE = "(FORWARD.*)(.*"
+	    + BroadbandPropertyFileHandler.get4090InterfaceToValidateInIptables() + ".*)(.*ACCEPT)";
+
+    /** String value 6666 */
+    public static final String STRING_6666 = "6666";
+
+    /** IOT Client Port */
+    public static final String IOT_CLIENT_PORT_6668 = "6668";
+
+    /** Log Message for Received Upstream Event Radion Interface Statistics Report */
+    public static final String LOG_MESSAGE_RECEIVED_UPSTREAM_EVENT_INERFACE_DEVICES_WIFI = ".*raw.kestrel.reports.InterfaceDevicesWifi";
+
+    /** Pattern Finder to confirm the communication between parodus and webpa */
+    public static final String PATTERN_MATCHER_CONNECTION_ESTABLISHED = "(tcp.*)((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))(?![\\d])(.*ESTABL.*)";
+
+    /** Log Message for Received Upstream Event Radion Interface Statistics Report */
+    public static final String LOG_MESSAGE_RECEIVED_UPSTREAM_EVENT_NETWORK_STATUS_REPORT = ".*raw.kestrel.reports.NetworkDevicesStatus";
+    
+    /** Pattern Matcher to extract the value from Activation Log */
+    public static final String PATTERN_MATCHER_ACTIVATION_BOOTLOG_VALUE = "#TELEMETRY_LOG#=(\\d+)";
+
+    /** Pattern Matcher to extract the value from Activation Log */
+    public static final String PATTERN_MATCHER_ACTIVATION_LOG_VALUE = "#TELEMETRY_LOG#:(\\d+)";
+
+    /** Telemetry Log Text */
+    public static final String TEXT_TELEMETRY_LOG = "#TELEMETRY_LOG#";
 }

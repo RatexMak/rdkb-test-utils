@@ -836,13 +836,13 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
     /** Trace Constants for LmLite Integration */
     /** Log Message for LMLite Initialization */
     public static final String LOG_MESSAGE_LMLITE_INITIALIZATION = "\"LMLite:rdk initialzed\"";
-    
+
     /** Log Message for LMLite Discovery */
     public static final String LOG_MESSAGE_LMLITE_DISCOVERY = "\"_libseshat_: discover_service_data() status 200, type 6\"";
 
     /** Log Message for Seshat disabled */
     public static final String LOG_MESSAGE_SESHAT_DISABLED = "\"libseshat disabled, Hence proceeding without registration\"";
-    
+
     /** Trace Constants for Parodus Integration with Seshat */
     /** Log Message for Seshat URL */
     public static final String LOG_MESSAGE_SESHAT_URL = "\"PARODUS: seshat_url is\"";
@@ -855,37 +855,37 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
 
     /** Log Message for Seshat Discovery */
     public static final String LOG_MESSAGE_SESHAT_URL_DISCOVERY = "\"PARODUS: seshatlib discovered url\"";
-    
+
     /** Log message for harvester seshat discovery */
     public static final String LOG_MESSAGE_HARVESTER_DISCOVERY = "\"libseshat_: discover_service_data() status 200, type 6\"";
 
     /** Trace Constant to search Channel Number in PCAP File */
     public static final String SEARCH_TEXT_CHANNEL_PCAP = "'CH: #CHANNEL#'";
-    
+
     /** Log message for Ethernet client count */
     public static final String LOG_MESSAGE_ETH_MAC_TOTAL_COUNT = "\"ETH_MAC_<REPLACE>_TOTAL_COUNT\"";
-    
+
     /** Log message for Ethernet mac address */
     public static final String LOG_MESSAGE_ETH_MAC = "\"ETH_MAC_<REPLACE>:\"";
-    
+
     /** Log message for Ethernet phy.rate */
     public static final String LOG_MESSAGE_ETH_PHYRATE = "\"ETH_PHYRATE_<REPLACE>:\"";
-    
+
     /** Log message for wifi mac telemetry in wifihealth log */
     public static final String LOG_MESSAGE_WIFI_MAC = "WIFI_MAC_";
-    
+
     /** Log message for 2.4GHz WiFi client count in dcmscript */
     public static final String LOG_MESSAGE_WIFI_MAC_1_TOTAL_COUNT_WITHOUT_COLON = "WIFI_MAC_1_TOTAL_COUNT";
-    
+
     /** Log message for 2.4GHz WiFi client count */
     public static final String LOG_MESSAGE_WIFI_MAC_1_TOTAL_COUNT = "\"WIFI_MAC_1_TOTAL_COUNT:\"";
-    
+
     /** Log Message for to verify the connected client Online */
     public static final String LOG_MESSAGE_TO_VERIFY_CONNECTED_CLIENT_ONLINE = "\"RDKB_CONNECTED_CLIENTS: Client type is WiFi, MacAddress is <REPLACE> and HostName is.*Online\"";
 
     /** Log Message for to verify the connected client Connected */
     public static final String LOG_MESSAGE_TO_VERIFY_CONNECTED_CLIENT_CONNECTED = "\"RDKB_CONNECTED_CLIENTS: Client type is WiFi, MacAddress is <REPLACE> and HostName is.*Connected\"";
-    
+
     /** Log Message for to verify the ethernet connected client */
     public static final String LOG_MESSAGE_TO_VERIFY_ETHERNET_CONNECTED_CLIENT_ONLINE = "\"RDKB_CONNECTED_CLIENTS: Client type is Ethernet, MacAddress is.*##MACADDRESS##.*HostName is.*Online\"";
 
@@ -900,25 +900,25 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
 
     /** Log message for force wifi disable set to true */
     public static final String LOG_MESSAGE_FORCE_WIFI_DISABLE_TRUE = "WIFI_FORCE_DISABLE_CHANGED_TO_TRUE";
-    
+
     /** Log message for force wifi disable set to false */
     public static final String LOG_MESSAGE_FORCE_WIFI_DISABLE_FALSE = "WIFI_FORCE_DISABLE_CHANGED_TO_FALSE";
-    
+
     /** String Stopping/Restarting log message in systemd_processRestart.log */
     public static final String LOG_STOPPING_RESTARTING = "Stopping/Restarting";
-    
+
     /** Log message for wifi gas request on 2.4Ghz AP in anqp debuglog */
-    public static final String LOG_MESSAGE_GAS_REQUEST_AP = "Interworking is enabled will proceed to gas response send on AP: 1";  
-    
+    public static final String LOG_MESSAGE_GAS_REQUEST_AP = "Interworking is enabled will proceed to gas response send on AP: 1";
+
     /** Log message for DNS entries in /etc/resolv.conf */
     public static final String DNS_OVERRIDE_VALUE = "dnsoverride 00:00:00:00:00:00 <IPV4> <IPV6> Test_xdns1";
-    
+
     /** Log message for XDNS parameters values in /rdklogs/logs/Consolelog.txt or Armconsolelog.txt */
     public static final String LOG_MSG_XDNS_PARAMETER_VALUE = "XDNS_SetParamStringValue";
-    
+
     /** Log message for enabling Secondary XDNS in /rdklogs/logs/PAMlog.txt.0 */
     public static final String LOG_MSG_SECONDARY_XDNS_ENABLE = "Enabling secondary XDNS";
-    
+
     /** Trace Constants for GW Configuration Telemetry */
     /** Log Message for Same SSID Password for both the radio */
     public static final String LOG_MESSAGE_SAME_SSID_PASSWORD = "Same password was configured on User Private SSID for 2.4 and 5 GHz radios.";
@@ -928,7 +928,7 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
 
     /** Telemetry Marker for Same SSID Password for both the radio */
     public static final String TELEMETRY_MARKER_SAME_SSID_PASSWORD = "SAME_PASSWORDS_PRIVATE_RADIOS";
-    
+
     /** Telemetry Marker for Different SSID Password */
     public static final String TELEMETRY_MARKER_DIFFERENT_SSID_PASSWORD = "DIFFERENT_PASSWORDS_PRIVATE_RADIOS";
 
@@ -943,7 +943,7 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
 
     /** Log message for ovs connected status from ovs show output */
     public static final String LOG_MESSAGE_IS_CONNECTED = "is_connected: true";
-    
+
     /** RDKB WiFi Notification message in /rdklogs/logs/WiFilog.txt.0 */
     public static final String RDKB_WIFI_NOTIFICATION_MESSAGE_1 = "RDKB_WIFI_NOTIFY: connectedTo:<REPLACE>_LNF_PSK_SSID clientMac:";
 
@@ -952,23 +952,23 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
 
     /** Log Message for enabling Interface Devices Wifi Report */
     public static final String LOG_MESSAGE_INTERFACE_DEVICE_WIFI_REPORT_ENABLED = "\"Harvester InterfaceDeviceWifi Report STARTED SetIDWHarvestingStatus\"";
-  
+
     /** Log Message for enabling Radio Interface Statistics */
     public static final String LOG_MESSAGE_RADIO_INTERFACE_STATISTICS_ENABLED = "\"Sent message successfully to parodus\"";
 
     /** Trace Constants for Harvester */
     /** Log Message for RDK Logger Initialization */
     public static final String LOG_MESSAGE_RDK_LOGGER_INITIALIZED = "\"rdk-logger initialzed\"";
-    
+
     /** Log to get the client last data rate uplink using wiFi HAL Api */
     public static final String CMD_TO_GET_CLI_LAST_UPLINK_RATE_VALUE = "\"sta_<REPLACE>:\\s*cli_LastDataUplinkRate\"";
 
     /** Pattern to find the last data downlink rate */
     public static final String PATTERN_LAST_DOWNLINK_RATE = "cli_LastDataDownlinkRate = (\\d+)";
-    
+
     /** Pattern to find the last data uplink rate */
     public static final String PATTERN_LAST_UPLINK_RATE = "cli_LastDataUplinkRate = (\\d+)";
-    
+
     /** Log to get the client last data rate downlink value using wiFi HAL Api */
     public static final String CMD_TO_GET_CLI_LAST_DOWNLINK_RATE_VALUE = "\"sta_<REPLACE>:\\s*cli_LastDataDownlinkRate\"";
 
@@ -977,76 +977,76 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
 
     /** Log message for polled station info */
     public static final String LOG_MESSAGE_POLLED_STATION_INFO = "Polled station info";
-    
+
     /** Log message for single client report */
     public static final String LOG_MESSAGE_SINGLE_CLIENT_REPORT = "single client report";
-    
+
     /** Activation Journey - Enter Wifi Personalization Captive Mode */
     public static final String ACTIVATION_ENTER_WIFI_PERSONALIZATION_CAPTIVE = "Enter_WiFi_Personalization_captive_mode";
-    
+
     /** Activation Journey - Exit Wifi Personalization Captive Mode */
     public static final String ACTIVATION_EXIT_WIFI_PERSONALIZATION_CAPTIVE = "Exit_WiFi_Personalization_captive_mode";
-    
+
     /** Activation Journey - SSID Name Change */
     public static final String ACTIVATION_SSID_NAME_CHANGE = "SSID_name_changed";
-    
+
     /** Trace Constant for Xconf Query URL */
     public static final String TRACE_LOG_XCONF_CURL = "\"CURL_CMD:\\s*\"";
-    
+
     /** Trace Constant for Xconf Query URL */
     public static final String TRACE_LOG_TELEMETRY_2 = "\"doHttpGet with url\\s*\"";
-    
+
     /** Log Message for successful log upload */
     public static final String LOGS_UPLOADED_SUCCESSFULLY = "\"LOGS UPLOADED SUCCESSFULLY\"";
-    
+
     /** String to store Log Upload status */
     public static final String LOG_UPLOAD_STATUS = "LOGS UPLOADED SUCCESSFULLY";
-    
+
     /** Log Message for DCM RFC Service */
     public static final String LOG_MESSAGE_DCM_RFC_STARTED = "\"RFC feature\"";
-    
+
     /** Log Message for Curl Command */
     public static final String LOG_MESSAGE_CURL_COMMAND = "\"curl\"";
- 
+
     /** Log message for Cus admin password reset in the file "/rdklogs/logs/PAMlog.txt.0" */
     public static final String LOG_MESSAGE_CUSADMIN_PWD_RESET = "Password reset done for cusadmin user";
-    
+
     /** Log Message to get telementry event upload to splunk in dcmscript.log file */
     public static final String LOG_MESSAGE_DCA_CURL_CMD = "\"CURL_CMD:\"";
-    
+
     /** Log Message for packet capture initialization */
-    public static final String LOG_MESSAGE_FOR_BRLAN_PACKET_CAPTURE_INIT = "tcpdump: listening on brlan0, link-type";  
-    
+    public static final String LOG_MESSAGE_FOR_BRLAN_PACKET_CAPTURE_INIT = "tcpdump: listening on brlan0, link-type";
+
     /** Log message for Setting valid LanSubnetMask value */
     public static final String LOG_MESSAGE_SETTING_VAILD_SUBNET_MASK_VALUE = "RDKB_LAN_CONFIG_CHANGED: Setting new LanSubnetMask value";
 
     /** Log message for Setting invalid LanSubnetMask value */
     public static final String LOG_MESSAGE_SETTING_INVAILD_SUBNET_MASK_VALUE = "RDKB_LAN_CONFIG_CHANGED: Modified LanSubnetMask";
-    
+
     /** Log message for partner id in parodus and webconfig log file */
     public static final String LOG_MESSAGE_XMIDT_PARTNER_ID = "X-Midt-Partner-Id";
 
     /** Log message for http code 200 response */
     public static final String LOG_MESSAGE_WEBCONFIG_HTTP_200 = "ret = 0 http_code: 200";
-    
+
     /** Log message for web config token path */
     public static final String LOG_MESSAGE_WEBCONFIG_CURL_PATH = "CURL_RESPONSE path is /tmp/.cURLresponse";
-    
+
     /** Log message for failed to create new token */
     public static final String LOG_MESSAGE_THEMIS_TOKEN_FAILURE = "Failed to create new token";
 
     /** Log message for disabling memory swap using Zram */
     public static final String LOG_MESSAGE_DISABLING_ZRAM = "zram is disabled";
-    
+
     /** Log message for enabling memory swap using Zram */
     public static final String LOG_MESSAGE_ENABLING_ZRAM = "enabling zram";
-    
+
     /** Log message version */
     public static final String LOG_MESSAGE_VERSION = "version";
-    
+
     /** Log message for bootstrap version 3.0 */
     public static final String LOG_MESSAGE_BOOTSTRAP_VERSION_3_0 = "3.0";
-    
+
     /** Log message for RFC */
     public static final String LOG_MESSAGE_RFC = "_RFC";
 
@@ -1055,7 +1055,7 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
 
     /** Log message to validate the ecm mac in "TDMlog.txt.0" log file */
     public static final String LOG_MESSAGE_ECM_MAC = "CmMac:";
-    
+
     /** Log message to validate the device Id in "TDMlog.txt.0" log file */
     public static final String LOG_MESSAGE_DEVICE_ID = "DeviceId:";
 
@@ -1064,7 +1064,7 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
 
     /** Log message to validate the PartnerId in "TDMlog.txt.0" log file */
     public static final String LOG_MESSAGE_PARTNER_ID = "PartnerId:";
-    
+
     /** Log message to validate the average response time in "TDMlog.txt.0" log file */
     public static final String LOG_MESSAGE_AVERAGE_RESPONSE_TIME = "AvgRtt:";
 
@@ -1073,81 +1073,81 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
 
     /** Trace constant to validate ping test diagnostic state for invalid host address */
     public static final String LOG_MESSAGE_INVALID_HOST_NAME = "Error_CannotResolveHostName";
-    
+
     /** List of Log message for COvsAgentApi.log */
     public static final ArrayList<String> OVSAGENTAPI_LOG = new ArrayList<String>(
 	    Arrays.asList("open_log successfully opened", "Socket connected successfully",
 		    "ovs_agent_api_init successfully initialized", "ovsdb_write successfully wrote",
 		    "ovsdb_monitor successfully wrote", "handle_transact_insert_request"));
-    
+
     /** List of Log message for OvsAgentLog.txt */
     public static final ArrayList<String> OVSAGENTLOG_TXT = new ArrayList<String>(Arrays.asList(
 	    "Ovs Agent Log Initialized", "Ovs Agent Api Initialized for Component", "Ovs Action Initialized",
 	    "Ovs Agent interact monitor table 0 succeeded", "gwconf_mon_cb interact transact table 1 succeeded"));
-    
+
     /** Log Message for update bridge info in bridgeUtils.log */
     public static final String LOG_MESSAGE_UPDATEB_RIDGE_INFO = "updateBridgeInfo : parent_ifname is  : if_name is <REPLACE> : bridge <<INTERFACE>>";
-    
+
     /** Log Message for create_bridge_api in bridgeUtils.log */
     public static final String LOG_MESSAGE_CREATE_BRIDGE_API = "create_bridge_api ovs is enabled, calling ovs api";
-    
+
     /** Log message for ovs enable state */
     public static final String LOG_MESSAGE_OVS_ENABLED_MESH = "OVS_RFC_changed_to_enabled";
-    
+
     /** Log message for ovs disable state */
     public static final String LOG_MESSAGE_OVS_DISABLED_MESH = "OVS_RFC_changed_to_disabled";
-    
+
     /** Log message for uprivilege mode for telemetry2.0 */
     public static final String LOG_MESSAGE_UNPRIVILEGE_MODE_T2 = "Dropping root privilege of telemetry2_0: runs as unprivilege mode";
-     
+
     /** Log message for wifi band utilization telemetry in wifihealth log */
     public static final String LOG_MESSAGE_WIFI_BANDUTILIZATION = "WIFI_BANDUTILIZATION_";
-    
+
     /** Log message for wifi mac total count telemetry in wifihealth log */
     public static final String LOG_MESSAGE_WIFI_MAC_TOTAL_COUNT = "WIFI_MAC_<REPLACE>_TOTAL_COUNT";
-    
+
     /** Log message for wifi rx clients telemetry in wifihealth log */
     public static final String LOG_MESSAGE_WIFI_RXCLIENTS = "WIFI_RXCLIENTS_";
-    
+
     /** Log message for wifi tx clients telemetry in wifihealth log */
     public static final String LOG_MESSAGE_WIFI_TXCLIENTS = "WIFI_TXCLIENTS_";
-    
+
     /** Activation Journey - Wifi Broadcast */
     public static final String ACTIVATION_WIFI_BROADCAST_COMPLETE = "Wifi_Broadcast_complete";
 
     /** Activation Journey - Wifi Name Broadcast */
     public static final String ACTIVATION_WIFI_NAME_BROADCAST = "Wifi_Name_Broadcasted";
-    
+
     /** Log message for rdkb connected clients */
     public static final String RDKB_CONNECTED_CLIENTS = "RDKB_CONNECTED_CLIENTS";
-    
+
     /** String constant to validated connected client log */
     public static final String STRING_LOG_MESSAGE = " Client type is WiFi, MacAddress is ";
-    
+
     /** String constant for string Connected */
     public static final String STRING_CONNECTED = "Connected";
-    
+
     /** Log message for RDKB memory information telemetry in SelfHeal.txt.0 */
     public static final String LOG_MESSAGE_RDKB_SYS_MEM_INFO_SYS = "RDKB_SYS_MEM_INFO_SYS";
-    
+
     /** Log message for used memory telemetry in SelfHeal.txt.0 log */
     public static final String LOG_MESSAGE_WIFI_USED_MEM = "USED_MEM";
 
     /** Log message for free memory telemetry in SelfHeal.txt.0 log */
     public static final String LOG_MESSAGE_WIFI_FREE_MEM = "FREE_MEM";
-    
+
     /** Log message for parameter value same in dcmrfc.log */
     public static final String LOG_MESSAGE_FORWARD_SSH_VALUE_SAME_TRUE = "RFC: For param Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.ForwardSSH.Enable new and old values are same value true";
 
     /** Log message when ForwardSSH is enabled */
     public static final String LOG_MESSAGE_TO_CHECK_FORWARD_SSH_ENABLED = "SSH: Forward SSH changed to enabled";
-    
+
     /** Command to verify Log message for parameter value set failed in dcmrfc.log */
     public static final String LOG_MESSAGE_FORWARD_SSH_VALUE_SET_FAILED = "RFC: dmcli SET failed for Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.ForwardSSH.Enable with value test";
 
     /** Log message for Notification in webpa log */
     public static final String LOG_MESSAGE_NOTIFICATION_EVENT_FROM_STACK = "Notification Event from stack";
-    
+
     /** Log message for datatype in webpa log */
     public static final String LOG_MESSAGE_DATATYPE = "Data Type";
 
@@ -1156,37 +1156,37 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
 
     /** Log message for Change Source in webpa log */
     public static final String LOG_MESSAGE_CHANGE_SOURCE = "Change Source";
-    
+
     /** Log message to get the RFC feature list as NONE */
     public static final String LOG_MESSAGE_RFC_NONE = "\\[RFC\\]:: \\[Features Enabled\\]-\\[NONE\\]";
-    
+
     /** Log message to get the http code as 404 */
     public static final String LOG_MESSAGE_HTTP_CODE_404 = "http_code: 404";
-    
+
     /** Log message to get the RFC STAGING feature list */
     public static final String LOG_MESSAGE_RFC_STAGING = "\\[RFC\\]:: \\[Features Enabled\\]-\\[STAGING\\]";
-    
+
     /** Log message to get the http code as 200 */
     public static final String LOG_MESSAGE_RFC_HTTP_CODE_200 = "http_code: 200";
-    
+
     /** Log message to get the RFC ACTIVE feature list */
     public static final String LOG_MESSAGE_RFC_ACTIVE = "\\[RFC\\]:: \\[Features Enabled\\]-\\[ACTIVE\\]";
-    
+
     /** Log message to get the http code as 304 */
     public static final String LOG_MESSAGE_HTTP_CODE_304 = "http_code: 304";
-    
+
     /** Log message for RFC value of SNMPv2 support in Arm/Consolelog */
     public static final String LOG_MESSAGE_RFC_VALUE_SNMPV2_SUPPORT = "RFC value for SNMPV2 support";
-    
+
     /** Log message for RFC reboot cron scheduled in dcmrfc.log */
     public static final String LOG_MESSAGE_RFC_REBOOT_CRON_SCHEDULED = "RFC Reboot cron job scheduled";
-    
+
     /** Log message for old parameter value in dcmrfc.log */
     public static final String LOG_MESSAGE_OLD_PARAM_VALUE = "RFC: old parameter value ";
 
     /** Log message for new parameter value in dcmrfc.log */
     public static final String LOG_MESSAGE_NEW_PARAM_VALUE = "Parameter value  ";
-    
+
     /** Log message for parameter value updated in dcmrfc.log */
     public static final String LOG_MESSAGE_PARAM_VALUE_UPDATED = "RFC:  updated for Device.DeviceInfo.X_RDKCENTRAL-COM_RFC.Feature.EncryptCloudUpload.Enable from value old=false, to new=true";
 
@@ -1198,25 +1198,108 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
 
     /** Activation Journey - LAN Initialization Start */
     public static final String ACTIVATION_LAN_INITIALIZATION_START = "Lan_init_start";
-    
+
     /** Activation Journey - LAN Initialization */
     public static final String ACTIVATION_LAN_INITIALIZATION_COMPLETE_NEW = "Laninit_complete";
-    
+
     /** Activation Journey - EPON Registration */
     public static final String ACTIVATION_EPON_REGISTRATION = "EPON_Reg_Complete";
-    
+
     /** Activation Journey - Docsis Registration */
     public static final String ACTIVATION_DOCSIS_REGISTRATION = "Docsis_Reg_Complete";
-    
+
     /** Activation Journey - WAN Initialization Start */
     public static final String ACTIVATION_WAN_INITIALIZATION_START = "Wan_init_start";
 
     /** Activation Journey - WAN Initialization */
     public static final String ACTIVATION_WAN_INITIALIZATION_COMPLETE = "Wan_init_complete";
-    
+
     /** Log message for CM DHCP initialization in bootfile log */
     public static final String LOG_MESSAGE_CM_DHCP_START = "CM DHCP START";
 
     /** Log message for CM DHCP initialization in bootfile log */
     public static final String LOG_MESSAGE_CM_DHCP_END = "CM DHCP END";
+
+    /** List of Log message for IPtable command */
+    public static final ArrayList<String> LOG_MESSAGE_PATTERN_IN_IPTABLE = new ArrayList<String>(
+	    Arrays.asList("-A FORWARD -o erouter0 -m state --state NEW -j DSCP --set-dscp 0x14",
+		    "-A FORWARD -m state ! --state NEW -j DSCP --set-dscp 0x00",
+		    "-A OUTPUT -o erouter0 -p udp -j DSCP --set-dscp 0x14",
+		    "-A OUTPUT -o erouter0 -p tcp -j DSCP --set-dscp 0x14",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0x1d/0xff -j DSCP --set-dscp 0x18",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0x1c/0xff -j DSCP --set-dscp 0x22",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0x1b/0xff -j DSCP --set-dscp 0x20",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0x1a/0xff -j DSCP --set-dscp 0x00",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0xa/0xff -j DSCP --set-dscp 0x1c",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0xb/0xff -j DSCP --set-dscp 0x08",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0xc/0xff -j DSCP --set-dscp 0x28",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0xd/0xff -j DSCP --set-dscp 0x14",
+		    "-A postrouting_qos -o erouter0 -p gre -j DSCP --set-dscp 0x2c"));
+
+    /** List of Log message for IPtable command */
+    public static final ArrayList<String> LOG_MESSAGE_PATTERN_IN_IPTABLE_OLD = new ArrayList<String>(
+	    Arrays.asList("-A FORWARD -o erouter0 -m state --state NEW -j DSCP --set-dscp 0x14",
+		    "-A FORWARD -m state ! --state NEW -j DSCP --set-dscp 0x00",
+		    "-A OUTPUT -o erouter0 -p udp -j DSCP --set-dscp 0x14",
+		    "-A OUTPUT -o erouter0 -p tcp -j DSCP --set-dscp 0x14",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0x1d/0xff -j DSCP --set-dscp 0x18",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0x1c/0xff -j DSCP --set-dscp 0x22",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0x1b/0xff -j DSCP --set-dscp 0x20",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0x1a/0xff -j DSCP --set-dscp 0x00",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0xa/0xff -j DSCP --set-dscp 0x1c",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0xb/0xff -j DSCP --set-dscp 0x08",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0xc/0xff -j DSCP --set-dscp 0x28",
+		    "-A POSTROUTING -o erouter0 -m connmark --mark 0xd/0xff -j DSCP --set-dscp 0x14",
+		    "-A POSTROUTING -o erouter0 -p gre -j DSCP --set-dscp 0x2c"));
+
+    /** Device.Time.Enable Log string to search dcmrfc.log */
+    public static final String NTP_LOG_IN_DCMRFC_LOG = "\"Device.Time.Enable from value ";
+
+    /** Log Message for NTP server Disable TR181 param */
+    public static final String LOG_MESSAGE_DEVICE_TIME_DISABLE = "\"Disabling Network Time Sync\"";
+
+    /** Log message in iptable after blocking a service */
+    public static final String LOG_MESSAGE_CHECK_SERVICE_BLOCKED_IN_IPTABLES = "ServiceBlocked";
+
+    /** Log message in iptables after blocking FTP Service */
+    public static final String LOG_MESSAGE_CHECK_FTP_SERVICE_BLOCKED = "port 21";
+
+    /** new feature instance name for telmetry endpoint feature */
+    public static final String NEW_TELEMETRYENDPOINT_FEATURE_INSTANCE_NAME = "TMEndpoint1=true";
+
+    /** new feature instance name for telmetry endpoint feature */
+    public static final String OVERRIDE_TELEMETRYENDPOINT_FEATURE_INSTANCE_NAME = "TMEndpoint2=true";
+
+    /** Command to verify Log message for parameter value updated in dcmrfc.log */
+    public static final String LOG_MESSAGE_FORWARD_SSH_VALUE_UPDATED_FALSE = "RFC:  updated for Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.ForwardSSH.Enable from value old=true, to new=false";
+
+    /** Command to verify Log message for parameter value same in dcmrfc.log */
+    public static final String LOG_MESSAGE_FORWARD_SSH_VALUE_SAME_FALSE = "RFC: For param Device.DeviceInfo.X_RDKCENTRAL-COM_xOpsDeviceMgmt.ForwardSSH.Enable new and old values are same value false";
+    
+    /** Log message when ForwardSSH is disabled */
+    public static final String LOG_MESSAGE_TO_CHECK_FORWARD_SSH_DISABLED = "SSH: Forward SSH changed to disabled";
+    
+    /** Log Message for rdm bundle mgr script */
+    public static final String LOG_MESSAGE_RDM_BUNDLE_MGR = "/etc/rdm/rdmBundleMgr.sh";
+
+    /** Log Message for webui cert bundle file name */
+    public static final String LOG_MESSAGE_WEBUI_CERT_BUNDLE_FILE = "webui-cert-bundle";
+
+    /** Log Message for bundle package installed successfully */
+    public static final String LOG_MESSAGE_PACKAGE_INSTALLED_SUCCESSFULLY = "package installed successfully";
+
+    /** Log Message for no update required */
+    public static final String LOG_MESSAGE_NO_UPDATE_REQUIRED = "No update required";
+    
+    /** Log Message for process bundle update */
+    public static final String LOG_MESSAGE_PROCESS_BUNDLE_UPDATE = "process bundle update";
+    
+    /** Log Message for IOT service initialized in PARODUSlog.txt.0 */
+    public final static String LOG_MESSAGE_CLIENT_SERVICE_IOT = "\"client service iot is added to list with url: tcp://";
+    
+    /** Log Message in LM.txt.0 for LMLITE enabling */
+    public static final String LOG_MESSAGE_LMLITE_NETWORK_STATUS_REPORT_STARTED = "\"LMLite: Network Status Report STARTED\"";  
+    
+    /** Activation Journey - Client Connection */
+    public static final String ACTIVATION_CLIENT_CONNECTION = "Client_Connect_complete";
 }

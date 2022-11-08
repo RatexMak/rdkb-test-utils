@@ -206,4 +206,56 @@ public static final String TELEMETRY_PATTERN_FOR_DCA_COUNT_7 = "\\{\"Telemetry1 
 /** Command to get CPU usage using top command */
 public static final String CMD_TOP_TO_GET_CPU_USAGE = "top -bn1 | grep -i \"Cpu(s):\\|CPU:\" | cut -d'%' -f1 | cut  -d':' -f2";
 
+/** Property key for default xconf logupload url */
+public static final String PROP_KEY_DEFAULT_XCONF_LOGUPLOAD_URL = "default.xconf.logupload.url";
+
+/** Constant for DCM_LOG_SERVER_URL property */
+public static final String PROP_DCM_LOG_SERVER_URL = "DCM_LOG_SERVER_URL";
+
+/** Get Log Server URL from dcm.properties */
+public static final String CMD_GET_DCM_LOG_SERVER_URL = " | grep -i " + PROP_DCM_LOG_SERVER_URL;  
+
+/** String to store SearchResult in telemetry2_0.txt.0 */
+public static final String SEARCH_RESULT = "searchResult";
+
+/** Telemetry marker forLog upload in Telemetry log */
+public static final String SEARCHRESULT_LOG_UPLOAD_TELEMETRY2_MARKER = "(\\{\"searchResult\".*\\})";
+
+/** Command to get telemetry request details */
+public static final String CMD_GET_TELEMETRY_REQUEST_DETAILS = "cat /rdklogs/logs/dcmscript.log";
+
+/** Telemetry marker for bootuptime_Ethernet_split */
+public static final String TELEMETRY_MARKER_BOOTUPTIME_ETHERNET = "btime_eth_split";
+
+/** Telemetry marker for bootuptime_moca_split */
+public static final String TELEMETRY_MARKER_BOOTUPTIME_MOCA = "btime_moca_split";
+
+/** Telemetry marker for bootuptime_webpa_split */
+public static final String TELEMETRY_MARKER_BOOTUPTIME_WEBPA = "btime_webpa_split";
+
+/** Json Parameter for erouter ipv6 in "dcmscript.log" file */
+public static final String JSON_MARKER_IPV6_ADDRESS = "erouterIpv6"; 
+
+/** Json Parameter for erouter ipv4 in "dcmscript.log" file */
+public static final String JSON_MARKER_IPV4_ADDRESS = "erouterIpv4";
+
+public enum TelemetryData {
+	PROFILE,
+	EROUTER_MAC_ADDRESS,
+	EROUTER_IPV4,
+	EROUTER_IPV6,
+	VERSION,
+	PARTNER_ID,
+	TIME,
+	BOOTUP_TIME_WEBPA,
+	BOOTUP_TIME_ETHERNET,
+	BOOTUP_TIME_MOCA;
+    }
+
+public enum XConfQueryParams {
+ESTB_MACADDRESS,
+ECM_MACADDRESS,
+MODEL,
+FIRMWARE_VERSION;
+}
 }

@@ -740,29 +740,85 @@ public class BroadBandPropertyKeyConstants {
 	public static final String DNS_PRIMARY_IP_TCPDUMP = "cmd.dns.primaryip.tcpdump";
 
 	public static final String INVALID_DNS_PRIMARY_IP_TCPDUMP = "cmd.dns.invalid.primaryip.tcpdump";
-	
+
 	public static final String LINUX_CLIENT_WIFI_INTERFACE = "linux.client.wifi.interface";
-
-	public static final String RESOURCE_USAGE_COMPUTE_WINDOW_VALUE = "resource.usage.compute.window.value";
-
-	public static final String DEFAULT_SSID_VALUE_24_AFTER_FR = "default.ssid.value.24.after.factory.reset";
-	
-	public static final String DEFAULT_SSID_VALUE_5_AFTER_FR = "default.ssid.value.5.after.factory.reset";
 
 	/** Property key to identify particular device model */
 	public static final String PROP_KEY_PARTICULAR_DEVICE = "Device.particular.";
 
+	public static final String RESOURCE_USAGE_COMPUTE_WINDOW_VALUE = "resource.usage.compute.window.value";
+
+	public static final String DEFAULT_SSID_VALUE_24_AFTER_FR = "default.ssid.value.24.after.factory.reset";
+
+	public static final String DEFAULT_SSID_VALUE_5_AFTER_FR = "default.ssid.value.5.after.factory.reset";
+
 	/** Property key to identify the applicable devicemodel */
-    public static final String PROP_KEY_DEVICE_APPLICABLE_MODEL = "Device.applicable.model.";
-    
-    /** Property key which contains payload data to enable/disable Snmpv2 */
-    public static final String PROP_KEY_TO_DISABLE_SNMPV2 = "rfc.payload.disable.snmpv2";
-    
-    public static final String PROP_KEY_FILE_CONSOLELOG = "console.log.file.name.docsis.reg.";
-    
-    public static final String DEVICE_CHECK_FOR_EXPECTED_DEFAULT_OVS_LINUXBRIDGE_CONTROL = "expected.device.for.default.ovs.linuxbridge.control.check.";
-  
-    public static final String DEFAULT_BANDSTEERING_ENABLE_VALUE = "default.bandsteering.value.device";
+	public static final String PROP_KEY_DEVICE_APPLICABLE_MODEL = "Device.applicable.model.";
+
+	/** Property key which contains payload data to enable/disable Snmpv2 */
+	public static final String PROP_KEY_TO_DISABLE_SNMPV2 = "rfc.payload.disable.snmpv2";
+
+	public static final String PROP_KEY_FILE_CONSOLELOG = "console.log.file.name.docsis.reg.";
+
+	public static final String DEVICE_CHECK_FOR_EXPECTED_DEFAULT_OVS_LINUXBRIDGE_CONTROL = "expected.device.for.default.ovs.linuxbridge.control.check.";
+
+	public static final String DEFAULT_BANDSTEERING_ENABLE_VALUE = "default.bandsteering.value.device";
+
+	public static final String PROP_KEY_PUBLIC_PRIMARY_ENDPOINT_IP = "public.gre.tunnel.primary.remote.endpoint.ip";
+
+	public static final String PROP_KEY_PUBLIC_SECONDARY_ENDPOINT_IP = "public.gre.tunnel.secondary.remote.endpoint.ip";
+
+	public static final String PROP_KEY_PROXY_XCONF_SWUPDATE_URL = "proxy.xconf.swupdate.url";
+
+	public static final String WEBUI_CERT_BUNDLE_VERSION = "webui.cert.bundle.version";
+
+	public static final String NC_BAD_HOST_IP = "netcat.bad.host.ip.address";
+
+	public static final String NC_OUTSIDE_HOST_IP = "netcat.outside.host.ip.address";
+
+	public static final String NC_PRIVATE_HOST_IP = "netcat.private.host.ip.address";
+
+	public static final String NC_LOCAL_HOST_PORT = "netcat.local.host.ip.port";
+
+	public static final String NC_PRIVATE_IP_OUTSIDE_RANGE_1 = "netcat.private.ip.outside.range.1";
+
+	public static final String NC_PRIVATE_IP_OUTSIDE_RANGE_2 = "netcat.private.ip.outside.range.2";
+
+	public static final String NC_PRIVATE_IP_OUTSIDE_RANGE_3 = "netcat.private.ip.outside.range.3";
+
+	public static final String NC_PRIVATE_IP_OUTSIDE_RANGE_4 = "netcat.private.ip.outside.range.4";
+
+	public static final String INTERFACE_4090_IPTABLE = "interface.4090.iptables";
+
+	public static final String ATOM_SYNC_DEVICES_BROADBAND_ACTIVATION_EVENT = "broadband.activation.event.devices.atom.sync";
+
+	public static final String FIBER_DEVICES_BROADBAND_ACTIVATION_EVENT = "broadband.activation.event.devices.fiber";
+
+	public static final String DEVICES_BROADBAND_ACTIVATION_EVENT_SEC_CONSOLE = "broadband.activation.event.sec.console.file.devices";
+
+	public static final String DEVICES_BROADBAND_ACTIVATION_EVENT_CONSOLE_LOG_TXT = "broadband.activation.event.console.log.txt.file.devices";
+
+	public static final String DEVICES_BROADBAND_ACTIVATION_EVENT_LAN_INIT_START = "broadband.activation.event.lan.init.start.devices";
+
+	public static final String DEVICES_BROADBAND_ACTIVATION_EVENT_LANINIT_COMPLETE = "broadband.activation.event.lan.init.complete.devices";
+
+	public static final String DEVICES_BROADBAND_ACTIVATION_EVENT_WAN_INIT_START = "broadband.activation.event.wan.init.start.devices";
+
+	public static final String DEVICES_BROADBAND_ACTIVATION_EVENT_WANINIT_COMPLETE = "broadband.activation.event.wan.init.complete.devices";
+
+	public static final String DEVICES_BROADBAND_ACTIVATION_EVENT_CLIENT_CONNECT = "broadband.activation.event.client.connect.devices";
+
+	public static final String DEVICES_BROADBAND_ACTIVATION_EVENT_WIFI_NAME_BROADCAST_2_4 = "broadband.activation.event.wifi.name.broadcast.24.devices";
+
+	public static final String DEVICES_BROADBAND_ACTIVATION_EVENT_WIFI_NAME_BROADCAST_5 = "broadband.activation.event.wifi.name.broadcast.5.devices";
+
+	public static final String DEVICES_BROADBAND_ACTIVATION_EVENT_WIFI_BROADCAST_COMPLETE = "broadband.activation.event.wifi.broadcast.complete.devices";
+
+	public static final String DEVICES_BROADBAND_ACTIVATION_EVENT_WIFI_PERSONALIZATION_CAPTIVE = "broadband.activation.event.wifi.personalization.captive.mode.devices";
+
+	public static final String CAPTIVE_PORTAL_DEFAULT_DISABLED_PARTNER = "captive.portal.default.disabled.partner";
+
+	public static final String DEVICE_CHECK_BOOTSTRAP = "is.device.check.bootstrap.";
 
 	public static final String GREP_IDS_SYSCFG = "ids.check.syscfg";
 }

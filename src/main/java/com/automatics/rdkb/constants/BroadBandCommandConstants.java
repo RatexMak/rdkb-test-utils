@@ -1897,7 +1897,7 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** String to store file location of rfc database */
     public static final String FILE_LOCATION_RFC_DATABASE = "/opt/secure/RFC/tr181store.json";
-    
+
     public static final String CMD_GREP_A_5 = "grep -i -A 5 ";
 
     /** Command to fetch RFC processing logs for parameter in dcmrfc.log */
@@ -1905,27 +1905,70 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 	    + "key=" + BroadBandTestConstants.TR181_DOT + BroadBandTestConstants.STRING_REPLACE + " value="
 	    + BroadBandTestConstants.TELEMTRY_MARKER_SET_VALUE + BroadBandTestConstants.SYMBOL_QUOTES
 	    + BroadBandTestConstants.SINGLE_SPACE_CHARACTER + FILE_DCMRFC_LOG;
-    
+
     /** RFC status **/
     public static final String SYSCFG_ACCOUNTID = "syscfg set AccountID ";
 
     /** Command to save the changes in syscng.db file */
     public static final String CMD_FOR_SYSCFG_COMMIT = "syscfg commit";
-    
+
     /** Command to check the account id in xconf curl request */
     public static final String XCONF_CURL_ACCOUNTID = " /rdklogs/logs/xconf.txt.0";
 
     /** Command for Executing newly created crontab */
     public static final String CRONTAB_EXECUTE_ABSOLUTEPATH = "crontab -l -c /var/spool/cron/crontabs";
-    
+
     /**
      * Constants to represents the firmware script generic name.
      */
     public static final String FIRMWARE_SCRIPT_GENERIC_NAME = "_firmwareDwnld.sh";
-    
+
     /** Command to get mesh value from syscfg db */
     public static final String CMD_MESH_SYSCFG = "syscfg show| grep -i mesh_enable=true";
-    
+
     /** Command to grep iptables list */
     public static final String CMD_IPTABLE_PORT_LIST = "/usr/sbin/iptables -L";
+
+    /** Command to grep DSCP table */
+    public static final String IP_TABLE = "/usr/sbin/iptables-save | grep DSCP";
+
+    /**
+     * Command to get syndicate flow control values
+     */
+    public static final String CMD_SYSCFG_SYNDICATE_FLOW_DSCP_VALUES = "cat /opt/secure/data/syscfg.db | grep DSCP";
+
+    /**
+     * Command to get syndicate flow control status
+     */
+    public static final String CMD_SYSCFG_SYNDICATE_FLOW_STATUS = "cat /opt/secure/data/syscfg.db | grep SyndicationFlowControl";
+
+    /**
+     * Command to execute rm -rf /nvram/.DCMSettings.conf /tmp/DCMSettings.conf /nvram/dcm.properties
+     */
+    public static final String CMD_TO_FORCE_REMOVE_DCM_SETTINGS = "rm -rf /nvram/.DCMSettings.conf  /tmp/DCMSettings.conf /nvram/dcm.properties";
+
+    /** Constant to hold file for getting webuiupdate logs */
+    public static final String FILE_GET_WEBUI_UPDATE_LOG = "/rdklogs/logs/webuiupdate.log";
+
+    /** Constant to hold file for getting /nvram/etc/certs/webui-cert-bundle_package.json details */
+    public static final String FILE_GET_WEBUI_CERT_BUNDLE_PACKAGE = "/nvram/etc/certs/webui-cert-bundle_package.json";
+
+    /** Command constant for openssl date cmd */
+    public static final String CMD_TO_OPEN_MYROUTER_CERTFICATE = "openssl x509 -noout -dates -in ";
+    
+    /** COMMAND to view iptable */
+    public final static String CMD_IPTABLES_S = "/usr/sbin/iptables -S";
+
+    /** COMMAND netstat -an */
+    public final static String CMD_NETSTAT_AN = "netstat -an ";
+    
+    /** File location for libwrp-c.so under /usr/lib directory */
+    public static final String FILE_LIB_LIBWRP_C_SO = "/usr/lib/libwrp-c.so";
+    
+    /** PSM Syndication SSID prefix */
+    public static final String PSM_SSID_PREFIX = "Device.DeviceInfo.X_RDKCENTRAL-COM_Syndication.HomeSec.SSIDprefix";
+
+    /** Command psmcli get */
+    public static final String CMD_PSMCLI_GET = "psmcli get ";
+
 }

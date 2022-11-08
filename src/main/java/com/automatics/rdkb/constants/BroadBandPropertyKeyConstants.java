@@ -763,4 +763,6 @@ public class BroadBandPropertyKeyConstants {
     public static final String DEVICE_CHECK_FOR_EXPECTED_DEFAULT_OVS_LINUXBRIDGE_CONTROL = "expected.device.for.default.ovs.linuxbridge.control.check.";
   
     public static final String DEFAULT_BANDSTEERING_ENABLE_VALUE = "default.bandsteering.value.device";
+
+	public static final String GREP_IDS_SYSCFG = "ids.check.syscfg";
 }

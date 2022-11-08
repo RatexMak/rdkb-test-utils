@@ -2666,4 +2666,9 @@ public class BroadbandPropertyFileHandler {
 			    .getSTBPropsValue(BroadBandPropertyKeyConstants.DEFAULT_SSID_VALUE_5_AFTER_FR);
 	}
 
+	public static String getCommandForIDSinSyscfg() {
+		return AutomaticsTapApi
+			    .getSTBPropsValue(BroadBandPropertyKeyConstants.GREP_IDS_SYSCFG);
+	}
+
 }

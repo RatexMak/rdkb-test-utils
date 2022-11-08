@@ -330,6 +330,8 @@ public class BroadBandRfcFeatureControlUtils {
 		LOGGER.info("proxyDcmServerUpdateUrl :" + proxyDcmServerUpdateUrl);
 		serverResponse = serverCommunicator.postDataToServer(proxyDcmServerUpdateUrl, rfcSettings, "POST", 60000,
 				headers);
+		LOGGER.info("response code :"+serverResponse.getResponseCode());
+		LOGGER.info("response status :"+serverResponse.getResponseStatus());
 		return serverResponse.getResponseCode();
 	}
 

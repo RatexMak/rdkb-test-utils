@@ -517,7 +517,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String TELEMTRY_MARKER_FOR_WIFI_CONFIG_CHANGED = "\"RDKB_WIFI_CONFIG_CHANGED : Wifi security mode SETVALUE is Enabled\"";
 
     /** Constant to hold command to get wifi driver name */
-    public static final String CMD_GET_WIFI_NAME = "netsh wlan show profiles |grep -i interface";
+    public static final String CMD_GET_WIFI_NAME = "netsh wlan show profiles"; //changed
 
     /** Constant for iwconfig */
     public static final String CMD_IW_CONFIG_PATH = "/sbin/iwconfig";

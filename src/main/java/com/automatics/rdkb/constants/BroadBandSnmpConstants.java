@@ -34,7 +34,7 @@ public class BroadBandSnmpConstants {
     /** SNMP MIB details */
     public static enum BROADBAND_WAREHOUSE_SNMP_LIST {
 	WAREHOUSE_GENERAL_EMTA_DETECTION(
-		"1.3.6.1.2.1.2.2.1.2",
+		"1.3.6.1.2.1.2.2.1.16.",
 		"16",
 		"emta detection",
 		SnmpDataType.STRING,

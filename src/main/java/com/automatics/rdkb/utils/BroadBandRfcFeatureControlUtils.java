@@ -332,8 +332,8 @@ public class BroadBandRfcFeatureControlUtils {
 		LOGGER.info("proxyDcmServerUpdateUrl :" + proxyDcmServerUpdateUrl);
 		serverResponse = serverCommunicator.postDataToServer(proxyDcmServerUpdateUrl, rfcSettings, "POST", 60000,
 				headers);
-		LOGGER.info("response code :"+serverResponse.getResponseCode());
-		LOGGER.info("response status :"+serverResponse.getResponseStatus());
+		LOGGER.info("response code :" + serverResponse.getResponseCode());
+		LOGGER.info("response status :" + serverResponse.getResponseStatus());
 		return serverResponse.getResponseCode();
 	}
 
@@ -383,7 +383,7 @@ public class BroadBandRfcFeatureControlUtils {
 				LOGGER.info("PAY LOAD DATA: " + rfcSettings);
 				responseCode = postDataToProxyXconfDcmServer(device, tapEnv, rfcSettings);
 				LOGGER.info("RESPONSE CODE: " + responseCode);
-				if (responseCode==RDKBTestConstants.CONSTANT_200 || responseCode==RDKBTestConstants.CONSTANT_201) {
+				if (responseCode == RDKBTestConstants.CONSTANT_200 || responseCode == RDKBTestConstants.CONSTANT_201) {
 					LOGGER.info("POST request for rfc settings is successful");
 					clearDCMRFClog(device, tapEnv);
 					status = true;
@@ -815,50 +815,62 @@ public class BroadBandRfcFeatureControlUtils {
 	 * 
 	 * 
 	 * @author Susheela C
-	 * @Refactor Athira
+	 * @Refactor Athira, Said Hisham
 	 */
 	public static boolean enableOrDisableFeatureByRFC(AutomaticsTapApi tapEnv, Dut device, String featureName,
 			boolean enableOrDisableFlag) throws JSONException {
-
 		LOGGER.debug("STARTING METHOD: BroadBandRfcFeatureControlUtils.enableOrDisableFeatureByRFC");
 		String proxyXconfUrl = AutomaticsTapApi.getSTBPropsValue(BroadBandTestConstants.PROP_KEY_PROXY_XCONF_RFC_URL);
-		LOGGER.info("proxyXconfUrl is " + proxyXconfUrl);
 		boolean status = false;
+		boolean isRfcDataPosted = false;
 		String response = null;
 		try {
 			if (BroadBandRfcFeatureControlUtils.enableOrDisableFeatureInProxyXconf(tapEnv, device, featureName,
 					enableOrDisableFlag)) {
-				LOGGER.info("in (BroadBandRfcFeatureControlUtils.enableOrDisableFeatureInProxyXconf ");
 				if (BroadBandRfcFeatureControlUtils.copyRfcPropertiesFromEtcToNVRAM(device, tapEnv)) {
-					LOGGER.info("in (copyRfcPropertiesFromEtcToNVRAM ");
-					status = CommonMethods.copyAndUpdateRfcPropertiesNewXconfUrl(device, tapEnv, proxyXconfUrl);
-					LOGGER.info("status in copyRfcPropertiesFromEtcToNVRAM " + status);
+					isRfcDataPosted = BroadBandRfcFeatureControlUtils.copyAndUpdateRfcPropertiesNewXconfUrl(device,
+							tapEnv, proxyXconfUrl);
 					tapEnv.executeCommandUsingSsh(device, CMD_CLEAR_HASH_VALUE);
-					status = CommonUtils.rebootAndWaitForIpAcquisition(tapEnv, device);
-					LOGGER.info("status CommonUtils.rebootAndWaitForIpAcquisition " + status);
+					BroadBandWebPaUtils.setVerifyWebPAInPolledDuration(device, tapEnv,
+							BroadBandWebPaConstants.WEBPA_PARAM_RFC_CONTROL, BroadBandTestConstants.CONSTANT_2,
+							BroadBandTestConstants.STRING_CONSTANT_1, BroadBandTestConstants.ONE_MINUTE_IN_MILLIS,
+							BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS);
 				} else {
 					throw new TestException("Error faced while copying dcm properties file from etc to nvram folder");
 				}
 			} else {
 				throw new TestException(featureName + " not enabled/disbaled in XCONF");
 			}
-			response = CommonUtils.searchLogFilesWithPollingInterval(tapEnv, device,
-					BroadBandTraceConstants.LOG_MESSAGE_COMPLETED_RFC_PASS, BroadBandCommandConstants.FILE_DCMRFC_LOG,
-					BroadBandTestConstants.TEN_MINUTE_IN_MILLIS, BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
-			if (CommonMethods.isNotNull(response)) {
-				LOGGER.info("Response from dcmrfc log file is " + response);
-				CommonUtils.patternSearchFromTargetString(response,
-						BroadBandTraceConstants.LOG_MESSAGE_COMPLETED_RFC_PASS);
+			if (isRfcDataPosted) {
+				response = CommonUtils.searchLogFilesWithPollingInterval(tapEnv, device,
+						BroadBandTraceConstants.LOG_MESSAGE_COMPLETED_RFC_PASS,
+						BroadBandCommandConstants.FILE_DCMRFC_LOG, BroadBandTestConstants.TEN_MINUTE_IN_MILLIS,
+						BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+				LOGGER.info("Response from dcmrfc log file without reboot :" + response);
+				if (CommonMethods.isNotNull(response) && CommonUtils.patternSearchFromTargetString(response,
+						BroadBandTraceConstants.LOG_MESSAGE_COMPLETED_RFC_PASS)) {
+					status = CommonMethods.rebootAndWaitForIpAccusition(device, tapEnv);
+				}
 			}
-
-			status = CommonUtils.rebootAndWaitForIpAcquisition(tapEnv, device); // Reboot a second time, as per
-
+			/** Performing reboot if COMPLETED RFC PASS log information not appeared */
+			if (isRfcDataPosted && !status) {
+				if (CommonMethods.rebootAndWaitForIpAccusition(device, tapEnv)) {
+					response = CommonUtils.searchLogFilesWithPollingInterval(tapEnv, device,
+							BroadBandTraceConstants.LOG_MESSAGE_COMPLETED_RFC_PASS,
+							BroadBandCommandConstants.FILE_DCMRFC_LOG, BroadBandTestConstants.TEN_MINUTE_IN_MILLIS,
+							BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+					LOGGER.info("Response from dcmrfc log file after first reboot : " + response);
+					if (CommonMethods.isNotNull(response) && CommonUtils.patternSearchFromTargetString(response,
+							BroadBandTraceConstants.LOG_MESSAGE_COMPLETED_RFC_PASS)) {
+						status = CommonMethods.rebootAndWaitForIpAccusition(device, tapEnv);
+					}
+				}
+			}
 		} catch (Exception exception) {
 			errorMessage = exception.getMessage();
 			LOGGER.error(errorMessage);
 			throw new TestException(errorMessage);
 		}
-
 		LOGGER.debug("ENDING METHOD: BroadBandRfcFeatureControlUtils.enableOrDisableFeatureByRFC");
 		return status;
 	}

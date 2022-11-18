@@ -825,8 +825,9 @@ public class BroadBandCommonUtils {
 				LOGGER.info("error code from exception:" + e.getError().getCode());
 				LOGGER.info("error code from error codes:" + GeneralError.SSH_CONNECTION_FAILURE.getCode());
 				if (expectedResult = false) {
-					if (e.getError().getCode().equals(GeneralError.SSH_CONNECTION_FAILURE.getCode())) {
+					if (e.getError().getCode()==(GeneralError.SSH_CONNECTION_FAILURE.getCode())) {
 						result = true;
+						LOGGER.info("result after exception:"+result);
 						return result;
 					}
 				} else
@@ -834,7 +835,7 @@ public class BroadBandCommonUtils {
 			}
 		} while (((System.currentTimeMillis() - startTime) < maxPollingTime) && !result
 				&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, pollingInterval));
-		LOGGER.debug("ENDING METHOD: isRdkbDeviceAccessible");
+		LOGGER.info("ENDING METHOD: isRdkbDeviceAccessible");
 		return result;
 	}
 

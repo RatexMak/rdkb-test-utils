@@ -214,19 +214,22 @@ public class BroadBandPreConditionUtils {
 		LOGGER.info("PRE-CONDITION " + preConStepNumber + " : EXPTECTED : DEVICE MUST UNDERGO FACTORY RESET.");
 		LOGGER.info("#######################################################################################");
 		errorMessage = "UNABLE TO PERFORM WIFI FACTORY RESET OPERATION ON THE DEVICE. HENCE BLOCKING THE EXECUTION.";
-
-		status = BroadBandCommonUtils.performFactoryResetWebPa(tapEnv, device);
+		if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
+		    BroadBandCommonUtils.getAtomsyncUptimeStatus(device, tapEnv);
+		}
+		status = BroadBandCommonUtils.performFactoryResetWebPaByPassingTriggerTime(tapEnv, device,
+			BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS);
 		if (status) {
-			isFactoryReset = status;
-			LOGGER.info("PRE-CONDITION " + preConStepNumber + " : ACTUAL : FACTORY RESET SUCCESSFULLY PERFORMED.");
+		    isFactoryReset = status;
+		    LOGGER.info("PRE-CONDITION " + preConStepNumber + " : ACTUAL : FACTORY RESET SUCCESSFULLY PERFORMED.");
 		} else {
-			LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL : " + errorMessage);
-			throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION : " + preConStepNumber
-					+ " FAILED : " + errorMessage);
+		    LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL : " + errorMessage);
+		    throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION : " + preConStepNumber
+			    + " FAILED : " + errorMessage);
 		}
 
 		return isFactoryReset;
-	}
+	    }
 
 	/**
 	 * Pre-Condition method to perform reactivate the device .

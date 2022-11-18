@@ -6862,4 +6862,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Telemetry Log Text */
     public static final String TEXT_TELEMETRY_LOG = "#TELEMETRY_LOG#";
+    
+    /** String parameter for factory resetting the box for DSL Device */
+    public static final String STRING_FACTORY_RESET_PARAMETER_FOR_DSL = "Router,Wifi,VoIP,Firewall";
 }

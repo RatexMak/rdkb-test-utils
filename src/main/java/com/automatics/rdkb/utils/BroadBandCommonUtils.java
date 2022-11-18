@@ -53,6 +53,7 @@ import com.automatics.constants.AutomaticsConstants;
 import com.automatics.constants.LinuxCommandConstants;
 import com.automatics.device.Device;
 import com.automatics.device.Dut;
+import com.automatics.exceptions.FailedTransitionException;
 import com.automatics.exceptions.TestException;
 import com.automatics.rdkb.BroadBandDeviceStatus;
 import com.automatics.rdkb.BroadBandParentalControlParameter;
@@ -804,12 +805,13 @@ public class BroadBandCommonUtils {
 	 */
 	public static boolean isRdkbDeviceAccessible(AutomaticsTapApi tapEnv, Dut device, long pollingInterval,
 			long maxPollingTime, boolean expectedResult) {
-		LOGGER.debug("ENTERING METHOD: isRdkbDeviceAccessible");
+		LOGGER.info("ENTERING METHOD: isRdkbDeviceAccessible");
 		// Boolean Variable to store the result
 		boolean result = false;
 		// Start time
 		long startTime = System.currentTimeMillis();
 		do {
+			try {
 			String response = tapEnv.executeCommandUsingSsh(device,
 					BroadBandTestConstants.ECHO_WITH_SPACE + BroadBandTestConstants.CONNECTION_TEST_MESSAGE);
 			result = expectedResult
@@ -817,6 +819,11 @@ public class BroadBandCommonUtils {
 							BroadBandTestConstants.CONNECTION_TEST_MESSAGE))
 					: (CommonMethods.isNull(response)
 							|| response.indexOf(BroadBandTestConstants.CONNECTION_TEST_MESSAGE) == -1);
+			}catch(FailedTransitionException jcsh) {
+				LOGGER.info("Exception occured :"+jcsh.getMessage());
+				result = false;
+				return result; 
+			}
 		} while (((System.currentTimeMillis() - startTime) < maxPollingTime) && !result
 				&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, pollingInterval));
 		LOGGER.debug("ENDING METHOD: isRdkbDeviceAccessible");

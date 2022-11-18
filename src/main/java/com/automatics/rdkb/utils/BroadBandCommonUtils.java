@@ -824,12 +824,11 @@ public class BroadBandCommonUtils {
 				LOGGER.info("Exception occured :" + e.getMessage());
 				LOGGER.info("error code from exception:" + e.getError().getCode());
 				LOGGER.info("error code from error codes:" + GeneralError.SSH_CONNECTION_FAILURE.getCode());
-				if (expectedResult = false) {
-					if (e.getError().getCode()==(GeneralError.SSH_CONNECTION_FAILURE.getCode())) {
-						result = true;
-						LOGGER.info("result after exception:"+result);
-						return result;
-					}
+				if (expectedResult == false
+						&& e.getError().getCode() == (GeneralError.SSH_CONNECTION_FAILURE.getCode())) {
+					result = true;
+					LOGGER.info("result after exception:" + result);
+					return result;
 				} else
 					return result;
 			}

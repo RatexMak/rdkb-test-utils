@@ -4556,7 +4556,7 @@ public class BroadBandCommonUtils {
 		// Check if the device goes down.
 		if (result) {
 			
-		    result = isRdkbDeviceAccessible(tapEnv, device, BroadBandTestConstants.ONE_MINUTE_IN_MILLIS,
+		    result = isRdkbDeviceAccessible(tapEnv, device, BroadBandTestConstants.TEN_SECOND_IN_MILLIS,
 			    factoryResetTiggerTime, false);
 
 		    LOGGER.info("IS DEVICE REBOOTING AFTER TRIGGERING FACTORY RESET : " + result);

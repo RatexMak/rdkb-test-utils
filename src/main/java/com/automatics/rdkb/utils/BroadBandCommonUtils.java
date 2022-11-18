@@ -53,6 +53,7 @@ import com.automatics.constants.AutomaticsConstants;
 import com.automatics.constants.LinuxCommandConstants;
 import com.automatics.device.Device;
 import com.automatics.device.Dut;
+import com.automatics.error.GeneralError;
 import com.automatics.exceptions.FailedTransitionException;
 import com.automatics.exceptions.TestException;
 import com.automatics.rdkb.BroadBandDeviceStatus;
@@ -812,17 +813,24 @@ public class BroadBandCommonUtils {
 		long startTime = System.currentTimeMillis();
 		do {
 			try {
-			String response = tapEnv.executeCommandUsingSsh(device,
-					BroadBandTestConstants.ECHO_WITH_SPACE + BroadBandTestConstants.CONNECTION_TEST_MESSAGE);
-			result = expectedResult
-					? (CommonMethods.isNotNull(response) && CommonUtils.patternSearchFromTargetString(response,
-							BroadBandTestConstants.CONNECTION_TEST_MESSAGE))
-					: (CommonMethods.isNull(response)
-							|| response.indexOf(BroadBandTestConstants.CONNECTION_TEST_MESSAGE) == -1);
-			}catch(FailedTransitionException jcsh) {
-				LOGGER.info("Exception occured :"+jcsh.getMessage());
-				result = false;
-				return result; 
+				String response = tapEnv.executeCommandUsingSsh(device,
+						BroadBandTestConstants.ECHO_WITH_SPACE + BroadBandTestConstants.CONNECTION_TEST_MESSAGE);
+				result = expectedResult
+						? (CommonMethods.isNotNull(response) && CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.CONNECTION_TEST_MESSAGE))
+						: (CommonMethods.isNull(response)
+								|| response.indexOf(BroadBandTestConstants.CONNECTION_TEST_MESSAGE) == -1);
+			} catch (FailedTransitionException e) {
+				LOGGER.info("Exception occured :" + e.getMessage());
+				LOGGER.info("error code from exception:" + e.getError().getCode());
+				LOGGER.info("error code from error codes:" + GeneralError.SSH_CONNECTION_FAILURE.getCode());
+				if (expectedResult = false) {
+					if (e.getError().getCode().equals(GeneralError.SSH_CONNECTION_FAILURE.getCode())) {
+						result = true;
+						return result;
+					}
+				} else
+					return result;
 			}
 		} while (((System.currentTimeMillis() - startTime) < maxPollingTime) && !result
 				&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, pollingInterval));

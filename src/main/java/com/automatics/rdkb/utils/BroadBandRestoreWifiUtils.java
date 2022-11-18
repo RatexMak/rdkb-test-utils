@@ -311,7 +311,7 @@ public class BroadBandRestoreWifiUtils {
      */
     public static BroadBandResultObject verifyDefaultSSIDForPartner(Dut device, WiFiFrequencyBand radio,
 	    AutomaticsTapApi tapEnv, boolean isSnmpNeeded) {
-	LOGGER.debug("STARTING METHOD verifyDefaultSSIDForPartner");
+	LOGGER.info("STARTING METHOD verifyDefaultSSIDForPartner");
 	BroadBandResultObject broadBandResultObject = new BroadBandResultObject();
 	String webpaParameter = null;
 	String snmpOid = null;

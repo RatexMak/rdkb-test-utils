@@ -28,76 +28,98 @@ import com.automatics.utils.CommonMethods;
  */
 public class DeviceModeHandler {
 
-    /**
-     * Method to get model name whether its a isDSLDevice or not
-     * 
-     * @author Govardhan
-     */
-    public static boolean isDSLDevice(Dut device) {
-	boolean isDSLDevice = false;
-	try {
-	    String deviceModel = device.getModel();
-	    if (CommonMethods.isNotNull(deviceModel)) {
-		String dslModels = AutomaticsPropertyUtility.getProperty("dsl.device.models");
-		String[] dslModelsList = dslModels.split(",");
-		for (String model : dslModelsList) {
-		    if (model.equalsIgnoreCase(deviceModel)) {
-			isDSLDevice = true;
-			break;
-		    }
+	/**
+	 * Method to get model name whether its a isDSLDevice or not
+	 * 
+	 * @author Govardhan
+	 */
+	public static boolean isDSLDevice(Dut device) {
+		boolean isDSLDevice = false;
+		try {
+			String deviceModel = device.getModel();
+			if (CommonMethods.isNotNull(deviceModel)) {
+				String dslModels = AutomaticsPropertyUtility.getProperty("dsl.device.models");
+				String[] dslModelsList = dslModels.split(",");
+				for (String model : dslModelsList) {
+					if (model.equalsIgnoreCase(deviceModel)) {
+						isDSLDevice = true;
+						break;
+					}
+				}
+			}
+		} catch (Exception e) {
+			isDSLDevice = false;
 		}
-	    }
-	} catch (Exception e) {
-	    isDSLDevice = false;
+		return isDSLDevice;
 	}
-	return isDSLDevice;
-    }
 
-    /**
-     * Method to get model name whether its a isFibreDevice or not
-     * 
-     * @author Govardhan
-     */
-    public static boolean isFibreDevice(Dut device) {
-	boolean isFibreDevice = false;
-	try {
-	    String deviceModel = device.getModel();
-	    if ((CommonMethods.isNotNull(deviceModel))
-		    && (AutomaticsPropertyUtility.getProperty("fibre.device.models").contains(deviceModel))) {
-		isFibreDevice = true;
-	    }
-	} catch (Exception e) {
-	    isFibreDevice = false;
-	}
-	return isFibreDevice;
-    }
-
-    /**
-     * Method to get model name whether its a isBusinessClassDevice or not
-     * 
-     * @author Govardhan
-     */
-    public static boolean isBusinessClassDevice(Dut device) {
-	boolean isBusinessClassDevice = false;
-	try {
-	    String deviceModel = device.getModel();
-	    if (CommonMethods.isNotNull(deviceModel)) {
-		String isBusinessClassDeviceValues = AutomaticsPropertyUtility
-			.getProperty("businessclass.device.models");
-
-		String[] businessClassModels = isBusinessClassDeviceValues.split(",");
-
-		for (String model : businessClassModels) {
-		    if (model.equalsIgnoreCase(deviceModel)) {
-			isBusinessClassDevice = true;
-			break;
-		    }
+	/**
+	 * Method to get model name whether its a isFibreDevice or not
+	 * 
+	 * @author Govardhan
+	 */
+	public static boolean isFibreDevice(Dut device) {
+		boolean isFibreDevice = false;
+		try {
+			String deviceModel = device.getModel();
+			if ((CommonMethods.isNotNull(deviceModel))
+					&& (AutomaticsPropertyUtility.getProperty("fibre.device.models").contains(deviceModel))) {
+				isFibreDevice = true;
+			}
+		} catch (Exception e) {
+			isFibreDevice = false;
 		}
-	    }
-	} catch (Exception e) {
-	    isBusinessClassDevice = false;
+		return isFibreDevice;
 	}
-	return isBusinessClassDevice;
-    }
+
+	/**
+	 * Method to get model name whether its a isBusinessClassDevice or not
+	 * 
+	 * @author Govardhan
+	 */
+	public static boolean isBusinessClassDevice(Dut device) {
+		boolean isBusinessClassDevice = false;
+		try {
+			String deviceModel = device.getModel();
+			if (CommonMethods.isNotNull(deviceModel)) {
+				String isBusinessClassDeviceValues = AutomaticsPropertyUtility
+						.getProperty("businessclass.device.models");
+
+				String[] businessClassModels = isBusinessClassDeviceValues.split(",");
+
+				for (String model : businessClassModels) {
+					if (model.equalsIgnoreCase(deviceModel)) {
+						isBusinessClassDevice = true;
+						break;
+					}
+				}
+			}
+		} catch (Exception e) {
+			isBusinessClassDevice = false;
+		}
+		return isBusinessClassDevice;
+	}
+
+	/**
+	 * Method to get model name whether its a RPI device or not
+	 * 
+	 * @author Said Hisham
+	 */
+	public static boolean isRPIDevice(Dut device) {
+		boolean isRPIDevice = false;
+		try {
+			String deviceModel = device.getModel();
+			System.out.println("device Model :" + deviceModel);
+			if (CommonMethods.isNotNull(deviceModel)) {
+				String rpiDeviceModel = AutomaticsPropertyUtility.getProperty("rpi.device.model");
+				if (rpiDeviceModel.equalsIgnoreCase(deviceModel)) {
+					isRPIDevice = true;
+				}
+			}
+		} catch (Exception e) {
+			isRPIDevice = false;
+		}
+		return isRPIDevice;
+	}
 
 }

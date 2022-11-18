@@ -821,13 +821,10 @@ public class BroadBandCommonUtils {
 						: (CommonMethods.isNull(response)
 								|| response.indexOf(BroadBandTestConstants.CONNECTION_TEST_MESSAGE) == -1);
 			} catch (FailedTransitionException e) {
-				LOGGER.info("Exception occured :" + e.getMessage());
-				LOGGER.info("error code from exception:" + e.getError().getCode());
-				LOGGER.info("error code from error codes:" + GeneralError.SSH_CONNECTION_FAILURE.getCode());
+				LOGGER.error("Exception occured :" + e.getMessage());
 				if (expectedResult == false
 						&& e.getError().getCode() == (GeneralError.SSH_CONNECTION_FAILURE.getCode())) {
 					result = true;
-					LOGGER.info("result after exception:" + result);
 					return result;
 				} else
 					return result;
@@ -4560,72 +4557,68 @@ public class BroadBandCommonUtils {
 		// boolean variable to store the whether the WebPa Service is Up or not
 		boolean isWebPaServiceUp = false;
 		if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
-		    BroadBandCommonUtils.getAtomsyncUptimeStatus(device, tapEnv);
+			BroadBandCommonUtils.getAtomsyncUptimeStatus(device, tapEnv);
 		}
 		result = BroadBandWiFiUtils.setWebPaParams(device, WebPaParamConstants.WEBPA_PARAM_FACTORY_RESET,
-			DeviceModeHandler.isDSLDevice(device)
-				? BroadBandTestConstants.STRING_FACTORY_RESET_PARAMETER_FOR_DSL
-				: BroadBandTestConstants.STRING_FOR_FACTORY_RESET_OF_THE_DEVICE,
-			BroadBandTestConstants.CONSTANT_0);
+				DeviceModeHandler.isDSLDevice(device) ? BroadBandTestConstants.STRING_FACTORY_RESET_PARAMETER_FOR_DSL
+						: BroadBandTestConstants.STRING_FOR_FACTORY_RESET_OF_THE_DEVICE,
+				BroadBandTestConstants.CONSTANT_0);
 		long startTime = 0L;
 		// Check if the device goes down.
 		if (result) {
-			
-		    result = isRdkbDeviceAccessible(tapEnv, device, BroadBandTestConstants.TEN_SECOND_IN_MILLIS,
-			    factoryResetTiggerTime, false);
 
-		    LOGGER.info("IS DEVICE REBOOTING AFTER TRIGGERING FACTORY RESET : " + result);
+			result = isRdkbDeviceAccessible(tapEnv, device, BroadBandTestConstants.TEN_SECOND_IN_MILLIS,
+					factoryResetTiggerTime, false);
 
-		    if (result) {
-			// r
-			CommonMethods.waitForEstbIpAcquisition(tapEnv, device);
+			LOGGER.info("IS DEVICE REBOOTING AFTER TRIGGERING FACTORY RESET : " + result);
 
-			startTime = System.currentTimeMillis();
-			do {
-			    result = CommonMethods.isSTBAccessible(device);
-			    if (result) {
-				break;
-			    }
-			    LOGGER.info("DEVICE IS NOT UP AFTER FACTORY RESET. GOING TO WAIT FOR 1 MINUTE AND CHECK AGAIN.");
-			    tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
-			} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIFTEEN_MINUTES_IN_MILLIS
-				&& !result);
-			LOGGER.info("IS DEVICE COMES UP AFTER FACTORY RESET : " + result);
-		    }
+			if (result) {
+				CommonMethods.waitForEstbIpAcquisition(tapEnv, device);
+				startTime = System.currentTimeMillis();
+				do {
+					result = CommonMethods.isSTBAccessible(device);
+					if (result) {
+						break;
+					}
+					LOGGER.info("DEVICE IS NOT UP AFTER FACTORY RESET. GOING TO WAIT FOR 1 MINUTE AND CHECK AGAIN.");
+					tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+				} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIFTEEN_MINUTES_IN_MILLIS
+						&& !result);
+				LOGGER.info("IS DEVICE COMES UP AFTER FACTORY RESET : " + result);
+			}
 		} else {
-		    LOGGER.info("Webpa execution failed for performing factory reset ");
+			LOGGER.info("Webpa execution failed for performing factory reset ");
 		}
 
 		// If the device is up, check whether the webpa service is up and validate the
 		// factory reset using
 		// "verifyFactoryReset"
 		if (result) {
-		    isWebPaServiceUp = BroadBandWebPaUtils.verifyWebPaProcessIsUp(tapEnv, device, true);
-		    if (isWebPaServiceUp) {
-			// For Comcast
-			if (BroadBandWebPaUtils.getAndVerifyWebpaValueInPolledDuration(device, tapEnv,
-				BroadBandWebPaConstants.WEBPA_PARAM_FOR_SYNDICATION_PARTNER_ID,
-				BroadbandPropertyFileHandler.getDefaultPartnerID(), BroadBandTestConstants.ONE_MINUTE_IN_MILLIS,
-				BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS)) {
-			    result = verifyFactoryReset(tapEnv, device);
-			} else {
-			    // For Syndication Partners
-			    BroadBandResultObject resultObject = BroadBandRestoreWifiUtils.verifyDefaultSSIDForPartner(device,
-				    WiFiFrequencyBand.WIFI_BAND_2_GHZ, tapEnv, false);
-			    result = resultObject.isStatus();
+			isWebPaServiceUp = BroadBandWebPaUtils.verifyWebPaProcessIsUp(tapEnv, device, true);
+			if (isWebPaServiceUp) {
+				if (BroadBandWebPaUtils.getAndVerifyWebpaValueInPolledDuration(device, tapEnv,
+						BroadBandWebPaConstants.WEBPA_PARAM_FOR_SYNDICATION_PARTNER_ID,
+						BroadbandPropertyFileHandler.getDefaultPartnerID(), BroadBandTestConstants.ONE_MINUTE_IN_MILLIS,
+						BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS)) {
+					result = verifyFactoryReset(tapEnv, device);
+				} else {
+					// For Syndication Partners
+					BroadBandResultObject resultObject = BroadBandRestoreWifiUtils.verifyDefaultSSIDForPartner(device,
+							WiFiFrequencyBand.WIFI_BAND_2_GHZ, tapEnv, false);
+					result = resultObject.isStatus();
+				}
 			}
-		    }
 		} else {
-		    LOGGER.error("DEVICE DIDN'T COME UP AFTER FACTORY RESETTING, EVEN AFTER WAITING FOR 15 MINUTES");
+			LOGGER.error("DEVICE DIDN'T COME UP AFTER FACTORY RESETTING, EVEN AFTER WAITING FOR 15 MINUTES");
 		}
 		if (!isWebPaServiceUp) {
-		    LOGGER.error(
-			    "WEBPA SERVICE IS NOT UP IN THE DEVICE AFTER FACTORY RESETTING THE DEVICE, EVEN AFTER WAITING FOR 8 MINUTES. "
-				    + "UNABLE TO VERIFY THE FACTORY RESET STATUS. HENCE RETURNING THE FACTORY RESET STATUS AS 'FALSE'");
+			LOGGER.error(
+					"WEBPA SERVICE IS NOT UP IN THE DEVICE AFTER FACTORY RESETTING THE DEVICE, EVEN AFTER WAITING FOR 8 MINUTES. "
+							+ "UNABLE TO VERIFY THE FACTORY RESET STATUS. HENCE RETURNING THE FACTORY RESET STATUS AS 'FALSE'");
 		}
 		LOGGER.debug("ENDING METHOD : performFactoryResetWebPaByPassingTriggerTime");
 		return result;
-	    }
+	}
 
 	/**
 	 * Helper method to get the process id for dibbler client
@@ -5513,7 +5506,17 @@ public class BroadBandCommonUtils {
 						|| ssidValue.length() == BroadBandTestConstants.INTEGER_VALUE_13) {
 					expectedSsid = ssidValue;
 				}
-			} else {
+			}
+			if (DeviceModeHandler.isRPIDevice(device)) {
+				if (radio.equals((WiFiFrequencyBand.WIFI_BAND_2_GHZ))) {
+					expectedSsid = BroadbandPropertyFileHandler.getDefaultSsid24AfterFR();
+					status = ssidValue.equalsIgnoreCase(expectedSsid);
+				} else
+					expectedSsid = BroadbandPropertyFileHandler.getDefaultSsid5AfterFR();
+				status = ssidValue.equalsIgnoreCase(expectedSsid);
+			}
+
+			else {
 				prefix = getDefaultSSIDPrefixForDeviceAndPartnerSpecific(device, partnerId);
 				LOGGER.info("Prefix for The SSID Specific To Device is: " + prefix);
 				String ecmMac = ((Device) device).getEcmMac();

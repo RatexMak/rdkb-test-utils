@@ -821,4 +821,6 @@ public class BroadBandPropertyKeyConstants {
 	public static final String DEVICE_CHECK_BOOTSTRAP = "is.device.check.bootstrap.";
 
 	public static final String GREP_IDS_SYSCFG = "ids.check.syscfg";
+
+	public static final String IS_TR_69_ENABLED = "is.tr69.enabled";
 }

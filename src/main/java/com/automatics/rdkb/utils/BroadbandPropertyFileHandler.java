@@ -2861,7 +2861,21 @@ public class BroadbandPropertyFileHandler {
 
 	public static String getCommandForIDSinSyscfg() {
 		return AutomaticsTapApi
-			    .getSTBPropsValue(BroadBandPropertyKeyConstants.GREP_IDS_SYSCFG);
+				.getSTBPropsValue(BroadBandPropertyKeyConstants.GREP_IDS_SYSCFG);
+	}
+
+	/**
+	 * This API will check if TR-69 is enabled in the device from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static boolean isTr69Enabled() {
+		try {
+			return Boolean
+					.parseBoolean(AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.IS_TR_69_ENABLED));
+		} catch (Exception e) {
+			return true;
+		}
 	}
 
 }

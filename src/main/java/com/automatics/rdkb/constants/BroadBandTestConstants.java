@@ -3135,8 +3135,18 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /**
      * The constant holding command for seeing the process status of CCSPHOMESECURITY process.
      */
-    public static final String STRING_CCSPHOMESECURITY_PROCESS = "CcspHomeSecurity";
+    public static final String STRING_CCSPHOMESECURITY_PROCESS = "CcspHomeSecurity";//
 
+    /**
+     * The constant holding command for seeing the process status of SNMP process.
+     */
+    public static final String STRING_SNMP_D_PROCESS = "snmpd";
+    
+    /**
+     * The constant holding command for seeing the process status of SNMP Subagent.
+     */
+    public static final String STRING_SNMP_SUBAGENT_PROCESS = "snmp_subagent";
+    
     /** String for PRIVACY_PROTECTION_DEACTIVATED */
     public static final String STRING_PRIVACY_PROTECTION_DEACTIVATED = "PRIVACY_PROTECTION_DEACTIVATED";
 

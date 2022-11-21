@@ -466,6 +466,11 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
      * The constant holding command for seeing the process status of CcspHomeSecurity process.
      */
     public static final String PS_COMMAND_FOR_CCSPHOMESECURITY_PROCESS = "ps | grep CcspHomeSecurity";
+    
+    /**
+     * The constant holding command for SNMP process.
+     */
+    public static final String PS_COMMAND_FOR_SNMP_PROCESS = "ps -ef | grep snmp";
 
 	/** Command to get latest dnsmasq version on any device */
 	public static final String CMD_TO_GET_LATEST_DNSMASQ_VERSION = "dnsmasq -version | head -n 1 |cut -d' ' -f3";

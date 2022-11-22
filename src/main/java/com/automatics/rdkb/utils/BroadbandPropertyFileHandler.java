@@ -2878,4 +2878,14 @@ public class BroadbandPropertyFileHandler {
 		}
 	}
 
+	/**
+	 * This API will get the 5ghz interface name in the RPI device from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String get5ghzInterfaceName() {
+		return AutomaticsTapApi
+				.getSTBPropsValue(BroadBandPropertyKeyConstants.GET_5_GHZ_INTERFACE_NAME);
+	}
+
 }

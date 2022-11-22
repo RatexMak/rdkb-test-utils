@@ -823,4 +823,6 @@ public class BroadBandPropertyKeyConstants {
 	public static final String GREP_IDS_SYSCFG = "ids.check.syscfg";
 
 	public static final String IS_TR_69_ENABLED = "is.tr69.enabled";
+
+	public static final String GET_5_GHZ_INTERFACE_NAME = "5ghz.interface.name";
 }

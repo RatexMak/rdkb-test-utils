@@ -36,6 +36,7 @@ import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandTraceConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
 import com.automatics.rdkb.constants.RDKBTestConstants;
+import com.automatics.rdkb.constants.WebPaParamConstants;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
 import com.automatics.rdkb.utils.BroadBandRfcFeatureControlUtils;
 import com.automatics.rdkb.utils.BroadBandSystemUtils;
@@ -45,6 +46,7 @@ import com.automatics.test.AutomaticsTestBase;
 import com.automatics.utils.CommonMethods;
 import com.automatics.webpa.WebPaParameter;
 import com.automatics.rdkb.utils.ntp.DeviceTimeParams;
+import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
 
 /**
  * Class having Methods related to ntp automation.
@@ -506,6 +508,12 @@ public class NTPServerUtils extends AutomaticsTestBase {
 					status = BroadBandRfcFeatureControlUtils.copyAndUpdateRfcPropertiesNewXconfUrl(device, tapEnv,
 							proxyXconfUrl);
 					tapEnv.reboot(device);
+					if (CommonMethods.waitForEstbIpAcquisition(tapEnv, device)) {
+
+						status = BroadBandWebPaUtils.setParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+								WebPaParamConstants.WEBPA_PARAM_IMMEDIATE_RFC_CHECK_IN,
+								BroadBandTestConstants.CONSTANT_2, BroadBandTestConstants.STRING_VALUE_ONE);
+					}
 				} else {
 					throw new TestException("Error faced while copying dcm properties file from etc to nvram folder");
 				}

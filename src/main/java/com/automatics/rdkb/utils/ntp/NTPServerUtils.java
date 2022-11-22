@@ -144,10 +144,14 @@ public class NTPServerUtils extends AutomaticsTestBase {
 			String deviceDateTime) {
 		LOGGER.debug("STARTING METHOD: NTPServerUtils.validateNTPServerEnableAndUrlInLogs");
 		boolean status = false;
-		// Search result for log string "Enabling Network Time Sync"
-		boolean logString1Result = BroadBandSystemUtils.verifyArmConsoleLog(tapEnv, device,
-				BroadBandTraceConstants.LOG_MESSAGE_DEVICE_TIME_ENABLE, BroadBandTestConstants.COMMAND_NTP_LOG_FILE,
-				deviceDateTime);
+		boolean logString1Result = false;
+
+		if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
+			// Search result for log string "Enabling Network Time Sync"
+			logString1Result = BroadBandSystemUtils.verifyArmConsoleLog(tapEnv, device,
+					BroadBandTraceConstants.LOG_MESSAGE_DEVICE_TIME_ENABLE, BroadBandTestConstants.COMMAND_NTP_LOG_FILE,
+					deviceDateTime);
+		}
 		// Search result for log string "Setting NTPServer as '<url>'"
 		String response = getLatestLogResponse(tapEnv, device, BroadBandTestConstants.LOG_STRING_SETTING_NTPSERVER,
 				BroadBandTestConstants.COMMAND_NTP_LOG_FILE, deviceDateTime);
@@ -156,7 +160,11 @@ public class NTPServerUtils extends AutomaticsTestBase {
 				? (response.contains(BroadBandTestConstants.LOG_STRING_SETTING_NTPSERVER + "'" + ntpServerUrl + "'"))
 				: false;
 
-		status = logString1Result && logString2Result;
+		if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
+			status = logString1Result && logString2Result;
+		} else {
+			status = logString2Result;
+		}
 
 		if (!status) {
 			throw new TestException("Logs validation failed on PAmlog.txt.0 for NTP server enable and ntp server url");

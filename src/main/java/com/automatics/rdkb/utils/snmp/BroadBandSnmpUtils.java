@@ -2085,9 +2085,6 @@ public class BroadBandSnmpUtils {
 	try {
 	    tapEnv.executeCommandUsingSsh(device, LinuxCommandConstants.CMD_REBOOT);
 	    LOGGER.info("Device reboot initiated");
-	    isRebooted = getSystemUpTimeUsingSnmp(tapEnv, device, BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS,
-		    BroadBandTestConstants.BOOLEAN_VALUE_FALSE, BroadBandTestConstants.CONSTANT_420);
-	    LOGGER.info("Device is rebooted :" + isRebooted);
 	    if (CommonMethods.waitForEstbIpAcquisition(tapEnv, device)) {
 		isStbAccessible = getSystemUpTimeUsingSnmp(tapEnv, device, BroadBandTestConstants.TEN_MINUTE_IN_MILLIS,
 			BroadBandTestConstants.BOOLEAN_VALUE_TRUE, BroadBandTestConstants.CONSTANT_420);

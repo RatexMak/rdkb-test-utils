@@ -2117,7 +2117,7 @@ public class BroadBandSnmpUtils {
      */
     public static boolean getSystemUpTimeUsingSnmp(AutomaticsTapApi tapEnv, Dut device, long pollDuration,
 	    boolean isAccessible, int hardWaitTime) {
-	LOGGER.debug("STARTING METHOD : getSystemUpTimeUsingSnmp()");
+	LOGGER.info("STARTING METHOD : getSystemUpTimeUsingSnmp()");
 	boolean result = false;
 	String snmpCommandOutput = null;
 	int actualWaitTime = BroadBandTestConstants.CONSTANT_0;
@@ -2159,7 +2159,7 @@ public class BroadBandSnmpUtils {
 	} catch (Exception e) {
 	    LOGGER.error("Exception Occurred in getSystemUpTimeUsingSnmp():" + e.getMessage());
 	}
-	LOGGER.debug("ENDING METHOD : getSystemUpTimeUsingSnmp()");
+	LOGGER.info("ENDING METHOD : getSystemUpTimeUsingSnmp()");
 	return result;
     }
 

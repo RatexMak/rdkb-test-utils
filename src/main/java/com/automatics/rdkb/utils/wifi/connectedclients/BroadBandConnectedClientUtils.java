@@ -695,53 +695,47 @@ public class BroadBandConnectedClientUtils {
 		String pattern = null;
 		boolean result = false;
 		String defaultInterface = null;
-		if (BroadbandPropertyFileHandler.isIpv6Enabled()) {
-			try {
-				if (BroadBandConnectedClientTestConstants.OS_MAC.equalsIgnoreCase(osType)) {
-					String interfaceNameMacOS = ConnectedNattedClientsUtils.getWifiInterfaceNameOnMacOS(device, tapEnv);
-					command = BroadBandConnectedClientTestConstants.MAC_OS_COMMAND_CHECK_IPV6_ADDRESS.replace(
-							BroadBandConnectedClientTestConstants.MAC_OS_WIFI_PARAM_INTERFACE_NAME, interfaceNameMacOS);
-					commandResponse = tapEnv.executeCommandOnOneIPClients(device, command);
-					pattern = BroadBandConnectedClientTestConstants.PATTERN_MAC_OS_VALID_IPV6_ADDRESS;
-					LOGGER.info("PATTERN: " + pattern);
-					result = CommonMethods.isNotNull(commandResponse)
-							&& CommonMethods.patternMatcher(commandResponse, pattern);
-				} else {// If OS type is LINUX or WINDOWS
-					if (BroadBandConnectedClientTestConstants.OS_LINUX.equalsIgnoreCase(osType)) {
-						defaultInterface = getSpecificDefaultInterfaceNameOfTheLinux(device, tapEnv);
-					}
-					command = BroadBandConnectedClientTestConstants.OS_LINUX.equalsIgnoreCase(osType)
-							? BroadBandConnectedClientTestConstants.LINUX_COMMAND_CHECK_IPV6_ADDRESS
-									.replaceAll(BroadBandTestConstants.STRING_REPLACE, defaultInterface.trim())
-							: BroadBandConnectedClientTestConstants.WINDOWS_COMMAND_CHECK_IPV6_ADDRESS;
-					commandResponse = tapEnv.executeCommandOnOneIPClients(device, command);
-					pattern = BroadBandConnectedClientTestConstants.OS_LINUX.equalsIgnoreCase(osType)
-							? BroadBandConnectedClientTestConstants.PATTERN_LINUX_VALID_IPV6_ADDRESS
-							: BroadBandConnectedClientTestConstants.PATTERN_WINDOWS_VALID_IPV6_ADDRESS;
-					LOGGER.info("PATTERN: " + pattern);
-					result = CommonMethods.isNotNull(commandResponse)
-							&& CommonMethods.patternMatcher(commandResponse, pattern);
-					// Its applicable only for Linux OS
-					if (!result && BroadBandConnectedClientTestConstants.OS_LINUX.equalsIgnoreCase(osType)) {
-						result = CommonMethods.isNotNull(commandResponse)
-								&& CommonMethods.patternMatcher(commandResponse,
-										BroadBandConnectedClientTestConstants.INET_V6_ADDRESS_PATTERN_WITUOUT_SCOPE);
-					}
-					// Its applicable only for Windows OS
-					if (!result && BroadBandConnectedClientTestConstants.OS_WINDOWS.equalsIgnoreCase(osType)) {
-						result = CommonMethods.isNotNull(commandResponse) && CommonMethods.patternMatcher(
-								commandResponse,
-								BroadBandConnectedClientTestConstants.PATTERN_WINDOWS_VALID_SEG_FIVE_IPV6_ADDRESS);
-					}
+		try {
+			if (BroadBandConnectedClientTestConstants.OS_MAC.equalsIgnoreCase(osType)) {
+				String interfaceNameMacOS = ConnectedNattedClientsUtils.getWifiInterfaceNameOnMacOS(device, tapEnv);
+				command = BroadBandConnectedClientTestConstants.MAC_OS_COMMAND_CHECK_IPV6_ADDRESS.replace(
+						BroadBandConnectedClientTestConstants.MAC_OS_WIFI_PARAM_INTERFACE_NAME, interfaceNameMacOS);
+				commandResponse = tapEnv.executeCommandOnOneIPClients(device, command);
+				pattern = BroadBandConnectedClientTestConstants.PATTERN_MAC_OS_VALID_IPV6_ADDRESS;
+				LOGGER.info("PATTERN: " + pattern);
+				result = CommonMethods.isNotNull(commandResponse)
+						&& CommonMethods.patternMatcher(commandResponse, pattern);
+			} else {// If OS type is LINUX or WINDOWS
+				if (BroadBandConnectedClientTestConstants.OS_LINUX.equalsIgnoreCase(osType)) {
+					defaultInterface = getSpecificDefaultInterfaceNameOfTheLinux(device, tapEnv);
 				}
-			} catch (Exception e) {
-				LOGGER.error("Exception Occurred while getting ipv6 address:" + e.getMessage());
+				command = BroadBandConnectedClientTestConstants.OS_LINUX.equalsIgnoreCase(osType)
+						? BroadBandConnectedClientTestConstants.LINUX_COMMAND_CHECK_IPV6_ADDRESS
+								.replaceAll(BroadBandTestConstants.STRING_REPLACE, defaultInterface.trim())
+						: BroadBandConnectedClientTestConstants.WINDOWS_COMMAND_CHECK_IPV6_ADDRESS;
+				commandResponse = tapEnv.executeCommandOnOneIPClients(device, command);
+				pattern = BroadBandConnectedClientTestConstants.OS_LINUX.equalsIgnoreCase(osType)
+						? BroadBandConnectedClientTestConstants.PATTERN_LINUX_VALID_IPV6_ADDRESS
+						: BroadBandConnectedClientTestConstants.PATTERN_WINDOWS_VALID_IPV6_ADDRESS;
+				LOGGER.info("PATTERN: " + pattern);
+				result = CommonMethods.isNotNull(commandResponse)
+						&& CommonMethods.patternMatcher(commandResponse, pattern);
+				// Its applicable only for Linux OS
+				if (!result && BroadBandConnectedClientTestConstants.OS_LINUX.equalsIgnoreCase(osType)) {
+					result = CommonMethods.isNotNull(commandResponse) && CommonMethods.patternMatcher(commandResponse,
+							BroadBandConnectedClientTestConstants.INET_V6_ADDRESS_PATTERN_WITUOUT_SCOPE);
+				}
+				// Its applicable only for Windows OS
+				if (!result && BroadBandConnectedClientTestConstants.OS_WINDOWS.equalsIgnoreCase(osType)) {
+					result = CommonMethods.isNotNull(commandResponse) && CommonMethods.patternMatcher(commandResponse,
+							BroadBandConnectedClientTestConstants.PATTERN_WINDOWS_VALID_SEG_FIVE_IPV6_ADDRESS);
+				}
 			}
-			return result;
-		} else {
-			LOGGER.info("IPv6 is not available/disabled ");
-			return result = true;
+		} catch (Exception e) {
+			LOGGER.error("Exception Occurred while getting ipv6 address:" + e.getMessage());
 		}
+		return result;
+
 	}
 
 	/**
@@ -1295,6 +1289,7 @@ public class BroadBandConnectedClientUtils {
 			String command = ((Device) connectedDeviceActivated).getOsType()
 					.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
 							? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV4_ADDRESS
+									.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxClientWifiInterface())
 							: BroadBandConnectedClientTestConstants.COMMAND_CURL_WINDOWS_IPV4_ADDRESS;
 			errorMessage = "Connectivty check using IPV4 address failed";
 			commandResponse = tapEnv.executeCommandOnOneIPClients(connectedDeviceActivated, command);
@@ -1322,8 +1317,9 @@ public class BroadBandConnectedClientUtils {
 			testStepNumber = stepNumbers[3];
 			status = false;
 			errorMessage = "Connectivty check using IPV6 address failed";
-
-			if (!isSystemdPlatforms) {
+			
+	
+			if (BroadbandPropertyFileHandler.isIpv6Enabled() && !isSystemdPlatforms) {
 
 				command = ((Device) connectedDeviceActivated).getOsType()
 						.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
@@ -2794,6 +2790,7 @@ public class BroadBandConnectedClientUtils {
 			String command = ((Device) connectedDeviceActivated).getOsType()
 					.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
 							? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV4_ADDRESS
+									.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxClientWifiInterface())
 							: BroadBandConnectedClientTestConstants.COMMAND_CURL_WINDOWS_IPV4_ADDRESS;
 			errorMessage = "Connectivty check using IPV4 address failed";
 			commandResponse = tapEnv.executeCommandOnOneIPClients(connectedDeviceActivated, command);

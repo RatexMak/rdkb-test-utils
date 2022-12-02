@@ -441,7 +441,7 @@ public class BroadBandConnectedClientUtils {
 						"VERIFYING THE INTERNET CONNECTIVITY IN THE CLIENT WITH GIVEN GHZ SSID INTERFACEUSING IPV4; STATUS="
 								+ validateIpv4Connection);
 				status = validateIpv4Status && validateIpv4Connection;
-				if (status && (!DeviceModeHandler.isFibreDevice(device))) {
+				if (status && (!DeviceModeHandler.isFibreDevice(device) && (BroadbandPropertyFileHandler.isIpv6Enabled()) )) {
 					// VERIFY THE CORRECT IPV6 ADDRESS FOR CONNECTED CLIENT WITH GIVEN GHZ SSID .
 					validateIpv6Status = BroadBandConnectedClientUtils
 							.verifyIpv4OrIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDeviceWithPolledDuration(

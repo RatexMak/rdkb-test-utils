@@ -1404,6 +1404,7 @@ public class BroadBandConnectedClientUtils {
 
 			testStepNumber = stepNumbers[1];
 			status = false;
+			if(BroadbandPropertyFileHandler.isIpv6Enabled()) {
 			status = BroadBandConnectedClientUtils.verifyIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(osType,
 					connectedDeviceActivated, tapEnv);
 			if (status) {
@@ -1413,6 +1414,13 @@ public class BroadBandConnectedClientUtils {
 				LOGGER.error("STEP " + stepNumbers[1] + " : ACTUAL : " + errorMessage);
 			}
 			tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
+			
+		}else {
+			LOGGER.info("IPv6 is not available/disabled : Skipping Step 6 ...");
+			tapEnv.updateExecutionForAllStatus(device, testId, testStepNumber, ExecutionStatus.NOT_APPLICABLE, errorMessage, false);
+		}
+			
+			
 		} else {
 			LOGGER.info("This function is meant for executing 2 steps.Current steps passed are " + stepNumbers.length);
 		}

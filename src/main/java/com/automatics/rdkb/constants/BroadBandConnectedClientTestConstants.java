@@ -171,7 +171,7 @@ public class BroadBandConnectedClientTestConstants {
     public static final String RADIO_STATUS_DOWN = "Down";
     
     /** curl command in linux  to check connectivity using IPV4 address */
-    public static final String COMMAND_CURL_LINUX_IPV4_ADDRESS = "curl -4 -v --interface wlan0 'www.google.com' | grep '200 OK'";
+    public static final String COMMAND_CURL_LINUX_IPV4_ADDRESS = "curl -4 -v --interface <INTERFACE> 'www.google.com' | grep '200 OK'";
 
     /** curl command  in linux  to check connectivity using IPV4 address */
     public static final String COMMAND_CURL_LINUX_IPV6_ADDRESS = "curl -6 -v --interface wlan0 'www.google.com' | grep '200 OK'";

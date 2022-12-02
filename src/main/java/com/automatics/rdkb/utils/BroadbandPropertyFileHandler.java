@@ -2902,7 +2902,7 @@ public class BroadbandPropertyFileHandler {
 	 * 
 	 * @author Said Hisham
 	 */
-	public static CharSequence getLinuxClientWifiInterface() {
+	public static String getLinuxClientWifiInterface() {
 		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.LINUX_CLIENT_WIFI_INTERFACE);
 	}
 

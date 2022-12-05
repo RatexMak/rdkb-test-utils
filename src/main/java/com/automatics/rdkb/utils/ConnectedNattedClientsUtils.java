@@ -1200,6 +1200,7 @@ public class ConnectedNattedClientsUtils {
 	 */
 	private static long connectToLinuxForPerfTest(Dut device, Dut clientDevice, AutomaticsTapApi tapEnv, String ssid,
 			String passwordwifi) {
+		LOGGER.info("STARTING METHOD : connectToLinuxForPerfTest ");
 		String command = "";
 		long startTime;
 		long endTime = 0;
@@ -1215,7 +1216,7 @@ public class ConnectedNattedClientsUtils {
 		SshConnection sshConnection = null;
 		gatewayIp = BroadBandWiFiUtils.getGatewayIpOfDevice(device);
 
-		String[] commandToConnect = { CONNECT_LINUX.replaceAll("<ssid>", ssid).replaceAll("<password>", passwordwifi) };
+		String[] commandToConnect = { BroadBandCommandConstants.CMD_SUDO + CONNECT_LINUX.replaceAll("<ssid>", ssid).replaceAll("<password>", passwordwifi) };
 		String[] commandToPing = { BroadBandTestConstants.STRING_PING_TO_LINUX.replace("<IPADDRESS>", gatewayIp) };
 
 		try {
@@ -1229,7 +1230,8 @@ public class ConnectedNattedClientsUtils {
 			LOGGER.info("[SSH EXECUTION] : Executed command " + formattedCommands
 					+ " on connected client setup : Mac Address [" + clientDevice.getHostMacAddress() + "] IP Address ["
 					+ host + "] and Port Number [" + port + "]" + "\n[SSH EXECUTION] : Result - \n" + response);
-			if (CommonMethods.isNotNull(response) && response.contains(CONNECT_LINUX_SUCCESS_MESSAGE)) {
+			if (CommonMethods.isNotNull(response) && response.contains(CONNECT_LINUX_SUCCESS_MESSAGE.replace("<INTERFACE>",
+					BroadbandPropertyFileHandler.getLinuxClientWifiInterface()))) {
 				commandString = new StringBuffer();
 				commandString.append(commandToPing[0]);
 				formattedCommands = commandString.toString();
@@ -1257,9 +1259,9 @@ public class ConnectedNattedClientsUtils {
 				sshConnection.disconnect();
 			}
 		}
-		String connectStatus = CONNECT_STATUS_COMMAND_LINUX.replaceAll("<ssid>", ssid);
+		String connectStatus = BroadBandCommandConstants.CMD_SUDO + CONNECT_STATUS_COMMAND_LINUX.replaceAll("<ssid>", ssid);
 		String output = tapEnv.executeCommandOnOneIPClients(clientDevice, connectStatus);
-		command = DISCONNECT_LINUX.replaceAll("<ssid>", ssid + " " + output);
+		command = BroadBandCommandConstants.CMD_SUDO + DISCONNECT_LINUX.replaceAll("<ssid>", ssid + " " + output);
 		response = tapEnv.executeCommandOnOneIPClients(clientDevice, command);
 		if (CommonMethods.isNotNull(response) && response.contains(DISCONNECT_LINUX_SUCCESS_MESSAGE)) {
 			LOGGER.info("Dissconnected from WIFI SSID successfully");

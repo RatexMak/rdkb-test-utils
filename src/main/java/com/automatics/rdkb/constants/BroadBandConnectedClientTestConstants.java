@@ -24,7 +24,7 @@ public class BroadBandConnectedClientTestConstants {
     public static final String WINDOWS_COMMAND_TO_GET_WLAN_NETWORK = "netsh wlan show networks";
     
     /** linux command to get the WLAN networks  */
-    public static final String LINUX_COMMAND_TO_GET_WLAN_NETWORK = "sudo iw dev wlan0 scan ";
+    public static final String LINUX_COMMAND_TO_GET_WLAN_NETWORK = "sudo iw dev <INTERFACE> scan ";
     
     /** String variable to store connection type */
     public static final String STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI = "Wi-Fi";

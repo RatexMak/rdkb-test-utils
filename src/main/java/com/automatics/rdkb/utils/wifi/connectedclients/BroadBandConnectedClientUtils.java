@@ -991,7 +991,9 @@ public class BroadBandConnectedClientUtils {
 				String osType = ((Device) connectedDevice).getOsType();
 				switch (osType) {
 				case BroadBandConnectedClientTestConstants.OS_LINUX:
-					command = new String[] { BroadBandConnectedClientTestConstants.LINUX_COMMAND_TO_GET_WLAN_NETWORK };
+					command = new String[] { BroadBandConnectedClientTestConstants.LINUX_COMMAND_TO_GET_WLAN_NETWORK
+							.replace("<INTERFACE>", AutomaticsTapApi.getSTBPropsValue(
+									BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_WIFI_INTERFACE_IN_LINUX_CLIENT)) };
 					break;
 				case BroadBandConnectedClientTestConstants.OS_WINDOWS:
 					command = new String[] { BroadBandConnectedClientTestConstants.WINDOWS_COMMAND_TO_GET_WLAN_NETWORK
@@ -1317,8 +1319,7 @@ public class BroadBandConnectedClientUtils {
 			testStepNumber = stepNumbers[3];
 			status = false;
 			errorMessage = "Connectivty check using IPV6 address failed";
-			
-	
+
 			if (BroadbandPropertyFileHandler.isIpv6Enabled() && !isSystemdPlatforms) {
 
 				command = ((Device) connectedDeviceActivated).getOsType()
@@ -1404,23 +1405,23 @@ public class BroadBandConnectedClientUtils {
 
 			testStepNumber = stepNumbers[1];
 			status = false;
-			if(BroadbandPropertyFileHandler.isIpv6Enabled()) {
-			status = BroadBandConnectedClientUtils.verifyIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(osType,
-					connectedDeviceActivated, tapEnv);
-			if (status) {
-				LOGGER.info("STEP " + stepNumbers[1]
-						+ " : ACTUAL : Successfully verified interface got the correct IPv6  address.");
+			if (BroadbandPropertyFileHandler.isIpv6Enabled()) {
+				status = BroadBandConnectedClientUtils.verifyIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(
+						osType, connectedDeviceActivated, tapEnv);
+				if (status) {
+					LOGGER.info("STEP " + stepNumbers[1]
+							+ " : ACTUAL : Successfully verified interface got the correct IPv6  address.");
+				} else {
+					LOGGER.error("STEP " + stepNumbers[1] + " : ACTUAL : " + errorMessage);
+				}
+				tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
+
 			} else {
-				LOGGER.error("STEP " + stepNumbers[1] + " : ACTUAL : " + errorMessage);
+				LOGGER.info("IPv6 is not available/disabled : Skipping Step 6 ...");
+				tapEnv.updateExecutionForAllStatus(device, testId, testStepNumber, ExecutionStatus.NOT_APPLICABLE,
+						errorMessage, false);
 			}
-			tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
-			
-		}else {
-			LOGGER.info("IPv6 is not available/disabled : Skipping Step 6 ...");
-			tapEnv.updateExecutionForAllStatus(device, testId, testStepNumber, ExecutionStatus.NOT_APPLICABLE, errorMessage, false);
-		}
-			
-			
+
 		} else {
 			LOGGER.info("This function is meant for executing 2 steps.Current steps passed are " + stepNumbers.length);
 		}

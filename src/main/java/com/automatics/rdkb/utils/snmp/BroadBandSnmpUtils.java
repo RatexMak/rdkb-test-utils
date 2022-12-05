@@ -29,6 +29,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.automatics.constants.AutomaticsConstants;
 import com.automatics.constants.LinuxCommandConstants;
 import com.automatics.constants.SnmpConstants;
 import com.automatics.device.Dut;
@@ -55,6 +56,7 @@ import com.automatics.snmp.SnmpParams;
 import com.automatics.snmp.SnmpProtocol;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.AutomaticsPropertyUtility;
+import com.automatics.utils.AutomaticsUtils;
 import com.automatics.utils.BeanUtils;
 import com.automatics.utils.CommonMethods;
 
@@ -2085,6 +2087,9 @@ public class BroadBandSnmpUtils {
 	try {
 	    tapEnv.executeCommandUsingSsh(device, LinuxCommandConstants.CMD_REBOOT);
 	    LOGGER.info("Device reboot initiated");
+	    
+		AutomaticsUtils.sleep(AutomaticsConstants.TEN_SECONDS);
+		
 	    if (CommonMethods.waitForEstbIpAcquisition(tapEnv, device)) {
 		isStbAccessible = getSystemUpTimeUsingSnmp(tapEnv, device, BroadBandTestConstants.TEN_MINUTE_IN_MILLIS,
 			BroadBandTestConstants.BOOLEAN_VALUE_TRUE, BroadBandTestConstants.CONSTANT_420);

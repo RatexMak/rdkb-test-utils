@@ -215,21 +215,21 @@ public class BroadBandPreConditionUtils {
 		LOGGER.info("#######################################################################################");
 		errorMessage = "UNABLE TO PERFORM WIFI FACTORY RESET OPERATION ON THE DEVICE. HENCE BLOCKING THE EXECUTION.";
 		if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
-		    BroadBandCommonUtils.getAtomsyncUptimeStatus(device, tapEnv);
+			BroadBandCommonUtils.getAtomsyncUptimeStatus(device, tapEnv);
 		}
 		status = BroadBandCommonUtils.performFactoryResetWebPaByPassingTriggerTime(tapEnv, device,
-			BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS);
+				BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS);
 		if (status) {
-		    isFactoryReset = status;
-		    LOGGER.info("PRE-CONDITION " + preConStepNumber + " : ACTUAL : FACTORY RESET SUCCESSFULLY PERFORMED.");
+			isFactoryReset = status;
+			LOGGER.info("PRE-CONDITION " + preConStepNumber + " : ACTUAL : FACTORY RESET SUCCESSFULLY PERFORMED.");
 		} else {
-		    LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL : " + errorMessage);
-		    throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION : " + preConStepNumber
-			    + " FAILED : " + errorMessage);
+			LOGGER.error("PRE-CONDITION " + preConStepNumber + " : ACTUAL : " + errorMessage);
+			throw new TestException(BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION : " + preConStepNumber
+					+ " FAILED : " + errorMessage);
 		}
 
 		return isFactoryReset;
-	    }
+	}
 
 	/**
 	 * Pre-Condition method to perform reactivate the device .
@@ -889,22 +889,27 @@ public class BroadBandPreConditionUtils {
 		/**
 		 * PRECONDITION 3 : VERIFY THE CORRECT IPV6 ADDRESS FOR WIFI CLIENT
 		 */
-		status = false;
-		LOGGER.info("#####################################################################################");
-		LOGGER.info("PRE-CONDITION 3 : DESCRIPTION :VERIFY THE CORRECT IPV4 ADDRESS FOR WIFI CLIENT");
-		LOGGER.info(
-				"PRE-CONDITION 3 : ACTION : EXECUTE COMMAND, WINDOWS : ipconfig |grep -A 10 'Wireless adapter Wi-Fi' |grep -i 'IPv6 Address' or LINUX : ifconfig | grep 'inet6' or ON THE CONNECTED CLIENT");
-		LOGGER.info("PRE-CONDITION 3 : EXPECTED : IT SHOULD RETURN THE CORRECT IPV6 ADDRESS FOR WIFI CLIENT ");
-		LOGGER.info("#####################################################################################");
-		errorMessage = "UNABLE TO GET THE CORRECT IPV6 ADDRESS FROM CLIENT  ";
-		status = BroadBandConnectedClientUtils.verifyIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(
-				((Device) deviceConnected).getOsType(), deviceConnected, tapEnv);
-		if (status) {
-			LOGGER.info("PRE-CONDITION 3 : ACTUAL : SUCCESSFYLLY VERIFIED CORRECT IPV6 ADDRESS FROM LAN CLIENT ");
+		if (BroadbandPropertyFileHandler.isIpv6Enabled()) {
+
+			status = false;
+			LOGGER.info("#####################################################################################");
+			LOGGER.info("PRE-CONDITION 3 : DESCRIPTION :VERIFY THE CORRECT IPV6 ADDRESS FOR WIFI CLIENT");
+			LOGGER.info(
+					"PRE-CONDITION 3 : ACTION : EXECUTE COMMAND, WINDOWS : ipconfig |grep -A 10 'Wireless adapter Wi-Fi' |grep -i 'IPv6 Address' or LINUX : ifconfig | grep 'inet6' or ON THE CONNECTED CLIENT");
+			LOGGER.info("PRE-CONDITION 3 : EXPECTED : IT SHOULD RETURN THE CORRECT IPV6 ADDRESS FOR WIFI CLIENT ");
+			LOGGER.info("#####################################################################################");
+			errorMessage = "UNABLE TO GET THE CORRECT IPV6 ADDRESS FROM CLIENT  ";
+			status = BroadBandConnectedClientUtils.verifyIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(
+					((Device) deviceConnected).getOsType(), deviceConnected, tapEnv);
+			if (status) {
+				LOGGER.info("PRE-CONDITION 3 : ACTUAL : SUCCESSFYLLY VERIFIED CORRECT IPV6 ADDRESS FROM LAN CLIENT ");
+			} else {
+				LOGGER.error("PRE-CONDITION 3 : ACTUAL : " + errorMessage);
+				throw new TestException(
+						BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION 3 : FAILED : " + errorMessage);
+			}
 		} else {
-			LOGGER.error("PRE-CONDITION 3 : ACTUAL : " + errorMessage);
-			throw new TestException(
-					BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION 3 : FAILED : " + errorMessage);
+			LOGGER.info("IPv6 is not available/disabled : Skipping PRE-CONDITION 3... ");
 		}
 
 		/**
@@ -948,43 +953,51 @@ public class BroadBandPreConditionUtils {
 		 * PRECONDITION 5 : VERIFY THE INTERNET CONNECTIVITY IN THE WIFI CLIENT
 		 * INTERFACE USING IPV6 .
 		 */
-		status = false;
-		LOGGER.info("#######################################################################################");
-		LOGGER.info(
-				"PRE-CONDITION 5 : DESCRIPTION : VERIFY THE INTERNET CONNECTIVITY IN THE CONNECTED WIFI CLIENT USING IPV6 INTERFACE");
-		LOGGER.info(
-				"PRE-CONDITION 5 : ACTION : EXECUTE COMMAND, WINDOWS : curl -4 -v 'www.google.com'  | grep '200 OK' OR ping -4 -n 5 google.com, LINUX : curl -4 -f --interface <interfaceName> www.google.com | grep '200 OK' OR ping -4 -n 5 google.com ON THE CONNECTED LAN CLIENT");
-		LOGGER.info("PRE-CONDITION 5 : EXPECTED : THE INTERNET CONNECTIVITY MUST BE AVAILABLE INTERFACE USING IPV6 ");
-		LOGGER.info("#######################################################################################");
-		errorMessage = "NOT ABLE TO ACCESS THE SITE 'www.google.com' FROM WIFI CLIENT WITH USING IPV6";
-		if (DeviceModeHandler.isFibreDevice(device)) {
+		if (BroadbandPropertyFileHandler.isIpv6Enabled()) {
+			status = false;
+			LOGGER.info("#######################################################################################");
 			LOGGER.info(
-					"PRE-CONDITION 5 : ACTUAL : IPV6 INTERNET CONNECTIVITY VERIFICATION NOT APPLICABLE FOR fibre DEVICES");
-		} else {
-			startTime = System.currentTimeMillis();
-			do {
-				result = BroadBandConnectedClientUtils.verifyInternetIsAccessibleInConnectedClientUsingCurl(tapEnv,
-						deviceConnected,
-						BroadBandTestConstants.URL_HTTPS + BroadBandTestConstants.STRING_GOOGLE_HOST_ADDRESS,
-						BroadBandTestConstants.IP_VERSION6);
-				status = result.isStatus();
-				errorMessage = result.getErrorMessage();
-			} while (!status && (System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS
-					&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
-			if (!status) {
-				errorMessage = "PIGN OPERATION FAILED TO ACCESS THE SITE 'www.google.com' USING IPV6 ";
-				status = ConnectedNattedClientsUtils.verifyPingConnectionForIpv4AndIpv6(deviceConnected, tapEnv,
-						BroadBandTestConstants.PING_TO_GOOGLE, BroadBandTestConstants.IP_VERSION6);
-			}
-			if (status) {
+					"PRE-CONDITION 5 : DESCRIPTION : VERIFY THE INTERNET CONNECTIVITY IN THE CONNECTED WIFI CLIENT USING IPV6 INTERFACE");
+			LOGGER.info(
+					"PRE-CONDITION 5 : ACTION : EXECUTE COMMAND, WINDOWS : curl -4 -v 'www.google.com'  | grep '200 OK' OR ping -4 -n 5 google.com, LINUX : curl -4 -f --interface <interfaceName> www.google.com | grep '200 OK' OR ping -4 -n 5 google.com ON THE CONNECTED LAN CLIENT");
+			LOGGER.info(
+					"PRE-CONDITION 5 : EXPECTED : THE INTERNET CONNECTIVITY MUST BE AVAILABLE INTERFACE USING IPV6 ");
+			LOGGER.info("#######################################################################################");
+			errorMessage = "NOT ABLE TO ACCESS THE SITE 'www.google.com' FROM WIFI CLIENT WITH USING IPV6";
+			if (DeviceModeHandler.isFibreDevice(device)) {
 				LOGGER.info(
-						"PRE-CONDITION 5 : ACTUAL : CONNECTED WIFI CLIENT HAS INTERNET CONNECTIVITY USING IPV6 INTERFACE");
+						"PRE-CONDITION 5 : ACTUAL : IPV6 INTERNET CONNECTIVITY VERIFICATION NOT APPLICABLE FOR fibre DEVICES");
 			} else {
-				LOGGER.error("PRE-CONDITION 5 : ACTUAL : " + errorMessage);
-				throw new TestException(
-						BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION 5 : FAILED : " + errorMessage);
+				startTime = System.currentTimeMillis();
+				do {
+					result = BroadBandConnectedClientUtils.verifyInternetIsAccessibleInConnectedClientUsingCurl(tapEnv,
+							deviceConnected,
+							BroadBandTestConstants.URL_HTTPS + BroadBandTestConstants.STRING_GOOGLE_HOST_ADDRESS,
+							BroadBandTestConstants.IP_VERSION6);
+					status = result.isStatus();
+					errorMessage = result.getErrorMessage();
+				} while (!status
+						&& (System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS
+						&& BroadBandCommonUtils.hasWaitForDuration(tapEnv,
+								BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+				if (!status) {
+					errorMessage = "PIGN OPERATION FAILED TO ACCESS THE SITE 'www.google.com' USING IPV6 ";
+					status = ConnectedNattedClientsUtils.verifyPingConnectionForIpv4AndIpv6(deviceConnected, tapEnv,
+							BroadBandTestConstants.PING_TO_GOOGLE, BroadBandTestConstants.IP_VERSION6);
+				}
+				if (status) {
+					LOGGER.info(
+							"PRE-CONDITION 5 : ACTUAL : CONNECTED WIFI CLIENT HAS INTERNET CONNECTIVITY USING IPV6 INTERFACE");
+				} else {
+					LOGGER.error("PRE-CONDITION 5 : ACTUAL : " + errorMessage);
+					throw new TestException(
+							BroadBandTestConstants.PRE_CONDITION_ERROR + "PRE-CONDITION 5 : FAILED : " + errorMessage);
+				}
 			}
+		} else {
+			LOGGER.info("IPv6 is not available/disabled : Skipping PRE-CONDITION 5... ");
 		}
+
 		return deviceConnected;
 	}
 

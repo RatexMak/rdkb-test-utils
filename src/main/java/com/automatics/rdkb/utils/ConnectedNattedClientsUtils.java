@@ -99,7 +99,7 @@ public class ConnectedNattedClientsUtils {
 	private static final String DISCONNECT_WINDOWS = "netsh wlan disconnect";
 
 	/** Diconnect WIFI connection in Linux. */
-	private static final String DISCONNECT_LINUX = "nmcli con down id \"<ssid>\"";
+	private static final String DISCONNECT_LINUX = "nmcli con down id <ssid>";
 
 	/** Diconnect WIFI message in Windows. */
 	private static final String DISCONNECT_WINDOWS_SUCCESS_MESSAGE = "Disconnection request was completed successfully for interface \"Wi-Fi\"";

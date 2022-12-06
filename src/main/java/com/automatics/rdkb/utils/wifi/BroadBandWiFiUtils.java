@@ -1052,39 +1052,45 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 			stepNumber++;
 			step = "S" + stepNumber;
 			status = false;
-			LOGGER.info("***************************************************************************************");
-			LOGGER.info("STEP " + stepNumber
-					+ ": DESCRIPTION :VERIFY THE CORRECT IPV6 ADDRESS FOR CONNECTED CLIENT DEVICE MODEL " + model);
-			LOGGER.info("STEP " + stepNumber
-					+ ": ACTION : EXECUTE COMMAND, WINDOWS : ipconfig |grep -A 10 'Wireless LAN adapter Wi-Fi' |grep -i 'IPv6 Address' or LINUX : ifconfig | grep 'inet6 ' ON THE CONNECTED CLIENT");
-			LOGGER.info("STEP " + stepNumber
-					+ ": EXPECTED : IT SHOULD RETURN THE CORRECT IPV4 ADDRESS FOR DEVICE MODEL " + model);
-			LOGGER.info("***************************************************************************************");
-			errorMessage = "UNABLE TO GET THE CORRECT IPV6 ADDRESS FROM CLIENT MODEL " + model;
+			if (BroadbandPropertyFileHandler.isIpv6Enabled()) {
+				LOGGER.info("***************************************************************************************");
+				LOGGER.info("STEP " + stepNumber
+						+ ": DESCRIPTION :VERIFY THE CORRECT IPV6 ADDRESS FOR CONNECTED CLIENT DEVICE MODEL " + model);
+				LOGGER.info("STEP " + stepNumber
+						+ ": ACTION : EXECUTE COMMAND, WINDOWS : ipconfig |grep -A 10 'Wireless LAN adapter Wi-Fi' |grep -i 'IPv6 Address' or LINUX : ifconfig | grep 'inet6 ' ON THE CONNECTED CLIENT");
+				LOGGER.info("STEP " + stepNumber
+						+ ": EXPECTED : IT SHOULD RETURN THE CORRECT IPV4 ADDRESS FOR DEVICE MODEL " + model);
+				LOGGER.info("***************************************************************************************");
+				errorMessage = "UNABLE TO GET THE CORRECT IPV6 ADDRESS FROM CLIENT MODEL " + model;
 
-			if (!isSystemdPlatforms) {
-				startTime = System.currentTimeMillis();
-				do {
-					status = BroadBandConnectedClientUtils
-							.verifyIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(osType, deviceConnected,
-									tapEnv);
-				} while (!status
-						&& (System.currentTimeMillis() - startTime) < BroadBandTestConstants.THREE_MINUTE_IN_MILLIS
-						&& BroadBandCommonUtils.hasWaitForDuration(tapEnv,
-								BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
-				if (status) {
-					LOGGER.info("STEP " + stepNumber
-							+ " : ACTUAL : SUCCESSFYLLY VERIFIED CORRECT IPV6 ADDRESS FROM CLIENT DEVICE MODEL : "
-							+ model);
+				if (!isSystemdPlatforms) {
+					startTime = System.currentTimeMillis();
+					do {
+						status = BroadBandConnectedClientUtils
+								.verifyIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(osType, deviceConnected,
+										tapEnv);
+					} while (!status
+							&& (System.currentTimeMillis() - startTime) < BroadBandTestConstants.THREE_MINUTE_IN_MILLIS
+							&& BroadBandCommonUtils.hasWaitForDuration(tapEnv,
+									BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+					if (status) {
+						LOGGER.info("STEP " + stepNumber
+								+ " : ACTUAL : SUCCESSFYLLY VERIFIED CORRECT IPV6 ADDRESS FROM CLIENT DEVICE MODEL : "
+								+ model);
+					} else {
+						LOGGER.error("STEP " + stepNumber + " : ACTUAL : " + errorMessage);
+					}
+					tapEnv.updateExecutionStatus(device, testId, step, status, errorMessage, false);
 				} else {
-					LOGGER.error("STEP " + stepNumber + " : ACTUAL : " + errorMessage);
+					tapEnv.updateExecutionForAllStatus(device, testId, step, ExecutionStatus.NOT_APPLICABLE,
+							BroadBandTestConstants.FIBRE_NOT_APPLICABLE_IPV6, false);
 				}
-				tapEnv.updateExecutionStatus(device, testId, step, status, errorMessage, false);
+				LOGGER.info("***************************************************************************************");
 			} else {
-				tapEnv.updateExecutionForAllStatus(device, testId, step, ExecutionStatus.NOT_APPLICABLE,
-						BroadBandTestConstants.FIBRE_NOT_APPLICABLE_IPV6, false);
+				LOGGER.info("IPv6 is not available/disabled : Skipping Step 13 ...");
+				tapEnv.updateExecutionForAllStatus(device, testId, step, ExecutionStatus.NOT_APPLICABLE, errorMessage,
+						false);
 			}
-			LOGGER.info("***************************************************************************************");
 
 			/**
 			 * STEP : VERIFY THE INTERNET CONNECTIVITY IN THE CLIENT WITH GIVEN GHZ SSID
@@ -1132,43 +1138,49 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 			stepNumber++;
 			step = "S" + stepNumber;
 			status = false;
-			LOGGER.info("***************************************************************************************");
-			LOGGER.info("STEP " + stepNumber
-					+ ": DESCRIPTION : VERIFY THE INTERNET CONNECTIVITY IN THE CLIENT CONNECTED USING IPV6 FOR DEVICE MODEL : "
-					+ model);
-			LOGGER.info("STEP " + stepNumber
-					+ ": ACTION : EXECUTE COMMAND, WINDOWS : curl -6 -v 'www.google.com' | grep '200 OK' OR ping -6 -n 5 google.com , LINUX : curl -6 -f --interface <interfaceName> www.google.com | grep '200 OK' OR ping -6 -n 5 google.com ON THE CONNECTED CLIENT");
-			LOGGER.info("STEP " + stepNumber
-					+ ": EXPECTED : THE INTERNET CONNECTIVITY MUST BE AVAILABLE INTERFACE USING IPV4 ");
-			LOGGER.info("***************************************************************************************");
+			if (BroadbandPropertyFileHandler.isIpv6Enabled()) {
+				LOGGER.info("***************************************************************************************");
+				LOGGER.info("STEP " + stepNumber
+						+ ": DESCRIPTION : VERIFY THE INTERNET CONNECTIVITY IN THE CLIENT CONNECTED USING IPV6 FOR DEVICE MODEL : "
+						+ model);
+				LOGGER.info("STEP " + stepNumber
+						+ ": ACTION : EXECUTE COMMAND, WINDOWS : curl -6 -v 'www.google.com' | grep '200 OK' OR ping -6 -n 5 google.com , LINUX : curl -6 -f --interface <interfaceName> www.google.com | grep '200 OK' OR ping -6 -n 5 google.com ON THE CONNECTED CLIENT");
+				LOGGER.info("STEP " + stepNumber
+						+ ": EXPECTED : THE INTERNET CONNECTIVITY MUST BE AVAILABLE INTERFACE USING IPV4 ");
+				LOGGER.info("***************************************************************************************");
 
-			if (!isSystemdPlatforms) {
-				errorMessage = "NOT ABLE TO ACCESS THE SITE 'www.google.com' FROM CONNECTED CLIENT WITH USING IPV6 FOR DEVICE MODEL : "
-						+ model;
-				result = BroadBandConnectedClientUtils.verifyInternetIsAccessibleInConnectedClientUsingCurl(tapEnv,
-						deviceConnected,
-						BroadBandTestConstants.URL_HTTPS + BroadBandTestConstants.STRING_GOOGLE_HOST_ADDRESS,
-						BroadBandTestConstants.IP_VERSION6);
-				status = result.isStatus();
-				errorMessage = result.getErrorMessage();
-				if (!status) {
-					errorMessage = "PING OPERATION FAILED TO ACCESS THE SITE 'www.google.com' USING IPV6 ";
-					status = ConnectedNattedClientsUtils.verifyPingConnectionForIpv4AndIpv6(deviceConnected, tapEnv,
-							BroadBandTestConstants.PING_TO_GOOGLE, BroadBandTestConstants.IP_VERSION6);
-				}
-				if (status) {
-					LOGGER.info("STEP " + stepNumber
-							+ " : ACTUAL : CONNECTED CLIENT HAS INTERNET CONNECTIVITY USING IPV6 FOR DEVICE MODEL : "
-							+ model);
+				if (!isSystemdPlatforms) {
+					errorMessage = "NOT ABLE TO ACCESS THE SITE 'www.google.com' FROM CONNECTED CLIENT WITH USING IPV6 FOR DEVICE MODEL : "
+							+ model;
+					result = BroadBandConnectedClientUtils.verifyInternetIsAccessibleInConnectedClientUsingCurl(tapEnv,
+							deviceConnected,
+							BroadBandTestConstants.URL_HTTPS + BroadBandTestConstants.STRING_GOOGLE_HOST_ADDRESS,
+							BroadBandTestConstants.IP_VERSION6);
+					status = result.isStatus();
+					errorMessage = result.getErrorMessage();
+					if (!status) {
+						errorMessage = "PING OPERATION FAILED TO ACCESS THE SITE 'www.google.com' USING IPV6 ";
+						status = ConnectedNattedClientsUtils.verifyPingConnectionForIpv4AndIpv6(deviceConnected, tapEnv,
+								BroadBandTestConstants.PING_TO_GOOGLE, BroadBandTestConstants.IP_VERSION6);
+					}
+					if (status) {
+						LOGGER.info("STEP " + stepNumber
+								+ " : ACTUAL : CONNECTED CLIENT HAS INTERNET CONNECTIVITY USING IPV6 FOR DEVICE MODEL : "
+								+ model);
+					} else {
+						LOGGER.error("STEP " + stepNumber + " : ACTUAL : " + errorMessage);
+					}
+					tapEnv.updateExecutionStatus(device, testId, step, status, errorMessage, false);
 				} else {
-					LOGGER.error("STEP " + stepNumber + " : ACTUAL : " + errorMessage);
+					tapEnv.updateExecutionForAllStatus(device, testId, step, ExecutionStatus.NOT_APPLICABLE,
+							BroadBandTestConstants.FIBRE_NOT_APPLICABLE_IPV6, false);
 				}
-				tapEnv.updateExecutionStatus(device, testId, step, status, errorMessage, false);
+				LOGGER.info("***************************************************************************************");
 			} else {
-				tapEnv.updateExecutionForAllStatus(device, testId, step, ExecutionStatus.NOT_APPLICABLE,
-						BroadBandTestConstants.FIBRE_NOT_APPLICABLE_IPV6, false);
+				LOGGER.info("IPv6 is not available/disabled : Skipping Step 6 ...");
+				tapEnv.updateExecutionForAllStatus(device, testId, step, ExecutionStatus.NOT_APPLICABLE, errorMessage,
+						false);
 			}
-			LOGGER.info("***************************************************************************************");
 
 		} catch (TestException e) {
 			LOGGER.error(errorMessage);

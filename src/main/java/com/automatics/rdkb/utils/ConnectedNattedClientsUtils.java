@@ -1207,36 +1207,42 @@ public class ConnectedNattedClientsUtils {
 		long averageTime = 0;
 		String response = "";
 		startTime = System.currentTimeMillis();
-		String gatewayIp = null;
+//		String gatewayIp = null;
 		Device tapDevice = (Device) clientDevice;
 		String host = tapDevice.getNatAddress();
-		String username = tapDevice.getUsername();
-		String password = tapDevice.getPassword();
+//		String username = tapDevice.getUsername();
+//		String password = tapDevice.getPassword();
 		String port = tapDevice.getNatPort();
-		SshConnection sshConnection = null;
-		gatewayIp = BroadBandWiFiUtils.getGatewayIpOfDevice(device);
-
-		String[] commandToConnect = { BroadBandCommandConstants.CMD_SUDO + CONNECT_LINUX.replaceAll("<ssid>", ssid).replaceAll("<password>", passwordwifi) };
-		String[] commandToPing = { BroadBandTestConstants.STRING_PING_TO_LINUX.replace("<IPADDRESS>", gatewayIp) };
-
+//		SshConnection sshConnection = null;
+//		gatewayIp = BroadBandWiFiUtils.getGatewayIpOfDevice(device);
+//
+		String[] commandToConnect = { BroadBandCommandConstants.CMD_SUDO
+				+ CONNECT_LINUX.replaceAll("<ssid>", ssid).replaceAll("<password>", passwordwifi) };
+		String[] commandToPing = {
+				BroadBandTestConstants.STRING_PING_TO_LINUX.replace("<IPADDRESS>", device.getHostIpAddress()) };
+//
 		try {
+
+			startTime = System.currentTimeMillis();
+			boolean connected = connectToSSID(clientDevice, tapEnv, ssid, passwordwifi);
 			StringBuffer commandString = new StringBuffer();
 			commandString.append(commandToConnect[0]);
 			String formattedCommands = commandString.toString();
-			sshConnection = new SshConnection(host, Integer.parseInt(port), username, password);
-			startTime = System.currentTimeMillis();
-			sshConnection.send(formattedCommands, 1000);
-			response = sshConnection.getSettopResponse();
+//			sshConnection = new SshConnection(host, Integer.parseInt(port), username, password);
+
+//			sshConnection.send(formattedCommands, 1000);
+//			response = sshConnection.getSettopResponse();
 			LOGGER.info("[SSH EXECUTION] : Executed command " + formattedCommands
 					+ " on connected client setup : Mac Address [" + clientDevice.getHostMacAddress() + "] IP Address ["
-					+ host + "] and Port Number [" + port + "]" + "\n[SSH EXECUTION] : Result - \n" + response);
-			if (CommonMethods.isNotNull(response) && response.contains(CONNECT_LINUX_SUCCESS_MESSAGE.replace("<INTERFACE>",
-					BroadbandPropertyFileHandler.getLinuxClientWifiInterface()))) {
+					+ host + "] and Port Number [" + port + "]" + "\n[SSH EXECUTION] : Result - \n" + connected);
+
+			if (connected) {
 				commandString = new StringBuffer();
 				commandString.append(commandToPing[0]);
 				formattedCommands = commandString.toString();
-				sshConnection.send(formattedCommands, 1000);
-				response = sshConnection.getSettopResponse();
+//				sshConnection.send(formattedCommands, 1000);
+//				response = sshConnection.getSettopResponse();		
+				response = tapEnv.executeCommandOnOneIPClients(clientDevice, commandToPing);
 				endTime = System.currentTimeMillis();
 				LOGGER.info("[SSH EXECUTION] : Executed command " + formattedCommands
 						+ " on connected client setup : Mac Address [" + clientDevice.getHostMacAddress()
@@ -1250,16 +1256,17 @@ public class ConnectedNattedClientsUtils {
 					LOGGER.error("Ping statistics response from device is greater than 0% loss");
 				}
 			}
-
+//
 		} catch (Exception e) {
 			LOGGER.error("[SSH FAILED] : " + host + ":" + port + e.getMessage());
 			LOGGER.error("[SSH FAILED] : " + host + ":" + port + " Looks like this device is not properly configured");
-		} finally {
-			if (null != sshConnection) {
-				sshConnection.disconnect();
-			}
-		}
-		String connectStatus = BroadBandCommandConstants.CMD_SUDO + CONNECT_STATUS_COMMAND_LINUX.replaceAll("<ssid>", ssid);
+		} // finally {
+//			if (null != sshConnection) {
+//				sshConnection.disconnect();
+//			}
+//		}
+		String connectStatus = BroadBandCommandConstants.CMD_SUDO
+				+ CONNECT_STATUS_COMMAND_LINUX.replaceAll("<ssid>", ssid);
 		String output = tapEnv.executeCommandOnOneIPClients(clientDevice, connectStatus);
 		command = BroadBandCommandConstants.CMD_SUDO + DISCONNECT_LINUX.replaceAll("<ssid>", ssid + " " + output);
 		response = tapEnv.executeCommandOnOneIPClients(clientDevice, command);
@@ -1268,6 +1275,7 @@ public class ConnectedNattedClientsUtils {
 		}
 
 		return averageTime;
+
 	}
 
 	/**

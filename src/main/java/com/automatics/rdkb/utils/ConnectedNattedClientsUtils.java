@@ -1399,7 +1399,8 @@ public class ConnectedNattedClientsUtils {
 		if (ecastDevice.isLinux()) {
 			String connectStatus = CONNECT_STATUS_COMMAND_LINUX.replaceAll("<ssid>", ssid);
 			String output = tapEnv.executeCommandOnOneIPClients(device, connectStatus);
-			String command = DISCONNECT_LINUX.replaceAll("<ssid>", ssid + " " + output);
+			String command = BroadBandCommandConstants.CMD_SUDO
+					+ DISCONNECT_LINUX.replaceAll("<ssid>", ssid + " " + output);
 			String response = tapEnv.executeCommandOnOneIPClients(device, command);
 			if (CommonMethods.isNotNull(response) && response.contains(DISCONNECT_LINUX_SUCCESS_MESSAGE)) {
 				retrunStatus = true;

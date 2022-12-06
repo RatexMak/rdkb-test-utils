@@ -7794,7 +7794,7 @@ public class BroadBandCommonUtils {
 	 */
 	public static boolean validateLogMessageInPamLog(Dut device, AutomaticsTapApi tapEnv, boolean isValidRespAvailable,
 			String currentTimeStamp) {
-		LOGGER.debug("STARTING METHOD : validateLogMessageInPamLog()");
+		LOGGER.info("STARTING METHOD : validateLogMessageInPamLog()");
 		String response = null;
 		boolean status = false;
 		String searchText = isValidRespAvailable ? BroadBandTraceConstants.LOG_MESSAGE_SETTING_VAILD_SUBNET_MASK_VALUE
@@ -7817,7 +7817,7 @@ public class BroadBandCommonUtils {
 			LOGGER.error("Exception occurres while validating the log message" + e.getMessage());
 
 		}
-		LOGGER.debug("ENDING METHOD: validateLogMessageInPamLog()");
+		LOGGER.info("ENDING METHOD: validateLogMessageInPamLog()");
 		return status;
 	}
 

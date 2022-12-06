@@ -3169,10 +3169,12 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 							subnetMask, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS,
 							BroadBandTestConstants.TEN_SECOND_IN_MILLIS)) {
 						LOGGER.info("Unable to set the invalid subnet mask values");
+//						if (BroadBandCommonUtils.validateLogMessageInPamLog(settop, tapEnv,
+//								BroadBandTestConstants.BOOLEAN_VALUE_TRUE, currentTimeStamp)
+//								&& BroadBandCommonUtils.validateLogMessageInPamLog(settop, tapEnv,
+//										BroadBandTestConstants.BOOLEAN_VALUE_FALSE, currentTimeStamp)) {
 						if (BroadBandCommonUtils.validateLogMessageInPamLog(settop, tapEnv,
-								BroadBandTestConstants.BOOLEAN_VALUE_TRUE, currentTimeStamp)
-								&& BroadBandCommonUtils.validateLogMessageInPamLog(settop, tapEnv,
-										BroadBandTestConstants.BOOLEAN_VALUE_FALSE, currentTimeStamp)) {
+								BroadBandTestConstants.BOOLEAN_VALUE_FALSE, currentTimeStamp)) {
 							LOGGER.info("Log message validation successful in "
 									+ BroadBandTestConstants.COMMAND_NTP_LOG_FILE);
 							result = BroadBandWebPaUtils.getAndVerifyWebpaValueInPolledDuration(settop, tapEnv,
@@ -3244,9 +3246,9 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 							BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS)) {
 						LOGGER.info("Subnet Mask set successfully ");
 						result = BroadBandCommonUtils.validateLogMessageInPamLog(device, tapEnv,
-								BroadBandTestConstants.BOOLEAN_VALUE_TRUE, currentTimeStamp)
-								&& !BroadBandCommonUtils.validateLogMessageInPamLog(device, tapEnv,
-										BroadBandTestConstants.BOOLEAN_VALUE_FALSE, currentTimeStamp);
+								BroadBandTestConstants.BOOLEAN_VALUE_TRUE, currentTimeStamp);
+//								&& !BroadBandCommonUtils.validateLogMessageInPamLog(device, tapEnv,
+//										BroadBandTestConstants.BOOLEAN_VALUE_FALSE, currentTimeStamp);
 						LOGGER.info("Log message validation completed");
 						if (result) {
 							LOGGER.info("Successfully set the subnet mask value " + subnetMaskAddress);

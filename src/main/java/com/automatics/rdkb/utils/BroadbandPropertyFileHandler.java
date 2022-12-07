@@ -2973,4 +2973,13 @@ public class BroadbandPropertyFileHandler {
 		}
 	}
 
+	/**
+	 * This API will get the location of rfc database from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String getRfcDataBaseLocation() {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.LOCATION_RFC_DATABASE);
+	}
+
 }

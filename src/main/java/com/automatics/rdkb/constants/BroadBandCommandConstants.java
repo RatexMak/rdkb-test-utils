@@ -1902,6 +1902,9 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** String to store file location of rfc database */
     public static final String FILE_LOCATION_RFC_DATABASE = "/opt/secure/RFC/tr181store.json";
+    
+    /** String to store name of rfc database */
+    public static final String RFC_DATABASE = "tr181store.json";
 
     public static final String CMD_GREP_A_5 = "grep -i -A 5 ";
 

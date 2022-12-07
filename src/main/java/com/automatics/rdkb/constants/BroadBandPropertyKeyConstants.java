@@ -827,4 +827,6 @@ public class BroadBandPropertyKeyConstants {
 	public static final String GET_5_GHZ_INTERFACE_NAME = "5ghz.interface.name";
 
 	public static final String IS_IPV6_ENABLED = "is.ipv6.enabled";
+
+	public static final String LOCATION_RFC_DATABASE = "location.rfc.database";
 }

@@ -5446,10 +5446,10 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String PARENTAL_CONTROL_MANAGE_DEVICE_RULE_TYPE = "Block";
 
     /** Connection Type Wifi 5 Ghz */
-    public static final String CONNECTION_TYPE_WIFI_5_GHZ = "Wi-Fi 5G";
+    public static final String CONNECTION_TYPE_WIFI_5_GHZ = "Wi-Fi_5G";
 
     /** Connection Type Wifi 2.4 Ghz */
-    public static final String CONNECTION_TYPE_WIFI_24_GHZ = "Wi-Fi 2.4G";
+    public static final String CONNECTION_TYPE_WIFI_24_GHZ = "Wi-Fi_2.4G";
 
     /** String to pass in searchlogfiles to retrieve crash portal log file */
     public static final String STRING_FOR_CRASH_PORTAL_FILE_NAME_SEARCH = "Removing file";

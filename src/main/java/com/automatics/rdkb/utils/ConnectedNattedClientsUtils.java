@@ -1605,7 +1605,7 @@ public class ConnectedNattedClientsUtils {
 		int iPingResponseAvgTime = 0;
 		Device ecastDevice = (Device) wifiClientDevice;
 		LOGGER.info("OS TYPE OF THE WIFI CLIENT: " + ecastDevice.getOsType());
-		String pingCommand = ecastDevice.isLinux() ? BroadBandCommandConstants.CMD_PING_LINUX
+		String pingCommand = ecastDevice.isLinux() ? BroadBandCommandConstants.CMD_SUDO + BroadBandCommandConstants.CMD_PING_LINUX
 				: BroadBandCommandConstants.CMD_PING_WINDOWS;
 		String response = tapEnv.executeCommandOnOneIPClients(wifiClientDevice,
 				BroadBandCommonUtils.concatStringUsingStringBuffer(pingCommand,

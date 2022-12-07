@@ -4290,7 +4290,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String STRING_LEASE_TIME_DEFAULT_VALUE = "604800";
 
     /** String to store the device comment */
-    public static final String STRING_DEVICE_COMMENT = "reserved Ip test";
+    public static final String STRING_DEVICE_COMMENT = "reserved_Ip_test";
 
     /** Constant to hold URL of HTTPS site: https://www.facebook.com */
     public static final String URL_HTTPS_FACEBOOK = "https://www.facebook.com/";

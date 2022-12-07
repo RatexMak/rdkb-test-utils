@@ -2085,12 +2085,12 @@ public class BroadBandSnmpUtils {
 	boolean isStbAccessible = false;
 	String errorMessage = "Failed to perform reboot";
 	try {
-	    tapEnv.executeCommandUsingSsh(device, LinuxCommandConstants.CMD_REBOOT);
-	    LOGGER.info("Device reboot initiated");
-	    
-		AutomaticsUtils.sleep(AutomaticsConstants.TEN_SECONDS);
+//	    tapEnv.executeCommandUsingSsh(device, LinuxCommandConstants.CMD_REBOOT);
+//	    LOGGER.info("Device reboot initiated");
+//	    
+//		AutomaticsUtils.sleep(AutomaticsConstants.TEN_SECONDS);
 		
-	    if (CommonMethods.waitForEstbIpAcquisition(tapEnv, device)) {
+	    if (CommonMethods.rebootAndWaitForIpAccusition(device, tapEnv)) {
 		isStbAccessible = getSystemUpTimeUsingSnmp(tapEnv, device, BroadBandTestConstants.TEN_MINUTE_IN_MILLIS,
 			BroadBandTestConstants.BOOLEAN_VALUE_TRUE, BroadBandTestConstants.CONSTANT_420);
 		LOGGER.info("Device is accessible after reboot :" + isStbAccessible);

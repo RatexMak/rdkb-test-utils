@@ -3404,13 +3404,13 @@ public class BroadBandCommonUtils {
 				isRebooted = CommonUtils.verifyStbRebooted(device, tapEnv);
 			} while (!isRebooted
 					&& ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS)
-					&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+					&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.TEN_SECOND_IN_MILLIS));
 			startTime = System.currentTimeMillis();
 			do {
 				isStbAccessible = CommonMethods.isSTBAccessible(device);
 			} while (!isStbAccessible
 					&& ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS)
-					&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+					&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.TEN_SECOND_IN_MILLIS));
 			errorMessage = "Failed to verify StbAccessible";
 		} catch (Exception exception) {
 			errorMessage = "Exception occured while performing reboot " + exception.getMessage();

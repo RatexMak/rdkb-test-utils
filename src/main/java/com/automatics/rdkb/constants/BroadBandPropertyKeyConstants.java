@@ -829,4 +829,6 @@ public class BroadBandPropertyKeyConstants {
 	public static final String IS_IPV6_ENABLED = "is.ipv6.enabled";
 
 	public static final String LOCATION_RFC_DATABASE = "location.rfc.database";
+
+	public static final String DEVICE_MODEL = "device.model";
 }

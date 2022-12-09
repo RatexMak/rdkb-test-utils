@@ -2982,4 +2982,17 @@ public class BroadbandPropertyFileHandler {
 		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.LOCATION_RFC_DATABASE);
 	}
 
+	/**
+	 * This API will get the device model of the device from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String getDeviceModelFromProperties(Dut device) {
+		try {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.DEVICE_MODEL);
+		}catch(Exception e) {
+			return device.getModel();
+		}		
+	}
+
 }

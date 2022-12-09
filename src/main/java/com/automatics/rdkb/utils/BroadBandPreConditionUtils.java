@@ -217,8 +217,11 @@ public class BroadBandPreConditionUtils {
 		if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
 			BroadBandCommonUtils.getAtomsyncUptimeStatus(device, tapEnv);
 		}
-		status = BroadBandCommonUtils.performFactoryResetWebPaByPassingTriggerTime(tapEnv, device,
-				BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS);
+//		status = BroadBandCommonUtils.performFactoryResetWebPaByPassingTriggerTime(tapEnv, device,
+//				BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS);
+		
+		status = BroadBandCommonUtils.performFactoryResetWebPa(tapEnv, device);
+		
 		if (status) {
 			isFactoryReset = status;
 			LOGGER.info("PRE-CONDITION " + preConStepNumber + " : ACTUAL : FACTORY RESET SUCCESSFULLY PERFORMED.");

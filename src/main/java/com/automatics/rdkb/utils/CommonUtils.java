@@ -526,6 +526,7 @@ public class CommonUtils {
 		boolean deviceRebootNotification = (!CommonMethods.isSTBAccessible(device));
 		if (deviceRebootNotification) {
 			status = true;
+			LOGGER.info("device went for reboot");
 		}
 		return status;
 	}

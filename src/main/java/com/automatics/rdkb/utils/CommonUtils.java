@@ -520,20 +520,15 @@ public class CommonUtils {
      * @return true in the connection is not accessible
      */
 
-    public static boolean verifyStbRebooted(Dut device, AutomaticsTapApi tapEnv) {
-	boolean status = true;
-	// String for status verification
-	String successString = "CONNECTION-ESTABLISHED";
-
-	LOGGER.info("About to execute command echo CONNECTION-ESTABLISHED");
-	String response = tapEnv.executeCommandUsingSsh(device, "echo " + successString);
-	LOGGER.info(" : Server response during device reboot - " + response);
-	if (response != null) {
-	    status = response.contains(successString);
+	public static boolean verifyStbRebooted(Dut device, AutomaticsTapApi tapEnv) {
+		boolean status = false;
+		LOGGER.info("About to execute command echo test connection");
+		boolean deviceRebootNotification = (!CommonMethods.isSTBAccessible(device));
+		if (deviceRebootNotification) {
+			status = true;
+		}
+		return status;
 	}
-
-	return (!status);
-    }
 
     /**
      * Helper method to check wait for device to reboot

@@ -102,10 +102,10 @@ public class BroadBandConnectedClientTestConstants {
     public static final String LINUX_COMMAND_CHECK_IPV6_ADDRESS = "/sbin/ifconfig | grep 'inet6'";
     
     /** windows command for checking IPV4 address */
-    public static final String WINDOWS_COMMAND_CHECK_IPV4_ADDRESS = "ipconfig |grep -A 10 \"Wireless LAN adapter Wi-Fi\" |grep -i \"IPv4 Address\"";
+    public static final String WINDOWS_COMMAND_CHECK_IPV4_ADDRESS = "ipconfig |grep -A 10 \"Wireless LAN adapter Wi\" |grep -i \"IPv4 Address\"";
     
     /** windows command for checking IPV6 address */
-    public static final String WINDOWS_COMMAND_CHECK_IPV6_ADDRESS = "ipconfig |grep -A 10 \"Wireless LAN adapter Wi-Fi\" |grep -i \"IPv6 Address\"";
+    public static final String WINDOWS_COMMAND_CHECK_IPV6_ADDRESS = "ipconfig |grep -A 10 \"Wireless LAN adapter Wi\" |grep -i \"IPv6 Address\"";
     
     /**Pattern for checking IPV4 address*/
     public static final String PATTERN_LINUX_VALID_IPV4_ADDRESS="inet (\\d+.){1,3}\\d+ +netmask (\\d+.){1,3}\\d+ +broadcast (\\d+.){1,3}\\d+";

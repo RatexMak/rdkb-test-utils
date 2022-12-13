@@ -2994,5 +2994,23 @@ public class BroadbandPropertyFileHandler {
 			return device.getModel();
 		}		
 	}
+	
+	/**
+	 * This API will get the 2.4Ghz operating standard of RPi device from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String get2GhzOperatingModeForRPi() {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.OPERATING_MODE_2GHZ_RPI);
+	}
+
+	/**
+	 * This API will get the 5Ghz operating standard of RPi device from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String get5GhzOperatingModeForRPi() {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.OPERATING_MODE_5GHZ_RPI);
+	}
 
 }

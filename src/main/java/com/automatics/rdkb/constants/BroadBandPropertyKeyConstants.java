@@ -831,4 +831,8 @@ public class BroadBandPropertyKeyConstants {
 	public static final String LOCATION_RFC_DATABASE = "location.rfc.database";
 
 	public static final String DEVICE_MODEL = "device.model";
+
+	public static final String OPERATING_MODE_2GHZ_RPI = "operating.mode.2ghz.rpi";
+
+	public static final String OPERATING_MODE_5GHZ_RPI = "operating.mode.5ghz.rpi";
 }

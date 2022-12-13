@@ -1795,9 +1795,11 @@ public class BroadBandConnectedClientUtils {
 			searchTrace = BroadBandTraceConstants.LOG_MESSAGE_IPCONFIG_WIFI;
 		}
 		if (CommonMethods.isNotNull(searchTrace)) {
-			command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.SYMBOL_PIPE,
-					BroadBandTestConstants.GREP_COMMAND, BroadBandTestConstants.DOUBLE_QUOTE, parameter,
-					BroadBandTestConstants.DOUBLE_QUOTE);
+			command = BroadBandCommonUtils.concatStringUsingStringBuffer(
+					BroadBandCommandConstants.CMD_IPCONFIG_ALL_GREP_A20, searchTrace,
+					BroadBandTestConstants.SYMBOL_PIPE, BroadBandTestConstants.GREP_COMMAND,
+					BroadBandTestConstants.DOUBLE_QUOTE, parameter, BroadBandTestConstants.DOUBLE_QUOTE);
+
 			LOGGER.info("Command to be executed is " + command);
 			String response = tapEnv.executeCommandOnOneIPClients(connectedClientDevice, command);
 			if (CommonMethods.isNotNull(response)) {

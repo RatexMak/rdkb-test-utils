@@ -1818,7 +1818,7 @@ public class BroadBandConnectedClientUtils {
 					}
 					if (CommonMethods.isNotNull(value) && CommonMethods.isNotNull(connectionType)) {
 						// Command sample "/sbin/arp -n | grep -i " + value;
-						command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.COMMAND_ARP,
+						command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.COMMAND_ARP_FOR_WINDOWS,
 								BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.SYMBOL_PIPE,
 								BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.GREP_COMMAND,
 								value);

@@ -3172,6 +3172,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	/** String Variable to hold the Low constant value */
 	public static final String STRING_CONSTANT_LOW = "Low";
 
+	/** String Variable to hold the connected constant value */
+	public static final String STRING_CONSTANT_CONNECTED = " connected";
+	
 	/**
 	 * The constant holding command for seeing the process status of CCSPXDNSSSP
 	 * process.

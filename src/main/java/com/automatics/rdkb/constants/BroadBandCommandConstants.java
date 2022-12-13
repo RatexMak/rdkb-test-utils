@@ -450,6 +450,9 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command to check firewall level */
     public static final String CMD_CONFIG_FIREWALL_LEVEL = "syscfg get firewall_level";
+    
+    /** Command to show windows interfaces */
+    public static final String CMD_WINDOWS_SHOW_INTERFACES = "netsh wlan show interfaces";
 
     /** Command to set High firewall level */
     public static final String CMD_CONFIG_SET_FIREWALL_LEVEL_HIGH = "syscfg set firewall_level High; syscfg commit";

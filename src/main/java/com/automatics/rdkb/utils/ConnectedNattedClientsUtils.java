@@ -102,7 +102,7 @@ public class ConnectedNattedClientsUtils {
 	private static final String DISCONNECT_LINUX = "nmcli con down id <ssid>";
 
 	/** Diconnect WIFI message in Windows. */
-	private static final String DISCONNECT_WINDOWS_SUCCESS_MESSAGE = "Disconnection request was completed successfully for interface \"Wi-Fi\"";
+	private static final String DISCONNECT_WINDOWS_SUCCESS_MESSAGE = "Disconnection request was completed successfully for interface \"Wi-Fi";
 
 	/** Show WIFI profile in Windows. */
 	private static final String SHOW_AUTO_DISCOVERED_NETWROKS_WINDOWS = "netsh wlan show networks |grep -i \"<ssid>\"";

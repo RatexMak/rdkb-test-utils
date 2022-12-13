@@ -125,6 +125,8 @@ public class ConnectedNattedClientsUtils {
 	private static final String ADD_PROFILE_WINDOWS = "netsh wlan add profile filename=<profile>";
 
 	private static final String ADD_PROFILE_WINDOWS_SUCCESS_MESSAGE = "is added on interface Wi-Fi";
+	
+	private static final String ADD_PROFILE_WINDOWS_SUCCESS_MESSAGE_1 = "is added on interface WiFi";
 
 	/** Boolean for Connect Automatically */
 	public static boolean WIFI_CONNECT_IN_AUTO = false;
@@ -501,7 +503,7 @@ public class ConnectedNattedClientsUtils {
 					String command = ADD_PROFILE_WINDOWS.replaceAll("<profile>", profileNameToAdd);
 					String response = tapEnv.executeCommandOnOneIPClients(device, command);
 					returnStatus = CommonMethods.isNotNull(response)
-							&& response.contains(ADD_PROFILE_WINDOWS_SUCCESS_MESSAGE);
+							&& ( response.contains(ADD_PROFILE_WINDOWS_SUCCESS_MESSAGE) || response.contains(ADD_PROFILE_WINDOWS_SUCCESS_MESSAGE_1));
 					LOGGER.info("[TEST LOG] : Wifi profile  added successfully for ssid " + ssid);
 				} else {
 					LOGGER.error("Profile is not available after copying to the client");

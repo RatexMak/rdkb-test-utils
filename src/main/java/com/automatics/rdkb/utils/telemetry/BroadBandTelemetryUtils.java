@@ -1221,7 +1221,7 @@ public class BroadBandTelemetryUtils {
 		List<String> listOfSearchStrings = new ArrayList<String>();
 		if (DeviceModeHandler.isRPIDevice(device)) {
 			String searchResults1 = null;
-			searchResults1 = CommonMethods.patternFinder(response, "[.*}]");
+			searchResults1 = CommonMethods.patternFinder(response, "\\[.*}]");
 			LOGGER.info("searchResults1 is : " + searchResults1);
 			if (CommonMethods.isNotNull(searchResults1)) {
 				String[] splitResult = searchResults1.split(",");

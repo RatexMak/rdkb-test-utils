@@ -5112,7 +5112,8 @@ public class BroadBandCommonUtils {
 		if (isAtomSyncAvailable) {
 			response = tapApi.executeCommandOnAtom(device, command);
 		} else {
-			response = tapApi.executeCommandUsingSsh(device, command);
+//			response = tapApi.executeCommandUsingSsh(device, command);
+			response = tapApi.executeCommandUsingSsh(device, command, BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS);
 		}
 		LOGGER.debug("ENDING METHOD: executeCommandInAtomConsoleIfAtomIsPresentElseInArm");
 		return response;

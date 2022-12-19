@@ -1219,13 +1219,27 @@ public class BroadBandTelemetryUtils {
 		}
 
 		List<String> listOfSearchStrings = new ArrayList<String>();
-		String searchResults = null;
-		String[] allResponses = response.split("\\n");
-		LOGGER.info("Number of strings: " + allResponses.length);
-		for (int lineIndex = 0; lineIndex < allResponses.length; lineIndex++) {
-			searchResults = CommonMethods.patternFinder(allResponses[lineIndex], "\\'(\\{\"searchResult\".*\\})\\'");
-			if (CommonMethods.isNotNull(searchResults)) {
-				listOfSearchStrings.add(searchResults);
+		if (DeviceModeHandler.isRPIDevice(device)) {
+			String searchResults1 = null;
+			searchResults1 = CommonMethods.patternFinder(response, "[.*}]");
+			LOGGER.info("searchResults1 is : " + searchResults1);
+			if (CommonMethods.isNotNull(searchResults1)) {
+				String[] splitResult = searchResults1.split(",");
+				for (String eachValue : splitResult) {
+					LOGGER.info("each value :" + eachValue);
+					listOfSearchStrings.add(eachValue);
+				}
+			}
+		} else {
+			String searchResults = null;
+			String[] allResponses = response.split("\\n");
+			LOGGER.info("Number of strings: " + allResponses.length);
+			for (int lineIndex = 0; lineIndex < allResponses.length; lineIndex++) {
+				searchResults = CommonMethods.patternFinder(allResponses[lineIndex],
+						"\\'(\\{\"searchResult\".*\\})\\'");
+				if (CommonMethods.isNotNull(searchResults)) {
+					listOfSearchStrings.add(searchResults);
+				}
 			}
 		}
 		if (listOfSearchStrings.isEmpty()) {

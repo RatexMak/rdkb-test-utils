@@ -1170,8 +1170,7 @@ public class BroadBandTelemetryUtils {
 
 				if (DeviceModeHandler.isRPIDevice(device)) {
 
-					if (CommonMethods
-							.isNotNull(response) && response.contains("searchResult")
+					if (CommonMethods.isNotNull(response) && response.contains("searchResult")
 							&& response.contains("Uploading logs") && response.contains("Direct connection success")) {
 
 						int indexOfSearchResults = response.lastIndexOf("searchResult");
@@ -1224,23 +1223,11 @@ public class BroadBandTelemetryUtils {
 
 		List<String> listOfSearchStrings = new ArrayList<String>();
 		if (DeviceModeHandler.isRPIDevice(device)) {
-//			String searchResults1 = null;
-//			searchResults1 = CommonMethods.patternFinder(response, "\\[.*\\}]");
-//			LOGGER.info("searchResults1 is : " + searchResults1);
-//			if (CommonMethods.isNotNull(searchResults1)) {
-//				String[] splitResult = searchResults1.split(",");
-//				for (String eachValue : splitResult) {
-//					LOGGER.info("each value :" + eachValue);
-//					listOfSearchStrings.add(eachValue);
 			LOGGER.info("searchResults2 is : " + searchResults2);
-            searchResults2 = searchResults2.substring(35).trim();
-            LOGGER.info("searchResults2 is : " + searchResults2);
-            if (CommonMethods.isNotNull(searchResults2)) {
-                String[] splitResult = searchResults2.split(",");
-                for (String eachValue : splitResult) {
-                    LOGGER.info("each value :" + eachValue);
-                    listOfSearchStrings.add(eachValue);
-				}
+			searchResults2 = searchResults2.substring(35).trim();
+			LOGGER.info("searchResults2 is : " + searchResults2);
+			if (CommonMethods.isNotNull(searchResults2)) {
+				listOfSearchStrings.add(searchResults2);
 			}
 		} else {
 			String searchResults = null;

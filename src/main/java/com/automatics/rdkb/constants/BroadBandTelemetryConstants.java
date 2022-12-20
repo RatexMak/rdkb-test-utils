@@ -239,6 +239,8 @@ public static final String JSON_MARKER_IPV6_ADDRESS = "erouterIpv6";
 /** Json Parameter for erouter ipv4 in "dcmscript.log" file */
 public static final String JSON_MARKER_IPV4_ADDRESS = "erouterIpv4";
 
+public static final String CMD_GET_TELEMETRY_SEARCHRESULTS_DETAILS = "cat /rdklogs/logs/dcmscript.log | grep searchResult";
+
 public enum TelemetryData {
 	PROFILE,
 	EROUTER_MAC_ADDRESS,

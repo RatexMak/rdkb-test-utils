@@ -3266,8 +3266,11 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 				LOGGER.info("List of Subnet masks:" + listOfSubnetMask.size());
 				LOGGER.info("Subnet masks success Count:" + resultCount);
 			}
-		} catch (Exception e) {
-			LOGGER.error("Excepton Occured in validateValidSubnetMaskValues() " + e.getMessage());
+//		} catch (Exception e) {
+//			LOGGER.error("Excepton Occured in validateValidSubnetMaskValues() " + e.getMessage());
+//		}
+		}	catch (Throwable e) {
+		        LOGGER.error("Error: ", e);
 		}
 		status = (resultCount == listOfSubnetMask.size());
 		objResult.setStatus(status);

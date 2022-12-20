@@ -560,10 +560,10 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static final String CMD_COPY = "cp ";
 
     /** Command to tail PAMlog contents to nvram */
-    public static final String CMD_GET_PAMLOGS_NVRAM = "tail -f /rdklogs/logs/PAMlog.txt.0 > /nvram/automation_PAMtail.txt &";
+    public static final String CMD_GET_PAMLOGS_NVRAM = "'tail -f /rdklogs/logs/PAMlog.txt.0 > /nvram/automation_PAMtail.txt &'";
 
     /** Command to tail ArmConsolelog contents to nvram */
-    public static final String CMD_GET_ARMCONSOLELOGS_NVRAM = "tail -f /rdklogs/logs/ArmConsolelog.txt.0 > /nvram/automation_Consoletail.txt &";
+    public static final String CMD_GET_ARMCONSOLELOGS_NVRAM = "tail -f /rdklogs/logs/ArmConsolelog.txt.0 > /nvram/automation_Consoletail.txt";
 
     /** Command to tail Consolelog contents to nvram */
     public static final String CMD_GET_CONSOLELOGS_NVRAM = "tail -f /rdklogs/logs/Consolelog.txt.0 > /nvram/automation_Consoletail.txt &";

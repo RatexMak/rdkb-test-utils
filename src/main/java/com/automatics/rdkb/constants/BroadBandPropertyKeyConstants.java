@@ -835,4 +835,6 @@ public class BroadBandPropertyKeyConstants {
 	public static final String OPERATING_MODE_2GHZ_RPI = "operating.mode.2ghz.rpi";
 
 	public static final String OPERATING_MODE_5GHZ_RPI = "operating.mode.5ghz.rpi";
+
+	public static final String CLIENT_OPERATING_MODE_5GHZ = "client.operating.mode.5ghz";
 }

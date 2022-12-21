@@ -3013,4 +3013,13 @@ public class BroadbandPropertyFileHandler {
 		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.OPERATING_MODE_5GHZ_RPI);
 	}
 
+	/**
+	 * This API will get the 5Ghz client operating standard from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String get5GhzClientOperatingModeFromProperties() {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.CLIENT_OPERATING_MODE_5GHZ);
+	}
+
 }

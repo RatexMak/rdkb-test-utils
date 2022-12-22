@@ -6876,20 +6876,16 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String STRING_MYROUTER_CERTIFICATE_AFTER_VALIDITY_DATE = "notAfter=Jun 23 23:59:59 2022";
 
 	/** Constant for nc Connection error */
-	public static final String NC_CONNECTION_ERROR_IP_1 = NC_ERROR_BAD_HOST
-			+ BroadbandPropertyFileHandler.getNCPrivateIPOutsideRange1();
+	public static final String NC_CONNECTION_ERROR_IP_1 = "";
 
 	/** Constant for nc Connection error */
-	public static final String NC_CONNECTION_ERROR_IP_2 = NC_ERROR_BAD_HOST
-			+ BroadbandPropertyFileHandler.getNCPrivateIPOutsideRange2();
+	public static final String NC_CONNECTION_ERROR_IP_2 = "";
 
 	/** Constant for nc Connection error */
-	public static final String NC_CONNECTION_ERROR_IP_3 = NC_ERROR_BAD_HOST
-			+ BroadbandPropertyFileHandler.getNCPrivateIPOutsideRange3();
+	public static final String NC_CONNECTION_ERROR_IP_3 = "";
 
 	/** Constant for nc Connection error */
-	public static final String NC_CONNECTION_ERROR_IP_4 = NC_ERROR_BAD_HOST
-			+ BroadbandPropertyFileHandler.getNCPrivateIPOutsideRange4();
+	public static final String NC_CONNECTION_ERROR_IP_4 = "";
 
 	/** Constant for Netcat console */
 	public static final String NC_NETCAT_CONSOLE = "Login:";
@@ -6934,15 +6930,13 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	 * Pattern Finder to confirm the 4090 Interface communication in iptable input
 	 * rule
 	 */
-	public static final String PATTER_MATCHER_IPTABLE_INPUT_RULE = "(INPUT.*)(.*"
-			+ BroadbandPropertyFileHandler.get4090InterfaceToValidateInIptables() + ".*)(.*ACCEPT)";
+	public static final String PATTER_MATCHER_IPTABLE_INPUT_RULE = "";
 
 	/**
 	 * Pattern Finder to confirm the 4090 Interface communication in iptable forward
 	 * rule
 	 */
-	public static final String PATTERN_MATCHER_IPTABLE_FORWARD_RULE = "(FORWARD.*)(.*"
-			+ BroadbandPropertyFileHandler.get4090InterfaceToValidateInIptables() + ".*)(.*ACCEPT)";
+	public static final String PATTERN_MATCHER_IPTABLE_FORWARD_RULE = "";
 
 	/** String value 6666 */
 	public static final String STRING_6666 = "6666";

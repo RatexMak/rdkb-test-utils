@@ -2061,10 +2061,10 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String PATTERN_TO_GET_IPV4_ADDRESS = "(\\d+\\.\\d+\\.\\d+\\.\\d+)";
 
 	/** Constant for Primary remote endpoint */
-	public static final String PRIMARY_REMOTE_ENDPOINT = BroadbandPropertyFileHandler.getPrimaryRemoteEndPoint();
+	public static final String PRIMARY_REMOTE_ENDPOINT = "";
 
 	/** Constant for Secondary remote endpoint */
-	public static final String SECONDARY_REMOTE_ENDPOINT = BroadbandPropertyFileHandler.getSecondaryRemoteEndPoint();
+	public static final String SECONDARY_REMOTE_ENDPOINT = "";
 
 	/** Pattern to get public wifi status from rfc config data */
 	public static final String PATTERN_GET_PUBLIC_WIFI_STATUS_FROM_RFC_CONFIG = "tr181.Device.DeviceInfo.X_COMCAST_COM_xfinitywifiEnable\\W+(\\w+)";

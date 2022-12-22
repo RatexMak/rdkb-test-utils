@@ -56,6 +56,7 @@ import com.automatics.rdkb.constants.BroadBandWebPaConstants;
 import com.automatics.rdkb.constants.RDKBTestConstants;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
 import com.automatics.rdkb.utils.BroadBandSystemUtils;
+import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
 import com.automatics.rdkb.utils.CommonUtils;
 import com.automatics.rdkb.utils.DeviceModeHandler;
 import com.automatics.rdkb.utils.dmcli.DmcliUtils;
@@ -2040,7 +2041,7 @@ public class BroadBandWebPaUtils {
 		// Setting the primary tunnel Endpoint
 		isPrimaryRemoteEndpointSet = BroadBandWiFiUtils.setWebPaParams(device,
 				BroadBandWebPaConstants.WEBPA_PARAM_PRIMARY_REMOTE_ENDPOINT,
-				BroadBandTestConstants.PRIMARY_REMOTE_ENDPOINT, BroadBandTestConstants.CONSTANT_0);
+				BroadbandPropertyFileHandler.getPrimaryRemoteEndPoint(), BroadBandTestConstants.CONSTANT_0);
 		LOGGER.info("SETTING PRIMARY_REMOTE_ENDPOINT IS-" + isPrimaryRemoteEndpointSet);
 		if (!isPrimaryRemoteEndpointSet) {
 			LOGGER.error("SETTING PRIMARY_REMOTE_ENDPOINT FAILED SO PUBLIC WIFI IS NOT CONFIGURED");
@@ -2050,7 +2051,7 @@ public class BroadBandWebPaUtils {
 		// Setting the secondary tunnel Endpoint
 		isSecondaryRemoteEndpointSet = BroadBandWiFiUtils.setWebPaParams(device,
 				BroadBandWebPaConstants.WEBPA_PARAM_SECONDARY_REMOTE_ENDPOINT,
-				BroadBandTestConstants.SECONDARY_REMOTE_ENDPOINT, BroadBandTestConstants.CONSTANT_0);
+				BroadbandPropertyFileHandler.getSecondaryRemoteEndPoint(), BroadBandTestConstants.CONSTANT_0);
 		LOGGER.info("SETTING SECONDARY REMOTE ENDPOINT IS-" + isSecondaryRemoteEndpointSet);
 		if (!isSecondaryRemoteEndpointSet) {
 			LOGGER.error("SETTING SECONDARY REMOTE ENDPOINT FAILED SO PUBLIC WIFI IS NOT CONFIGURED");
@@ -3532,10 +3533,10 @@ public class BroadBandWebPaUtils {
 				BroadBandTestConstants.INCERMENTAL_ONE);
 		WebPaParameter webPaParamPrimaryEndPoint = setAndReturnWebPaParameterObject(
 				BroadBandWebPaConstants.WEBPA_PARAM_PRIMARY_REMOTE_ENDPOINT,
-				BroadBandTestConstants.PRIMARY_REMOTE_ENDPOINT, BroadBandTestConstants.CONSTANT_0);
+				BroadbandPropertyFileHandler.getPrimaryRemoteEndPoint(), BroadBandTestConstants.CONSTANT_0);
 		WebPaParameter webPaParamSecondaryEndpoint = setAndReturnWebPaParameterObject(
 				BroadBandWebPaConstants.WEBPA_PARAM_SECONDARY_REMOTE_ENDPOINT,
-				BroadBandTestConstants.SECONDARY_REMOTE_ENDPOINT, BroadBandTestConstants.CONSTANT_0);
+				BroadbandPropertyFileHandler.getSecondaryRemoteEndPoint(), BroadBandTestConstants.CONSTANT_0);
 
 		webPaParameters.add(webPaParamForDscpPolicy);
 		webPaParameters.add(webPaParamPrimaryEndPoint);

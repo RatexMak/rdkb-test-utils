@@ -362,7 +362,7 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static final String FILE_PATH_NVRAM_PARODUS_TAIL = "/nvram/automation_PARODUStail.txt";
 
     /** Command to tail PARODUSlog contents to nvram */
-    public static final String CMD_GET_PARODUSLOGS_NVRAM = "tail -f '/rdklogs/logs/PARODUSlog.txt.0' > '/nvram/automation_PARODUStail.txt' &";
+    public static final String CMD_GET_PARODUSLOGS_NVRAM = "tail -f /rdklogs/logs/PARODUSlog.txt.0 > /nvram/automation_PARODUStail.txt &";
 
     /** Command to stop parodus service using systemctl */
     public static final String CMD_SYSTEMCTL_STOP_PARODUS = "systemctl stop parodus.service";
@@ -560,13 +560,13 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static final String CMD_COPY = "cp ";
 
     /** Command to tail PAMlog contents to nvram */
-    public static final String CMD_GET_PAMLOGS_NVRAM = "su -c \"tail -f '/rdklogs/logs/PAMlog.txt.0' > '/nvram/automation_PAMtail.txt' &\"";
+    public static final String CMD_GET_PAMLOGS_NVRAM = "tail -f '/rdklogs/logs/PAMlog.txt.0' > '/nvram/automation_PAMtail.txt' &";
 
     /** Command to tail ArmConsolelog contents to nvram */
-    public static final String CMD_GET_ARMCONSOLELOGS_NVRAM = "tail -f /rdklogs/logs/ArmConsolelog.txt.0 > /nvram/automation_Consoletail.txt &";
+    public static final String CMD_GET_ARMCONSOLELOGS_NVRAM = "tail -f '/rdklogs/logs/ArmConsolelog.txt.0' > '/nvram/automation_Consoletail.txt' &";
 
     /** Command to tail Consolelog contents to nvram */
-    public static final String CMD_GET_CONSOLELOGS_NVRAM = "tail -f /rdklogs/logs/Consolelog.txt.0 > /nvram/automation_Consoletail.txt &";
+    public static final String CMD_GET_CONSOLELOGS_NVRAM = "tail -f '/rdklogs/logs/Consolelog.txt.0' > '/nvram/automation_Consoletail.txt' &";
 
     /** Temporary file in nvram to store PAMlog log tail */
     public static final String FILE_PATH_NVRAM_PAM_TAIL = "/nvram/automation_PAMtail.txt";
@@ -1567,16 +1567,19 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static final String CMD_REMOVE_DUMMY_FILE = "rm /tmp/dummy.txt";
 
     /** Cmd to grep valid primary ip from tcpdump to /tmp/cpature.txt */
-    public static final String CMD_TO_GET_DNS_PRIMARY_IP_TCPDUMP = "";
+    public static final String CMD_TO_GET_DNS_PRIMARY_IP_TCPDUMP = BroadbandPropertyFileHandler
+	    .getDNSPrimaryIpTcpDump();
 
     /** Cmd to remove dummy file from /tmp */
     public static final String CMD_REMOVE_CAPTURE_FILE = "rm /tmp/capture.txt";
 
     /** Cmd to grep valid secondary ip from tcpdump to /tmp/cpature.txt */
-    public static final String CMD_TO_GET_DNS_SECONDARY_IP_TCPDUMP = "";
+    public static final String CMD_TO_GET_DNS_SECONDARY_IP_TCPDUMP = BroadbandPropertyFileHandler
+	    .getDNSSecondaryIpTcpDump();
 
     /** Cmd to grep invalid primary ip from tcpdump to /tmp/cpature.txt */
-    public static final String CMD_TO_GET_INVALID_DNS_PRIMARY_IP_TCPDUMP = "";
+    public static final String CMD_TO_GET_INVALID_DNS_PRIMARY_IP_TCPDUMP = BroadbandPropertyFileHandler
+	    .getInvalidDNSPrimaryIpTcpDump();
 
     /** Constant to hold file path for dcmscriptl og file */
     public static final String FILE_TMP_DCMSCRIPT_LOG = "/tmp/dcmscript";

@@ -733,9 +733,7 @@ public class BroadBandCommonUtils {
 				: BroadBandCommandConstants.CMD_PING_LINUX;
 		pingCommand = BroadBandCommonUtils.concatStringUsingStringBuffer(pingCommand, url);
 
-		pingResponse = tapEnv.executeCommandUsingSshConnection(
-				WhiteListServer.getInstance(tapEnv,
-						AutomaticsPropertyUtility.getProperty(RDKBTestConstants.PROPERTY_REVERSE_SSH_JUMP_SERVER)),
+		pingResponse = tapEnv.executeCommandUsingSshConnection(WhiteListServer.getInstance(tapEnv, "localhost"),
 				pingCommand);
 
 		isReachable = CommonMethods.isNotNull(pingResponse)

@@ -362,7 +362,7 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static final String FILE_PATH_NVRAM_PARODUS_TAIL = "/nvram/automation_PARODUStail.txt";
 
     /** Command to tail PARODUSlog contents to nvram */
-    public static final String CMD_GET_PARODUSLOGS_NVRAM = "tail -f /rdklogs/logs/PARODUSlog.txt.0 > /nvram/automation_PARODUStail.txt";
+    public static final String CMD_GET_PARODUSLOGS_NVRAM = "tail -f '/rdklogs/logs/PARODUSlog.txt.0' > '/nvram/automation_PARODUStail.txt' &";
 
     /** Command to stop parodus service using systemctl */
     public static final String CMD_SYSTEMCTL_STOP_PARODUS = "systemctl stop parodus.service";
@@ -560,7 +560,7 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static final String CMD_COPY = "cp ";
 
     /** Command to tail PAMlog contents to nvram */
-    public static final String CMD_GET_PAMLOGS_NVRAM = "tail -f \"/rdklogs/logs/PAMlog.txt.0\" > \"/nvram/PAMtail.txt\" &";
+    public static final String CMD_GET_PAMLOGS_NVRAM = "tail -f 'rdklogs/logs/PAMlog.txt.0' > '/nvram/PAMtail.txt' &";
 
     /** Command to tail ArmConsolelog contents to nvram */
     public static final String CMD_GET_ARMCONSOLELOGS_NVRAM = "tail -f /rdklogs/logs/ArmConsolelog.txt.0 > /nvram/automation_Consoletail.txt &";

@@ -722,7 +722,7 @@ public class BroadBandCommonUtils {
 	 */
 	public static BroadBandResultObject verifyPingConnectionFromJumpServer(Dut device, AutomaticsTapApi tapEnv,
 			String url) {
-		LOGGER.debug("STARTING METHOD : verifyPingConnectionFromJumpServer()");
+		LOGGER.info("STARTING METHOD : verifyPingConnectionFromJumpServer()");
 
 		String errorMessage = null;
 		String pingResponse = null;
@@ -735,6 +735,7 @@ public class BroadBandCommonUtils {
 
 		pingResponse = tapEnv.executeCommandUsingSshConnection(WhiteListServer.getInstance(tapEnv, "localhost"),
 				pingCommand);
+		LOGGER.info("PING RESPONSE :"+pingResponse);
 
 		isReachable = CommonMethods.isNotNull(pingResponse)
 				&& CommonUtils.patternSearchFromTargetString(pingResponse, BroadBandTestConstants.PING_SUCCESS_MESSAGE)
@@ -749,7 +750,7 @@ public class BroadBandCommonUtils {
 		}
 		result.setErrorMessage(errorMessage);
 		result.setStatus(isReachable);
-		LOGGER.debug("ENDING METHOD : verifyPingConnectionFromJumpServer()");
+		LOGGER.info("ENDING METHOD : verifyPingConnectionFromJumpServer()");
 		return result;
 	}
 

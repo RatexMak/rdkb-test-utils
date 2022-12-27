@@ -78,7 +78,7 @@ public class CommonUtils {
      * @author Govardhan
      */
     public static boolean patternSearchFromTargetString(String targetString, String patterToSearch) {
-	LOGGER.debug("START METHOD: patternSearchFromTxt");
+	LOGGER.info("START METHOD: patternSearchFromTxt");
 	boolean isPatternFoundInText = false;
 	Pattern compiledPattern = Pattern.compile(patterToSearch);
 	Matcher matcher = compiledPattern.matcher(targetString);
@@ -90,7 +90,7 @@ public class CommonUtils {
 	    LOGGER.error("Pattern Not Found = " + patterToSearch);
 	}
 	LOGGER.info("is patter found for " + patterToSearch + " in target string = " + isPatternFoundInText);
-	LOGGER.debug("END METHOD: patternSearchFromTxt");
+	LOGGER.info("END METHOD: patternSearchFromTxt");
 	return isPatternFoundInText;
     }
 

@@ -60,6 +60,7 @@ public class WhiteListServer extends AutomaticsTestBase implements IServer{
      */
     public static final synchronized WhiteListServer getInstance(AutomaticsTapApi tapEnv, String jumpServerIp) {
 	wlServer = new WhiteListServer(tapEnv, jumpServerIp);
+	LOGGER.info("wlserver object :"+wlServer.toString());
 	return wlServer;
     }
     

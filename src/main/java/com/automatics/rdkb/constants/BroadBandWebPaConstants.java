@@ -1889,6 +1889,8 @@ public class BroadBandWebPaConstants {
 		    BroadBandTestConstants.STRING_VALUE_THREE),
 	    WEBPA_PARAM_PRIMARY_AND_SECONDARY_DNS_IP.replace(BroadBandTestConstants.STRING_REPLACE,
 		    BroadBandTestConstants.STRING_VALUE_FOUR) };
+    
+    public static final String[] WEBPA_PARAM_PRIMARY_DNS_RPI = { WEBPA_PARAM_PRIMARY_DNS };
 
     public enum RdkBBandSteeringParameters {
 	DEFAULT_STEERING_ENABLE(WEBPA_PARAM_BAND_STEERING_ENABLE, "false"),

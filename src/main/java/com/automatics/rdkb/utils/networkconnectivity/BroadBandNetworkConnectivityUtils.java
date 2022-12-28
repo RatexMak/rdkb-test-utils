@@ -37,6 +37,7 @@ import com.automatics.rdkb.constants.RDKBTestConstants;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.CommonMethods;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
+import com.automatics.rdkb.utils.DeviceModeHandler;
 import com.automatics.utils.AutomaticsPropertyUtility;
 import com.automatics.rdkb.server.WhiteListServer;
 
@@ -62,6 +63,7 @@ public class BroadBandNetworkConnectivityUtils {
 	String nslookupIPv4Addr = null;// String to store IPv4
 	String response = null;
 	try {
+		if(!DeviceModeHandler.isRPIDevice(device)) {
 	    response = tapEnv
 		    .executeCommandUsingSshConnection(
 			    WhiteListServer.getInstance(tapEnv,
@@ -70,6 +72,11 @@ public class BroadBandNetworkConnectivityUtils {
 			    BroadBandCommonUtils.concatStringUsingStringBuffer(
 				    BroadBandCommandConstants.CMD_NSLOOKUP_WITH_PATH_FOR_IPV4_ADDRESS,
 				    BroadBandTestConstants.NSLOOKUP_FOR_FACEBOOK));
+		}else {
+			response = tapEnv.executeCommandUsingSsh(device, BroadBandCommonUtils.concatStringUsingStringBuffer(
+				    BroadBandCommandConstants.CMD_NSLOOKUP_FOR_IPV4_ADDRESS,
+				    BroadBandTestConstants.NSLOOKUP_FOR_FACEBOOK));
+		}
 
 	    if (CommonMethods.isNotNull(response)) {
 		nslookupIPv4Addr = BroadBandCommonUtils.patternFinderForMultipleMatches(response,

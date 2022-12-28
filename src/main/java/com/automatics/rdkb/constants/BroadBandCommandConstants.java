@@ -175,6 +175,9 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command to get nslookup ipv4 address */
     public static final String CMD_NSLOOKUP_WITH_PATH_FOR_IPV4_ADDRESS = "/usr/bin/nslookup -query=A ";
+    
+    /** Command to get nslookup ipv4 address */
+    public static final String CMD_NSLOOKUP_FOR_IPV4_ADDRESS = "/usr/bin/nslookup ";
 
     /** FolderPath for SelfHeal.txt.0 */
     public static final String FILE_SELFHEAL_LOG = "/rdklogs/logs/SelfHeal.txt.0";

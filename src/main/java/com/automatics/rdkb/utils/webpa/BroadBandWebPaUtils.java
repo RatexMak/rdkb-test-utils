@@ -1166,10 +1166,10 @@ public class BroadBandWebPaUtils {
 
 				command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND, "-A",
 						BroadBandTestConstants.SINGLE_SPACE_CHARACTER, String.valueOf(AutomaticsConstants.CONSTANT_8),
-						BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.SYMBOL_FORWARD_SLASH,
+						BroadBandTestConstants.SINGLE_SPACE_CHARACTER, /*BroadBandTestConstants.SYMBOL_FORWARD_SLASH,*/
 						BroadBandTestConstants.SINGLE_QUOTE,
 						BroadBandTraceConstants.PARODUS_WEBPA_REQUEST_RECEIVED_TRACE,
-						BroadBandTestConstants.SYMBOL_FORWARD_SLASH, BroadBandTestConstants.SINGLE_QUOTE,
+						/*BroadBandTestConstants.SYMBOL_FORWARD_SLASH,*/ BroadBandTestConstants.SINGLE_QUOTE,
 						BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
 						BroadBandTestConstants.RDKLOGS_LOGS_PARODUS_TXT_0,
 						BroadBandCommandConstants.CMD_GREP_AWK_START_RANGE, deviceStartTime.trim(),
@@ -1184,8 +1184,6 @@ public class BroadBandWebPaUtils {
 		}
 		
 		LOGGER.info("command before replacing  :"+ command);//added
-		command = command.replaceAll(BroadBandTestConstants.SYMBOL_FORWARD_SLASH, "");
-		LOGGER.info("command after replacing :"+ command);//added
 		return command;
 
 	}

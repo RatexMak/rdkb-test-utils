@@ -262,10 +262,10 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static final String LOG_FILE_WEBPA_TEXT = "/rdklogs/logs/WEBPAlog.txt.*";
 
     /** Command to grep between range */
-    public static final String CMD_GREP_AWK_START_RANGE = " | awk '\\$1 >= \"";
+    public static final String CMD_GREP_AWK_START_RANGE = " | awk '$1 >= \"";
 
     /** Command to grep between range */
-    public static final String CMD_GREP_AWK_END_RANGE = "\" && \\$1 <= \"";
+    public static final String CMD_GREP_AWK_END_RANGE = "\" && $1 <= \"";
 
     /** Command Constants for Soft Reboot Test */
     /** BootTime Log File */

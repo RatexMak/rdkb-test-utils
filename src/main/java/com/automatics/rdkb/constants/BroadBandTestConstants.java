@@ -1938,7 +1938,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String DOUBLE_QUOTE_SINGLE_QUOTE = "\"'";
 
 	/** File path for Parodus log file */
-	public static final String RDKLOGS_LOGS_PARODUS_TXT_0 = "/rdklogs/logs/PARODUSlog.txt.*";
+	public static final String RDKLOGS_LOGS_PARODUS_TXT_0 = "/rdklogs/logs/PARODUSlog.txt.0";
 
 	/** Pattern for verifying the signed integer. */
 	public static final String PATTERN_FOR_UN_SIGNED_INT = "(\\d+)";

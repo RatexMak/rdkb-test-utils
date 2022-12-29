@@ -1184,7 +1184,7 @@ public class BroadBandWebPaUtils {
 		}
 		
 		LOGGER.info("command :"+ command);//added
-		command = command.replaceAll("\"", "");
+		command = command.replaceAll("\\", "");
 		LOGGER.info("command :"+ command);//added
 		return command;
 

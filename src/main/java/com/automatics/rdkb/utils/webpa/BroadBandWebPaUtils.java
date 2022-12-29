@@ -1122,8 +1122,8 @@ public class BroadBandWebPaUtils {
 						BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND, "-A",
 								BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.STRING_CONSTANT_4,
 								BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
-								BroadBandTestConstants.SYMBOL_FORWARD_SLASH, BroadBandTestConstants.SINGLE_QUOTE,
-								BroadBandTestConstants.SET_REQUEST, BroadBandTestConstants.SYMBOL_FORWARD_SLASH,
+								/*BroadBandTestConstants.SYMBOL_FORWARD_SLASH,*/ BroadBandTestConstants.SINGLE_QUOTE,
+								BroadBandTestConstants.SET_REQUEST, /*BroadBandTestConstants.SYMBOL_FORWARD_SLASH,*/
 								BroadBandTestConstants.SINGLE_QUOTE, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
 								BroadBandCommandConstants.LOG_FILE_WEBPA_TEXT,
 								BroadBandCommandConstants.CMD_GREP_AWK_START_RANGE, deviceStartTime.trim(),

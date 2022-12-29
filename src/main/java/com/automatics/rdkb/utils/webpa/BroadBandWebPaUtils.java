@@ -803,8 +803,9 @@ public class BroadBandWebPaUtils {
 				webPaServerResponse = WebPaConnectionHandler.get().setWebPaParameterValue(device,
 						listOfWebpaSetParameterObject);
 				processendTime = System.currentTimeMillis();
+				
 
-				if ((webPaServerResponse.getStatusCode()) == 200) {
+				if ((webPaServerResponse.getStatusCode()) == 200 || webPaServerResponse.getMessage().contains(BroadBandTestConstants.SUCCESS_TXT)) {
 					LOGGER.info(
 							"Verification of webpa get response from device is Success in iteration step " + iteration);
 					endToEndProcessingTime = processendTime - processstartTime;
@@ -822,7 +823,7 @@ public class BroadBandWebPaUtils {
 				LOGGER.info("webPaServerResponse is " + webPaServerResponse);
 
 				returnCode = webPaServerResponse.getStatusCode();
-				if (returnCode == 200) {
+				if (returnCode == 200 || webPaServerResponse.getMessage().contains(BroadBandTestConstants.SUCCESS_TXT)) {
 					LOGGER.info(
 							"Verification of webpa get response from device is Success in iteration step " + iteration);
 					endToEndProcessingTime = processendTime - processstartTime;
@@ -1181,7 +1182,10 @@ public class BroadBandWebPaUtils {
 		} catch (Exception e) {
 			LOGGER.error("EXCEPTION OCCURED WHILE CONCATING GREP COMMAND : " + e.getMessage());
 		}
-
+		
+		LOGGER.info("command :"+ command);//added
+		command = command.replaceAll("\"", "");
+		LOGGER.info("command :"+ command);//added
 		return command;
 
 	}

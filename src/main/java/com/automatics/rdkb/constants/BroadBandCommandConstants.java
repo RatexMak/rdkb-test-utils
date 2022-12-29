@@ -259,7 +259,7 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static final String CMD_DATE_RDKB_LOG_FORMAT = "date +%y%m%d-%T.%6N";
 
     /** WebPA Log File Name */
-    public static final String LOG_FILE_WEBPA_TEXT = "/rdklogs/logs/WEBPAlog.txt.*";
+    public static final String LOG_FILE_WEBPA_TEXT = "/rdklogs/logs/WEBPAlog.txt.0";
 
     /** Command to grep between range */
     public static final String CMD_GREP_AWK_START_RANGE = " | awk '$1 >= \"";

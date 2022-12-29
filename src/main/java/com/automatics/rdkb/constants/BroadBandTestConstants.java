@@ -1717,6 +1717,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	/** Command ARP */
 	public static final String COMMAND_ARP = "/sbin/arp -n";
+	
+	/** Command ARP */
+	public static final String COMMAND_ARP_RPI = "arp -a";
 
 	/** interface name to erouter0 */
 	public static final String INTERFACE_NAME_EROUTER0 = "erouter0";

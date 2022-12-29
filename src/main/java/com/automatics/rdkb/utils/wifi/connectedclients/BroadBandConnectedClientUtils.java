@@ -1818,10 +1818,18 @@ public class BroadBandConnectedClientUtils {
 					}
 					if (CommonMethods.isNotNull(value) && CommonMethods.isNotNull(connectionType)) {
 						// Command sample "/sbin/arp -n | grep -i " + value;
-						command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.COMMAND_ARP,
-								BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.SYMBOL_PIPE,
-								BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.GREP_COMMAND,
-								value);
+						if (!DeviceModeHandler.isRPIDevice(device)) {
+							command = BroadBandCommonUtils.concatStringUsingStringBuffer(
+									BroadBandTestConstants.COMMAND_ARP, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+									BroadBandTestConstants.SYMBOL_PIPE, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+									BroadBandTestConstants.GREP_COMMAND, value);
+						} else {
+							command = BroadBandCommonUtils.concatStringUsingStringBuffer(
+									BroadBandTestConstants.COMMAND_ARP_RPI,
+									BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.SYMBOL_PIPE,
+									BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.GREP_COMMAND,
+									value);
+						}
 						response = tapEnv.executeCommandUsingSsh(device, command);
 						LOGGER.info("Validate response is -" + response + ".");
 						if (CommonMethods.isNull(response)) {

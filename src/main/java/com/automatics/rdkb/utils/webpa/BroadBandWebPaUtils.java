@@ -1183,9 +1183,9 @@ public class BroadBandWebPaUtils {
 			LOGGER.error("EXCEPTION OCCURED WHILE CONCATING GREP COMMAND : " + e.getMessage());
 		}
 		
-		LOGGER.info("command :"+ command);//added
-		command = command.replaceAll("\\", "");
-		LOGGER.info("command :"+ command);//added
+		LOGGER.info("command before replacing  :"+ command);//added
+		command = command.replaceAll(BroadBandTestConstants.SYMBOL_FORWARD_SLASH, "");
+		LOGGER.info("command after replacing :"+ command);//added
 		return command;
 
 	}

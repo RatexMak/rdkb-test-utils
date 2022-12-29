@@ -2847,6 +2847,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 			put(BroadBandTestConstants.SECURITY_MODE_WPA_WPA2_PERSONAL, BroadBandTestConstants.CONSTANT_7);
 			put(BroadBandTestConstants.SECURITY_MODE_WPA2_ENTERPRISE, BroadBandTestConstants.CONSTANT_5);
 			put(BroadBandTestConstants.SECURITY_MODE_WPA_WPA2_ENTERPRISE, BroadBandTestConstants.CONSTANT_8);
+			put(BroadBandTestConstants.EMPTY_STRING, BroadBandTestConstants.CONSTANT_0);
 		}
 	};
 

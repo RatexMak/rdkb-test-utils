@@ -735,7 +735,7 @@ public class BroadBandCommonUtils {
 
 		pingResponse = tapEnv.executeCommandUsingSshConnection(WhiteListServer.getInstance(tapEnv, "localhost"),
 				pingCommand);
-		LOGGER.info("PING RESPONSE :"+pingResponse);
+		LOGGER.info("PING RESPONSE :" + pingResponse);
 
 		isReachable = CommonMethods.isNotNull(pingResponse)
 				&& CommonUtils.patternSearchFromTargetString(pingResponse, BroadBandTestConstants.PING_SUCCESS_MESSAGE)
@@ -3405,14 +3405,14 @@ public class BroadBandCommonUtils {
 					&& ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS)
 					&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.TEN_SECOND_IN_MILLIS));
 			startTime = System.currentTimeMillis();
-			LOGGER.info("is rebooted :"+isRebooted);
+			LOGGER.info("is rebooted :" + isRebooted);
 			do {
 				isStbAccessible = CommonMethods.isSTBAccessible(device);
 			} while (!isStbAccessible
 					&& ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS)
 					&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.TEN_SECOND_IN_MILLIS));
 			errorMessage = "Failed to verify StbAccessible";
-			LOGGER.info("is device Accessible :"+isStbAccessible);
+			LOGGER.info("is device Accessible :" + isStbAccessible);
 		} catch (Exception exception) {
 			errorMessage = "Exception occured while performing reboot " + exception.getMessage();
 			LOGGER.error(errorMessage);
@@ -3817,7 +3817,7 @@ public class BroadBandCommonUtils {
 				&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
 		if (webpaSetSuccessful) {
 			isRebootedAndStbAccessible = verifySTBRebootAndStbAccessible(device, tapEnv);
-			LOGGER.info("isRebootedAndStbAccessible :"+isRebootedAndStbAccessible);
+			LOGGER.info("isRebootedAndStbAccessible :" + isRebootedAndStbAccessible);
 		}
 		LOGGER.info("ENDING METHOD: rebootViaWebpaAndWaitForStbAccessible()");
 		return webpaSetSuccessful && isRebootedAndStbAccessible;
@@ -6229,7 +6229,9 @@ public class BroadBandCommonUtils {
 						&& (CommonUtils.patternSearchFromTargetString(response,
 								BroadBandTestConstants.PATTERN_STRING_DOT_ASH)
 								|| CommonUtils.patternSearchFromTargetString(response,
-										BroadBandTestConstants.PATTERN_STRING_DOT_NYC));
+										BroadBandTestConstants.PATTERN_STRING_DOT_NYC)
+								|| CommonUtils.patternSearchFromTargetString(response,
+										BroadBandTestConstants.PATTERN_STRING_DOT_MUM1));
 			}
 		} catch (Exception exception) {
 			LOGGER.error("Exception occurred while verifying executeAndVerifyNsLookUpCommandInConnectedClient ():"

@@ -6972,4 +6972,6 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	/** String parameter for factory resetting the box for DSL Device */
 	public static final String STRING_FACTORY_RESET_PARAMETER_FOR_DSL = "Router,Wifi,VoIP,Firewall";
+
+	public static final String PATTERN_STRING_DOT_MUM1 = ".mum1";
 }

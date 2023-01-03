@@ -5897,40 +5897,47 @@ public class BroadBandConnectedClientUtils {
 			stepNum = "S" + stepNumber;
 			errorMessage = "Connected Client haven't got a valid IPV6 Address from the gateway";
 			status = false;
-			LOGGER.info("**********************************************************************************");
-			LOGGER.info("STEP " + stepNumber
-					+ ": DESCRIPTION : Verify the Connected client has got the valid IPv6 Address");
-			LOGGER.info("STEP " + stepNumber
-					+ ": ACTION : Get the device IPv6 address using below command Linux : ifconfig wlan0\\eth0 |grep -i \"inet addr6:\"Windows: ipconfig |grep -A 10 \"Wireless\\Ethernet LAN adapter Wi-Fi\" |grep -i \"IPv6 Address\"");
-			LOGGER.info("STEP " + stepNumber
-					+ ": EXPECTED : Local IPv6 Address assigned to the client should be retrieved successfully");
-			LOGGER.info("**********************************************************************************");
-			if (!isSystemdPlatforms) {
-				startTime = System.currentTimeMillis();
-				do {
-					LOGGER.info("Waiting for device to verify IPV6 Address status");
-					ipv6AddressRetrievedFromClient = BroadBandConnectedClientUtils
-							.retrieveIPv6AddressFromConnectedClientWithDeviceCOnnected(connectedClientDevice, tapEnv);
-					status = CommonMethods.isIpv6Address(ipv6AddressRetrievedFromClient);
-				} while (!status
-						&& (System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS
-						&& BroadBandCommonUtils.hasWaitForDuration(tapEnv,
-								BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
-				if (!status && DeviceModeHandler.isDSLDevice(device)) {
-					status = BroadBandConnectedClientUtils.validateIPv6AddressCompleteCheck(
-							((Device) connectedClientDevice).getOsType(), device, connectedClientDevice, tapEnv);
-				}
-				if (status) {
-					ipAddresses.add(ipv6AddressRetrievedFromClient);
-					LOGGER.info("STEP " + stepNumber
-							+ " ACTUAL: Local IPv6 Address assigned to the client is valid Address");
+			if (BroadbandPropertyFileHandler.isIpv6Enabled()) {
+				LOGGER.info("**********************************************************************************");
+				LOGGER.info("STEP " + stepNumber
+						+ ": DESCRIPTION : Verify the Connected client has got the valid IPv6 Address");
+				LOGGER.info("STEP " + stepNumber
+						+ ": ACTION : Get the device IPv6 address using below command Linux : ifconfig wlan0\\eth0 |grep -i \"inet addr6:\"Windows: ipconfig |grep -A 10 \"Wireless\\Ethernet LAN adapter Wi-Fi\" |grep -i \"IPv6 Address\"");
+				LOGGER.info("STEP " + stepNumber
+						+ ": EXPECTED : Local IPv6 Address assigned to the client should be retrieved successfully");
+				LOGGER.info("**********************************************************************************");
+				if (!isSystemdPlatforms) {
+					startTime = System.currentTimeMillis();
+					do {
+						LOGGER.info("Waiting for device to verify IPV6 Address status");
+						ipv6AddressRetrievedFromClient = BroadBandConnectedClientUtils
+								.retrieveIPv6AddressFromConnectedClientWithDeviceCOnnected(connectedClientDevice,
+										tapEnv);
+						status = CommonMethods.isIpv6Address(ipv6AddressRetrievedFromClient);
+					} while (!status
+							&& (System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS
+							&& BroadBandCommonUtils.hasWaitForDuration(tapEnv,
+									BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+					if (!status && DeviceModeHandler.isDSLDevice(device)) {
+						status = BroadBandConnectedClientUtils.validateIPv6AddressCompleteCheck(
+								((Device) connectedClientDevice).getOsType(), device, connectedClientDevice, tapEnv);
+					}
+					if (status) {
+						ipAddresses.add(ipv6AddressRetrievedFromClient);
+						LOGGER.info("STEP " + stepNumber
+								+ " ACTUAL: Local IPv6 Address assigned to the client is valid Address");
+					} else {
+						LOGGER.error("STEP " + stepNumber + " ACTUAL: " + errorMessage);
+					}
+					tapEnv.updateExecutionStatus(device, testCaseId, stepNum, status, errorMessage, false);
 				} else {
-					LOGGER.error("STEP " + stepNumber + " ACTUAL: " + errorMessage);
+					tapEnv.updateExecutionForAllStatus(device, testCaseId, stepNum, ExecutionStatus.NOT_APPLICABLE,
+							BroadBandTestConstants.FIBRE_NOT_APPLICABLE_IPV6, false);
 				}
-				tapEnv.updateExecutionStatus(device, testCaseId, stepNum, status, errorMessage, false);
 			} else {
+				LOGGER.info("IPv6 is not available/disabled : skipping teststep...");
 				tapEnv.updateExecutionForAllStatus(device, testCaseId, stepNum, ExecutionStatus.NOT_APPLICABLE,
-						BroadBandTestConstants.FIBRE_NOT_APPLICABLE_IPV6, false);
+						errorMessage, false);
 			}
 			LOGGER.info("**********************************************************************************");
 

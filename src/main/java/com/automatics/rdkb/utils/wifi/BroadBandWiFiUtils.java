@@ -2909,7 +2909,11 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 				status = response.equalsIgnoreCase(BroadBandTestConstants.OPERATING_BANDWIDTH_20_MMZ);
 			}
 		} else {
-			status = response.equalsIgnoreCase(BroadBandTestConstants.OPERATING_BANDWIDTH_80_MMZ);
+			if (!DeviceModeHandler.isRPIDevice(device)) {
+				status = response.equalsIgnoreCase(BroadBandTestConstants.OPERATING_BANDWIDTH_80_MMZ);
+			} else {
+				status = response.equalsIgnoreCase(BroadBandTestConstants.OPERATING_BANDWIDTH_40_MMZ);
+			}
 		}
 		LOGGER.debug("ENDING METHOD: validateDefaultOperatingBandwidth");
 		return status;

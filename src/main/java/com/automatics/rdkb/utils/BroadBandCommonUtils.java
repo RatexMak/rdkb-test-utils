@@ -5422,8 +5422,8 @@ public class BroadBandCommonUtils {
 			long pollDuration = BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS;
 			long startTime = System.currentTimeMillis();
 			do {
-				LOGGER.info("GOING TO WAIT FOR 1 MINUTE.");
-				tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+				LOGGER.info("GOING TO WAIT FOR 10 SECONDS.");
+				tapEnv.waitTill(BroadBandTestConstants.TEN_SECOND_IN_MILLIS);
 				result = !CommonMethods.isSTBAccessible(device);
 			} while ((System.currentTimeMillis() - startTime) < pollDuration && !result);
 		}

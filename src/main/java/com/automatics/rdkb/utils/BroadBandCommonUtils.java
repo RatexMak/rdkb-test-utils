@@ -6843,7 +6843,7 @@ public class BroadBandCommonUtils {
 		String command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND,
 				BroadBandTestConstants.TEXT_DOUBLE_QUOTE, searchText, BroadBandTestConstants.TEXT_DOUBLE_QUOTE,
 				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, logFileName);
-		String command2 = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND, "-c",
+		String command2 = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND, "-c ",
 				BroadBandTestConstants.TEXT_DOUBLE_QUOTE, searchText, BroadBandTestConstants.TEXT_DOUBLE_QUOTE,
 				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, logFileName);
 		String response = tapEnv.executeCommandUsingSsh(device, command);

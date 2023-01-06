@@ -695,6 +695,9 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
 
     /** Log message from SelfHeal.txt.0 */
     public static final String LOG_MESSAGE_100_CPU_LOAD_FROM_SELFHEAL = "RDKB_SELFHEAL : CPU load at 100, top process:";
+    
+    /** Log message from SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_100_CPU_LOAD_FROM_SELFHEAL_RPI = "RDKB_SELFHEAL : Current CPU load is 100";
 
     /** Trace Constant for Management Frame Power Control Change */
     public static final String LOG_MESSAGE_MGMT_FRAME_POWER_CONTROL = "X_RDKCENTRAL-COM_ManagementFramePowerControl:";

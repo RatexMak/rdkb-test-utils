@@ -1148,6 +1148,28 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 	    add("/sbin/fsck.minix");
 	}
     };
+    
+    /** List of executable binaries */
+    public static final List<String> EXECUTABLE_BINARY_LIST_RPI = new ArrayList<String>() {
+	{
+	    add("/bin/dmesg");
+	    add("/bin/kill");
+	    add("/bin/more");
+	    add("/sbin/swapon");
+	    add("/sbin/swapoff");
+	    add("/sbin/hwclock");
+	    add("/usr/bin/chrt");
+	    add("/usr/bin/eject");
+	    add("/usr/bin/flock");
+	    add("/usr/bin/hexdump");
+	    add("/usr/bin/logger");
+	    add("/usr/bin/mesg");
+	    add("/usr/bin/renice");
+	    add("/usr/bin/setsid");
+	    add("/sbin/losetup");
+	    add("/sbin/fsck.minix");
+	}
+    };
 
     /** Log file location /rdklogs/logs/radiusauthd.log */
     public static final String FILE_RADIUSAUTHD_LOG = "/rdklogs/logs/radiusauthd.log";

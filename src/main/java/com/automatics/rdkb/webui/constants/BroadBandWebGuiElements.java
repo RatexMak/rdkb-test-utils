@@ -360,6 +360,9 @@ public class BroadBandWebGuiElements {
 	/** ELEMENT XPATH to retrieve firewall status in header */
 	public static final String ELEMENT_XPATH_FIREWALL_STATUS_IN_HEADER = "//*[@id=\"sta_fire\"]/a/span";
 
+	/** ELEMENT XPATH to retrieve firewall status in header */
+	public static final String ELEMENT_XPATH_FIREWALL_STATUS_IN_HEADER_RPI = "//*[@id=\"sta_fire\"]/a/label";
+	
 	/** Variable to store the xpath for Primary DNS Server IPV4 */
 	public static String XPATH_FOR_LAN_GUI_PAGE_CONTENT_REPLACE = "//*[@id='content']/div[2]/div[COUNT]/span[2]";
 

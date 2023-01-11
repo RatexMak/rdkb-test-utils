@@ -5183,7 +5183,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String SHELL_SHOCK_SCRIPT = "shellShockCheck.sh";
 
 	/** Shellshockcheck.sh path **/
-	public static final String FILE_PATH_1 = "cpefiles/generic/";
+	public static final String FILE_PATH_1 = "/scripts/";
 
 	/** Constant for sh command */
 	public static final String CMD_SH = "/bin/sh";

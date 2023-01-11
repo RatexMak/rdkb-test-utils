@@ -55,6 +55,7 @@ import com.automatics.rdkb.constants.BroadBandTraceConstants;
 import com.automatics.rdkb.constants.RDKBTestConstants;
 import com.automatics.rdkb.utils.wifi.BroadBandWiFiUtils;
 import com.automatics.rdkb.utils.wifi.BroadBandWifiWhixUtils;
+import com.automatics.rdkb.utils.wifi.connectedclients.BroadBandConnectedClientUtils;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.CommonMethods;
 import com.jcraft.jsch.Channel;
@@ -125,7 +126,7 @@ public class ConnectedNattedClientsUtils {
 	private static final String ADD_PROFILE_WINDOWS = "netsh wlan add profile filename=<profile>";
 
 	private static final String ADD_PROFILE_WINDOWS_SUCCESS_MESSAGE = "is added on interface Wi-Fi";
-	
+
 	private static final String ADD_PROFILE_WINDOWS_SUCCESS_MESSAGE_1 = "is added on interface WiFi";
 
 	/** Boolean for Connect Automatically */
@@ -218,6 +219,31 @@ public class ConnectedNattedClientsUtils {
 		}
 		LOGGER.debug("ENDING METHOD : verifyPingConnection()");
 		return result;
+	}
+
+	/**
+	 * 
+	 * This method is to verify ping command execution on the WiFi Client Device.
+	 * 
+	 * @param wifiClientDevice {@link Dut}
+	 * @param tapEnv           {@link AutomaticsTapApi}
+	 * @param ipAddress        String representing the IP Address.
+	 * @return returns status of operation
+	 * @refactor Sruthi Santhosh
+	 */
+	public static boolean verifyPingConnectionForIpv4(Dut device, AutomaticsTapApi tapEnv, String defaultGatewayWan,
+			Dut connectedClient) {
+		LOGGER.debug("STARTING METHOD : verifyPingConnectionForIpv4()");
+
+		boolean status = false;
+
+		String ipv4AddressRetrievedFromClient = BroadBandConnectedClientUtils.getIpv4AddressFromConnClient(tapEnv,
+				device, connectedClient);
+
+		status = ConnectedNattedClientsUtils.verifyPingConnectionInClient(connectedClient, tapEnv, defaultGatewayWan,
+				ipv4AddressRetrievedFromClient, BroadBandTestConstants.STRING_VALUE_FIVE);
+
+		return status;
 	}
 
 	/**
@@ -503,7 +529,8 @@ public class ConnectedNattedClientsUtils {
 					String command = ADD_PROFILE_WINDOWS.replaceAll("<profile>", profileNameToAdd);
 					String response = tapEnv.executeCommandOnOneIPClients(device, command);
 					returnStatus = CommonMethods.isNotNull(response)
-							&& ( response.contains(ADD_PROFILE_WINDOWS_SUCCESS_MESSAGE) || response.contains(ADD_PROFILE_WINDOWS_SUCCESS_MESSAGE_1));
+							&& (response.contains(ADD_PROFILE_WINDOWS_SUCCESS_MESSAGE)
+									|| response.contains(ADD_PROFILE_WINDOWS_SUCCESS_MESSAGE_1));
 					LOGGER.info("[TEST LOG] : Wifi profile  added successfully for ssid " + ssid);
 				} else {
 					LOGGER.error("Profile is not available after copying to the client");
@@ -1607,7 +1634,8 @@ public class ConnectedNattedClientsUtils {
 		int iPingResponseAvgTime = 0;
 		Device ecastDevice = (Device) wifiClientDevice;
 		LOGGER.info("OS TYPE OF THE WIFI CLIENT: " + ecastDevice.getOsType());
-		String pingCommand = ecastDevice.isLinux() ? BroadBandCommandConstants.CMD_SUDO + BroadBandCommandConstants.CMD_PING_LINUX
+		String pingCommand = ecastDevice.isLinux()
+				? BroadBandCommandConstants.CMD_SUDO + BroadBandCommandConstants.CMD_PING_LINUX
 				: BroadBandCommandConstants.CMD_PING_WINDOWS;
 		String response = tapEnv.executeCommandOnOneIPClients(wifiClientDevice,
 				BroadBandCommonUtils.concatStringUsingStringBuffer(pingCommand,
@@ -1697,6 +1725,60 @@ public class ConnectedNattedClientsUtils {
 						: BroadBandCommandConstants.CMD_PING_FOR_LINUX)
 				: BroadBandCommandConstants.CMD_PING_FOR_WINDOWS;
 		LOGGER.info("PING Command: " + pingCommand + " " + durationInSeconds + " " + ipAddress);
+		String[] commands = new String[] { BroadBandCommonUtils.concatStringUsingStringBuffer(pingCommand,
+				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, durationInSeconds,
+				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, ipAddress) };
+
+		String response = tapEnv.executeCommandOnOneIPClients(connectedClientDevice, commands,
+				(Integer.parseInt(durationInSeconds) + BroadBandTestConstants.FIFTY_SECONDS)
+						* BroadBandTestConstants.SECONDS_TO_MILLISECONDS);
+		if (CommonMethods.isNotNull(response)) {
+			response = ecastSettop.isWindows()
+					? BroadBandCommonUtils.patternFinderMatchPositionBased(response,
+							BroadBandConnectedClientTestConstants.PATTERN_MATCHER_PING_RESPONSE_WINDOWS,
+							BroadBandTestConstants.CONSTANT_4)
+					: BroadBandCommonUtils.patternFinderMatchPositionBased(response,
+							BroadBandConnectedClientTestConstants.PATTERN_MATCHER_PING_RESPONSE_LINUX,
+							BroadBandTestConstants.CONSTANT_3);
+		}
+		if (CommonMethods.isNotNull(response)) {
+			try {
+				int iActualValue = Integer.parseInt(response);
+				result = iActualValue != BroadBandTestConstants.PERCENTAGE_VALUE_HUNDRED;
+			} catch (NumberFormatException numberFormatException) {
+				// Log & Suppress the Exception
+				LOGGER.error(numberFormatException.getMessage());
+			}
+		}
+		LOGGER.debug("ENDING METHOD : verifyPingConnection()");
+		return result;
+
+	}
+
+	/**
+	 * 
+	 * This method is to verify ping command execution for a particular duration on
+	 * the Connected Client Device.
+	 * 
+	 * @param connectedClientDevice {@link Dut}
+	 * @param tapEnv                {@link AutomaticsTapApi}
+	 * @param ipAddress             String representing the IP Address
+	 * @param durationInSeconds     String which gives the Ping Count
+	 * @return returns status of operation
+	 * @refactor Sruthi Santhosh
+	 */
+	public static boolean verifyPingConnectionInClient(Dut connectedClientDevice, AutomaticsTapApi tapEnv,
+			String ipAddress, String ipAddressofInterface, String durationInSeconds) {
+		LOGGER.debug("STARTING METHOD : verifyPingConnection()");
+		boolean result = false;
+		Device ecastSettop = (Device) connectedClientDevice;
+		LOGGER.info("OS TYPE OF THE WIFI CLIENT: " + ecastSettop.getOsType());
+		String pingCommand = ecastSettop.isLinux() || ecastSettop.isRaspbianLinux()
+				? (CommonMethods.isIpv6Address(ipAddress) ? BroadBandCommandConstants.CMD_PING_FOR_LINUX_IPV6
+						: BroadBandCommandConstants.CMD_PING_FOR_LINUX)
+				: BroadBandCommandConstants.CMD_PING_FOR_WINDOWS;
+		LOGGER.info("PING Command: " + pingCommand + " " + durationInSeconds + " " + ipAddress + " " + "-S" + " "
+				+ ipAddressofInterface);
 		String[] commands = new String[] { BroadBandCommonUtils.concatStringUsingStringBuffer(pingCommand,
 				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, durationInSeconds,
 				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, ipAddress) };

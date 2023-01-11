@@ -183,7 +183,8 @@ public class WtClientUtils {
 			LOGGER.info("CONTACTING WISST SERVER");
 
 			JSONObject param = new JSONObject();
-			param.put("wtSimulatorBaseUrl", wtSimulatorBaseUrl);
+			//param.put("wtSimulatorBaseUrl", wtSimulatorBaseUrl);
+			param.put("wtSimulatorBaseUrl","http://localhost:8081/test");
 			LOGGER.info("JSON OBJECT - " + param.toString());
 			URL obj = new URL(url);
 			HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();

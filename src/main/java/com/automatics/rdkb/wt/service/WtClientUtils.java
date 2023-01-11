@@ -101,23 +101,37 @@ public class WtClientUtils {
 	    LOGGER.info("JSON OBJECT - " + param.toString());
 	    LOGGER.info("CONTACTING WT SERVER: {}", url);
 	    URL obj = new URL(url);
-	    HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
-	    postConnection.setRequestMethod("POST");
-	    postConnection.setRequestProperty("Content-Type", "application/json");
-	    postConnection.setDoOutput(true);
-	    OutputStream os = postConnection.getOutputStream();
-	    os.write(param.toString().getBytes());
-	    os.flush();
-	    os.close();
-	    int responseCode = postConnection.getResponseCode();
-	    String status = postConnection.getResponseMessage();
-	    LOGGER.info("POST Response Code :  " + responseCode);
-	    LOGGER.info("POST Response Message : " + status);
+	    // HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
+	    // postConnection.setRequestMethod("POST");
+	    // postConnection.setRequestProperty("Content-Type", "application/json");
+	    // postConnection.setDoOutput(true);
+	    // OutputStream os = postConnection.getOutputStream();
+	    // os.write(param.toString().getBytes());
+	    // os.flush();
+	    // os.close();
+	    // int responseCode = postConnection.getResponseCode();
+	    // String status = postConnection.getResponseMessage();
+	    // LOGGER.info("POST Response Code : " + responseCode);
+	    // LOGGER.info("POST Response Message : " + status);
 
-	    JSONObject objectName = new JSONObject(status);
-	    status = objectName.getString("status");
+	    ResteasyClient client = getClient();
+	    ResteasyWebTarget target = client.target(url);
 
-	    result.setStatus(responseCode == HttpURLConnection.HTTP_OK && status == "SUCCESS");
+	    Response response = target.request().post(Entity.entity(param.toString(), "application/json"));
+
+	    if (null != response) {
+		LOGGER.info("Response code: {}", response.getStatus());
+
+		if (response.getStatus() == 200) {
+		    String responseBody = response.readEntity(String.class);
+		    LOGGER.info("Response Body: {}", responseBody);
+
+		    JSONObject objectName = new JSONObject(responseBody);
+		    String status = objectName.getString("status");
+
+		    result.setStatus("SUCCESS".equals(status));
+		}
+	    }
 
 	} catch (Exception exception) {
 	    LOGGER.error("Exception occurred While connecting to Wifi Band. Error Message - " + exception.getMessage());
@@ -295,25 +309,43 @@ public class WtClientUtils {
 	    param.put("stationId", stationId);
 	    LOGGER.info("JSON OBJECT - " + param.toString());
 	    URL obj = new URL(url);
-	    HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
-	    postConnection.setRequestMethod("POST");
-	    postConnection.setRequestProperty("Content-Type", "application/json");
-	    postConnection.setDoOutput(true);
-	    OutputStream os = postConnection.getOutputStream();
-	    os.write(param.toString().getBytes());
-	    os.flush();
-	    os.close();
-	    int responseCode = postConnection.getResponseCode();
-	    String status = postConnection.getResponseMessage();
-	    LOGGER.info("POST Response Code :  " + responseCode);
-	    LOGGER.info("POST Response Message : " + status);
+	    // HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
+	    // postConnection.setRequestMethod("POST");
+	    // postConnection.setRequestProperty("Content-Type", "application/json");
+	    // postConnection.setDoOutput(true);
+	    // OutputStream os = postConnection.getOutputStream();
+	    // os.write(param.toString().getBytes());
+	    // os.flush();
+	    // os.close();
+	    // int responseCode = postConnection.getResponseCode();
+	    // String status = postConnection.getResponseMessage();
+	    // LOGGER.info("POST Response Code : " + responseCode);
+	    // LOGGER.info("POST Response Message : " + status);
+	    //
+	    // JSONObject objectName = new JSONObject(status);
+	    // status = objectName.getString("status");
+	    //
+	    // result.setStatus(responseCode == HttpURLConnection.HTTP_OK && status == "SUCCESS");
 
-	    JSONObject objectName = new JSONObject(status);
-	    status = objectName.getString("status");
+	    ResteasyClient client = getClient();
+	    ResteasyWebTarget target = client.target(url);
 
-	    result.setStatus(responseCode == HttpURLConnection.HTTP_OK && status == "SUCCESS");
+	    response = target.request().post(Entity.entity(param.toString(), "application/json"));
 
-	    LOGGER.info("Response from delete station - " + status);
+	    if (null != response) {
+		LOGGER.info("Response code: {}", response.getStatus());
+
+		if (response.getStatus() == 200) {
+		    String responseBody = response.readEntity(String.class);
+		    LOGGER.info("Response Body: {}", responseBody);
+
+		    JSONObject objectName = new JSONObject(responseBody);
+		    String status = objectName.getString("status");
+
+		    responseJson = status;
+		}
+	    }
+
 	} catch (Exception e) {
 	    LOGGER.error("Exception from WiSST client - ", e);
 	    throw new WtResponseException(e.getMessage());

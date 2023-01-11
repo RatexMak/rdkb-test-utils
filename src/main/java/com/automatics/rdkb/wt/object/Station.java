@@ -80,7 +80,7 @@ public class Station {
     String ethernet_interface;
 
     @JsonProperty("mode")
-    int mode;
+    String mode;
 
     @JsonProperty("alias")
     String alias;
@@ -93,7 +93,7 @@ public class Station {
      * 
      * @return
      */
-    public int getMode() {
+    public String getMode() {
 	return mode;
     }
 
@@ -102,7 +102,7 @@ public class Station {
      * 
      * @param mode
      */
-    public void setMode(int mode) {
+    public void setMode(String mode) {
 	this.mode = mode;
     }
 

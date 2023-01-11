@@ -63,7 +63,8 @@ public class WtClientUtils {
 	    station = new Station();
 	    station.setwtSimulatorBaseUrl(wtSimulatorBaseUrl);
 	    station.setAlias("sta" + (counter + 1));
-	    station.setMode(WiFiFrequencyBand.WIFI_BAND_2_GHZ.equals(wifiBand) ? 6 : 9);
+	    // TODO check this later
+	    // station.setMode(WiFiFrequencyBand.WIFI_BAND_2_GHZ.equals(wifiBand) ? 6 : 9);
 	    station.setSsid(ssid);
 	    station.setPsk(passphrase);
 	    // station.setStatus("enabled");
@@ -99,6 +100,7 @@ public class WtClientUtils {
 	    param.put("mode", station.getMode());
 	    param.put("ethernet_interface", station.getEthernet_interface());
 	    LOGGER.info("JSON OBJECT - " + param.toString());
+	    LOGGER.info("CONTACTING WT SERVER: {}", url);
 	    URL obj = new URL(url);
 	    HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
 	    postConnection.setRequestMethod("POST");
@@ -116,8 +118,7 @@ public class WtClientUtils {
 	    JSONObject objectName = new JSONObject(status);
 	    status = objectName.getString("status");
 
-	    result.setStatus(responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_OK
-		    || status == "SUCCESS");
+	    result.setStatus(responseCode == HttpURLConnection.HTTP_OK && status == "SUCCESS");
 
 	} catch (Exception exception) {
 	    LOGGER.error("Exception occurred While connecting to Wifi Band. Error Message - " + exception.getMessage());
@@ -280,15 +281,15 @@ public class WtClientUtils {
 	    throws WtResponseException {
 	LOGGER.info("************* Started deleting a station *************");
 
-	String urlPath = "/stationManagement/createStation";
+	String urlPath = "/stationManagement/deleteStation";
 	url += urlPath;
 	String responseJson = null;
-	Station[] stations = null;
+
 	Response response = null;
 	BroadBandResultObject result = new BroadBandResultObject();
 
 	try {
-	    LOGGER.info("CONTACTING WISST SERVER");
+	    LOGGER.info("CONTACTING WT SERVER: {}", url);
 
 	    JSONObject param = new JSONObject();
 	    param.put("wtSimulatorBaseUrl", wtSimulatorBaseUrl);
@@ -311,7 +312,7 @@ public class WtClientUtils {
 	    JSONObject objectName = new JSONObject(status);
 	    status = objectName.getString("status");
 
-	    result.setStatus(responseCode == HttpURLConnection.HTTP_OK || status == "SUCCESS");
+	    result.setStatus(responseCode == HttpURLConnection.HTTP_OK && status == "SUCCESS");
 
 	    LOGGER.info("Response from delete station - " + status);
 	} catch (Exception e) {

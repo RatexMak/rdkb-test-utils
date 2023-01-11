@@ -87,18 +87,19 @@ public class WtClientUtils {
 	LOGGER.info("STARTING METHOD : createClientUsingWisstApi");
 	BroadBandResultObject result = new BroadBandResultObject();
 
-	String urlPath = "/stationManagement/createStation";
-	url += urlPath;
+	
 
 	try {
 
 	    JSONObject param = new JSONObject();
+	    param.put("wtSimulatorBaseUrl", station.getwtSimulatorBaseUrl());
 	    param.put("alias", station.getAlias());
 	    param.put("ssid", station.getSsid());
 	    param.put("psk", station.getPsk());
 	    param.put("radio", station.getRadio());
 	    param.put("mode", station.getMode());
-	    param.put("ethernet_interface", station.getEthernet_interface());
+	    param.put("remoteInterface", station.getEthernet_interface());
+	    param.put("mode", "");
 	    LOGGER.info("JSON OBJECT - " + param.toString());
 	    LOGGER.info("CONTACTING WT SERVER: {}", url);
 	    URL obj = new URL(url);

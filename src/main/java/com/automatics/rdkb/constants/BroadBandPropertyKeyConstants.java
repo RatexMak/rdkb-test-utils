@@ -837,4 +837,8 @@ public class BroadBandPropertyKeyConstants {
 	public static final String OPERATING_MODE_5GHZ_RPI = "operating.mode.5ghz.rpi";
 
 	public static final String CLIENT_OPERATING_MODE_5GHZ = "client.operating.mode.5ghz";
+
+	public static final String CLI_CONFIG_AUTOVAULT_LOCATION = "autovault.cliconfig.file.path";
+
+	public static final String WEBPA_CFG_AUTOVAULT_LOCATION = "autovault.webpacfg.file.path";
 }

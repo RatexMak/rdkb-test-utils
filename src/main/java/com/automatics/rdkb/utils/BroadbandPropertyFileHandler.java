@@ -3022,4 +3022,22 @@ public class BroadbandPropertyFileHandler {
 		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.CLIENT_OPERATING_MODE_5GHZ);
 	}
 
+	/**
+	 * This API will get the CLI config location is server from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String getCliConfigFileLocation() {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.CLI_CONFIG_AUTOVAULT_LOCATION);
+	}
+
+	/**
+	 * This API will get the webpa config location is server from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String getWbpaCfgFileLocation() {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.WEBPA_CFG_AUTOVAULT_LOCATION);
+	}
+
 }

@@ -77,7 +77,7 @@ public class Station {
     String connectionStatusOld;
 
     @JsonProperty("remoteInterface")
-    String ethernet_interface;
+    String remoteInterface;
 
     @JsonProperty("mode")
     String mode;
@@ -440,8 +440,8 @@ public class Station {
      * 
      * @return
      */
-    public String getEthernet_interface() {
-	return ethernet_interface;
+    public String getRemoteInterface() {
+	return remoteInterface;
     }
 
     /**
@@ -450,13 +450,13 @@ public class Station {
      * 
      * @param ethernet_interface
      */
-    public void setEthernet_interface(String ethernet_interface) {
-	this.ethernet_interface = ethernet_interface;
+    public void setRemoteInterface(String remoteInterface) {
+	this.remoteInterface = remoteInterface;
     }
 
     public String toString() {
 	String s = " status : " + status + " id : " + id + " connectionStatus : " + connectionStatus + " band : " + band
-		+ " ssid : " + ssid + " mac : " + mac + "Ethernet Interface : " + ethernet_interface;
+		+ " ssid : " + ssid + " mac : " + mac + "Ethernet Interface : " + remoteInterface;
 	return s;
     }
 

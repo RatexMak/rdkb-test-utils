@@ -69,7 +69,7 @@ public class WtClientUtils {
 	    station.setPsk(passphrase);
 	    // station.setStatus("enabled");
 	    station.setRadio(WiFiFrequencyBand.WIFI_BAND_2_GHZ.equals(wifiBand) ? "wiphy0" : "wiphy1");
-	    station.setEthernet_interface("eth1");
+	    station.setRemoteInterface("eth1");
 	    result = createClientUsingWtApi(station, url);
 	    if (!result.isStatus()) {
 		nonConnectedStations.add(station.getAlias() + ",");
@@ -96,7 +96,7 @@ public class WtClientUtils {
 	    param.put("psk", station.getPsk());
 	    param.put("radio", station.getRadio());
 	    param.put("mode", station.getMode());
-	    param.put("remoteInterface", station.getEthernet_interface());
+	    param.put("remoteInterface", station.getRemoteInterface());
 	    param.put("mode", "");
 	    LOGGER.info("JSON OBJECT - " + param.toString());
 	    LOGGER.info("CONTACTING WT SERVER: {}", url);

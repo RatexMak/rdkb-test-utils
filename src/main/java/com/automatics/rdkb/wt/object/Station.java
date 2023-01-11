@@ -76,7 +76,7 @@ public class Station {
     @JsonProperty("connection_status")
     String connectionStatusOld;
 
-    @JsonProperty("ethernet_interface")
+    @JsonProperty("remoteInterface")
     String ethernet_interface;
 
     @JsonProperty("mode")

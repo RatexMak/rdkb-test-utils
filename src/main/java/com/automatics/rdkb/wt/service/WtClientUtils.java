@@ -87,8 +87,6 @@ public class WtClientUtils {
 	LOGGER.info("STARTING METHOD : createClientUsingWisstApi");
 	BroadBandResultObject result = new BroadBandResultObject();
 
-	
-
 	try {
 
 	    JSONObject param = new JSONObject();
@@ -114,7 +112,7 @@ public class WtClientUtils {
 	    int responseCode = postConnection.getResponseCode();
 	    String status = postConnection.getResponseMessage();
 	    LOGGER.info("POST Response Code :  " + responseCode);
-	    LOGGER.info("POST Response Message : " + postConnection.getResponseMessage());
+	    LOGGER.info("POST Response Message : " + status);
 
 	    JSONObject objectName = new JSONObject(status);
 	    status = objectName.getString("status");
@@ -308,7 +306,7 @@ public class WtClientUtils {
 	    int responseCode = postConnection.getResponseCode();
 	    String status = postConnection.getResponseMessage();
 	    LOGGER.info("POST Response Code :  " + responseCode);
-	    LOGGER.info("POST Response Message : " + postConnection.getResponseMessage());
+	    LOGGER.info("POST Response Message : " + status);
 
 	    JSONObject objectName = new JSONObject(status);
 	    status = objectName.getString("status");

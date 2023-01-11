@@ -187,6 +187,7 @@ public class WtClientUtils {
 			param.put("wtSimulatorBaseUrl","http://localhost:8081/test");
 			LOGGER.info("JSON OBJECT - " + param.toString());
 			URL obj = new URL(url);
+			LOGGER.info("obj - " + obj);
 			HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
 			postConnection.setRequestMethod("POST");
 			postConnection.setRequestProperty("Content-Type", "application/json");
@@ -199,6 +200,10 @@ public class WtClientUtils {
 			String status = postConnection.getResponseMessage();
 			LOGGER.info("POST Response Code :  " + responseCode);
 			LOGGER.info("POST Response Message : " + postConnection.getResponseMessage());
+
+			JSONObject objectName = new JSONObject(status);
+			status = objectName.getString("status");
+			
 
 			ResteasyClient client = getClient();
 			ResteasyWebTarget target = client.target(url);

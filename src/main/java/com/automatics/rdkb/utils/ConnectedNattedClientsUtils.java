@@ -1781,7 +1781,8 @@ public class ConnectedNattedClientsUtils {
 				+ ipAddressofInterface);
 		String[] commands = new String[] { BroadBandCommonUtils.concatStringUsingStringBuffer(pingCommand,
 				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, durationInSeconds,
-				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, ipAddress) };
+				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, ipAddress, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+				"-S", BroadBandTestConstants.SINGLE_SPACE_CHARACTER, ipAddressofInterface) };
 
 		String response = tapEnv.executeCommandOnOneIPClients(connectedClientDevice, commands,
 				(Integer.parseInt(durationInSeconds) + BroadBandTestConstants.FIFTY_SECONDS)

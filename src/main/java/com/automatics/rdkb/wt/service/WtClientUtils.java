@@ -84,7 +84,7 @@ public class WtClientUtils {
     }
 
     public static BroadBandResultObject createClientUsingWtApi(Station station, String url) {
-	LOGGER.info("STARTING METHOD : createClientUsingWisstApi");
+	LOGGER.info("STARTING METHOD : createClientUsingWtApi");
 	BroadBandResultObject result = new BroadBandResultObject();
 
 	try {
@@ -136,7 +136,7 @@ public class WtClientUtils {
 	} catch (Exception exception) {
 	    LOGGER.error("Exception occurred While connecting to Wifi Band. Error Message - " + exception.getMessage());
 	}
-	LOGGER.info("ENDING METHOD : createClientUsingWisstApi");
+	LOGGER.info("ENDING METHOD : createClientUsingWtApi");
 	return result;
     }
 
@@ -144,7 +144,7 @@ public class WtClientUtils {
 
 	boolean status = false;
 
-	LOGGER.info("RESPONSE FROM WISST SERVER: " + response);
+	LOGGER.info("RESPONSE FROM WT SERVER: " + response);
 	if (null != response) {
 	    if (response.getStatus() == 200) {
 		status = true;
@@ -273,14 +273,6 @@ public class WtClientUtils {
 	    }
 	}
 
-	// } catch (Exception e) {
-	// LOGGER.error("Exception from WiSST client - ", e);
-	// throw new WtResponseException(e.getMessage());
-	// } finally {
-	// if (null != response) {
-	// response.close();
-	// }
-	// }
 
 	LOGGER.info("Response station list - " + stationList);
 
@@ -347,7 +339,7 @@ public class WtClientUtils {
 	    }
 
 	} catch (Exception e) {
-	    LOGGER.error("Exception from WiSST client - ", e);
+	    LOGGER.error("Exception from WT client - ", e);
 	    throw new WtResponseException(e.getMessage());
 	} finally {
 	    if (null != response) {

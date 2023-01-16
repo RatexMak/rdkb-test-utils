@@ -32,7 +32,6 @@ import com.automatics.rdkb.constants.BroadBandTestConstants;
 import com.automatics.rdkb.constants.BroadBandWebPaConstants;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.CommonMethods;
-import com.sun.jersey.spi.inject.Errors.ErrorMessage;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
 import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
 import com.automatics.rdkb.utils.SplunkUtils;

@@ -268,8 +268,7 @@ public class LanWebGuiLoginPage extends LanSideBasePage {
 		boolean loginStatus = false;
 		boolean isAlertPresent = false;
 		String newPassword = null;
-		boolean result = false;
-		String pageTitle = "";
+
 		try {
 			// Delete existing contents from user name and password
 			// text box
@@ -300,8 +299,8 @@ public class LanWebGuiLoginPage extends LanSideBasePage {
 			}
 			// Verify login status
 
-			pageTitle = BroadbandPropertyFileHandler.getAtAGlancePageTitle();
-			result = BroadBandWebUiUtils.validatePageLaunchedStatusWithPageTitle(driver, pageTitle);
+		    BroadBandAtGlancePage homepage = new BroadBandAtGlancePage(driver);
+		    loginStatus = homepage.verifyAtGlancePageLaunchedStatus();
 		} catch (Exception e) {
 			LOGGER.error("Exception ocurred while login into Admin page :" + e.getMessage());
 		}
@@ -1013,6 +1012,8 @@ public class LanWebGuiLoginPage extends LanSideBasePage {
 		boolean adminPageLaunchedStatus = false;
 		// Variable to store admin page new password
 		String newPassword = null;
+		boolean result = false;
+		String pageTitle = "";
 		try {
 			// http://10.0.0.1/captiveportal.php
 			// Invoke browser in the Connected Client Setop
@@ -1103,9 +1104,8 @@ public class LanWebGuiLoginPage extends LanSideBasePage {
 									"#######################################################################################");
 						}
 						// Verify login status
-						BroadBandAtGlancePage homepage = new BroadBandAtGlancePage(driver);
-						loginStatus = homepage.verifyAtGlancePageLaunchedStatus();
-
+						pageTitle = BroadbandPropertyFileHandler.getAtAGlancePageTitle();
+						result = BroadBandWebUiUtils.validatePageLaunchedStatusWithPageTitle(driver, pageTitle);
 					} else {
 						throw new TestException("Default Password of the device is null");
 					}

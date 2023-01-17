@@ -299,8 +299,8 @@ public class LanWebGuiLoginPage extends LanSideBasePage {
 			}
 			// Verify login status
 
-		    BroadBandAtGlancePage homepage = new BroadBandAtGlancePage(driver);
-		    loginStatus = homepage.verifyAtGlancePageLaunchedStatus();
+			BroadBandAtGlancePage homepage = new BroadBandAtGlancePage(driver);
+			loginStatus = homepage.verifyAtGlancePageLaunchedStatus();
 		} catch (Exception e) {
 			LOGGER.error("Exception ocurred while login into Admin page :" + e.getMessage());
 		}
@@ -948,8 +948,12 @@ public class LanWebGuiLoginPage extends LanSideBasePage {
 		String url = null;
 		// Variable to store admin page new password
 		String newPassword = null;
+		// Stores Partner id
+		String partnerId = null;
+		// Stores Lan Ip address
+		String lanipAddress = null;
 		try {
-			newPassword = AutomaticsTapApi.getSTBPropsValue(BroadBandWebGuiTestConstant.ADMIN_PAGE_PASSWORD);
+			newPassword = AutomaticsPropertyUtility.getProperty(BroadBandWebGuiTestConstant.ADMIN_PAGE_PASSWORD);
 			if (CommonMethods.isNull(newPassword)) {
 				newPassword = BroadBandTestConstants.NON_DEFAULT_LOGIN_PASSWORD;
 			}
@@ -957,29 +961,44 @@ public class LanWebGuiLoginPage extends LanSideBasePage {
 			LOGGER.error("Exception occured while retrieving non default password : " + e.getMessage());
 		}
 		try {
+			lanipAddress = BroadBandWebPaUtils.getParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+					BroadBandWebPaConstants.WEBPA_PARAM_LAN_IP_ADDRESS);
+			if (CommonMethods.isNotNull(lanipAddress) && CommonMethods.isIpv4Address(lanipAddress)) {
+				url = BroadBandTestConstants.URL_HTTP + lanipAddress + BroadBandTestConstants.SLASH_SYMBOL;
+				LOGGER.info("URL to be launched: " + url);
+			} else {
+				LOGGER.error("Unable to get LAN Ip address to launch LAN Admin GUI URL.");
+				return loginStatus;
+			}
 			if (DeviceModeHandler.isBusinessClassDevice(device)) {
-				url = AutomaticsTapApi.getSTBPropsValue(BroadBandWebGuiTestConstant.ADMIN_PAGE_URL_BUSINESS_CLASS);
 				defaultUserName = tapEnv.executeCommandUsingSsh(device,
 						BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_USERNAME_BUSINESS_CLASS);
 				defaultPassword = tapEnv.executeCommandUsingSsh(device,
 						BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_PASSWORD_BUSINESS_CLASS);
 			} else {
-				url = AutomaticsTapApi.getSTBPropsValue(BroadBandWebGuiTestConstant.ADMIN_PAGE_URL);
+				partnerId = tapEnv.executeWebPaCommand(device,
+						BroadBandWebPaConstants.WEBPA_PARAM_FOR_SYNDICATION_PARTNER_ID);
+				LOGGER.info("Current Partner ID of the device Retrieved via WEBPA is :" + partnerId);
 				defaultUserName = tapEnv.executeCommandUsingSsh(device,
 						BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_USERNAME);
 				defaultPassword = tapEnv.executeCommandUsingSsh(device,
 						BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_PASSWORD);
 			}
-			if (CommonMethods.isNull(defaultPassword)) {
+			LOGGER.info("Setting password using WEBPA: " + newPassword);
+			if (DeviceModeHandler.isBusinessClassDevice(device)) {
+				loginStatus = BroadBandWebPaUtils.setParameterValuesUsingWebPaOrDmcli(device, tapEnv,
+						BroadBandWebPaConstants.WEBPA_PARAM_GUI_CUSADMIN_PASSWORD, WebPaDataTypes.STRING.getValue(),
+						newPassword);
+			} else {
 				loginStatus = BroadBandWebPaUtils.setParameterValuesUsingWebPaOrDmcli(device, tapEnv,
 						BroadBandWebPaConstants.WEBPA_PARAM_GUI_ADMIN_PASSWORD, WebPaDataTypes.STRING.getValue(),
 						newPassword);
-				if (loginStatus) {
-					defaultPassword = newPassword;
-				} else {
-					throw new TestException(
-							"Unable to retrieve 'admin' password from device,unable to set using dmcli/webpa");
-				}
+			}
+			if (loginStatus) {
+				defaultPassword = newPassword;
+			} else {
+				throw new TestException(
+						"Unable to retrieve 'admin' password from device,unable to set using dmcli/webpa");
 			}
 			loginStatus = logintoLanPageinConnectedClient(tapEnv, device, clientSettop, url, defaultUserName,
 					defaultPassword, browser);

@@ -7659,17 +7659,20 @@ public class BroadBandCommonUtils {
 		LOGGER.info("Expected password is - " + password);
 		LOGGER.info("Password obtained from syscfg db is - " + defaultPassword);
 		/*
-		 * Changes: 1. No change for Business class devices. 2. For residential devices,
-		 * default value 'password' will be stored in syscfg db so we can validate the
-		 * same 3. Once password is changed from default value, it will be removed from
-		 * syscfg db so we validate null response
+		 * Changes as per RDKB-14847: 1. No change for Business class devices. 2. For
+		 * residential devices, default value 'password' will be stored in syscfg db so
+		 * we can validate the same 3. Once password is changed from default value, it
+		 * will be removed from syscfg db so we validate null response
 		 */
-
-		// Password other than default value will be removed from syscfg db as per
-		// so need to verify
-		// null response
-		LOGGER.info("Since password has been removed from syscfg db, we need to verify response is null");
-		isPwdSame = CommonMethods.isNull(defaultPassword);
+		if (DeviceModeHandler.isBusinessClassDevice(device) || (CommonMethods.isNotNull(defaultPassword))) {
+			isPwdSame = CommonMethods.isNotNull(defaultPassword) && defaultPassword.trim().equals(password);
+		} else {
+			// Password other than default value will be removed from syscfg db as per
+			// RDKB-14847, so need to verify
+			// null response
+			LOGGER.info("Since password has been removed from syscfg db, we need to verify response is null");
+			isPwdSame = CommonMethods.isNull(defaultPassword);
+		}
 
 		LOGGER.info("Is the default password of the admin page is as expected - " + isPwdSame);
 		LOGGER.debug("ENDING METHOD: verifyAdminPagePasswordFromSyscfgCommand");

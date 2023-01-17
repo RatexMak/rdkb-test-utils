@@ -7645,10 +7645,17 @@ public class BroadBandCommonUtils {
 		LOGGER.debug("STARTING METHOD: verifyAdminPagePasswordFromSyscfgCommand");
 		boolean isPwdSame = false;
 		String defaultPassword = null;
-		String command = DeviceModeHandler.isBusinessClassDevice(device)
-				? BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_PASSWORD_BUSINESS_CLASS
-				: BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_PASSWORD;
-		defaultPassword = tapEnv.executeCommandUsingSsh(device, command);
+
+		if (!DeviceModeHandler.isRPIDevice(device)) {
+			String command = DeviceModeHandler.isBusinessClassDevice(device)
+					? BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_PASSWORD_BUSINESS_CLASS
+					: BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_PASSWORD;
+			defaultPassword = tapEnv.executeCommandUsingSsh(device, command);
+		} else {
+			String command = BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_PASSWORD;
+			defaultPassword = tapEnv.executeCommandUsingSsh(device, command);
+		}
+
 		LOGGER.info("Expected password is - " + password);
 		LOGGER.info("Password obtained from syscfg db is - " + defaultPassword);
 		/*

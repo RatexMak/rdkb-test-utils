@@ -1138,6 +1138,6 @@ public class LanWebGuiLoginPage extends LanSideBasePage {
 			throw new TestException("" + ". Exception : " + e.getMessage());
 		}
 		LOGGER.debug("ENDING METHOD : logintoLanPageinConnectedClient()");
-		return loginStatus;
+		return result;
 	}
 }

@@ -100,6 +100,9 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** curl command to retrieve header details of a connection */
     public static final String CMD_CURL_WITH_TIMEOUT_AND_HEADER = "curl -k --connect-timeout 20 --head ";
+    
+    /** curl command to retrieve header details of a connection */
+    public static final String CMD_CURL_WITH_TIMEOUT_AND_HEADER_AND_INTERFACE = "curl --interface <INTERFACE IP> -k --connect-timeout 20 --head ";
 
     /** curl command to resolve domain to IPv6 Address */
     public static final String CMD_CURL_RESOLVE_DOMAIN_TO_IPV6_ADDRESS = CMD_CURL_WITH_TIMEOUT_AND_HEADER + "-6 ";

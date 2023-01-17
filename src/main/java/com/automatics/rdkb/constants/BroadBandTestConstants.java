@@ -716,6 +716,19 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	 * the given time
 	 */
 	public static final String ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE = "Connection timed out";
+	
+	/**
+	 * Holds message returned by curl command when web is not accessible even after
+	 * the given time
+	 */
+	public static final String ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE_RPI_1 = "Connection timeout";
+	
+	/**
+	 * Holds message returned by curl command when web is not accessible even after
+	 * the given time
+	 */
+	public static final String ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE_RPI_2 = "connection timeout";
+	
 	/**
 	 * Holds message returned by curl command when web is not accessible even after
 	 * the given time

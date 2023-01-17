@@ -6383,6 +6383,10 @@ public class BroadBandConnectedClientUtils {
 					|| CommonUtils.patternSearchFromTargetString(response,
 							BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE)
 					|| CommonUtils.patternSearchFromTargetString(response,
+							BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE_RPI_1)
+					|| CommonUtils.patternSearchFromTargetString(response,
+							BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE_RPI_2)
+					|| CommonUtils.patternSearchFromTargetString(response,
 							BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_OPERATION_TIMEOUT_MESSAGE)
 					|| CommonUtils.patternSearchFromTargetString(response,
 							BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_RESOLVING_TIMEOUT_MESSAGE)

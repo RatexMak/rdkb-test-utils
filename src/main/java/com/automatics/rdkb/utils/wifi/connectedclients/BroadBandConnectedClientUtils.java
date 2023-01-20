@@ -2795,6 +2795,7 @@ public class BroadBandConnectedClientUtils {
 		String errorMessage = null;
 		// response obtained
 		String commandResponse = null;
+		String command = null;
 		if (stepNumbers.length == 4) {
 			checkIpAddressObtainedAfterWifiDisabled(device, tapEnv, connectedDeviceActivated, testId,
 					new String[] { stepNumbers[0], stepNumbers[1] });
@@ -2806,22 +2807,29 @@ public class BroadBandConnectedClientUtils {
 			LOGGER.info("******************************************************");
 			testStepNumber = stepNumbers[2];
 			status = false;
-			String command = ((Device) connectedDeviceActivated).getOsType()
-					.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
-							? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV4_ADDRESS
-									.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxClientWifiInterface())
-							: BroadBandConnectedClientTestConstants.COMMAND_CURL_WINDOWS_IPV4_ADDRESS;
-			errorMessage = "Connectivty check using IPV4 address failed";
-			commandResponse = tapEnv.executeCommandOnOneIPClients(connectedDeviceActivated, command);
-			if (CommonMethods.isNotNull(commandResponse)) {
-				status = commandResponse.contains("Failed to connect to www.google.com")
-						|| commandResponse.contains("Could not resolve host");
-				if (!status) {
-					errorMessage = "Expected Failed to connect to www.google.com as response .But obtained "
-							+ commandResponse;
+			if (!DeviceModeHandler.isRPIDevice(device)) {
+				command = ((Device) connectedDeviceActivated).getOsType()
+						.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
+								? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV4_ADDRESS.replace(
+										"<INTERFACE>", BroadbandPropertyFileHandler.getLinuxClientWifiInterface())
+								: BroadBandConnectedClientTestConstants.COMMAND_CURL_WINDOWS_IPV4_ADDRESS;
+				errorMessage = "Connectivty check using IPV4 address failed";
+				commandResponse = tapEnv.executeCommandOnOneIPClients(connectedDeviceActivated, command);
+				if (CommonMethods.isNotNull(commandResponse)) {
+					status = commandResponse.contains("Failed to connect to www.google.com")
+							|| commandResponse.contains("Could not resolve host");
+					if (!status) {
+						errorMessage = "Expected Failed to connect to www.google.com as response .But obtained "
+								+ commandResponse;
+					}
+				} else {
+					errorMessage = "Unable to execute curl command for IPV4 on connected client device. Please check the connectivity between connected client and Jump server.";
 				}
 			} else {
-				errorMessage = "Unable to execute curl command for IPV4 on connected client device. Please check the connectivity between connected client and Jump server.";
+				errorMessage = "Connectivty check using IPV4 address failed";
+				BroadBandResultObject result = verifyInternetAccessUsingCurlForRPi(tapEnv, device,
+						connectedDeviceActivated, BroadBandTestConstants.URL_GOOGLE);
+				status = result.isStatus();
 			}
 			tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
 
@@ -2833,22 +2841,28 @@ public class BroadBandConnectedClientUtils {
 			testStepNumber = stepNumbers[3];
 			status = false;
 			errorMessage = "Connectivty check using IPV6 address failed";
-			command = ((Device) connectedDeviceActivated).getOsType()
-					.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
-							? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV6_ADDRESS
-							: BroadBandConnectedClientTestConstants.COMMAND_CURL_WINDOWS_IPV6_ADDRESS;
-			commandResponse = tapEnv.executeCommandOnOneIPClients(connectedDeviceActivated, command);
-			if (CommonMethods.isNotNull(commandResponse)) {
-				status = commandResponse.contains("Failed to connect to www.google.com")
-						|| commandResponse.contains("Could not resolve host");
-				if (!status) {
-					errorMessage = "Expected Failed to connect to www.google.com as response .But obtained "
-							+ commandResponse;
+			if (BroadbandPropertyFileHandler.isIpv6Enabled()) {
+				command = ((Device) connectedDeviceActivated).getOsType()
+						.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
+								? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV6_ADDRESS
+								: BroadBandConnectedClientTestConstants.COMMAND_CURL_WINDOWS_IPV6_ADDRESS;
+				commandResponse = tapEnv.executeCommandOnOneIPClients(connectedDeviceActivated, command);
+				if (CommonMethods.isNotNull(commandResponse)) {
+					status = commandResponse.contains("Failed to connect to www.google.com")
+							|| commandResponse.contains("Could not resolve host");
+					if (!status) {
+						errorMessage = "Expected Failed to connect to www.google.com as response .But obtained "
+								+ commandResponse;
+					}
+				} else {
+					errorMessage = "Unable to execute curl command for IPv6 on connected client device. Please check the connectivity between connected client and Jump server.";
 				}
+				tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
 			} else {
-				errorMessage = "Unable to execute curl command for IPv6 on connected client device. Please check the connectivity between connected client and Jump server.";
+				LOGGER.info("IPv6 is not available/disabled : skipping teststep...");
+				tapEnv.updateExecutionForAllStatus(device, testId, testStepNumber, ExecutionStatus.NOT_APPLICABLE,
+						errorMessage, false);
 			}
-			tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
 		} else {
 			LOGGER.info("This function is meant for executing 4 steps.Current steps passed are " + stepNumbers.length);
 		}

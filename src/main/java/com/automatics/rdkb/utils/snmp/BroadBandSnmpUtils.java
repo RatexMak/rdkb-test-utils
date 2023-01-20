@@ -2160,7 +2160,7 @@ public class BroadBandSnmpUtils {
 		    LOGGER.error("Failed to verify sysuptime" + e.getMessage());
 		}
 	    } while (!result && (System.currentTimeMillis() - startTime) < pollDuration
-		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.TEN_SECOND_IN_MILLIS));
 	} catch (Exception e) {
 	    LOGGER.error("Exception Occurred in getSystemUpTimeUsingSnmp():" + e.getMessage());
 	}

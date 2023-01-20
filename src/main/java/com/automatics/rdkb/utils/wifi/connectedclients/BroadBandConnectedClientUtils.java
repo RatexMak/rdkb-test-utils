@@ -6368,49 +6368,58 @@ public class BroadBandConnectedClientUtils {
 		String ipAddressRetrievedFromClient = getIpv4AddressFromConnClient(tapEnv, device, connectedClientDevice);
 		LOGGER.info("IP ADDRESS ASSIGNED TO THE CONNECTED CLIENT FROM DHCP : " + ipAddressRetrievedFromClient);
 		BroadBandResultObject result = new BroadBandResultObject();
-		String curlCommand = BroadBandCommonUtils
-				.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_CURL_WITH_TIMEOUT_AND_HEADER_AND_INTERFACE
-						.replace("<INTERFACE IP>", ipAddressRetrievedFromClient), url);
-		LOGGER.info("CURL COMMAND :" + curlCommand);
+		if (CommonMethods.isNotNull(ipAddressRetrievedFromClient)) {
+			String curlCommand = BroadBandCommonUtils.concatStringUsingStringBuffer(
+					BroadBandCommandConstants.CMD_CURL_WITH_TIMEOUT_AND_HEADER_AND_INTERFACE.replace("<INTERFACE IP>",
+							ipAddressRetrievedFromClient),
+					url);
+			LOGGER.info("CURL COMMAND :" + curlCommand);
 
-		String response = tapEnv.executeCommandOnOneIPClients(connectedClientDevice, curlCommand);
-		errorMessage = "Null response obtained on checking Internet access in the connected client.";
-		if (CommonMethods.isNotNull(response)) {
-			isNotAccessible = CommonUtils.patternSearchFromTargetString(response,
-					BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_SSL_HANDSHAKE_FAILURE_MESSAGE)
-					|| CommonUtils.patternSearchFromTargetString(response,
-							BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_FAILURE_MESSAGE)
-					|| CommonUtils.patternSearchFromTargetString(response,
-							BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE)
-					|| CommonUtils.patternSearchFromTargetString(response,
-							BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE_RPI_1)
-					|| CommonUtils.patternSearchFromTargetString(response,
-							BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE_RPI_2)
-					|| CommonUtils.patternSearchFromTargetString(response,
-							BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_OPERATION_TIMEOUT_MESSAGE)
-					|| CommonUtils.patternSearchFromTargetString(response,
-							BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_RESOLVING_TIMEOUT_MESSAGE)
-					|| CommonUtils.patternSearchFromTargetString(response,
-							BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_COULD_NOT_RESOLVE_HOST_MESSAGE);
-			errorMessage = (!isNotAccessible && CommonUtils.patternSearchFromTargetString(response,
-					BroadBandTestConstants.CURL_NOT_INSTALLED_ERROR_MESSAGE))
-							? "Curl is not installed in the "
-									+ ((Device) connectedClientDevice).getConnectedDeviceInfo().getConnectionType()
-									+ " Connected Client"
-							: (!isNotAccessible && (CommonUtils.patternSearchFromTargetString(response,
-									BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_HEADER_SUCCESS_MESSAGE)
-									|| CommonUtils.patternSearchFromTargetString(response,
-											BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_HEADER_SUCCESS_HTTP_1_1)
-									|| CommonUtils.patternSearchFromTargetString(response,
-											BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_SUCCESS_MESSAGE)
-									|| CommonUtils.patternSearchFromTargetString(response,
-											BroadBandConnectedClientTestConstants.RESPONSE_STATUS_OK)))
-													? "Website/IP Address is accessible in the Connected Client"
-													: "Unable to check the internet access in the connected client using curl";
+			String response = tapEnv.executeCommandOnOneIPClients(connectedClientDevice, curlCommand);
+			errorMessage = "Null response obtained on checking Internet access in the connected client.";
+			if (CommonMethods.isNotNull(response)) {
+				isNotAccessible = CommonUtils.patternSearchFromTargetString(response,
+						BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_SSL_HANDSHAKE_FAILURE_MESSAGE)
+						|| CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_FAILURE_MESSAGE)
+						|| CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE)
+						|| CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE_RPI_1)
+						|| CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE_RPI_2)
+						|| CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_OPERATION_TIMEOUT_MESSAGE)
+						|| CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_RESOLVING_TIMEOUT_MESSAGE)
+						|| CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_COULD_NOT_RESOLVE_HOST_MESSAGE);
+				errorMessage = (!isNotAccessible && CommonUtils.patternSearchFromTargetString(response,
+						BroadBandTestConstants.CURL_NOT_INSTALLED_ERROR_MESSAGE))
+								? "Curl is not installed in the "
+										+ ((Device) connectedClientDevice).getConnectedDeviceInfo().getConnectionType()
+										+ " Connected Client"
+								: (!isNotAccessible && (CommonUtils.patternSearchFromTargetString(response,
+										BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_HEADER_SUCCESS_MESSAGE)
+										|| CommonUtils.patternSearchFromTargetString(response,
+												BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_HEADER_SUCCESS_HTTP_1_1)
+										|| CommonUtils.patternSearchFromTargetString(response,
+												BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_SUCCESS_MESSAGE)
+										|| CommonUtils.patternSearchFromTargetString(response,
+												BroadBandConnectedClientTestConstants.RESPONSE_STATUS_OK)))
+														? "Website/IP Address is accessible in the Connected Client"
+														: "Unable to check the internet access in the connected client using curl";
+			}
+
+			result.setErrorMessage(errorMessage);
+			result.setStatus(isNotAccessible);
+		} else {
+			result.setErrorMessage(
+					"IP ADDRESS ASSIGNED TO THE CONNECTED CLIENT FROM DHCP IS NULL : NO INTERNET CONNECTIVITY");
+			isNotAccessible = true;
+			result.setStatus(isNotAccessible);
+
 		}
-
-		result.setErrorMessage(errorMessage);
-		result.setStatus(isNotAccessible);
 
 		return result;
 	}

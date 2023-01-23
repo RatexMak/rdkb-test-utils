@@ -348,6 +348,9 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command to tail given file to Backup file in NVRAM */
     public static final String TAIL_LOG_TO_BACKUP_FILE = "rm -rf /nvram/automation_BackUp<REPLACE>;tail -f -n +1 /rdklogs/logs/<REPLACE> > /nvram/automation_BackUp<REPLACE>&";
+    
+    /** Command to tail given file to Backup file in NVRAM */
+    public static final String TAIL_LOG_TO_BACKUP_FILE_RPI = "rm -rf /nvram/automation_BackUp<REPLACE>;su -c \"tail -f -n +1 /rdklogs/logs/<REPLACE> > /nvram/automation_BackUp<REPLACE>&\"";
 
     /** Naviagte to nvram log with given log */
     public static final String NAVIGATE_GIVEN_FILE_IN_NVRAM = "/nvram/<REPLACE>";

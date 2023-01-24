@@ -9055,4 +9055,53 @@ public class BroadBandCommonUtils {
 		LOGGER.debug("Ending of Method: getAtomsyncUptimeStatus");
 		return status;
 	}
+
+	/**
+	 * Method to kill the process and verify using ps | grep command
+	 * 
+	 * @param device        {@link device}
+	 * @param tapEnv        {@link tapEnv}
+	 * @param processName   process name to kill
+	 * @param patternForPid pattern to get the pid from ps command
+	 * @author ArunKumar Jayachandran
+	 * @refactor Said Hisham
+	 */
+	public static boolean killProcessAndVerifyForCrashGeneration(Dut device, AutomaticsTapApi tapEnv,
+			String processName) {
+		LOGGER.debug("STARTING METHOD: killProcessAndVerify()");
+		String response = null;
+		String pid = null;
+		boolean status = false;
+		// execute the command ps | grep <process name>
+		response = tapEnv.executeCommandUsingSsh(device,
+				BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_PS_GREP, processName,
+						BroadBandCommandConstants.CMD_TO_GREP_ONLY_PROCESS));
+		if (CommonMethods.isNotNull(response)) {
+			String patternForPid = "(\\d+) +\\w+ +.*" + processName;
+			LOGGER.info("patternForPid :" + patternForPid);
+			// Get the process id using regex pattern (\\d+)
+			pid = CommonMethods.patternFinder(response, patternForPid);
+			// Kill the process using killall -11 <pid>
+			if (CommonMethods.isNotNull(pid)) {
+				LOGGER.info("Process Id for " + processName + " is: " + pid);
+				tapEnv.executeCommandUsingSsh(device, BroadBandCommonUtils.concatStringUsingStringBuffer(
+						BroadBandTestConstants.CMD_KILLALL_11, BroadBandTestConstants.SINGLE_SPACE_CHARACTER, pid));
+			} else {
+				LOGGER.error("Getting empty process id from ps | grep " + processName + " command");
+			}
+		} else {
+			LOGGER.error("There is no process running for " + processName + " & response for \"ps | grep " + processName
+					+ "\" command output:" + response);
+		}
+		// verify the process is killed properly
+		if (CommonMethods.isNotNull(pid)) {
+			response = tapEnv.executeCommandUsingSsh(device, BroadBandCommonUtils
+					.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_PS_GREP, processName));
+			status = CommonMethods.isNotNull(response)
+					&& !CommonUtils.isGivenStringAvailableInCommandOutput(response, pid);
+			LOGGER.info((status ? "Successfully killed the process" : "Failed to kill the process"));
+		}
+		LOGGER.debug("ENDING METHOD: killProcessAndVerify()");
+		return status;
+	}
 }

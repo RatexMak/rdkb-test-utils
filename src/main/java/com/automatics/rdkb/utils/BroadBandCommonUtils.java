@@ -9085,7 +9085,7 @@ public class BroadBandCommonUtils {
 			if (CommonMethods.isNotNull(pid)) {
 				LOGGER.info("Process Id for " + processName + " is: " + pid);
 				tapEnv.executeCommandUsingSsh(device, BroadBandCommonUtils.concatStringUsingStringBuffer(
-						BroadBandTestConstants.CMD_KILLALL_11, BroadBandTestConstants.SINGLE_SPACE_CHARACTER, pid));
+						BroadBandTestConstants.SDV_AGENT_KILL_PROCESS, BroadBandTestConstants.SINGLE_SPACE_CHARACTER, pid));
 			} else {
 				LOGGER.error("Getting empty process id from ps | grep " + processName + " command");
 			}

@@ -9102,8 +9102,15 @@ public class BroadBandCommonUtils {
 		}
 		// verify the process is killed properly
 		if (CommonMethods.isNotNull(pid)) {
-			response = tapEnv.executeCommandUsingSsh(device, BroadBandCommonUtils
-					.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_PS_GREP, processName));
+			response = tapEnv.executeCommandUsingSsh(device,
+					BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_PS_GREP,
+							processName, BroadBandCommandConstants.CMD_TO_GREP_ONLY_PROCESS));
+			if (CommonMethods.isNull(response)) {
+				BroadBandCommonUtils.rebootAndWaitForStbAccessible(device, tapEnv);
+				response = tapEnv.executeCommandUsingSsh(device,
+						BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_PS_GREP,
+								processName, BroadBandCommandConstants.CMD_TO_GREP_ONLY_PROCESS));
+			}
 			status = CommonMethods.isNotNull(response)
 					&& !CommonUtils.isGivenStringAvailableInCommandOutput(response, pid);
 			LOGGER.info((status ? "Successfully killed the process" : "Failed to kill the process"));

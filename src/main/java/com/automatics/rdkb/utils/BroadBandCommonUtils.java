@@ -9081,11 +9081,18 @@ public class BroadBandCommonUtils {
 			LOGGER.info("patternForPid :" + patternForPid);
 			// Get the process id using regex pattern (\\d+)
 			pid = CommonMethods.patternFinder(response, patternForPid);
+
+			if (CommonMethods.isNull(pid)) {
+				pid = CommonMethods.getPidOfProcess(device, tapEnv, processName);
+				LOGGER.info("Process Id from Arm Console :" + pid);
+			}
 			// Kill the process using killall -11 <pid>
 			if (CommonMethods.isNotNull(pid)) {
 				LOGGER.info("Process Id for " + processName + " is: " + pid);
-				tapEnv.executeCommandUsingSsh(device, BroadBandCommonUtils.concatStringUsingStringBuffer(
-						BroadBandTestConstants.SDV_AGENT_KILL_PROCESS, BroadBandTestConstants.SINGLE_SPACE_CHARACTER, pid));
+				tapEnv.executeCommandUsingSsh(device,
+						BroadBandCommonUtils.concatStringUsingStringBuffer(
+								BroadBandTestConstants.SDV_AGENT_KILL_PROCESS,
+								BroadBandTestConstants.SINGLE_SPACE_CHARACTER, pid));
 			} else {
 				LOGGER.error("Getting empty process id from ps | grep " + processName + " command");
 			}

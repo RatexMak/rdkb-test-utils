@@ -9107,6 +9107,7 @@ public class BroadBandCommonUtils {
 							processName, BroadBandCommandConstants.CMD_TO_GREP_ONLY_PROCESS));
 			if (CommonMethods.isNull(response)) {
 				BroadBandCommonUtils.rebootAndWaitForStbAccessible(device, tapEnv);
+				BroadBandWebPaUtils.verifyWebPaProcessIsUp(tapEnv, device, true);
 				response = tapEnv.executeCommandUsingSsh(device,
 						BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_PS_GREP,
 								processName, BroadBandCommandConstants.CMD_TO_GREP_ONLY_PROCESS));

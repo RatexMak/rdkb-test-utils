@@ -5811,6 +5811,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	/** String to store telemetry logs for CR process crash */
 	public static final String CR_PROCESS_CRASH_TELEMETRY_LOGS = "RDKB_PROCESS_CRASHED : CR_process is not running, need to reboot the unit";
+	
+	/** String to store telemetry logs for CR process crash */
+	public static final String PROCESS_CRASH_RPI = "core has been generated inside /tmp :";
 
 	/** Command to get systemd logs for process crash */
 	public static final String COMMAND_TO_GET_SYSTEMD_LOGS_FOR_PROCESS_CRASH = "rm -rf /nvram/automation_sample.txt;tail -F /rdklogs/logs/systemd_processRestart.log > /nvram/automation_sample.txt";

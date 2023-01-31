@@ -2676,6 +2676,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	/** Constant to store logs for XCONF fail telemetry version 2 URL */
 	public static final String LOGS_INDICATE_XCONF_GET_INVALID = "T2:Curl GET of XCONF data failed";
+	
+	/** Constant to store logs for XCONF fail telemetry version 2 URL */
+	public static final String LOGS_INDICATE_XCONF_GET_INVALID_RPI = "URL doesn't start with https or is invalid !!!";
 
 	/** Time formart pattern finder for dd:mm:ss */
 	public static final String TIME_FORMAT = "dd:mm:ss";

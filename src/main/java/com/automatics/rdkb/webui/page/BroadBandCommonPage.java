@@ -618,9 +618,9 @@ public class BroadBandCommonPage extends BroadBandBasePage {
 					.findElement(By.xpath((BroadBandWebGuiTestConstant.XPATH_FOR_PORT_FORWARDING_MODE_DISABLE_LINK)))
 					.getAttribute(BroadBandWebGuiTestConstant.ARIA_CHECKED_ATTRIBUTE);
 
-			LOGGER.debug("area checked attribute obtained for disable portfowarding Button is"
+			LOGGER.info("area checked attribute obtained for disable portfowarding Button is"
 					+ areaCheckedAttributeForDisablebutton);
-			LOGGER.debug("area checked attribute obtained for enable portfowarding Button is"
+			LOGGER.info("area checked attribute obtained for enable portfowarding Button is"
 					+ areaCheckedAttributeForEnablebutton);
 			if (CommonMethods.isNotNull(areaCheckedAttributeForDisablebutton)
 					&& CommonMethods.isNotNull(areaCheckedAttributeForEnablebutton)) {

@@ -139,7 +139,7 @@ public class BroadBandTelemetry2Utils {
 									BroadBandTestConstants.PROCESS_NAME_TELEMETRY_2_0);
 				} else {
 					tapEnv.waitTill(BroadBandTestConstants.TWO_MINUTE_IN_MILLIS);
-					response = tapEnv.executeCommandUsingSsh(device, BroadBandTestConstants.PROCESS_CRASH_RPI);
+					response = tapEnv.executeCommandUsingSsh(device, "grep -i "+BroadBandTestConstants.PROCESS_CRASH_RPI + " /rdklogs/logs/SelfHeal.txt.0");
 					result = CommonMethods.isNotNull(response)
 							&& response.contains(BroadBandTestConstants.PROCESS_NAME_TELEMETRY_2_0);
 					if (result) {

@@ -311,16 +311,27 @@ public class BroadBandWebGuiTestConstant {
     /** Property to get command to trigger firmware download for devices **/
     public static final String SH_COMMAND_TO_TRIGGER_FIRMWARE_DOWNLOAD_DSL = "sh.command.totrigger. fwdownload_dsl";
 
+//    /** port forwarding mode */
+//    /**
+//     * Xpath element to get the aria checked status of port forwarding mode enable button
+//     */
+//    public static String XPATH_FOR_PORT_FORWARDING_MODE_ENABLE_LINK = "//*[@id='forwarding-switch']/a[1]";
+//
+//    /**
+//     * Xpath element to get the aria checked status of port forwarding mode disable button
+//     */
+//    public static String XPATH_FOR_PORT_FORWARDING_MODE_DISABLE_LINK = "//*[@id='forwarding-switch']/a[2]";
+    
     /** port forwarding mode */
     /**
      * Xpath element to get the aria checked status of port forwarding mode enable button
      */
-    public static String XPATH_FOR_PORT_FORWARDING_MODE_ENABLE_LINK = "//*[@id='forwarding-switch']/a[1]";
+    public static String XPATH_FOR_PORT_FORWARDING_MODE_ENABLE_LINK = "//*[@id='forwarding-switch']/a[1]/li/label";
 
     /**
      * Xpath element to get the aria checked status of port forwarding mode disable button
      */
-    public static String XPATH_FOR_PORT_FORWARDING_MODE_DISABLE_LINK = "//*[@id='forwarding-switch']/a[2]";
+    public static String XPATH_FOR_PORT_FORWARDING_MODE_DISABLE_LINK = "//*[@id='forwarding-switch']/a[2]/li/label";
     
     /** Xpath element to get the area checked status of Https mode enable button */
     public static String XPATH_FOR_HTTPS_MODE_ENABLE_LINK = "//*[@id='https-switch']/a[1]";

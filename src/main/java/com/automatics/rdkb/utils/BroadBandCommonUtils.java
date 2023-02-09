@@ -9119,4 +9119,24 @@ public class BroadBandCommonUtils {
 		LOGGER.debug("ENDING METHOD: killProcessAndVerify()");
 		return status;
 	}
+
+	/**
+	 * Method to give ApplySettings for both Radi 1 and 2
+	 * 
+	 * @param device {@link device}
+	 * @param tapEnv {@link tapEnv}
+	 * @author said.h
+	 */
+	public static boolean PerformApplySettingsForBothRadios(Dut device, AutomaticsTapApi tapEnv) {
+		LOGGER.info("STARTING METHOD: PerformApplySettingsForBothRadios()");
+		boolean status = false;
+		HashMap<String, String> applySettings = new HashMap<String, String>();
+		applySettings.put(BroadBandWebPaConstants.WEBPA_PARAM_WIFI_2_4_APPLY_SETTING, BroadBandTestConstants.TRUE);
+		applySettings.put(BroadBandWebPaConstants.WEBPA_PARAM_WIFI_5_APPLY_SETTING, BroadBandTestConstants.TRUE);
+		status = BroadBandWebPaUtils.executeMultipleWebpaParametersSet(device, tapEnv, applySettings,
+				WebPaDataTypes.BOOLEAN.getValue());
+		LOGGER.info("status :" + status);
+		LOGGER.info("ENDING METHOD: PerformApplySettingsForBothRadios()");
+		return status;
+	}
 }

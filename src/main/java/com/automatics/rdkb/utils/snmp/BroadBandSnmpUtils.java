@@ -1878,6 +1878,7 @@ public class BroadBandSnmpUtils {
 				snmpResponse = BroadBandSnmpUtils.retrieveSnmpSetOutputWithGivenIndexOnRdkDevices(device, tapEnv,
 						BroadBandSnmpMib.WIFI_2_4_SSID_STATUS.getOid(), SnmpDataType.INTEGER, expectedValue,
 						BroadBandSnmpMib.WIFI_2_4_SSID_STATUS.getTableIndex());
+				BroadBandCommonUtils.PerformApplySettingsForBothRadios(device, tapEnv);
 				status2Ghz = CommonMethods.isNotNull(snmpResponse) && snmpResponse.equals(expectedValue)
 						&& BroadBandSnmpUtils
 								.executeSnmpGetWithTableIndexOnRdkDevices(tapEnv, device,
@@ -1893,6 +1894,7 @@ public class BroadBandSnmpUtils {
 					snmpResponse = BroadBandSnmpUtils.retrieveSnmpSetOutputWithGivenIndexOnRdkDevices(device, tapEnv,
 							BroadBandSnmpMib.WIFI_5_SSID_STATUS.getOid(), SnmpDataType.INTEGER, expectedValue,
 							BroadBandSnmpMib.WIFI_5_SSID_STATUS.getTableIndex());
+					BroadBandCommonUtils.PerformApplySettingsForBothRadios(device, tapEnv);
 					status5Ghz = CommonMethods.isNotNull(snmpResponse) && snmpResponse.equals(expectedValue)
 							&& BroadBandSnmpUtils
 									.executeSnmpGetWithTableIndexOnRdkDevices(tapEnv, device,

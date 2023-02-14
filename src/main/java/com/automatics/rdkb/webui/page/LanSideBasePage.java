@@ -338,6 +338,7 @@ public class LanSideBasePage {
 			LOGGER.info("TITLE OF CURRENT LAUNCHED PAGE : " + launchedPageTitle + " EXPECTED TITLE : " + expectedTitle);
 			String launchedPage = launchedPageTitle.toUpperCase();
 			String expectedPage = expectedTitle.toUpperCase();
+			LOGGER.info("TITLE OF LAUNCHED PAGE : " + launchedPage + " EXPECTED PAGE : " + expectedPage);
 			if (CommonMethods.isNotNull(launchedPageTitle) && CommonMethods.isNotNull(expectedTitle)) {
 				result = CommonUtils.patternSearchFromTargetString(launchedPage, expectedPage);
 			}

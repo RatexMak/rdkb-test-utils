@@ -642,13 +642,7 @@ public class FirmwareDownloadUtils {
 			result = true;
 		}
 		if (cdlRequired) {
-			String codeDownloadUrl = null;
-			if (DeviceModeHandler.isRPIDevice(device)) {
-				codeDownloadUrl = AutomaticsTapApi.getSTBPropsValue(BroadBandCdlConstants.PROP_KEY_CDL_SERVER_URL)
-						.replace("<IMAGE_NAME>", cdlImageWithoutBinExtension);
-			} else {
-				codeDownloadUrl = AutomaticsTapApi.getSTBPropsValue(BroadBandCdlConstants.PROP_KEY_CDL_SERVER_URL);
-			}
+			String codeDownloadUrl = AutomaticsTapApi.getSTBPropsValue(BroadBandCdlConstants.PROP_KEY_CDL_SERVER_URL);
 
 			LOGGER.info("CODE DOWNLOAD URL: " + codeDownloadUrl);
 			result = CommonMethods.isNotNull(codeDownloadUrl);
@@ -657,12 +651,18 @@ public class FirmwareDownloadUtils {
 			// Set the WebPA Parameter: Code Download URL & Code Download Image Name
 			if (result && cdlRequired) {
 				LOGGER.info("GOING TO SET CODE DOWNLOAD IMAGE URL (TR-181)");
-				String cdlImageWithBinExtension = cdlImageWithoutBinExtension + BroadBandCdlConstants.BIN_EXTENSION;
+				String cdlImageWithBinExtension = null;
+				if (!DeviceModeHandler.isRPIDevice(device)) {
+					cdlImageWithBinExtension = cdlImageWithoutBinExtension + BroadBandCdlConstants.BIN_EXTENSION;
+				} else {
+					cdlImageWithBinExtension = cdlImageWithoutBinExtension;
+				}
 				result = BroadBandWiFiUtils.setWebPaParams(device, BroadBandCdlConstants.WEBPA_PARAM_CODE_DOWNLOAD_URL,
 						codeDownloadUrl, BroadBandTestConstants.CONSTANT_0);
 				if (result) {
 					LOGGER.info("GOING TO SET CODE DOWNLOAD IMAGE NAME (TR-181)");
 					tapEnv.waitTill(BroadBandTestConstants.TEN_SECOND_IN_MILLIS);
+					LOGGER.info("CDL image name :" + cdlImageWithBinExtension);
 					result = BroadBandWiFiUtils.setWebPaParams(device,
 							BroadBandCdlConstants.WEBPA_PARAM_CODE_DOWNLOAD_IMAGE_NAME, cdlImageWithBinExtension,
 							BroadBandTestConstants.CONSTANT_0);
@@ -677,12 +677,16 @@ public class FirmwareDownloadUtils {
 										BroadBandCdlConstants.LOG_MESSAGE_CDL_URL + codeDownloadUrl,
 										/*
 										 * BroadBandCommonUtils.getLogFileNameOnFirmwareDownload(device)
-										 */BroadBandCdlConstants.CM_LOG_TXT_0))
+										 */DeviceModeHandler.isRPIDevice(device)
+												? BroadBandCdlConstants.FWUPGRADEMANAGER_LOG_FILE_NAME
+												: BroadBandCdlConstants.CM_LOG_TXT_0))
 								&& CommonMethods.isNotNull(BroadBandCommonUtils.searchLogFiles(tapEnv, device,
 										BroadBandCdlConstants.LOG_MESSAGE_CDL_IMAGE_NAME + cdlImageWithBinExtension,
 										/*
 										 * BroadBandCommonUtils.getLogFileNameOnFirmwareDownload(device)
-										 */BroadBandCdlConstants.CM_LOG_TXT_0));
+										 */DeviceModeHandler.isRPIDevice(device)
+												? BroadBandCdlConstants.FWUPGRADEMANAGER_LOG_FILE_NAME
+												: BroadBandCdlConstants.CM_LOG_TXT_0));
 					} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIFTEEN_MINUTES_IN_MILLIS
 							&& !result);
 				}
@@ -702,7 +706,9 @@ public class FirmwareDownloadUtils {
 								BroadBandCdlConstants.LOG_MESSAGE_CDL_TRIGGERED,
 								/*
 								 * BroadBandCommonUtils. getLogFileNameOnFirmwareDownload( device)
-								 */BroadBandCdlConstants.CM_LOG_TXT_0);
+								 */DeviceModeHandler.isRPIDevice(device)
+										? BroadBandCdlConstants.FWUPGRADEMANAGER_LOG_FILE_NAME
+										: BroadBandCdlConstants.CM_LOG_TXT_0);
 						result = CommonMethods.isNotNull(searchResponse);
 						if (CommonUtils.verifyStbRebooted(device, tapEnv)) {
 							result = true;

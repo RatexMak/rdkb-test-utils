@@ -739,8 +739,10 @@ public class FirmwareDownloadUtils {
 					LOGGER.info("GOING TO WAIT FOR 1 MINUTE.");
 					tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
 					String tempFirmwareVersion = FirmwareDownloadUtils.getCurrentFirmwareFileNameForCdl(tapEnv, device);
+					LOGGER.info("cdl image to be downloaded :" + cdlImageWithoutBinExtension);
+					LOGGER.info("cdl image downloaded :" + tempFirmwareVersion);
 					result = CommonMethods.isNotNull(tempFirmwareVersion)
-							&& cdlImageWithoutBinExtension.equalsIgnoreCase(tempFirmwareVersion.trim());
+							&& cdlImageWithoutBinExtension.trim().equalsIgnoreCase(tempFirmwareVersion.trim());
 				} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.THREE_MINUTES && !result);
 				LOGGER.info("CDL IMAGE FLASHED SUCCESSFULLY: " + result);
 			}

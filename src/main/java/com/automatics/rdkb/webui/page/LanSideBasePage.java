@@ -440,15 +440,12 @@ public class LanSideBasePage {
 						LOGGER.info("ALREADY CLICKED THE NEXT BUTTON");
 					}
 
-					if (!DeviceModeHandler.isRPIDevice(device)) { 
-						// Get the Confirm header message based on partner
-						waitForTextToAppear(
-								BroadbandPropertyFileHandler
-										.getCaptivePortalConfirmHeaderMessageForPartner(PartnerIdName),
-								By.xpath(
-										BroadBandWebGuiElements.ELEMENT_XPATH_CAPTIVE_PORTAL_CONFIGURATION_CONFIRMATION_PAGE_HEADER));
-						LOGGER.info("REDIRECTED TO CONFIRM WI-FI SETTING PAGE");
-					}
+					// Get the Confirm header message based on partner
+					waitForTextToAppear(
+							BroadbandPropertyFileHandler.getCaptivePortalConfirmHeaderMessageForPartner(PartnerIdName),
+							By.xpath(
+									BroadBandWebGuiElements.ELEMENT_XPATH_CAPTIVE_PORTAL_CONFIGURATION_CONFIRMATION_PAGE_HEADER));
+					LOGGER.info("REDIRECTED TO CONFIRM WI-FI SETTING PAGE");
 
 					// clicking next button to confirm configuration
 					LOGGER.info("CLICKING ON NEXT BUTTON TO CONFIRM WI-FI SETTINGS");

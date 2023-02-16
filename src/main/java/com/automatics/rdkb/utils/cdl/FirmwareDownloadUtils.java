@@ -741,8 +741,9 @@ public class FirmwareDownloadUtils {
 					String tempFirmwareVersion = FirmwareDownloadUtils.getCurrentFirmwareFileNameForCdl(tapEnv, device);
 					LOGGER.info("cdl image to be downloaded :" + cdlImageWithoutBinExtension);
 					LOGGER.info("cdl image downloaded :" + tempFirmwareVersion);
-					result = CommonMethods.isNotNull(tempFirmwareVersion)
-							&& cdlImageWithoutBinExtension.trim().equalsIgnoreCase(tempFirmwareVersion.trim());
+					result = CommonMethods.isNotNull(tempFirmwareVersion) && DeviceModeHandler.isRPIDevice(device)
+							? cdlImageWithoutBinExtension.trim().contains(tempFirmwareVersion.trim())
+							: cdlImageWithoutBinExtension.trim().equalsIgnoreCase(tempFirmwareVersion.trim());
 				} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.THREE_MINUTES && !result);
 				LOGGER.info("CDL IMAGE FLASHED SUCCESSFULLY: " + result);
 			}

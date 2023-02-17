@@ -721,7 +721,7 @@ public class FirmwareDownloadUtils {
 			}
 			if (result) {
 				result = CommonMethods.isSTBRebooted(tapEnv, device, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS,
-						BroadBandTestConstants.CONSTANT_20);
+						BroadBandTestConstants.CONSTANT_50);
 				LOGGER.info("DEVICE REBOOTS AFTER (TR-181) CDL: " + result);
 			}
 			if (result) {

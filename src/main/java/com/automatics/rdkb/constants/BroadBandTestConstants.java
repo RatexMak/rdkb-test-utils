@@ -6044,10 +6044,10 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	public static final String URL_HTTP_FACEBOOK = "http://www.facebook.com/";
 
 	/** Interface for ATOM SYNC PRIVATE__2 GHZ */
-	public static final String INTERFACE_ATOM_PRIVATE_2 = "wl -i wl0 status";
+	public static final String INTERFACE_FIBER_PRIVATE_2 = "wl -i wl0 status";
 
 	/** Interface for ATOM SYNC PRIVATE_5 GHZ */
-	public static final String INTERFACE_ATOM_PRIVATE_5 = "wl -i wl1 status";
+	public static final String INTERFACE_FIBER_PRIVATE_5 = "wl -i wl1 status";
 
 	/** Constant to hold regex to grep bssid */
 	public static final String REGEX_GREP_BSSID = ":\\s(\\w+:\\w+:\\w+:\\w+:\\w+:\\w+)";

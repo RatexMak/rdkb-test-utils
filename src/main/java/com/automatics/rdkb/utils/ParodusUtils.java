@@ -58,29 +58,33 @@ public class ParodusUtils {
      * @refactor Govardhan
      */
     public static boolean compareDeviceManufacturerName(AutomaticsTapApi tapEnv, Dut device,
-	    String deviceManufacturerName) {
-	LOGGER.info("ENTERING METHOD compareDeviceManufacturerName");
-	boolean result = true;
-	String verifyParodusLogMessage = tapEnv.executeCommandUsingSsh(device,
-		BroadBandTestConstants.COMMAND_TO_RETRIEVE_MANUFACTURER_NAME);
-	LOGGER.info("The Retrieved Device Manufacturer name: " + verifyParodusLogMessage);
-	String deviceManufacturerNameInParodusLog = CommonMethods.isNotNull(verifyParodusLogMessage)
-		? CommonMethods.patternFinder(verifyParodusLogMessage,
-			BroadBandTestConstants.PATTERN_MATCHER_MANUFACTURER_NAME)
-		: null;
-	result = CommonMethods.isNotNull(deviceManufacturerNameInParodusLog)
-		&& (deviceManufacturerName.trim().equals(deviceManufacturerNameInParodusLog.trim()));
-	if (result) {
-	    LOGGER.info("The Retrieved Device Manufacturer name: " + verifyParodusLogMessage
-		    + ", is same as expected Manufacturer name : " + deviceManufacturerName);
-	} else {
-	    LOGGER.error("The Retrieved Device Manufacturer name: " + verifyParodusLogMessage
-		    + ", is different from expected Manufacturer name : " + deviceManufacturerName);
-	}
-	LOGGER.info("ENDING METHOD compareDeviceManufacturerName");
-	return result;
-    }
-
+    	    String deviceManufacturerName) {
+    	LOGGER.info("ENTERING METHOD compareDeviceManufacturerName");
+    	boolean result = true;
+    	String verifyParodusLogMessage = tapEnv.executeCommandUsingSsh(device,
+    			BroadBandTestConstants.COMMAND_TO_RETRIEVE_MANUFACTURER_NAME);
+    	LOGGER.info("The Retrieved Device Manufacturer name: " + verifyParodusLogMessage);
+    	String deviceManufacturerNameInParodusLog = CommonMethods.isNotNull(verifyParodusLogMessage)
+    			? CommonMethods.patternFinder(verifyParodusLogMessage,
+    					BroadBandTestConstants.PATTERN_MATCHER_MANUFACTURER_NAME)
+    			: null;
+    	result = CommonMethods.isNotNull(deviceManufacturerNameInParodusLog)
+    			&& (deviceManufacturerName.trim().equals(deviceManufacturerNameInParodusLog.trim()));
+    	if (!result) {
+    		result = CommonMethods.isNotNull(deviceManufacturerNameInParodusLog) && (deviceManufacturerName.trim()
+    				.contains(deviceManufacturerNameInParodusLog.replace("hw_manufacturer is", "")));
+    	}
+    	if (result) {
+    		LOGGER.info("The Retrieved Device Manufacturer name: " + verifyParodusLogMessage
+    				+ ", is same as expected Manufacturer name : " + deviceManufacturerName);
+    	} else {
+    		LOGGER.error(
+    				"The Retrieved Device Manufacturer name: " + verifyParodusLogMessage + ", is different from expected Manufacturer name : "+deviceManufacturerName);
+    	}
+    	LOGGER.info("ENDING METHOD compareDeviceManufacturerName");
+    	return result;
+        }
+    
     /**
      * Method to verify parodus reconnect messages having jitter algorithm
      * 

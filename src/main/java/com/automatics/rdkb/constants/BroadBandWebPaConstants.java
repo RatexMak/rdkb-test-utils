@@ -3204,6 +3204,5 @@ public class BroadBandWebPaConstants {
         /** WebPA Parameter to retrieve the CM Mac Address */
         public static final String WEBPA_PARAM_CABLE_MODEM_MAC_ADDRESS = "Device.X_CISCO_COM_CableModem.MACAddress";
         
-        
-
+        public static final String[] WEBPA_PARAM_PRIMARY_DNS_RPI = { WEBPA_PARAM_PRIMARY_DNS };
 }

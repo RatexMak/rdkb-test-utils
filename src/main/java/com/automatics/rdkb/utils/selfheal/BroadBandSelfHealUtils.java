@@ -332,13 +332,12 @@ public class BroadBandSelfHealUtils {
 	    }
 	    long startTime = System.currentTimeMillis();
 	    do {
-		response = BroadBandSnmpUtils.retrieveSnmpSetOutputWithDefaultIndexOnRdkDevices(device, tapEnv,
-			BroadBandSnmpMib.ECM_SELFHEAL_RESOURCE_USAGE_COMPUTER_WINDOW.getOid(), SnmpDataType.INTEGER,
-			BroadBandTestConstants.STRING_CONSTANT_3);
-		snmpstatus = BroadBandSnmpUtils.hasNoSNMPErrorOnResponse(tapEnv, device, response);
-	    } while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TEN_MINUTE_IN_MILLIS
-		    && !snmpstatus
-		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+				response = BroadBandSnmpUtils.retrieveSnmpSetOutputWithGivenIndexOnRdkDevices(device, tapEnv,
+						BroadBandSnmpMib.ECM_SELFHEAL_RESOURCE_USAGE_COMPUTER_WINDOW.getOid(), SnmpDataType.INTEGER,
+						BroadBandTestConstants.STRING_CONSTANT_3, BroadBandTestConstants.STRING_VALUE_ZERO);
+				snmpstatus = BroadBandSnmpUtils.hasNoSNMPErrorOnResponse(tapEnv, device, response);
+			} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TEN_MINUTE_IN_MILLIS && !snmpstatus
+					&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
 
 	    if (CommonMethods.isNotNull(response)) {
 

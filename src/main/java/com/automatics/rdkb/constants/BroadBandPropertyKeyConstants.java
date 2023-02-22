@@ -379,7 +379,7 @@ public class BroadBandPropertyKeyConstants {
 
     public static final String DEVICE_CHECK_VALUE_XDNS = "is.device.check.xdns.";
 
-    public static final String CURRENT_UPNP_VERSION = "current.upnp.version";
+    public static final String CURRENT_UPNP_VERSION = "current.upnp.version.";
 
     public static final String PARTIAL_DEVICE_CHECK_GBPAD = "is.device.check.gbpad.";
 
@@ -806,4 +806,34 @@ public class BroadBandPropertyKeyConstants {
     public static final String CAPTIVE_PORTAL_DEFAULT_DISABLED_PARTNER = "captive.portal.default.disabled.partner";
     
     public static final String DEVICE_CHECK_BOOTSTRAP = "is.device.check.bootstrap.";
+    
+	public static final String RESOURCE_USAGE_COMPUTE_WINDOW_VALUE = "resource.usage.compute.window.value";
+	
+    public static final String GREP_IDS_SYSCFG = "ids.check.syscfg";
+    
+	public static final String GET_5_GHZ_INTERFACE_NAME = "5ghz.interface.name";
+	
+	public static final String IS_TR_69_ENABLED = "is.tr69.enabled";
+	
+	public static final String IS_IPV6_ENABLED = "is.ipv6.enabled";
+	
+	public static final String OPERATING_MODE_2GHZ_RPI = "operating.mode.2ghz.rpi";
+	
+	public static final String CLIENT_OPERATING_MODE_5GHZ = "client.operating.mode.5ghz";
+	
+	public static final String LINUX_CLIENT_WIFI_INTERFACE = "linux.client.wifi.interface";
+	
+	public static final String DEFAULT_SSID_VALUE_24_AFTER_FR = "default.ssid.value.24.after.factory.reset";
+	
+	public static final String DEFAULT_SSID_VALUE_5_AFTER_FR = "default.ssid.value.5.after.factory.reset";
+	
+	public static final String LOCATION_RFC_DATABASE = "location.rfc.database";
+
+	public static final String DEVICE_MODEL = "device.model";
+	
+	public static final String OPERATING_MODE_5GHZ_RPI = "operating.mode.5ghz.rpi";
+	
+	public static final String CLI_CONFIG_AUTOVAULT_LOCATION = "autovault.cliconfig.file.path";
+
+	public static final String WEBPA_CFG_AUTOVAULT_LOCATION = "autovault.webpacfg.file.path";
 }

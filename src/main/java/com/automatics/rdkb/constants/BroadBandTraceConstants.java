@@ -679,7 +679,7 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
     public static final String LOG_MESSAGE_IPCONFIG_ETHERNET = "\"Ethernet adapter Ethernet:\"";
 
     /** Log message for fetching ethernet related details in windows NUC */
-    public static final String LOG_MESSAGE_IPCONFIG_WIFI = "\"Wireless LAN adapter Wi-Fi\"";
+    public static final String LOG_MESSAGE_IPCONFIG_WIFI = "\"Wireless LAN adapter Wi\"";
 
     /** Log message for harvester integration with seshat library */
     public static final String LOG_MESSAGE_HARVESTER_INTEGRATION = "\"Init for parodus Success\"";
@@ -1302,4 +1302,8 @@ public class BroadBandTraceConstants extends RDKBTraceConstants {
     
     /** Activation Journey - Client Connection */
     public static final String ACTIVATION_CLIENT_CONNECTION = "Client_Connect_complete";
+    
+    /** Log message from SelfHeal.txt.0 */
+    public static final String LOG_MESSAGE_100_CPU_LOAD_FROM_SELFHEAL_RPI = "RDKB_SELFHEAL : Current CPU load is 100";
+
 }

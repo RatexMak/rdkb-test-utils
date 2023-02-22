@@ -100,6 +100,9 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** curl command to retrieve header details of a connection */
     public static final String CMD_CURL_WITH_TIMEOUT_AND_HEADER = "curl -k --connect-timeout 20 --head ";
+    
+    /** curl command to retrieve header details of a connection */
+    public static final String CMD_CURL_WITH_TIMEOUT_AND_HEADER_AND_INTERFACE = "curl --interface <INTERFACE IP> -k --connect-timeout 20 --head ";
 
     /** curl command to resolve domain to IPv6 Address */
     public static final String CMD_CURL_RESOLVE_DOMAIN_TO_IPV6_ADDRESS = CMD_CURL_WITH_TIMEOUT_AND_HEADER + "-6 ";
@@ -256,13 +259,13 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static final String CMD_DATE_RDKB_LOG_FORMAT = "date +%y%m%d-%T.%6N";
 
     /** WebPA Log File Name */
-    public static final String LOG_FILE_WEBPA_TEXT = "/rdklogs/logs/WEBPAlog.txt.*";
+    public static final String LOG_FILE_WEBPA_TEXT = "/rdklogs/logs/WEBPAlog.txt.0";
 
     /** Command to grep between range */
-    public static final String CMD_GREP_AWK_START_RANGE = " | awk '\\$1 >= \"";
+    public static final String CMD_GREP_AWK_START_RANGE = " | awk '$1 >= \"";
 
     /** Command to grep between range */
-    public static final String CMD_GREP_AWK_END_RANGE = "\" && \\$1 <= \"";
+    public static final String CMD_GREP_AWK_END_RANGE = "\" && $1 <= \"";
 
     /** Command Constants for Soft Reboot Test */
     /** BootTime Log File */
@@ -471,7 +474,7 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static final String LOG_FILE_AGENT = "/rdklogs/logs/agent.txt";
 
     /** Command to get latest dnsmasq version on any device */
-    public static final String CMD_TO_GET_LATEST_DNSMASQ_VERSION = "\'dnsmasq -version | head -n 1 |cut -d' ' -f3\'";
+    public static final String CMD_TO_GET_LATEST_DNSMASQ_VERSION = "dnsmasq -version | head -n 1 |cut -d' ' -f3";
 
     /** Command to ge the yocto version */
     public static final String CMD_GREP_YOCTO_VER_FROM_VERSION_FILE = " grep \"YOCTO_VERSION[:=]\" /version.txt";
@@ -552,13 +555,13 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static final String CMD_COPY = "cp ";
 
     /** Command to tail PAMlog contents to nvram */
-    public static final String CMD_GET_PAMLOGS_NVRAM = "tail -f /rdklogs/logs/PAMlog.txt.0 > /nvram/automation_PAMtail.txt &";
+    public static final String CMD_GET_PAMLOGS_NVRAM = "tail -f '/rdklogs/logs/PAMlog.txt.0' > '/nvram/automation_PAMtail.txt' &";
 
     /** Command to tail ArmConsolelog contents to nvram */
-    public static final String CMD_GET_ARMCONSOLELOGS_NVRAM = "tail -f /rdklogs/logs/ArmConsolelog.txt.0 > /nvram/automation_Consoletail.txt &";
+    public static final String CMD_GET_ARMCONSOLELOGS_NVRAM = "tail -f '/rdklogs/logs/ArmConsolelog.txt.0' > '/nvram/automation_Consoletail.txt' &";
 
     /** Command to tail Consolelog contents to nvram */
-    public static final String CMD_GET_CONSOLELOGS_NVRAM = "tail -f /rdklogs/logs/Consolelog.txt.0 > /nvram/automation_Consoletail.txt &";
+    public static final String CMD_GET_CONSOLELOGS_NVRAM = "tail -f '/rdklogs/logs/Consolelog.txt.0' > '/nvram/automation_Consoletail.txt' &";
 
     /** Temporary file in nvram to store PAMlog log tail */
     public static final String FILE_PATH_NVRAM_PAM_TAIL = "/nvram/automation_PAMtail.txt";
@@ -1124,6 +1127,28 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 	    add("/sbin/swapon");
 	    add("/sbin/swapoff");
 	    add("/sbin/fsck");
+	    add("/sbin/hwclock");
+	    add("/usr/bin/chrt");
+	    add("/usr/bin/eject");
+	    add("/usr/bin/flock");
+	    add("/usr/bin/hexdump");
+	    add("/usr/bin/logger");
+	    add("/usr/bin/mesg");
+	    add("/usr/bin/renice");
+	    add("/usr/bin/setsid");
+	    add("/sbin/losetup");
+	    add("/sbin/fsck.minix");
+	}
+    };
+    
+    /** List of executable binaries */
+    public static final List<String> EXECUTABLE_BINARY_LIST_RPI = new ArrayList<String>() {
+	{
+	    add("/bin/dmesg");
+	    add("/bin/kill");
+	    add("/bin/more");
+	    add("/sbin/swapon");
+	    add("/sbin/swapoff");
 	    add("/sbin/hwclock");
 	    add("/usr/bin/chrt");
 	    add("/usr/bin/eject");
@@ -1970,5 +1995,22 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
 
     /** Command psmcli get */
     public static final String CMD_PSMCLI_GET = "psmcli get ";
+    
+    /**
+     * The constant holding command for SNMP process.
+     */
+    public static final String PS_COMMAND_FOR_SNMP_PROCESS = "ps -ef | grep snmp";
+
+    /** String to store name of rfc database */
+    public static final String RFC_DATABASE = "tr181store.json";
+    
+    /** Command to show windows interfaces */
+    public static final String CMD_WINDOWS_SHOW_INTERFACES = "netsh wlan show interfaces";
+    
+    /** Command to get nslookup ipv4 address */
+    public static final String CMD_NSLOOKUP_FOR_IPV4_ADDRESS = "/usr/bin/nslookup ";
+
+    /** Command to tail given file to Backup file in NVRAM */
+    public static final String TAIL_LOG_TO_BACKUP_FILE_RPI = "rm -rf /nvram/automation_BackUp<REPLACE>;su -c \"tail -f -n +1 /rdklogs/logs/<REPLACE> > /nvram/automation_BackUp<REPLACE>&\"";
 
 }

@@ -53,6 +53,8 @@ import com.automatics.constants.AutomaticsConstants;
 import com.automatics.constants.LinuxCommandConstants;
 import com.automatics.device.Device;
 import com.automatics.device.Dut;
+import com.automatics.error.GeneralError;
+import com.automatics.exceptions.FailedTransitionException;
 import com.automatics.exceptions.TestException;
 import com.automatics.rdkb.BroadBandDeviceStatus;
 import com.automatics.rdkb.BroadBandParentalControlParameter;
@@ -432,14 +434,14 @@ public class BroadBandCommonUtils {
 	    // Check if the device goes down.
 	    startTime = System.currentTimeMillis();
 	    do {
-		LOGGER.info("GOING TO WAIT FOR 1 MINUTE BEFORE EXECUTING TEST COMMAND.");
-		tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+	    LOGGER.info("GOING TO WAIT FOR 10 SEC BEFORE EXECUTING TEST COMMAND.");
+		tapEnv.waitTill(BroadBandTestConstants.TEN_SECOND_IN_MILLIS);
 		result = !CommonMethods.isSTBAccessible(device);
 		// result = !CommonUtils.executeTestCommand(tapEnv, device);
 		LOGGER.info("Test Command Result is : " + result);
 	    } while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.THREE_MINUTES && !result);
 	}
-	LOGGER.info("DEVICE REBOOTS AFTER TRIGGERING FACTORY RESET: " + result);
+    LOGGER.info("DEVICE REBOOTS AFTER TRIGGERING FACTORY RESET: " + result);
 	if (result) {
 	    startTime = System.currentTimeMillis();
 	    do {
@@ -846,25 +848,35 @@ public class BroadBandCommonUtils {
      * @Refactor Athira
      */
     public static boolean isRdkbDeviceAccessible(AutomaticsTapApi tapEnv, Dut device, long pollingInterval,
-	    long maxPollingTime, boolean expectedResult) {
-	LOGGER.debug("ENTERING METHOD: isRdkbDeviceAccessible");
-	// Boolean Variable to store the result
-	boolean result = false;
-	// Start time
-	long startTime = System.currentTimeMillis();
-	do {
-	    String response = tapEnv.executeCommandUsingSsh(device,
-		    BroadBandTestConstants.ECHO_WITH_SPACE + BroadBandTestConstants.CONNECTION_TEST_MESSAGE);
-	    result = expectedResult
-		    ? (CommonMethods.isNotNull(response) && CommonUtils.patternSearchFromTargetString(response,
-			    BroadBandTestConstants.CONNECTION_TEST_MESSAGE))
-		    : (CommonMethods.isNull(response)
-			    || response.indexOf(BroadBandTestConstants.CONNECTION_TEST_MESSAGE) == -1);
-	} while (((System.currentTimeMillis() - startTime) < maxPollingTime) && !result
-		&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, pollingInterval));
-	LOGGER.debug("ENDING METHOD: isRdkbDeviceAccessible");
-	return result;
-    }
+			long maxPollingTime, boolean expectedResult) {
+		LOGGER.info("ENTERING METHOD: isRdkbDeviceAccessible");
+		// Boolean Variable to store the result
+		boolean result = false;
+		// Start time
+		long startTime = System.currentTimeMillis();
+		do {
+			try {
+				String response = tapEnv.executeCommandUsingSsh(device,
+						BroadBandTestConstants.ECHO_WITH_SPACE + BroadBandTestConstants.CONNECTION_TEST_MESSAGE);
+				result = expectedResult
+						? (CommonMethods.isNotNull(response) && CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.CONNECTION_TEST_MESSAGE))
+						: (CommonMethods.isNull(response)
+								|| response.indexOf(BroadBandTestConstants.CONNECTION_TEST_MESSAGE) == -1);
+			} catch (FailedTransitionException e) {
+				LOGGER.error("Exception occured :" + e.getMessage());
+				if (expectedResult == false
+						&& e.getError().getCode() == (GeneralError.SSH_CONNECTION_FAILURE.getCode())) {
+					result = true;
+					return result;
+				} else
+					return result;
+			}
+		} while (((System.currentTimeMillis() - startTime) < maxPollingTime) && !result
+				&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, pollingInterval));
+		LOGGER.info("ENDING METHOD: isRdkbDeviceAccessible");
+		return result;
+	}
 
     /**
      * This method will wait the boot up time of the device is as given in the parameter
@@ -5613,60 +5625,70 @@ public class BroadBandCommonUtils {
      * 
      * @return Boolean representing the result of the Factory Reset Operation.
      */
-    public static boolean performFactoryResetSnmp(AutomaticsTapApi tapEnv, Dut device) {
+    public static boolean performFactoryResetSnmp(AutomaticsTapApi tapEnv,
+			Dut device) {
 
-	LOGGER.debug("ENTERING METHOD performFactoryResetSnmp");
+		LOGGER.debug("ENTERING METHOD performFactoryResetSnmp");
+		// BroadBandSnmpUtils.executeSnmpSetWithTableIndexOnRdkDevices(tapEnv,
+		// device,
+		// BroadBandSnmpMib.ESTB_FACTORY_RESET_DEVICE.getOid(),
+		// SnmpDataType.INTEGER,
+		// BroadBandTestConstants.STRING_VALUE_TWO);
+		String snmpOutput = null;
+		if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
+			BroadBandCommonUtils.getAtomSyncUptimeStatus(device, tapEnv);
+		}
+		if (DeviceModeHandler.isFibreDevice(device)) {
+			
+			 snmpOutput = BroadBandSnmpUtils.snmpSetOnEstb(tapEnv, device,
+			 BroadBandSnmpMib.ESTB_FACTORY_RESET_DEVICE.getOid(),
+			 SnmpDataType.INTEGER,
+			 BroadBandTestConstants.STRING_VALUE_ONE).trim();
+			 
+		} else {
+			snmpOutput = BroadBandSnmpUtils.snmpSetOnEcm(tapEnv, device,
+					BroadBandSnmpMib.ESTB_FACTORY_RESET_DEVICE.getOid(),
+					SnmpDataType.INTEGER,
+					BroadBandTestConstants.STRING_VALUE_ONE).trim();
+		}
 
-	String snmpOutput = null;
-	if (CommonMethods.isAtomSyncAvailable(device, tapEnv)) {
-	    BroadBandCommonUtils.getAtomSyncUptimeStatus(device, tapEnv);
+		boolean result = CommonMethods.isNotNull(snmpOutput)
+				&& snmpOutput.equals(BroadBandTestConstants.STRING_VALUE_ONE);
+		if (result) {
+			// Check if the device goes down.
+			long pollDuration = BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS;
+			long startTime = System.currentTimeMillis();
+			do {
+				LOGGER.info("GOING TO WAIT FOR 10 SECONDS.");
+				tapEnv.waitTill(BroadBandTestConstants.TEN_SECOND_IN_MILLIS);
+				result = !CommonMethods.isSTBAccessible(device);
+			} while ((System.currentTimeMillis() - startTime) < pollDuration
+					&& !result);
+		}
+		LOGGER.info("DEVICE REBOOTS AFTER TRIGGERING FACTORY RESET: " + result);
+		// CommonUtils.rebootAndWaitForIpAcquisition() API did not work for
+		// Technicolor
+		// XB6. Hence implemented this
+		// manually.
+		long startTime = 0L;
+		if (result) {
+			startTime = System.currentTimeMillis();
+			do {
+				LOGGER.info("GOING TO WAIT FOR 1 MINUTE.");
+				tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
+				result = CommonMethods.isSTBAccessible(device);
+			} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIFTEEN_MINUTES_IN_MILLIS
+					&& !result);
+			LOGGER.info("DEVICE COMES UP AFTER FACTORY RESET: " + result);
+		}
+		if (result) {
+			result = verifyFactoryReset(tapEnv, device);
+		}
+		LOGGER.info("BROAD BAND DEVICE FACTORY RESET (SNMP) PERFORMED SUCCESSFULLY: "
+				+ result);
+		LOGGER.debug("ENDING METHOD performFactoryResetSnmp");
+		return result;
 	}
-	if (DeviceModeHandler.isFibreDevice(device)) {
-
-	    snmpOutput = BroadBandSnmpUtils
-		    .snmpSetOnEstb(tapEnv, device, BroadBandSnmpMib.ESTB_FACTORY_RESET_DEVICE.getOid(),
-			    SnmpDataType.INTEGER, BroadBandTestConstants.STRING_VALUE_ONE)
-		    .trim();
-
-	} else {
-	    snmpOutput = BroadBandSnmpUtils
-		    .snmpSetOnEcm(tapEnv, device, BroadBandSnmpMib.ESTB_FACTORY_RESET_DEVICE.getOid(),
-			    SnmpDataType.INTEGER, BroadBandTestConstants.STRING_VALUE_ONE)
-		    .trim();
-	}
-
-	boolean result = CommonMethods.isNotNull(snmpOutput)
-		&& snmpOutput.equals(BroadBandTestConstants.STRING_VALUE_ONE);
-	if (result) {
-	    // Check if the device goes down.
-	    long pollDuration = BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS;
-	    long startTime = System.currentTimeMillis();
-	    do {
-		LOGGER.info("GOING TO WAIT FOR 1 MINUTE.");
-		tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
-		result = !CommonMethods.isSTBAccessible(device);
-	    } while ((System.currentTimeMillis() - startTime) < pollDuration && !result);
-	}
-	LOGGER.info("DEVICE REBOOTS AFTER TRIGGERING FACTORY RESET: " + result);
-
-	long startTime = 0L;
-	if (result) {
-	    startTime = System.currentTimeMillis();
-	    do {
-		LOGGER.info("GOING TO WAIT FOR 1 MINUTE.");
-		tapEnv.waitTill(BroadBandTestConstants.ONE_MINUTE_IN_MILLIS);
-		result = CommonMethods.isSTBAccessible(device);
-	    } while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIFTEEN_MINUTES_IN_MILLIS
-		    && !result);
-	    LOGGER.info("DEVICE COMES UP AFTER FACTORY RESET: " + result);
-	}
-	if (result) {
-	    result = verifyFactoryReset(tapEnv, device);
-	}
-	LOGGER.info("BROAD BAND DEVICE FACTORY RESET (SNMP) PERFORMED SUCCESSFULLY: " + result);
-	LOGGER.debug("ENDING METHOD performFactoryResetSnmp");
-	return result;
-    }
 
     /**
      * Utility Method to verify the Factory Reset is successful; verified using the Private SSID which must contain the
@@ -5722,72 +5744,102 @@ public class BroadBandCommonUtils {
      * 
      * 
      */
-    public static boolean validateDefaultSsidforDifferentPartners(Dut device, AutomaticsTapApi tapEnv, String ssidValue,
-	    RdkBSsidParameters parameter, String deviceModel, String partnerId, WiFiFrequencyBand radio) {
-	LOGGER.debug("STARTING METHOD validateDefaultSsidforDifferentPartners");
-	boolean status = false;
-	String expectedSsid = null;
-	String prefix = null;
-	String serialNumber = null;
-	try {
-	    if (DeviceModeHandler.isDSLDevice(device)) {
-		if (ssidValue.length() == BroadBandTestConstants.EIGHT_NUMBER
-			|| ssidValue.length() == BroadBandTestConstants.INTEGER_VALUE_13) {
-		    expectedSsid = ssidValue;
-		}
-	    } else {
-		prefix = getDefaultSSIDPrefixForDeviceAndPartnerSpecific(device, partnerId);
-		LOGGER.info("Prefix for The SSID Specific To Device is: " + prefix);
-		String ecmMac = ((Device) device).getEcmMac();
+    public static boolean validateDefaultSsidforDifferentPartners(Dut device,
+			AutomaticsTapApi tapEnv, String ssidValue,
+			RdkBSsidParameters parameter, String deviceModel, String partnerId,
+			WiFiFrequencyBand radio) {
+		LOGGER.debug("STARTING METHOD validateDefaultSsidforDifferentPartners");
+		boolean status = false;
+		String expectedSsid = null;
+		String prefix = null;
+		String serialNumber = null;
 		try {
-		    serialNumber = tapEnv
-			    .executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_SERIAL_NUMBER)
-			    .trim();
-		} catch (Exception exception) {
-		    LOGGER.error("Caught exception while getting the serial Number by WebPa" + exception.getMessage());
-		}
-		ecmMac = ecmMac.replace(BroadBandTestConstants.DELIMITER_COLON, BroadBandTestConstants.EMPTY_STRING);
-		LOGGER.info("ecmMAC of the device is: " + ecmMac);
-		expectedSsid = getExpectedSSID(device, partnerId, prefix, serialNumber, ecmMac,
-			parameter.getWifiBand());
-	    }
-	    LOGGER.info("Expected SSID is: " + expectedSsid);
-	    status = ssidValue.equalsIgnoreCase(expectedSsid);
-	    LOGGER.info("Is Expected and Actual SSID are equal :" + status);
-	    // Applicable only for Atom based device
-
-	    if (!status) {
-		String verifyPartnerID = BroadbandPropertyFileHandler.getPartnerIDandModelValues();
-		JSONObject json = new JSONObject(verifyPartnerID);
-		String partnerIDFromProperty = json.getString(partnerId);
-		String deviceModelFromProperty = json.getString(deviceModel);
-
-		if (partnerIDFromProperty == partnerId && deviceModelFromProperty == device.getModel()) {
-		    String webpaParameter = null;
-		    if (radio.equals((WiFiFrequencyBand.WIFI_BAND_2_GHZ))) {
-			webpaParameter = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_MAC_ADDRESS;
-		    } else if (radio.equals((WiFiFrequencyBand.WIFI_BAND_5_GHZ))) {
-			webpaParameter = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_MAC_ADDRESS;
-		    }
-		    String wifiMAC = tapEnv.executeWebPaCommand(device, webpaParameter);
-		    LOGGER.info("wifiMAC  -" + wifiMAC);
-		    wifiMAC = wifiMAC.replace(BroadBandTestConstants.DELIMITER_COLON,
-			    BroadBandTestConstants.EMPTY_STRING);
-		    expectedSsid = wifiMAC.substring(wifiMAC.length() - BroadBandTestConstants.CONSTANT_6);
-		    LOGGER.info("wifiMAC last 6 digits -" + expectedSsid);
-		    if (CommonMethods.isNotNull(ssidValue) && CommonMethods.isNotNull(expectedSsid)) {
+			if (DeviceModeHandler.isDSLDevice(device)) {
+				if (ssidValue.length() == BroadBandTestConstants.EIGHT_NUMBER
+						|| ssidValue.length() == BroadBandTestConstants.INTEGER_VALUE_13) {
+					expectedSsid = ssidValue;
+				}
+			}
+			if (DeviceModeHandler.isRPIDevice(device)) {
+				if (radio.equals((WiFiFrequencyBand.WIFI_BAND_2_GHZ))) {
+					expectedSsid = BroadbandPropertyFileHandler.getDefaultSsid24AfterFR();
+					status = ssidValue.equalsIgnoreCase(expectedSsid);
+				} else
+					expectedSsid = BroadbandPropertyFileHandler.getDefaultSsid5AfterFR();
+				status = ssidValue.equalsIgnoreCase(expectedSsid);
+			}
+			else {
+				prefix = getDefaultSSIDPrefixForDeviceAndPartnerSpecific(
+						device, partnerId);
+				LOGGER.info("Prefix for The SSID Specific To Device is: "
+						+ prefix);
+				String ecmMac = ((Device) device).getEcmMac();
+				try {
+					serialNumber = tapEnv
+							.executeWebPaCommand(
+									device,
+									BroadBandWebPaConstants.WEBPA_PARAMETER_FOR_SERIAL_NUMBER)
+							.trim();
+				} catch (Exception exception) {
+					LOGGER.error("Caught exception while getting the serial Number by WebPa"
+							+ exception.getMessage());
+				}
+				ecmMac = ecmMac.replace(BroadBandTestConstants.DELIMITER_COLON,
+						BroadBandTestConstants.EMPTY_STRING);
+				LOGGER.info("ecmMAC of the device is: " + ecmMac);
+				expectedSsid = getExpectedSSID(device, partnerId, prefix,
+						serialNumber, ecmMac, parameter.getWifiBand());
+			}
+			LOGGER.info("Expected SSID is: " + expectedSsid);
 			status = ssidValue.equalsIgnoreCase(expectedSsid);
 			LOGGER.info("Is Expected and Actual SSID are equal :" + status);
-		    }
+			// Applicable only for Arris XB3 Cox
+
+			if (!status) {
+				String verifyPartnerID = BroadbandPropertyFileHandler
+						.getPartnerIDandModelValues();
+				JSONObject json = new JSONObject(verifyPartnerID);
+				String partnerIDFromProperty = json.getString(partnerId);
+				String deviceModelFromProperty = json.getString(deviceModel);
+
+				if (partnerIDFromProperty == partnerId
+						&& deviceModelFromProperty == device.getModel()) {
+					String webpaParameter = null;
+					if (radio.equals((WiFiFrequencyBand.WIFI_BAND_2_GHZ))) {
+						webpaParameter = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_2_4_GHZ_PRIVATE_SSID_MAC_ADDRESS;
+					} else if (radio
+							.equals((WiFiFrequencyBand.WIFI_BAND_5_GHZ))) {
+						webpaParameter = BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_WIFI_5_GHZ_PRIVATE_SSID_MAC_ADDRESS;
+					}
+					String wifiMAC = tapEnv.executeWebPaCommand(device,
+							webpaParameter);
+					LOGGER.info("wifiMAC  -" + wifiMAC);
+					wifiMAC = wifiMAC.replace(BroadBandTestConstants.DELIMITER_COLON, BroadBandTestConstants.EMPTY_STRING);
+					expectedSsid = wifiMAC.substring(wifiMAC.length() - BroadBandTestConstants.CONSTANT_6);
+					LOGGER.info("wifiMAC last 6 digits -" + expectedSsid);
+					if (CommonMethods.isNotNull(ssidValue) && CommonMethods.isNotNull(expectedSsid)) {
+						status = ssidValue.equalsIgnoreCase(expectedSsid);
+						LOGGER.info("Is Expected and Actual SSID are equal :" + status);
+					}
+				}
+			}
+			if (!status) {
+				if (radio.equals((WiFiFrequencyBand.WIFI_BAND_2_GHZ))) {
+					expectedSsid = BroadbandPropertyFileHandler.getDefaultSsid24AfterFR();
+				} else if (radio.equals((WiFiFrequencyBand.WIFI_BAND_5_GHZ))) {
+					expectedSsid = BroadbandPropertyFileHandler.getDefaultSsid5AfterFR();
+				}
+				if (CommonMethods.isNotNull(expectedSsid) && CommonMethods.isNotNull(ssidValue)) {
+					status = ssidValue.equalsIgnoreCase(expectedSsid);
+					LOGGER.info("Is Expected and Actual SSID are equal :" + status);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error("Caught exception while Validating the default SSid for Different Partners : " + e.getMessage());
 		}
-	    }
-	} catch (Exception e) {
-	    LOGGER.error(
-		    "Caught exception while Validating the default SSid for Different Partners : " + e.getMessage());
-	}
-	LOGGER.debug("ENDING METHOD validateDefaultSsidforDifferentPartners");
-	return status;
-    }
+		LOGGER.debug("ENDING METHOD validateDefaultSsidforDifferentPartners");
+		return status;
+		}
 
     /**
      * Utility method to verify the expected partner ID is available or not
@@ -7975,32 +8027,43 @@ public class BroadBandCommonUtils {
      * @refactor Rakesh C N
      */
     public static boolean verifyAdminPagePasswordFromSyscfgCommand(AutomaticsTapApi tapEnv, Dut device,
-	    String password) {
-	LOGGER.debug("STARTING METHOD: verifyAdminPagePasswordFromSyscfgCommand");
-	boolean isPwdSame = false;
-	String defaultPassword = null;
-	String command = DeviceModeHandler.isBusinessClassDevice(device)
-		? BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_PASSWORD_BUSINESS_CLASS
-		: BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_PASSWORD;
-	defaultPassword = tapEnv.executeCommandUsingSsh(device, command);
-	LOGGER.info("Expected password is - " + password);
-	LOGGER.info("Password obtained from syscfg db is - " + defaultPassword);
-	/*
-	 * Changes: 1. No change for Business class devices. 2. For residential devices, default value 'password' will
-	 * be stored in syscfg db so we can validate the same 3. Once password is changed from default value, it will be
-	 * removed from syscfg db so we validate null response
-	 */
+			String password) {
+		LOGGER.debug("STARTING METHOD: verifyAdminPagePasswordFromSyscfgCommand");
+		boolean isPwdSame = false;
+		String defaultPassword = null;
 
-	// Password other than default value will be removed from syscfg db as per
-	// so need to verify
-	// null response
-	LOGGER.info("Since password has been removed from syscfg db, we need to verify response is null");
-	isPwdSame = CommonMethods.isNull(defaultPassword);
+		if (!DeviceModeHandler.isRPIDevice(device)) {
+			String command = DeviceModeHandler.isBusinessClassDevice(device)
+					? BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_PASSWORD_BUSINESS_CLASS
+					: BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_PASSWORD;
+			defaultPassword = tapEnv.executeCommandUsingSsh(device, command);
+		} else {
+			String command = BroadBandWebGuiTestConstant.SSH_GET_DEFAULT_PASSWORD;
+			defaultPassword = tapEnv.executeCommandUsingSsh(device, command);
+		}
 
-	LOGGER.info("Is the default password of the admin page is as expected - " + isPwdSame);
-	LOGGER.debug("ENDING METHOD: verifyAdminPagePasswordFromSyscfgCommand");
-	return isPwdSame;
-    }
+		LOGGER.info("Expected password is - " + password);
+		LOGGER.info("Password obtained from syscfg db is - " + defaultPassword);
+		/*
+		 * 1. No change for Business class devices. 2. For
+		 * residential devices, default value 'password' will be stored in syscfg db so
+		 * we can validate the same 3. Once password is changed from default value, it
+		 * will be removed from syscfg db so we validate null response
+		 */
+		if (DeviceModeHandler.isBusinessClassDevice(device) || (CommonMethods.isNotNull(defaultPassword))) {
+			isPwdSame = CommonMethods.isNotNull(defaultPassword) && defaultPassword.trim().equals(password);
+		} else {
+			// Password other than default value will be removed from syscfg db as per
+			// RDKB-14847, so need to verify
+			// null response
+			LOGGER.info("Since password has been removed from syscfg db, we need to verify response is null");
+			isPwdSame = CommonMethods.isNull(defaultPassword);
+		}
+
+		LOGGER.info("Is the default password of the admin page is as expected - " + isPwdSame);
+		LOGGER.debug("ENDING METHOD: verifyAdminPagePasswordFromSyscfgCommand");
+		return isPwdSame;
+	}
 
     /**
      * Helper method to verify admin page password is hashed using syscfg command
@@ -9371,4 +9434,144 @@ public class BroadBandCommonUtils {
 	LOGGER.debug("ENDING METHOD: getPropertyFromDeviceProperties()");
 	return value;
     }
+    
+    /**
+	 * Method to kill the process and verify using ps | grep command
+	 * 
+	 * @param device        {@link device}
+	 * @param tapEnv        {@link tapEnv}
+	 * @param processName   process name to kill
+	 * @param patternForPid pattern to get the pid from ps command
+	 * @author ArunKumar Jayachandran
+	 * @refactor Said Hisham
+	 */
+	public static boolean killProcessAndVerifyForCrashGeneration(Dut device, AutomaticsTapApi tapEnv,
+			String processName) {
+		LOGGER.debug("STARTING METHOD: killProcessAndVerify()");
+		String response = null;
+		String pid = null;
+		boolean status = false;
+		// execute the command ps | grep <process name>
+		response = tapEnv.executeCommandUsingSsh(device,
+				BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_PS_GREP, processName,
+						BroadBandCommandConstants.CMD_TO_GREP_ONLY_PROCESS));
+		if (CommonMethods.isNotNull(response)) {
+			String patternForPid = "(\\d+) +\\w+ +.*" + processName;
+			LOGGER.info("patternForPid :" + patternForPid);
+			// Get the process id using regex pattern (\\d+)
+			pid = CommonMethods.patternFinder(response, patternForPid);
+
+			if (CommonMethods.isNull(pid)) {
+				pid = CommonMethods.getPidOfProcess(device, tapEnv, processName);
+				LOGGER.info("Process Id from Arm Console :" + pid);
+			}
+			// Kill the process using killall -11 <pid>
+			if (CommonMethods.isNotNull(pid)) {
+				LOGGER.info("Process Id for " + processName + " is: " + pid);
+				tapEnv.executeCommandUsingSsh(device,
+						BroadBandCommonUtils.concatStringUsingStringBuffer(
+								BroadBandTestConstants.SDV_AGENT_KILL_PROCESS,
+								BroadBandTestConstants.SINGLE_SPACE_CHARACTER, pid));
+			} else {
+				LOGGER.error("Getting empty process id from ps | grep " + processName + " command");
+			}
+		} else {
+			LOGGER.error("There is no process running for " + processName + " & response for \"ps | grep " + processName
+					+ "\" command output:" + response);
+		}
+		// verify the process is killed properly
+		if (CommonMethods.isNotNull(pid)) {
+			response = tapEnv.executeCommandUsingSsh(device,
+					BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_PS_GREP,
+							processName, BroadBandCommandConstants.CMD_TO_GREP_ONLY_PROCESS));
+			if (CommonMethods.isNull(response)) {
+				BroadBandCommonUtils.rebootAndWaitForStbAccessible(device, tapEnv);
+				BroadBandWebPaUtils.verifyWebPaProcessIsUp(tapEnv, device, true);
+				response = tapEnv.executeCommandUsingSsh(device,
+						BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandCommandConstants.CMD_PS_GREP,
+								processName, BroadBandCommandConstants.CMD_TO_GREP_ONLY_PROCESS));
+			}
+			status = CommonMethods.isNotNull(response)
+					&& !CommonUtils.isGivenStringAvailableInCommandOutput(response, pid);
+			LOGGER.info((status ? "Successfully killed the process" : "Failed to kill the process"));
+		}
+		LOGGER.debug("ENDING METHOD: killProcessAndVerify()");
+		return status;
+	}
+	
+	/**
+	 * Method to give ApplySettings for both Radi 1 and 2
+	 * 
+	 * @param device {@link device}
+	 * @param tapEnv {@link tapEnv}
+	 * @author said.h
+	 */
+	public static boolean PerformApplySettingsForBothRadios(Dut device, AutomaticsTapApi tapEnv) {
+		LOGGER.info("STARTING METHOD: PerformApplySettingsForBothRadios()");
+		boolean status = false;
+		HashMap<String, String> applySettings = new HashMap<String, String>();
+		applySettings.put(BroadBandWebPaConstants.WEBPA_PARAM_WIFI_2_4_APPLY_SETTING, BroadBandTestConstants.TRUE);
+		applySettings.put(BroadBandWebPaConstants.WEBPA_PARAM_WIFI_5_APPLY_SETTING, BroadBandTestConstants.TRUE);
+		status = BroadBandWebPaUtils.executeMultipleWebpaParametersSet(device, tapEnv, applySettings,
+				WebPaDataTypes.BOOLEAN.getValue());
+		LOGGER.info("status :" + status);
+		LOGGER.info("ENDING METHOD: PerformApplySettingsForBothRadios()");
+		return status;
+	}
+	
+	/**
+	 * Helper method to get partner value for web UI validation
+	 * 
+	 * @param device {@link Dut}
+	 * @param tapEnv {@link AutomaticsTapApi}
+	 * @return the true if Atom Sync uptime is greater than 20 mis
+	 */
+	public static boolean getAtomsyncUptimeStatus(Dut device, AutomaticsTapApi tapEnv) {
+		LOGGER.debug("Starting of Method: getAtomsyncUptimeStatus");
+		String response = null;
+		int uptimeInMin = 0;
+		boolean status = false;
+		long startTime = System.currentTimeMillis();
+		String errorMessage = null;
+		try {
+
+			do {
+				errorMessage = "Webpa process is not up";
+				response = tapEnv.executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_UPTIME);
+				LOGGER.info("Device uptime " + response);
+				status = CommonMethods.isNotNull(response);
+				if (status) {
+					errorMessage = "Device uptime is not greater than 20 mins";
+					status = false;
+					uptimeInMin = Integer.parseInt(response) / BroadBandTestConstants.CONSTANT_60;
+					if (!(uptimeInMin >= BroadBandTestConstants.CONSTANT_20)) {
+						BroadBandCommonUtils.hasWaitForDuration(tapEnv,
+								(BroadBandTestConstants.CONSTANT_20 - uptimeInMin) * 60000);
+
+						uptimeInMin = Integer.parseInt(
+								tapEnv.executeWebPaCommand(device, BroadBandWebPaConstants.WEBPA_PARAM_DEVICE_UPTIME))
+								/ BroadBandTestConstants.CONSTANT_60;
+						if (uptimeInMin >= BroadBandTestConstants.CONSTANT_20) {
+							status = true;
+							LOGGER.info("Device uptime is greater than 20 mins " + status);
+						}
+					} else {
+						status = true;
+						LOGGER.info("Device uptime is greater than 20 mins " + status);
+					}
+
+				}
+			} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS
+					&& !status);
+			if (!status) {
+				throw new TestException(
+						"Exception occured : Webpa process is not up/ Device uptime is not greater than 20 mins "
+								+ errorMessage);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Exception occured while retrieving partner value " + e.getMessage());
+		}
+		LOGGER.debug("Ending of Method: getAtomsyncUptimeStatus");
+		return status;
+	}
 }

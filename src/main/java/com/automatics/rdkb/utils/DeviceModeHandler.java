@@ -99,5 +99,27 @@ public class DeviceModeHandler {
 	}
 	return isBusinessClassDevice;
     }
+    
+	/**
+	 * Method to get model name whether its a RPI device or not
+	 * 
+	 * @author Said Hisham
+	 */
+	public static boolean isRPIDevice(Dut device) {
+		boolean isRPIDevice = false;
+		try {
+			String deviceModel = device.getModel();
+			System.out.println("device Model :" + deviceModel);
+			if (CommonMethods.isNotNull(deviceModel)) {
+				String rpiDeviceModel = AutomaticsPropertyUtility.getProperty("rpi.device.model");
+				if (rpiDeviceModel.equalsIgnoreCase(deviceModel)) {
+					isRPIDevice = true;
+				}
+			}
+		} catch (Exception e) {
+			isRPIDevice = false;
+		}
+		return isRPIDevice;
+	}
 
 }

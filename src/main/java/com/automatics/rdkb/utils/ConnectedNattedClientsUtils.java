@@ -55,6 +55,7 @@ import com.automatics.rdkb.constants.BroadBandTraceConstants;
 import com.automatics.rdkb.constants.RDKBTestConstants;
 import com.automatics.rdkb.utils.wifi.BroadBandWiFiUtils;
 import com.automatics.rdkb.utils.wifi.BroadBandWifiWhixUtils;
+import com.automatics.rdkb.utils.wifi.connectedclients.BroadBandConnectedClientUtils;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.CommonMethods;
 import com.jcraft.jsch.Channel;
@@ -68,11 +69,11 @@ public class ConnectedNattedClientsUtils {
     /** SLF4j logger instance. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectedNattedClientsUtils.class);
 
-    /** Connect WIFI connection in Linux. */
-    private static final String CONNECT_LINUX = "nmcli d wifi connect <ssid> password <password> iface wlan0";
+	/** Connect WIFI connection in Linux. */
+	private static final String CONNECT_LINUX = "nmcli d wifi connect <ssid> password <password>";
 
-    /** Connect WIFI connection in Linux success message. */
-    private static final String CONNECT_LINUX_SUCCESS_MESSAGE = "Device 'wlan0' successfully activated";
+	/** Connect WIFI connection in Linux success message. */
+	private static final String CONNECT_LINUX_SUCCESS_MESSAGE = "Device <INTERFACE> successfully activated";
 
     /** Connect to SSID in Windows. */
     private static final String CONNECT_PROFILE_WINDOWS = "netsh wlan connect name=\"<ssid>\"";
@@ -80,8 +81,8 @@ public class ConnectedNattedClientsUtils {
     /** Connect WIFI message in Windows. */
     private static final String CONNECT_WINDOWS_SUCCESS_MESSAGE = "Connection request was completed successfully";
 
-    /** Verify WIFI connection in Linux. */
-    private static final String VERIFY_CONNECT_LINUX = "nmcli | grep connected |grep -i wlan0 ";
+	/** Verify WIFI connection in Linux. */
+	private static final String VERIFY_CONNECT_LINUX = "nmcli | grep connected |grep -i <INTERFACE> ";
 
     /** Verify WIFI connection in Linux success message. */
     private static final String VERIFY_CONNECT_LINUX_MESSAGE = "connected to";
@@ -98,11 +99,11 @@ public class ConnectedNattedClientsUtils {
     /** Diconnect WIFI in Windows. */
     private static final String DISCONNECT_WINDOWS = "netsh wlan disconnect";
 
-    /** Diconnect WIFI connection in Linux. */
-    private static final String DISCONNECT_LINUX = "nmcli con down id \"<ssid>\"";
+	/** Diconnect WIFI connection in Linux. */
+	private static final String DISCONNECT_LINUX = "nmcli con down id <ssid>";
 
-    /** Diconnect WIFI message in Windows. */
-    private static final String DISCONNECT_WINDOWS_SUCCESS_MESSAGE = "Disconnection request was completed successfully for interface \"Wi-Fi\"";
+	/** Diconnect WIFI message in Windows. */
+	private static final String DISCONNECT_WINDOWS_SUCCESS_MESSAGE = "Disconnection request was completed successfully for interface \"Wi";
 
     /** Show WIFI profile in Windows. */
     private static final String SHOW_AUTO_DISCOVERED_NETWROKS_WINDOWS = "netsh wlan show networks |grep -i \"<ssid>\"";
@@ -285,29 +286,29 @@ public class ConnectedNattedClientsUtils {
 	return retrunStatus;
     }
 
-    /**
-     * 
-     * This method connects the LINUX device to wifi by specifying the ssid and password
-     * 
-     * @param tapEnv
-     *            {@link AutomaticsTapApi}
-     * @param device
-     *            {@link Dut}
-     * @param ssid
-     *            SSID to connect to
-     * @param password
-     *            Password for connecting to SSID
-     * @return status of connection
-     */
-    private static boolean connectToLinux(Dut device, AutomaticsTapApi tapEnv, String ssid, String password) {
-	boolean retrunStatus = false;
-	String command = CONNECT_LINUX.replaceAll("<ssid>", ssid).replaceAll("<password>", password);
-	String response = tapEnv.executeCommandOnOneIPClients(device, command);
-	if (CommonMethods.isNotNull(response) && response.contains(CONNECT_LINUX_SUCCESS_MESSAGE)) {
-	    retrunStatus = true;
+	/**
+	 * 
+	 * This method connects the LINUX device to wifi by specifying the ssid and
+	 * password
+	 * 
+	 * @param tapEnv   {@link AutomaticsTapApi}
+	 * @param device   {@link Dut}
+	 * @param ssid     SSID to connect to
+	 * @param password Password for connecting to SSID
+	 * @return status of connection
+	 */
+	private static boolean connectToLinux(Dut device, AutomaticsTapApi tapEnv, String ssid, String password) {
+		boolean retrunStatus = false;
+		LOGGER.info("user password :"+ device.getExtraProperties().get("password"));
+		String command = BroadBandCommandConstants.CMD_SUDO + CONNECT_LINUX.replaceAll("<ssid>", ssid).replaceAll("<password>", password);
+		String[] commands = {command, "tel1234#"};
+//		String response = tapEnv.executeCommandOnOneIPClients(device, command);
+		String response = tapEnv.executeCommandOnOneIPClients(device, commands);
+		if (CommonMethods.isNotNull(response) && response.contains(CONNECT_LINUX_SUCCESS_MESSAGE.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxClientWifiInterface())) ) {
+		    retrunStatus = true;
+		}
+		return retrunStatus;
 	}
-	return retrunStatus;
-    }
 
     /**
      * 
@@ -1282,75 +1283,83 @@ public class ConnectedNattedClientsUtils {
      * @return time difference before and after wifi connection
      */
     private static long connectToLinuxForPerfTest(Dut device, Dut clientDevice, AutomaticsTapApi tapEnv, String ssid,
-	    String passwordwifi) {
-	String command = "";
-	long startTime;
-	long endTime = 0;
-	long averageTime = 0;
-	String response = "";
-	startTime = System.currentTimeMillis();
-	String gatewayIp = null;
-	Device tapDevice = (Device) clientDevice;
-	String host = tapDevice.getNatAddress();
-	String username = tapDevice.getUsername();
-	String password = tapDevice.getPassword();
-	String port = tapDevice.getNatPort();
-	SshConnection sshConnection = null;
-	gatewayIp = BroadBandWiFiUtils.getGatewayIpOfDevice(device);
+			String passwordwifi) {
+		LOGGER.info("STARTING METHOD : connectToLinuxForPerfTest ");
+		String command = "";
+		long startTime;
+		long endTime = 0;
+		long averageTime = 0;
+		String response = "";
+		startTime = System.currentTimeMillis();
+//		String gatewayIp = null;
+		Device tapDevice = (Device) clientDevice;
+		String host = tapDevice.getNatAddress();
+//		String username = tapDevice.getUsername();
+//		String password = tapDevice.getPassword();
+		String port = tapDevice.getNatPort();
+//		SshConnection sshConnection = null;
+//		gatewayIp = BroadBandWiFiUtils.getGatewayIpOfDevice(device);
+//
+		String[] commandToConnect = { BroadBandCommandConstants.CMD_SUDO
+				+ CONNECT_LINUX.replaceAll("<ssid>", ssid).replaceAll("<password>", passwordwifi) };
+		String[] commandToPing = {
+				BroadBandTestConstants.STRING_PING_TO_LINUX.replace("<IPADDRESS>", device.getHostIpAddress()) };
+//
+		try {
 
-	String[] commandToConnect = { CONNECT_LINUX.replaceAll("<ssid>", ssid).replaceAll("<password>", passwordwifi) };
-	String[] commandToPing = { BroadBandTestConstants.STRING_PING_TO_LINUX.replace("<IPADDRESS>", gatewayIp) };
+			startTime = System.currentTimeMillis();
+			boolean connected = connectToSSID(clientDevice, tapEnv, ssid, passwordwifi);
+			StringBuffer commandString = new StringBuffer();
+			commandString.append(commandToConnect[0]);
+			String formattedCommands = commandString.toString();
+//			sshConnection = new SshConnection(host, Integer.parseInt(port), username, password);
 
-	try {
-	    StringBuffer commandString = new StringBuffer();
-	    commandString.append(commandToConnect[0]);
-	    String formattedCommands = commandString.toString();
-	    sshConnection = new SshConnection(host, Integer.parseInt(port), username, password);
-	    startTime = System.currentTimeMillis();
-	    sshConnection.send(formattedCommands, 1000);
-	    response = sshConnection.getSettopResponse();
-	    LOGGER.info("[SSH EXECUTION] : Executed command " + formattedCommands
-		    + " on connected client setup : Mac Address [" + clientDevice.getHostMacAddress() + "] IP Address ["
-		    + host + "] and Port Number [" + port + "]" + "\n[SSH EXECUTION] : Result - \n" + response);
-	    if (CommonMethods.isNotNull(response) && response.contains(CONNECT_LINUX_SUCCESS_MESSAGE)) {
-		commandString = new StringBuffer();
-		commandString.append(commandToPing[0]);
-		formattedCommands = commandString.toString();
-		sshConnection.send(formattedCommands, 1000);
-		response = sshConnection.getSettopResponse();
-		endTime = System.currentTimeMillis();
-		LOGGER.info("[SSH EXECUTION] : Executed command " + formattedCommands
-			+ " on connected client setup : Mac Address [" + clientDevice.getHostMacAddress()
-			+ "] IP Address [" + host + "] and Port Number [" + port + "]"
-			+ "\n[SSH EXECUTION] : Result - \n" + response);
-		if ((response.contains(BroadBandTestConstants.STRING_LINUX_PING_RESPONSE))
-			&& CommonMethods.isNotNull(response)) {
-		    LOGGER.info("END CAPTURING TIME");
-		    averageTime = endTime - startTime;
-		} else {
-		    LOGGER.error("Ping statistics response from device is greater than 0% loss");
+//			sshConnection.send(formattedCommands, 1000);
+//			response = sshConnection.getSettopResponse();
+			LOGGER.info("[SSH EXECUTION] : Executed command " + formattedCommands
+					+ " on connected client setup : Mac Address [" + clientDevice.getHostMacAddress() + "] IP Address ["
+					+ host + "] and Port Number [" + port + "]" + "\n[SSH EXECUTION] : Result - \n" + connected);
+
+			if (connected) {
+				commandString = new StringBuffer();
+				commandString.append(commandToPing[0]);
+				formattedCommands = commandString.toString();
+//				sshConnection.send(formattedCommands, 1000);
+//				response = sshConnection.getSettopResponse();		
+				response = tapEnv.executeCommandOnOneIPClients(clientDevice, commandToPing);
+				endTime = System.currentTimeMillis();
+				LOGGER.info("[SSH EXECUTION] : Executed command " + formattedCommands
+						+ " on connected client setup : Mac Address [" + clientDevice.getHostMacAddress()
+						+ "] IP Address [" + host + "] and Port Number [" + port + "]"
+						+ "\n[SSH EXECUTION] : Result - \n" + response);
+				if ((response.contains(BroadBandTestConstants.STRING_LINUX_PING_RESPONSE))
+						&& CommonMethods.isNotNull(response)) {
+					LOGGER.info("END CAPTURING TIME");
+					averageTime = endTime - startTime;
+				} else {
+					LOGGER.error("Ping statistics response from device is greater than 0% loss");
+				}
+			}
+//
+		} catch (Exception e) {
+			LOGGER.error("[SSH FAILED] : " + host + ":" + port + e.getMessage());
+			LOGGER.error("[SSH FAILED] : " + host + ":" + port + " Looks like this device is not properly configured");
+		} // finally {
+//			if (null != sshConnection) {
+//				sshConnection.disconnect();
+//			}
+//		}
+		String connectStatus = BroadBandCommandConstants.CMD_SUDO
+				+ CONNECT_STATUS_COMMAND_LINUX.replaceAll("<ssid>", ssid);
+		String output = tapEnv.executeCommandOnOneIPClients(clientDevice, connectStatus);
+		command = BroadBandCommandConstants.CMD_SUDO + DISCONNECT_LINUX.replaceAll("<ssid>", ssid + " " + output);
+		response = tapEnv.executeCommandOnOneIPClients(clientDevice, command);
+		if (CommonMethods.isNotNull(response) && response.contains(DISCONNECT_LINUX_SUCCESS_MESSAGE)) {
+			LOGGER.info("Dissconnected from WIFI SSID successfully");
 		}
-	    }
 
-	} catch (Exception e) {
-	    LOGGER.error("[SSH FAILED] : " + host + ":" + port + e.getMessage());
-	    LOGGER.error("[SSH FAILED] : " + host + ":" + port + " Looks like this device is not properly configured");
-	} finally {
-	    if (null != sshConnection) {
-		sshConnection.disconnect();
-	    }
+		return averageTime;
 	}
-	String connectStatus = CONNECT_STATUS_COMMAND_LINUX.replaceAll("<ssid>", ssid);
-	String output = tapEnv.executeCommandOnOneIPClients(clientDevice, connectStatus);
-	command = DISCONNECT_LINUX.replaceAll("<ssid>", ssid + " " + output);
-	response = tapEnv.executeCommandOnOneIPClients(clientDevice, command);
-	if (CommonMethods.isNotNull(response) && response.contains(DISCONNECT_LINUX_SUCCESS_MESSAGE)) {
-	    LOGGER.info("Dissconnected from WIFI SSID successfully");
-	}
-
-	return averageTime;
-    }
-
     /**
      * 
      * This method connects the WINDOWS device to wifi by specifying the ssid and password
@@ -1479,7 +1488,8 @@ public class ConnectedNattedClientsUtils {
 	if (ecastDevice.isLinux()) {
 	    String connectStatus = CONNECT_STATUS_COMMAND_LINUX.replaceAll("<ssid>", ssid);
 	    String output = tapEnv.executeCommandOnOneIPClients(device, connectStatus);
-	    String command = DISCONNECT_LINUX.replaceAll("<ssid>", ssid + " " + output);
+	    String command = BroadBandCommandConstants.CMD_SUDO
+				+ DISCONNECT_LINUX.replaceAll("<ssid>", ssid + " " + output);
 	    String response = tapEnv.executeCommandOnOneIPClients(device, command);
 	    if (CommonMethods.isNotNull(response) && response.contains(DISCONNECT_LINUX_SUCCESS_MESSAGE)) {
 		retrunStatus = true;
@@ -1696,8 +1706,8 @@ public class ConnectedNattedClientsUtils {
 	int iPingResponseAvgTime = 0;
 	Device ecastDevice = (Device) wifiClientDevice;
 	LOGGER.info("OS TYPE OF THE WIFI CLIENT: " + ecastDevice.getOsType());
-	String pingCommand = ecastDevice.isLinux() ? BroadBandCommandConstants.CMD_PING_LINUX
-		: BroadBandCommandConstants.CMD_PING_WINDOWS;
+	String pingCommand = ecastDevice.isLinux() ? BroadBandCommandConstants.CMD_SUDO + BroadBandCommandConstants.CMD_PING_LINUX
+			: BroadBandCommandConstants.CMD_PING_WINDOWS;
 	String response = tapEnv.executeCommandOnOneIPClients(wifiClientDevice,
 		BroadBandCommonUtils.concatStringUsingStringBuffer(pingCommand,
 			BroadBandConnectedClientTestConstants.CMD_PING_PACKET_SIZE_OPTION, host));
@@ -1733,37 +1743,40 @@ public class ConnectedNattedClientsUtils {
      * @refactor Govardhan
      */
     public static boolean verifyConnectToSSID(Dut device, AutomaticsTapApi tapEnv, String ssid,
-	    boolean shouldVerifyConnectStat) {
-	boolean retrunStatus = false;
-	Device ecastDevice = (Device) device;
-	LOGGER.info("[TEST LOG] : Verifying conenctivitty with ssid " + ssid);
-	if (ecastDevice.isLinux()) {
-	    String response = tapEnv.executeCommandOnOneIPClients(ecastDevice, VERIFY_CONNECT_LINUX);
-	    if (CommonMethods.isNotNull(response) && response.contains(VERIFY_CONNECT_LINUX_MESSAGE)) {
-		if (shouldVerifyConnectStat) {
-		    retrunStatus = true;
+			boolean shouldVerifyConnectStat) {
+		boolean retrunStatus = false;
+		Device ecastDevice = (Device) device;
+		LOGGER.info("[TEST LOG] : Verifying conenctivitty with ssid " + ssid);
+		if (ecastDevice.isLinux()) {
+			String response = tapEnv.executeCommandOnOneIPClients(ecastDevice, VERIFY_CONNECT_LINUX
+					.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxClientWifiInterface()));
+			LOGGER.info("Response of executeCommandOnOneIPClients " + response);// ADDED ATH
+			if (CommonMethods.isNotNull(response) && response.contains(VERIFY_CONNECT_LINUX_MESSAGE)) {
+				if (shouldVerifyConnectStat) {
+					retrunStatus = true;
+				}
+			} else {
+				if (!shouldVerifyConnectStat) {
+					retrunStatus = true;
+				}
+			}
+		} else if (ecastDevice.isWindows()) {
+			String response = tapEnv.executeCommandOnOneIPClients(ecastDevice, VERIFY_CONNECT_WINDOWS);
+			LOGGER.info(" response of executeCommandOnOneIPClients_windows " + response);// ADDED ATH
+			if (CommonMethods.isNotNull(response)) {
+				if (shouldVerifyConnectStat) {
+					retrunStatus = true;
+				}
+			} else {
+				if (!shouldVerifyConnectStat) {
+					retrunStatus = true;
+				}
+			}
+		} else if (ecastDevice.isRaspbianLinux()) {
+			// TODO inserted by rohinic [Nov 8, 2017 11:18:10 AM]
 		}
-	    } else {
-		if (!shouldVerifyConnectStat) {
-		    retrunStatus = true;
-		}
-	    }
-	} else if (ecastDevice.isWindows()) {
-	    String response = tapEnv.executeCommandOnOneIPClients(ecastDevice, VERIFY_CONNECT_WINDOWS);
-	    if (CommonMethods.isNotNull(response)) {
-		if (shouldVerifyConnectStat) {
-		    retrunStatus = true;
-		}
-	    } else {
-		if (!shouldVerifyConnectStat) {
-		    retrunStatus = true;
-		}
-	    }
-	} else if (ecastDevice.isRaspbianLinux()) {
-
+		return retrunStatus;
 	}
-	return retrunStatus;
-    }
 
     /**
      * 
@@ -1896,5 +1909,86 @@ public class ConnectedNattedClientsUtils {
 	LOGGER.debug("ENDING METHOD : verifyConnectionStatusOnWiFiClient()");
 	return status;
     }
+    
+ private static final String ADD_PROFILE_WINDOWS_SUCCESS_MESSAGE_1 = "is added on interface WiFi";
+    
+    /**
+	 * 
+	 * This method is to verify ping command execution on the WiFi Client Device.
+	 * 
+	 * @param wifiClientDevice {@link Dut}
+	 * @param tapEnv           {@link AutomaticsTapApi}
+	 * @param ipAddress        String representing the IP Address.
+	 * @return returns status of operation
+	 * @refactor Sruthi Santhosh
+	 */
+	public static boolean verifyPingConnectionForIpv4(Dut device, AutomaticsTapApi tapEnv, String defaultGatewayWan,
+			Dut connectedClient) {
+		LOGGER.debug("STARTING METHOD : verifyPingConnectionForIpv4()");
+
+		boolean status = false;
+
+		String ipv4AddressRetrievedFromClient = BroadBandConnectedClientUtils.getIpv4AddressFromConnClient(tapEnv,
+				device, connectedClient);
+
+		status = ConnectedNattedClientsUtils.verifyPingConnectionInClient(connectedClient, tapEnv, defaultGatewayWan,
+				ipv4AddressRetrievedFromClient, BroadBandTestConstants.STRING_VALUE_FIVE);
+
+		return status;
+	}
+	
+	/**
+	 * 
+	 * This method is to verify ping command execution for a particular duration on
+	 * the Connected Client Device.
+	 * 
+	 * @param connectedClientDevice {@link Dut}
+	 * @param tapEnv                {@link AutomaticsTapApi}
+	 * @param ipAddress             String representing the IP Address
+	 * @param durationInSeconds     String which gives the Ping Count
+	 * @return returns status of operation
+	 * @refactor Sruthi Santhosh
+	 */
+	public static boolean verifyPingConnectionInClient(Dut connectedClientDevice, AutomaticsTapApi tapEnv,
+			String ipAddress, String ipAddressofInterface, String durationInSeconds) {
+		LOGGER.debug("STARTING METHOD : verifyPingConnection()");
+		boolean result = false;
+		Device ecastSettop = (Device) connectedClientDevice;
+		LOGGER.info("OS TYPE OF THE WIFI CLIENT: " + ecastSettop.getOsType());
+		String pingCommand = ecastSettop.isLinux() || ecastSettop.isRaspbianLinux()
+				? (CommonMethods.isIpv6Address(ipAddress) ? BroadBandCommandConstants.CMD_PING_FOR_LINUX_IPV6
+						: BroadBandCommandConstants.CMD_PING_FOR_LINUX)
+				: BroadBandCommandConstants.CMD_PING_FOR_WINDOWS;
+		LOGGER.info("PING Command: " + pingCommand + " " + durationInSeconds + " " + ipAddress + " " + "-S" + " "
+				+ ipAddressofInterface);
+		String[] commands = new String[] { BroadBandCommonUtils.concatStringUsingStringBuffer(pingCommand,
+				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, durationInSeconds,
+				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, ipAddress, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+				"-S", BroadBandTestConstants.SINGLE_SPACE_CHARACTER, ipAddressofInterface) };
+		String response = tapEnv.executeCommandOnOneIPClients(connectedClientDevice, commands,
+				(Integer.parseInt(durationInSeconds) + BroadBandTestConstants.FIFTY_SECONDS)
+						* BroadBandTestConstants.SECONDS_TO_MILLISECONDS);
+		if (CommonMethods.isNotNull(response)) {
+			response = ecastSettop.isWindows()
+					? BroadBandCommonUtils.patternFinderMatchPositionBased(response,
+							BroadBandConnectedClientTestConstants.PATTERN_MATCHER_PING_RESPONSE_WINDOWS,
+							BroadBandTestConstants.CONSTANT_4)
+					: BroadBandCommonUtils.patternFinderMatchPositionBased(response,
+							BroadBandConnectedClientTestConstants.PATTERN_MATCHER_PING_RESPONSE_LINUX,
+							BroadBandTestConstants.CONSTANT_3);
+		}
+		if (CommonMethods.isNotNull(response)) {
+			try {
+				int iActualValue = Integer.parseInt(response);
+				result = iActualValue != BroadBandTestConstants.PERCENTAGE_VALUE_HUNDRED;
+			} catch (NumberFormatException numberFormatException) {
+				// Log & Suppress the Exception
+				LOGGER.error(numberFormatException.getMessage());
+			}
+		}
+		LOGGER.debug("ENDING METHOD : verifyPingConnection()");
+		return result;
+
+	}
 
 }

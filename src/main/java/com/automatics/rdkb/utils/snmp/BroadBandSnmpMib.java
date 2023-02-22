@@ -126,7 +126,7 @@ public enum BroadBandSnmpMib {
     ECM_SELFHEAL_MIN_NO_OF_PING_SERVER("minNumPingServer", ".1.3.6.1.4.1.17270.44.1.1.3"),
     ECM_SELFHEAL_PING_INTERVAL("pingInterval", ".1.3.6.1.4.1.17270.44.1.1.4"),
     ECM_SELFHEAL_PING_RESPONSE_WAIT_TIME("pingRespWaitTime", ".1.3.6.1.4.1.17270.44.1.1.5"),
-    ECM_SELFHEAL_RESOURCE_USAGE_COMPUTER_WINDOW("resourceUsageComputeWindow", ".1.3.6.1.4.1.17270.44.1.1.7"),
+    ECM_SELFHEAL_RESOURCE_USAGE_COMPUTER_WINDOW("resourceUsageComputeWindow", ".1.3.6.1.4.1.17270.44.1.1.7.0"),
     ECM_SELFHEAL_AVG_CPU_THRESHOLD("avgCPUThreshold", ".1.3.6.1.4.1.17270.44.1.1.8"),
     ECM_SELFHEAL_MAX_REBOOT_COUNT("maxRebootCount", ".1.3.6.1.4.1.17270.44.1.1.10"),
     ECM_SELFHEAL_MAX_SUB_SYSTEM_RESET_COUNT("maximumSubsystemResetCount", ".1.3.6.1.4.1.17270.44.1.1.11"),

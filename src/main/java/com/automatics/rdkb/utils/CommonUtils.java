@@ -521,19 +521,14 @@ public class CommonUtils {
      */
 
     public static boolean verifyStbRebooted(Dut device, AutomaticsTapApi tapEnv) {
-	boolean status = true;
-	// String for status verification
-	String successString = "CONNECTION-ESTABLISHED";
-
-	LOGGER.info("About to execute command echo CONNECTION-ESTABLISHED");
-	String response = tapEnv.executeCommandUsingSsh(device, "echo " + successString);
-	LOGGER.info(" : Server response during device reboot - " + response);
-	if (response != null) {
-	    status = response.contains(successString);
+		boolean status = false;
+		LOGGER.info("About to execute command echo test connection");
+		boolean deviceRebootNotification = (!CommonMethods.isSTBAccessible(device));
+		if (deviceRebootNotification) {
+			status = true;
+		}
+		return status;
 	}
-
-	return (!status);
-    }
 
     /**
      * Helper method to check wait for device to reboot
@@ -1375,5 +1370,24 @@ public class CommonUtils {
 	return hostMac = hostMac.replaceAll(BroadBandTestConstants.DELIMITER_COLON, BroadBandTestConstants.EMPTY_STRING)
 		.toUpperCase();
     }
+    
+    /**
+     * Utility to validate the string arraya is not null.
+     * 
+     * @param text
+     *            String to be validated
+     * 
+     * @return Boolean result of the validation.
+     * @author Govardhan
+     */
+    public static boolean isNotNull(String[] value) {
+	boolean isNotNull = !(isNull(value));
+
+	return isNotNull;
+    }
+	
+	public static boolean isNull(String[] value) {
+		return ((value == null) || (value.length == 0));
+	    }
 
 }

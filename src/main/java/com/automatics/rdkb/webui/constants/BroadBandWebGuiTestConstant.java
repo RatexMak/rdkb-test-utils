@@ -390,4 +390,7 @@ public class BroadBandWebGuiTestConstant {
 
     /** Dynamic Xpath element to Reserver IP Address */
     public static final String DYNAMIC_XPATH_RESERVEDIP_ADDRESS = "//*[@id='staticIPAddress-{i}']";
+    
+	/** Variable to store Admin page URL for Business Class Device */
+	public static final String ADMIN_PAGE_URL_PARTNER_ONE = "Admin.page.url.partner1";
 }

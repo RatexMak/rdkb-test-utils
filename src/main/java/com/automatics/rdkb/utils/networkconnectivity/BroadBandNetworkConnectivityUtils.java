@@ -37,6 +37,7 @@ import com.automatics.rdkb.constants.RDKBTestConstants;
 import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.CommonMethods;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
+import com.automatics.rdkb.utils.DeviceModeHandler;
 import com.automatics.utils.AutomaticsPropertyUtility;
 import com.automatics.rdkb.server.WhiteListServer;
 
@@ -57,20 +58,25 @@ public class BroadBandNetworkConnectivityUtils {
      * @return Returns valid ping facebook Ipv4 address
      */
     public static String retrievePingServerUsingNslookUpForIpv4(Dut device, AutomaticsTapApi tapEnv) {
-	LOGGER.debug("ENTERING METHOD : retrievePingServerUsingNslookUp");
-	boolean status = false;
-	String nslookupIPv4Addr = null;// String to store IPv4
-	String response = null;
-	try {
-	    response = tapEnv
-		    .executeCommandUsingSshConnection(
-			    WhiteListServer.getInstance(tapEnv,
-				    AutomaticsPropertyUtility
-					    .getProperty(RDKBTestConstants.PROPERTY_REVERSE_SSH_JUMP_SERVER)),
-			    BroadBandCommonUtils.concatStringUsingStringBuffer(
-				    BroadBandCommandConstants.CMD_NSLOOKUP_WITH_PATH_FOR_IPV4_ADDRESS,
-				    BroadBandTestConstants.NSLOOKUP_FOR_FACEBOOK));
-
+    	LOGGER.debug("ENTERING METHOD : retrievePingServerUsingNslookUp");
+    	boolean status = false;
+    	String nslookupIPv4Addr = null;// String to store IPv4
+    	String response = null;
+    	try {
+    		if(!DeviceModeHandler.isRPIDevice(device)) {
+    	    response = tapEnv
+    		    .executeCommandUsingSshConnection(
+    			    WhiteListServer.getInstance(tapEnv,
+    				    AutomaticsPropertyUtility
+    					    .getProperty(RDKBTestConstants.PROPERTY_REVERSE_SSH_JUMP_SERVER)),
+    			    BroadBandCommonUtils.concatStringUsingStringBuffer(
+    				    BroadBandCommandConstants.CMD_NSLOOKUP_WITH_PATH_FOR_IPV4_ADDRESS,
+    				    BroadBandTestConstants.NSLOOKUP_FOR_FACEBOOK));
+    		}else {
+    			response = tapEnv.executeCommandUsingSsh(device, BroadBandCommonUtils.concatStringUsingStringBuffer(
+    				    BroadBandCommandConstants.CMD_NSLOOKUP_FOR_IPV4_ADDRESS,
+    				    BroadBandTestConstants.NSLOOKUP_FOR_FACEBOOK));
+    		}
 	    if (CommonMethods.isNotNull(response)) {
 		nslookupIPv4Addr = BroadBandCommonUtils.patternFinderForMultipleMatches(response,
 			BroadBandTestConstants.PATTERN_TO_RETRIEVE_IPV4_ADDRESS_FROM_NSLOOKUP_FACEBOOK,

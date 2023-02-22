@@ -83,9 +83,6 @@ public class BroadBandCdlConstants {
 
     /** WebPA Parameter for Code Download Image Name */
     public static final String WEBPA_PARAM_CODE_DOWNLOAD_IMAGE_NAME = "Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareToDownload";
-
-    /** Property Key for CDL server URL */
-    public static final String PROP_KEY_CDL_SERVER_URL = "xconf.firmware.location.http";
     
     /** WebPA Parameter for Code Download Protocol */
     public static final String WEBPA_PARAM_CODE_DOWNLOAD_PROTOCOL = "Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareDownloadProtocol";
@@ -181,5 +178,9 @@ public class BroadBandCdlConstants {
     
     /** WebPA Parameter for CDL Status */
     public static final String WEBPA_PARAM_CDL_STATUS = "Device.DeviceInfo.X_RDKCENTRAL-COM_FirmwareDownloadStatus";
+    
+    /** Property Key for CDL server URL */
+    public static final String PROP_KEY_CDL_SERVER_URL = "xconf.firmware.location";
+
 
 }

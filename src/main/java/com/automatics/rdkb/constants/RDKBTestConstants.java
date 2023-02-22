@@ -39,6 +39,9 @@ public class RDKBTestConstants {
 
     /** Constant for number 200 */
     public static final int CONSTANT_200 = 200;
+    
+    /** Constant for number 201 */
+    public static final int CONSTANT_201 = 201;
 
     /**
      * XRE Test Constants for Handling Closed Caption Service Descriptor

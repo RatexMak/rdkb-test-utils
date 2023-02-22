@@ -34,7 +34,7 @@ public class BroadBandSnmpConstants {
     /** SNMP MIB details */
     public static enum BROADBAND_WAREHOUSE_SNMP_LIST {
 	WAREHOUSE_GENERAL_EMTA_DETECTION(
-		"1.3.6.1.2.1.2.2.1.2",
+		"1.3.6.1.2.1.2.2.1.16",
 		"16",
 		"emta detection",
 		SnmpDataType.STRING,
@@ -424,5 +424,149 @@ public class BroadBandSnmpConstants {
 	    add(BroadBandSnmpMib.ECM_STATUS_PRIVATE_WIFI_5_GHZ.getTableIndex());
 	}
     };
+    
+    /** SNMP MIB details for RPi */
+    public static enum BROADBAND_WAREHOUSE_SNMP_LIST_RPI {
+	WAREHOUSE_GENERAL_EMTA_DETECTION(
+		"1.3.6.1.2.1.2.2.1.16.",
+		"16",
+		"emta detection",
+		SnmpDataType.STRING,
+		"",
+		SNMP_MODE.GET),
+	WAREHOUSE_WIRELESS_SSID_PASSWORD_2G(
+		"1.3.6.1.4.1.17270.50.2.2.3.3.1.3",
+		"10001",
+		"wireless password",
+		SnmpDataType.STRING,
+		"TEST_SSID",
+		SNMP_MODE.SET_GET),
+	WAREHOUSE_WIRELESS_SSID_PASSWORD_5G(
+		"1.3.6.1.4.1.17270.50.2.2.3.3.1.3",
+		"10101",
+		"wireless password 5g",
+		SnmpDataType.STRING,
+		"TEST_PASSWORD12#",
+		SNMP_MODE.SET_GET),
+	WAREHOUSE_WIFI_2_4_OID_1(
+		"1.3.6.1.4.1.17270.50.2.2.6.1.1.3",
+		"10000",
+		"wireless channel 2g",
+		SnmpDataType.UNSIGNED_INTEGER,
+		"5",
+		SNMP_MODE.SET_GET),
+	WAREHOUSE_WIFI_5_0_OID_1(
+		"1.3.6.1.4.1.17270.50.2.2.6.1.1.3",
+		"10100",
+		"wireless channel 5g",
+		SnmpDataType.UNSIGNED_INTEGER,
+		"36",
+		SNMP_MODE.SET_GET),
+	WAREHOUSE_WIFI_2_4_OID(
+		"1.3.6.1.4.1.17270.50.2.2.6.1.1.18",
+		"10000",
+		"2g channel get",
+		SnmpDataType.INTEGER,
+		"",
+		SNMP_MODE.GET),
+	WAREHOUSE_WIFI_5_0_OID(
+		"1.3.6.1.4.1.17270.50.2.2.6.1.1.18",
+		"10100",
+		"5g channel get",
+		SnmpDataType.INTEGER,
+		"",
+		SNMP_MODE.GET),
+	WAREHOUSE_FACTORY_RESET_1(
+		"1.3.6.1.4.1.4413.2.2.2.1.2.1.6",
+		"0",
+		"factory reset",
+		SnmpDataType.INTEGER,
+		"1",
+		SNMP_MODE.SET);
+
+	String oid;
+	String info;
+	String tableIndex;
+	SnmpDataType dataType;
+	String value;
+	SNMP_MODE mode;
+
+	private BROADBAND_WAREHOUSE_SNMP_LIST_RPI(String oid, String tableIndex, String info, SnmpDataType dataType,
+		String value, SNMP_MODE mode) {
+	    this.oid = oid;
+	    this.info = info;
+	    this.dataType = dataType;
+	    this.value = value;
+	    this.mode = mode;
+	    this.tableIndex = tableIndex;
+
+	}
+
+	/**
+	 * @return the tableIndex
+	 */
+	public String getTableIndex() {
+	    return tableIndex;
+	}
+
+	/**
+	 * @param tableIndex
+	 *            the tableIndex to set
+	 */
+	public void setTableIndex(String tableIndex) {
+	    this.tableIndex = tableIndex;
+	}
+
+	/**
+	 * @return the oid
+	 */
+	public String getOid() {
+	    return oid;
+	}
+
+	/**
+	 * @return the oid
+	 */
+	public String getMibOid() {
+	    return oid+"."+tableIndex;
+	}
+	
+	/**
+	 * @return the info
+	 */
+	public String getInfo() {
+	    return info;
+	}
+
+	/**
+	 * @return the dataType
+	 */
+	public SnmpDataType getDataType() {
+	    return dataType;
+	}
+
+	/**
+	 * @return the value
+	 */
+	public String getValue() {
+	    return value;
+	}
+
+	/**
+	 * @return the mode
+	 */
+	public SNMP_MODE getMode() {
+	    return mode;
+	}
+
+	/**
+	 * @param mode
+	 *            the mode to set
+	 */
+	public void setMode(SNMP_MODE mode) {
+	    this.mode = mode;
+	}
+
+    }
 
 }

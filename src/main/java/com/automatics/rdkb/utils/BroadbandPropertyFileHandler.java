@@ -2819,4 +2819,156 @@ public class BroadbandPropertyFileHandler {
 	return AutomaticsTapApi
 		.getSTBPropsValue(BroadBandPropertyKeyConstants.CAPTIVE_PORTAL_DEFAULT_DISABLED_PARTNER);
     }
+    
+	/**
+     * This API will get the Default Resource Usage ComputeWindow of the device from properties
+     * 
+     * @author Said Hisham
+     */
+	public static String getResourceUsageComputeWindowFromProperty() {
+		return AutomaticsTapApi
+			    .getSTBPropsValue(BroadBandPropertyKeyConstants.RESOURCE_USAGE_COMPUTE_WINDOW_VALUE);
+	}
+	
+    /**
+     * This API will get the SYSCFG DB nvram from properties
+     * 
+     * @author Rakesh C N
+     */
+	public static String getCommandForIDSinSyscfg() {
+		return AutomaticsTapApi
+			    .getSTBPropsValue(BroadBandPropertyKeyConstants.GREP_IDS_SYSCFG);
+	}
+	
+	/**
+	 * This API will get the 5ghz interface name in the RPI device from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String get5ghzInterfaceName() {
+		return AutomaticsTapApi
+				.getSTBPropsValue(BroadBandPropertyKeyConstants.GET_5_GHZ_INTERFACE_NAME);
+	}
+	
+	/**
+	 * This API will check if TR-69 is enabled in the device from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static boolean isTr69Enabled() {
+		try {
+			return Boolean
+					.parseBoolean(AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.IS_TR_69_ENABLED));
+		} catch (Exception e) {
+			return true;
+		}
+	}
+	
+	public static boolean isIpv6Enabled() {
+		try {
+			return Boolean
+					.parseBoolean(AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.IS_IPV6_ENABLED));
+		} catch (Exception e) {
+			LOGGER.info("Property Key not found : Setting default value as IPv6 enabled ");
+			return true;
+		}
+	}
+	
+	/**
+	 * This API will get the 2.4Ghz operating standard of RPi device from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String get2GhzOperatingModeForRPi() {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.OPERATING_MODE_2GHZ_RPI);
+	}
+	
+	/**
+	 * This API will get the 5Ghz client operating standard from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String get5GhzClientOperatingModeFromProperties() {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.CLIENT_OPERATING_MODE_5GHZ);
+	}
+	
+	/**
+	 * This API will get the Default expected SSID value 2.4hgz of the device after
+	 * factory reset from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String getDefaultSsid24AfterFR() {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.DEFAULT_SSID_VALUE_24_AFTER_FR);
+	}
+	
+	/**
+	 * This API will get the Default expected SSID value 5hgz of the device after
+	 * factory reset from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String getDefaultSsid5AfterFR() {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.DEFAULT_SSID_VALUE_5_AFTER_FR);
+	}
+	
+	/**
+	 * This API will get the Linux Wifi Interface from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String getLinuxClientWifiInterface() {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.LINUX_CLIENT_WIFI_INTERFACE);
+	}
+	
+	
+	/**
+	 * This API will get the location of rfc database from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String getRfcDataBaseLocation() {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.LOCATION_RFC_DATABASE);
+	}
+	
+	/**
+	 * This API will get the device model of the device from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String getDeviceModelFromProperties(Dut device) {
+		try {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.DEVICE_MODEL);
+		}catch(Exception e) {
+			return device.getModel();
+		}		
+	}
+	
+	/**
+	 * This API will get the 5Ghz operating standard of RPi device from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String get5GhzOperatingModeForRPi() {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.OPERATING_MODE_5GHZ_RPI);
+	}
+	
+	/**
+	 * This API will get the CLI config location is server from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String getCliConfigFileLocation() {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.CLI_CONFIG_AUTOVAULT_LOCATION);
+	}
+
+	/**
+	 * This API will get the webpa config location is server from properties
+	 * 
+	 * @author Said Hisham
+	 */
+	public static String getWbpaCfgFileLocation() {
+		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.WEBPA_CFG_AUTOVAULT_LOCATION);
+	}
+	
 }

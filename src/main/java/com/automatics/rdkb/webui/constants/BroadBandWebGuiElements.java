@@ -28,6 +28,7 @@ public class BroadBandWebGuiElements {
 
 	/** String variable to store user name */
 	public static String ADMINUI_LOGIN_PAGE_USER_NAME = "username";
+	
 	/** String variable to store password */
 	public static String ADMINUI_LOGIN_PAGE_PASSWORD = "password";
 	/**
@@ -359,6 +360,9 @@ public class BroadBandWebGuiElements {
 
 	/** ELEMENT XPATH to retrieve firewall status in header */
 	public static final String ELEMENT_XPATH_FIREWALL_STATUS_IN_HEADER = "//*[@id=\"sta_fire\"]/a/span";
+	
+	 /** ELEMENT XPATH to retrieve firewall status in header */
+		public static final String ELEMENT_XPATH_FIREWALL_STATUS_IN_HEADER_RPI = "//*[@id=\"sta_fire\"]/a/label";
 
 	/** Variable to store the xpath for Primary DNS Server IPV4 */
 	public static String XPATH_FOR_LAN_GUI_PAGE_CONTENT_REPLACE = "//*[@id='content']/div[2]/div[COUNT]/span[2]";
@@ -887,5 +891,6 @@ public class BroadBandWebGuiElements {
     
     /** Channel bandwidth 20Mhz id in wifi page 5Ghz of Lan side gui */
     public static final String ELEMENT_ID_CHANNEL_20MHZ_5Ghz = "channel_bandwidth201";
+	
 
 }

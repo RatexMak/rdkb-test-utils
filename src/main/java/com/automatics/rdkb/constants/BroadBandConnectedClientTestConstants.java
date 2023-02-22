@@ -24,7 +24,7 @@ public class BroadBandConnectedClientTestConstants {
     public static final String WINDOWS_COMMAND_TO_GET_WLAN_NETWORK = "netsh wlan show networks";
     
     /** linux command to get the WLAN networks  */
-    public static final String LINUX_COMMAND_TO_GET_WLAN_NETWORK = "sudo iw dev wlan0 scan ";
+    public static final String LINUX_COMMAND_TO_GET_WLAN_NETWORK = "sudo iw dev <INTERFACE> scan ";
     
     /** String variable to store connection type */
     public static final String STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI = "Wi-Fi";
@@ -170,8 +170,8 @@ public class BroadBandConnectedClientTestConstants {
     /** Constant for holding the radio status down */
     public static final String RADIO_STATUS_DOWN = "Down";
     
-    /** curl command in linux  to check connectivity using IPV4 address */
-    public static final String COMMAND_CURL_LINUX_IPV4_ADDRESS = "curl -4 -v --interface wlan0 'www.google.com' | grep '200 OK'";
+    /** curl command in linux to check connectivity using IPV4 address */
+	public static final String COMMAND_CURL_LINUX_IPV4_ADDRESS = "curl -4 -v --interface <INTERFACE> 'www.google.com' | grep '200 OK'";
 
     /** curl command  in linux  to check connectivity using IPV4 address */
     public static final String COMMAND_CURL_LINUX_IPV6_ADDRESS = "curl -6 -v --interface wlan0 'www.google.com' | grep '200 OK'";

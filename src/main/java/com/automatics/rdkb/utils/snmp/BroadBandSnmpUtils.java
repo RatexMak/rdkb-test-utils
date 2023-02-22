@@ -2010,6 +2010,7 @@ public class BroadBandSnmpUtils {
 		snmpResponse = BroadBandSnmpUtils.retrieveSnmpSetOutputWithGivenIndexOnRdkDevices(device, tapEnv,
 			BroadBandSnmpMib.WIFI_2_4_SSID_STATUS.getOid(), SnmpDataType.INTEGER, expectedValue,
 			BroadBandSnmpMib.WIFI_2_4_SSID_STATUS.getTableIndex());
+		BroadBandCommonUtils.PerformApplySettingsForBothRadios(device, tapEnv);
 		status2Ghz = CommonMethods.isNotNull(snmpResponse) && snmpResponse.equals(expectedValue)
 			&& BroadBandSnmpUtils
 				.executeSnmpGetWithTableIndexOnRdkDevices(tapEnv, device,
@@ -2031,6 +2032,7 @@ public class BroadBandSnmpUtils {
 					    BroadBandSnmpMib.WIFI_5_SSID_STATUS.getOid(),
 					    BroadBandSnmpMib.WIFI_5_SSID_STATUS.getTableIndex())
 				    .equalsIgnoreCase(expectedValue);
+		    BroadBandCommonUtils.PerformApplySettingsForBothRadios(device, tapEnv);
 		} while ((System.currentTimeMillis() - startTime) < BroadBandTestConstants.TWO_MINUTE_IN_MILLIS
 			&& !status5Ghz && BroadBandCommonUtils.hasWaitForDuration(tapEnv,
 				BroadBandTestConstants.TWENTY_SECOND_IN_MILLIS));
@@ -2083,12 +2085,12 @@ public class BroadBandSnmpUtils {
 	boolean isStbAccessible = false;
 	String errorMessage = "Failed to perform reboot";
 	try {
-	    tapEnv.executeCommandUsingSsh(device, LinuxCommandConstants.CMD_REBOOT);
-	    LOGGER.info("Device reboot initiated");
-	    isRebooted = getSystemUpTimeUsingSnmp(tapEnv, device, BroadBandTestConstants.EIGHT_MINUTE_IN_MILLIS,
-		    BroadBandTestConstants.BOOLEAN_VALUE_FALSE, BroadBandTestConstants.CONSTANT_420);
-	    LOGGER.info("Device is rebooted :" + isRebooted);
-	    if (isRebooted) {
+//	    tapEnv.executeCommandUsingSsh(device, LinuxCommandConstants.CMD_REBOOT);
+//	    LOGGER.info("Device reboot initiated");
+//	    
+//		AutomaticsUtils.sleep(AutomaticsConstants.TEN_SECONDS);
+		
+	    if (CommonMethods.rebootAndWaitForIpAccusition(device, tapEnv)) {
 		isStbAccessible = getSystemUpTimeUsingSnmp(tapEnv, device, BroadBandTestConstants.TEN_MINUTE_IN_MILLIS,
 			BroadBandTestConstants.BOOLEAN_VALUE_TRUE, BroadBandTestConstants.CONSTANT_420);
 		LOGGER.info("Device is accessible after reboot :" + isStbAccessible);
@@ -2158,7 +2160,7 @@ public class BroadBandSnmpUtils {
 		    LOGGER.error("Failed to verify sysuptime" + e.getMessage());
 		}
 	    } while (!result && (System.currentTimeMillis() - startTime) < pollDuration
-		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.TEN_SECOND_IN_MILLIS));
 	} catch (Exception e) {
 	    LOGGER.error("Exception Occurred in getSystemUpTimeUsingSnmp():" + e.getMessage());
 	}

@@ -332,6 +332,8 @@ public class BroadBandRfcFeatureControlUtils {
 		LOGGER.info("proxyDcmServerUpdateUrl :" + proxyDcmServerUpdateUrl);
 		serverResponse = serverCommunicator.postDataToServer(proxyDcmServerUpdateUrl, rfcSettings, "POST", 60000,
 				headers);
+		LOGGER.info("response code :"+serverResponse.getResponseCode());
+		LOGGER.info("response status :"+serverResponse.getResponseStatus());
 		return serverResponse.getResponseCode();
 	}
 
@@ -381,7 +383,7 @@ public class BroadBandRfcFeatureControlUtils {
 				LOGGER.info("PAY LOAD DATA: " + rfcSettings);
 				responseCode = postDataToProxyXconfDcmServer(device, tapEnv, rfcSettings);
 				LOGGER.info("RESPONSE CODE: " + responseCode);
-				if (responseCode == RDKBTestConstants.CONSTANT_200) {
+				if (responseCode==RDKBTestConstants.CONSTANT_200 || responseCode==RDKBTestConstants.CONSTANT_201)  {
 					LOGGER.info("POST request for rfc settings is successful");
 					clearDCMRFClog(device, tapEnv);
 					status = true;

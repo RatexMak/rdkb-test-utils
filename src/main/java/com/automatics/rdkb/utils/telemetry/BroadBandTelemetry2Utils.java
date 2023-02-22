@@ -34,6 +34,7 @@ import com.automatics.tap.AutomaticsTapApi;
 import com.automatics.utils.CommonMethods;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
 import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
+import com.automatics.rdkb.utils.DeviceModeHandler;
 import com.automatics.rdkb.utils.SplunkUtils;
 import com.automatics.rdkb.utils.dmcli.DmcliUtils;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
@@ -125,26 +126,39 @@ public class BroadBandTelemetry2Utils {
      * @refactor yamini.s
      */
     public static boolean verifySelfHealKicksStartsTelemetry2Process(Dut device, AutomaticsTapApi tapEnv) {
-	LOGGER.debug(" STARTING METHOD: verifySelfHealKicksStartsTelemetry2Process");
-	boolean result = false;
-	String response = null;
-	if (BroadBandCommonUtils.killAndVerifyProcess(device, tapEnv,
-		BroadBandTestConstants.PROCESS_NAME_TELEMETRY_2_0)) {
-	    long startTime = System.currentTimeMillis();
-	    do {
-		response = tapEnv.executeCommandUsingSsh(device,
-			BroadBandTestConstants.CMD_CHECK_SELF_HEAL_LOGS_FOR_TELEMETRY2_CRASH);
-		result = CommonMethods.isNotNull(response)
-			&& response.contains(BroadBandTestConstants.STRING_NEED_RESTART)
-			&& BroadBandCommonUtils.verifyProcessRunningStatus(device, tapEnv, false,
-				BroadBandTestConstants.PROCESS_NAME_TELEMETRY_2_0);
-	    } while (!result
-		    && (System.currentTimeMillis() - startTime) <= BroadBandTestConstants.THIRTY_MINUTES_IN_MILLIS
-		    && BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+		LOGGER.debug(" STARTING METHOD: verifySelfHealKicksStartsTelemetry2Process");
+		boolean result = false;
+		String response = null;
+		if (BroadBandCommonUtils.killAndVerifyProcess(device, tapEnv,
+				BroadBandTestConstants.PROCESS_NAME_TELEMETRY_2_0)) {
+			long startTime = System.currentTimeMillis();
+			do {
+				if (!DeviceModeHandler.isRPIDevice(device)) {
+					response = tapEnv.executeCommandUsingSsh(device,
+							BroadBandTestConstants.CMD_CHECK_SELF_HEAL_LOGS_FOR_TELEMETRY2_CRASH);
+					result = CommonMethods.isNotNull(response)
+							&& response.contains(BroadBandTestConstants.STRING_NEED_RESTART)
+							&& BroadBandCommonUtils.verifyProcessRunningStatus(device, tapEnv, false,
+									BroadBandTestConstants.PROCESS_NAME_TELEMETRY_2_0);
+				} else {
+					tapEnv.waitTill(BroadBandTestConstants.TWO_MINUTE_IN_MILLIS);
+					response = tapEnv.executeCommandUsingSsh(device, "grep -i "+BroadBandTestConstants.PROCESS_CRASH_RPI + " /rdklogs/logs/SelfHeal.txt.0");
+					result = CommonMethods.isNotNull(response)
+							&& response.contains(BroadBandTestConstants.PROCESS_NAME_TELEMETRY_2_0);
+					if (result) {
+						BroadBandCommonUtils.rebootAndWaitForStbAccessible(device, tapEnv);
+						BroadBandCommonUtils.verifyProcessRunningStatus(device, tapEnv, false,
+								BroadBandTestConstants.PROCESS_NAME_TELEMETRY_2_0);
+					}
+
+				}
+			} while (!result
+					&& (System.currentTimeMillis() - startTime) <= BroadBandTestConstants.THIRTY_MINUTES_IN_MILLIS
+					&& BroadBandCommonUtils.hasWaitForDuration(tapEnv, BroadBandTestConstants.THIRTY_SECOND_IN_MILLIS));
+		}
+		LOGGER.debug(" ENDING METHOD: verifySelfHealKicksStartsTelemetry2Process");
+		return result;
 	}
-	LOGGER.debug(" ENDING METHOD: verifySelfHealKicksStartsTelemetry2Process");
-	return result;
-    }
 
     /**
      * Method to execute common steps for telemetry ver one fall back

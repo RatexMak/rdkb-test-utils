@@ -517,7 +517,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String TELEMTRY_MARKER_FOR_WIFI_CONFIG_CHANGED = "\"RDKB_WIFI_CONFIG_CHANGED : Wifi security mode SETVALUE is Enabled\"";
 
     /** Constant to hold command to get wifi driver name */
-    public static final String CMD_GET_WIFI_NAME = "netsh wlan show profiles |grep -i interface";
+    public static final String CMD_GET_WIFI_NAME = "netsh wlan show profiles";
 
     /** Constant for iwconfig */
     public static final String CMD_IW_CONFIG_PATH = "/sbin/iwconfig";
@@ -715,6 +715,19 @@ public class BroadBandTestConstants extends RDKBTestConstants {
      * Holds message returned by curl command when web is not accessible even after the given time
      */
     public static final String ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE = "Connection timed out";
+    
+    /**
+	 * Holds message returned by curl command when web is not accessible even after
+	 * the given time
+	 */
+	public static final String ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE_RPI_1 = "Connection timeout";
+	
+	/**
+	 * Holds message returned by curl command when web is not accessible even after
+	 * the given time
+	 */
+	public static final String ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE_RPI_2 = "connection timeout";
+	
     /**
      * Holds message returned by curl command when web is not accessible even after the given time
      */
@@ -1904,7 +1917,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String DOUBLE_QUOTE_SINGLE_QUOTE = "\"'";
 
     /** File path for Parodus log file */
-    public static final String RDKLOGS_LOGS_PARODUS_TXT_0 = "/rdklogs/logs/PARODUSlog.txt.*";
+    public static final String RDKLOGS_LOGS_PARODUS_TXT_0 = "/rdklogs/logs/PARODUSlog.txt.0";
 
     /** Pattern for verifying the signed integer. */
     public static final String PATTERN_FOR_UN_SIGNED_INT = "(\\d+)";
@@ -2622,8 +2635,14 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     /** Constant to store logs for XCONF re-try telemetry version 2 URL */
     public static final String LOGS_INDICATE_XCONF_RE_TRY_MSG_2 = "Waiting for 180 sec before trying fetchRemoteConfiguration, No.of tries : 2";
 
+    /** Constant to store logs for XCONF re-try telemetry version 2 URL */
+	public static final String LOGS_INDICATE_XCONF_RE_TRY_MSG_RPI = "Waiting for 60 sec before trying getRemoteConfigURL";
+
     /** Constant to store logs for XCONF fail telemetry version 2 URL */
     public static final String LOGS_INDICATE_XCONF_GET_INVALID = "T2:Curl GET of XCONF data failed";
+    
+    /** Constant to store logs for XCONF fail telemetry version 2 URL */
+   	public static final String LOGS_INDICATE_XCONF_GET_INVALID_RPI = "URL doesn't start with https or is invalid !!!";
 
     /** Time formart pattern finder for dd:mm:ss */
     public static final String TIME_FORMAT = "dd:mm:ss";
@@ -2803,6 +2822,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	    put(BroadBandTestConstants.SECURITY_MODE_WPA_WPA2_PERSONAL, BroadBandTestConstants.CONSTANT_7);
 	    put(BroadBandTestConstants.SECURITY_MODE_WPA2_ENTERPRISE, BroadBandTestConstants.CONSTANT_5);
 	    put(BroadBandTestConstants.SECURITY_MODE_WPA_WPA2_ENTERPRISE, BroadBandTestConstants.CONSTANT_8);
+	    put(BroadBandTestConstants.EMPTY_STRING, BroadBandTestConstants.CONSTANT_0);
 	}
     };
 
@@ -3150,7 +3170,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String PATTERN_TO_GET_YOCTO_VERSION = "YOCTO_VERSION=(\\S+)";
 
     /** Command to get latest dnsmasq binary file name used by all process */
-    public static final String CMD_TO_GET_DNSMASQ_BINARY_USED_BY_ALL_PROCESS = "cat /proc/\\*/maps | grep -i \"dnsmasq\" |  awk ' {print \\$NF}' | uniq";
+    public static final String CMD_TO_GET_DNSMASQ_BINARY_USED_BY_ALL_PROCESS = "cat /proc/*/maps | grep -i \"dnsmasq\" |  awk ' {print \\$NF}' | uniq";
 
     /** Command to get latest dnsmasq version from binary */
     public static final String CMD_TO_PARSE_DNSMASQ_VERSION_FROM_BINARY = "strings  <DNSMASQ-BINARY>  | grep -i dnsmasq-";
@@ -4063,7 +4083,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String TEST_VALUE_OVERLOAD_INACTIVE_TIME_5GHZ = "14";
 
     /** Constant to hold Null MAC address without delimeter */
-    public static final String NULL_MAC_ADDRESS_WITHOUT_DELIMETER = "000000000000";
+    public static final String NULL_MAC_ADDRESS_WITHOUT_DELIMETER = "00000000000d";
 
     /** Constant to hold WiFiClient Schema type */
     public static final String WIFICLIENT_SCHEMA_TYPE = "WifiSingleClient.avsc";
@@ -4280,7 +4300,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String STRING_LEASE_TIME_DEFAULT_VALUE = "604800";
 
     /** String to store the device comment */
-    public static final String STRING_DEVICE_COMMENT = "reserved Ip test";
+    public static final String STRING_DEVICE_COMMENT = "reserved_Ip_test";
 
     /** Constant to hold URL of HTTPS site: https://www.facebook.com */
     public static final String URL_HTTPS_FACEBOOK = "https://www.facebook.com/";
@@ -5094,7 +5114,7 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String SHELL_SHOCK_SCRIPT = "shellShockCheck.sh";
 
     /** Shellshockcheck.sh path **/
-    public static final String FILE_PATH_1 = "cpefiles/generic/";
+    public static final String FILE_PATH_1 = "/scripts/";
 
     /** Constant for sh command */
     public static final String CMD_SH = "/bin/sh";
@@ -5229,6 +5249,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** String constant value Channel No 161 */
     public static final String CHANNEL_NO_161 = "161";
+    
+    /** String constant value Channel No 140 */
+	public static final String CHANNEL_NO_140 = "140";
 
     /** String to hold the default value of MFPConfig Values */
     public static final String DEFAULT_VALUE_MFPCONFIG_ACCESSPOINT = "Disabled";
@@ -5436,10 +5459,10 @@ public class BroadBandTestConstants extends RDKBTestConstants {
     public static final String PARENTAL_CONTROL_MANAGE_DEVICE_RULE_TYPE = "Block";
 
     /** Connection Type Wifi 5 Ghz */
-    public static final String CONNECTION_TYPE_WIFI_5_GHZ = "Wi-Fi 5G";
+    public static final String CONNECTION_TYPE_WIFI_5_GHZ = "Wi-Fi_5G";
 
     /** Connection Type Wifi 2.4 Ghz */
-    public static final String CONNECTION_TYPE_WIFI_24_GHZ = "Wi-Fi 2.4G";
+    public static final String CONNECTION_TYPE_WIFI_24_GHZ = "Wi-Fi_2.4G";
 
     /** String to pass in searchlogfiles to retrieve crash portal log file */
     public static final String STRING_FOR_CRASH_PORTAL_FILE_NAME_SEARCH = "Removing file";
@@ -5700,6 +5723,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** String to store telemetry logs for CR process crash */
     public static final String CR_PROCESS_CRASH_TELEMETRY_LOGS = "RDKB_PROCESS_CRASHED : CR_process is not running, need to reboot the unit";
+
+    /** String to store telemetry logs for CR process crash */
+	public static final String PROCESS_CRASH_RPI = "\"core has been generated inside /tmp :\"";
 
     /** Command to get systemd logs for process crash */
     public static final String COMMAND_TO_GET_SYSTEMD_LOGS_FOR_PROCESS_CRASH = "rm -rf /nvram/automation_sample.txt;tail -F /rdklogs/logs/systemd_processRestart.log > /nvram/automation_sample.txt";
@@ -6862,4 +6888,40 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
     /** Telemetry Log Text */
     public static final String TEXT_TELEMETRY_LOG = "#TELEMETRY_LOG#";
+    
+    /** String parameter for factory resetting the box for DSL Device */
+    public static final String STRING_FACTORY_RESET_PARAMETER_FOR_DSL = "Router,Wifi,VoIP,Firewall";
+    
+    /**
+     * The constant holding command for seeing the process status of SNMP process.
+     */
+    public static final String STRING_SNMP_D_PROCESS = "snmpd";
+    
+    /**
+     * The constant holding command for seeing the process status of SNMP Subagent.
+     */
+    public static final String STRING_SNMP_SUBAGENT_PROCESS = "snmp_subagent";
+	
+	/** String Variable to hold the connected constant value */
+	public static final String STRING_CONSTANT_CONNECTED = " connected";
+	
+	/** Command ARP */
+	public static final String COMMAND_ARP_RPI = "arp -a";
+	
+	public static final String PATTERN_STRING_DOT_MUM1 = ".mum1";
+	
+    /** Constant for number 201 */
+    public static final int CONSTANT_201 = 201;
+    
+	/** Property key reverse ssh jump server. */
+	public static final String PROPERTY_REVERSE_SSH_JUMP_SERVER = "reversessh.jump.server";
+	
+    public static String IPV6_TEST_SCORE_XPATH = "//*[@id=\"score\"]/div[1]/div[2]/h2";
+    
+	/** command to get brlan error logs */
+	public static final String CMD_GET_BRLAN_DOWN_LOGS = "cat /rdklogs/logs/SelfHeal.txt.0 | grep -i \"RDKB_PLATFORM_ERROR\"";
+
+	/** String variable to store brlan down self heal logs */
+	public static final String STRING_BRLAN_DOWN_SELF_HEAL_LOG = "Either brlan0 or l2sd0.100 is not completely up, setting event to recreate vlan and brlan0 interface";
+    
 }

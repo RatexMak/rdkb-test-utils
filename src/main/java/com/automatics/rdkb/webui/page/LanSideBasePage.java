@@ -342,21 +342,23 @@ public class LanSideBasePage {
      * @Refactor Sruthi Santhosh
      */
     public static boolean verifyLaunchedPageTitle(String expectedTitle) {
-	LOGGER.debug("STARTING METHOD : verifyLaunchedPageTitle()");
-	boolean result = false;
-	try {
-	    String launchedPageTitle = getCurrentTitle();
-	    LOGGER.info("TITLE OF CURRENT LAUNCHED PAGE : " + launchedPageTitle + " EXPECTED TITLE : " + expectedTitle);
-	    if (CommonMethods.isNotNull(launchedPageTitle) && CommonMethods.isNotNull(expectedTitle)) {
-		result = CommonUtils.patternSearchFromTargetString(launchedPageTitle.toUpperCase(),
-			expectedTitle.toUpperCase());
-	    }
-	} catch (Exception e) {
-	    LOGGER.error("EXCEPTION OCCURED WHILE VALIDATING PAGE TITLE:" + e.getMessage());
+		LOGGER.debug("STARTING METHOD : verifyLaunchedPageTitle()");
+		boolean result = false;
+		try {
+			String launchedPageTitle = getCurrentTitle();
+			LOGGER.info("TITLE OF CURRENT LAUNCHED PAGE : " + launchedPageTitle + " EXPECTED TITLE : " + expectedTitle);
+			String launchedPage = launchedPageTitle.toUpperCase();
+			String expectedPage = expectedTitle.toUpperCase();
+			LOGGER.info("TITLE OF LAUNCHED PAGE : " + launchedPage + " EXPECTED PAGE : " + expectedPage);
+			if (CommonMethods.isNotNull(launchedPageTitle) && CommonMethods.isNotNull(expectedTitle)) {
+				result = CommonUtils.patternSearchFromTargetString(launchedPage, expectedPage);
+			}
+		} catch (Exception e) {
+			LOGGER.error("EXCEPTION OCCURED WHILE VALIDATING PAGE TITLE:" + e.getMessage());
+		}
+		LOGGER.debug("ENDING METHOD : verifyLaunchedPageTitle()");
+		return result;
 	}
-	LOGGER.debug("ENDING METHOD : verifyLaunchedPageTitle()");
-	return result;
-    }
 
     /**
      * Method to configure private Wi-Fi network in captive portal page

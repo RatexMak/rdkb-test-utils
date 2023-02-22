@@ -441,7 +441,7 @@ public class BroadBandConnectedClientUtils {
 						"VERIFYING THE INTERNET CONNECTIVITY IN THE CLIENT WITH GIVEN GHZ SSID INTERFACEUSING IPV4; STATUS="
 								+ validateIpv4Connection);
 				status = validateIpv4Status && validateIpv4Connection;
-				if (status && (!DeviceModeHandler.isFibreDevice(device))) {
+				if (status && (!DeviceModeHandler.isFibreDevice(device)&& (BroadbandPropertyFileHandler.isIpv6Enabled()) )) {
 					// VERIFY THE CORRECT IPV6 ADDRESS FOR CONNECTED CLIENT WITH GIVEN GHZ SSID .
 					validateIpv6Status = BroadBandConnectedClientUtils
 							.verifyIpv4OrIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDeviceWithPolledDuration(
@@ -989,7 +989,9 @@ public class BroadBandConnectedClientUtils {
 				String osType = ((Device) connectedDevice).getOsType();
 				switch (osType) {
 				case BroadBandConnectedClientTestConstants.OS_LINUX:
-					command = new String[] { BroadBandConnectedClientTestConstants.LINUX_COMMAND_TO_GET_WLAN_NETWORK };
+					command = new String[] { BroadBandConnectedClientTestConstants.LINUX_COMMAND_TO_GET_WLAN_NETWORK
+							.replace("<INTERFACE>", AutomaticsTapApi.getSTBPropsValue(
+									BroadBandTestConstants.PROP_KEY_TO_GET_EXPECTED_WIFI_INTERFACE_IN_LINUX_CLIENT)) };
 					break;
 				case BroadBandConnectedClientTestConstants.OS_WINDOWS:
 					command = new String[] { BroadBandConnectedClientTestConstants.WINDOWS_COMMAND_TO_GET_WLAN_NETWORK
@@ -1287,6 +1289,7 @@ public class BroadBandConnectedClientUtils {
 			String command = ((Device) connectedDeviceActivated).getOsType()
 					.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
 							? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV4_ADDRESS
+									.replace("<INTERFACE>", BroadbandPropertyFileHandler.getLinuxClientWifiInterface())
 							: BroadBandConnectedClientTestConstants.COMMAND_CURL_WINDOWS_IPV4_ADDRESS;
 			errorMessage = "Connectivty check using IPV4 address failed";
 			commandResponse = tapEnv.executeCommandOnOneIPClients(connectedDeviceActivated, command);
@@ -1315,7 +1318,7 @@ public class BroadBandConnectedClientUtils {
 			status = false;
 			errorMessage = "Connectivty check using IPV6 address failed";
 
-			if (!isSystemdPlatforms) {
+			if (BroadbandPropertyFileHandler.isIpv6Enabled() && !isSystemdPlatforms) {
 
 				command = ((Device) connectedDeviceActivated).getOsType()
 						.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
@@ -1762,6 +1765,7 @@ public class BroadBandConnectedClientUtils {
 	 * @author Praveenkumar Paneerselvam
 	 * @refactor Said Hisham
 	 */
+
 	public static String getIpOrMacFromWindowsConnectedClient(Dut device, Dut connectedClientDevice,
 			AutomaticsTapApi tapEnv, boolean isIpNeeded) {
 		LOGGER.debug("STARTING METHOD: getIpOrMacFromWindowsConnectedClient()");
@@ -1772,6 +1776,7 @@ public class BroadBandConnectedClientUtils {
 		String parameter = BroadBandTestConstants.STRING_IP_4_ADDRESS;
 		if (!isIpNeeded) {
 			parameter = BroadBandTestConstants.STRING_PHYSICAL_ADDRESS;
+			LOGGER.info("parameter in getIpOrMacFromWindowsConnectedClient " + parameter);// ADDED-ATH
 		}
 		String searchTrace = null;
 		if (CommonMethods.isNotNull(connectionType) && CONNECTION_TYPE_ETHERNET.equalsIgnoreCase(connectionType)) {
@@ -1780,14 +1785,23 @@ public class BroadBandConnectedClientUtils {
 				&& BroadBandConnectedClientTestConstants.STRING_CLIENT_DEVICE_CONNECTION_TYPE_WIFI
 						.equalsIgnoreCase(connectionType)) {
 			searchTrace = BroadBandTraceConstants.LOG_MESSAGE_IPCONFIG_WIFI;
+			LOGGER.info("searchTrace in getIpOrMacFromWindowsConnectedClient " + searchTrace);// ADDED-ATH
 		}
+
 		if (CommonMethods.isNotNull(searchTrace)) {
-			command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.SYMBOL_PIPE,
-					BroadBandTestConstants.GREP_COMMAND, BroadBandTestConstants.DOUBLE_QUOTE, parameter,
-					BroadBandTestConstants.DOUBLE_QUOTE);
+			command = BroadBandCommonUtils.concatStringUsingStringBuffer(
+					BroadBandCommandConstants.CMD_IPCONFIG_ALL_GREP_A40, searchTrace,
+					BroadBandTestConstants.SYMBOL_PIPE, BroadBandTestConstants.GREP_COMMAND,
+					BroadBandTestConstants.DOUBLE_QUOTE, parameter, BroadBandTestConstants.DOUBLE_QUOTE);
+
 			LOGGER.info("Command to be executed is " + command);
 			String response = tapEnv.executeCommandOnOneIPClients(connectedClientDevice, command);
+			LOGGER.info("response of ipconfig is " + response);
 			if (CommonMethods.isNotNull(response)) {
+
+				value = CommonMethods.patternFinder(response, BroadBandTestConstants.PATTERN_TO_GET_IPV4_ADDRESS);
+				LOGGER.info("Value of ip is - " + value);
+
 				String[] responses = response.split(BroadBandTestConstants.STRING_REGEX_PATTERN_NEW_LINE);
 				LOGGER.info("response .lenght - " + responses.length);
 				for (String ipOrMac : responses) {
@@ -1803,10 +1817,18 @@ public class BroadBandConnectedClientUtils {
 					}
 					if (CommonMethods.isNotNull(value) && CommonMethods.isNotNull(connectionType)) {
 						// Command sample "/sbin/arp -n | grep -i " + value;
-						command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.COMMAND_ARP,
-								BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.SYMBOL_PIPE,
-								BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.GREP_COMMAND,
-								value);
+						if (!DeviceModeHandler.isRPIDevice(device)) {
+							command = BroadBandCommonUtils.concatStringUsingStringBuffer(
+									BroadBandTestConstants.COMMAND_ARP, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+									BroadBandTestConstants.SYMBOL_PIPE, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+									BroadBandTestConstants.GREP_COMMAND, value);
+						} else {
+							command = BroadBandCommonUtils.concatStringUsingStringBuffer(
+									BroadBandTestConstants.COMMAND_ARP_RPI,
+									BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.SYMBOL_PIPE,
+									BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.GREP_COMMAND,
+									value);
+						}
 						response = tapEnv.executeCommandUsingSsh(device, command);
 						LOGGER.info("Validate response is -" + response + ".");
 						if (CommonMethods.isNull(response)) {
@@ -2772,6 +2794,7 @@ public class BroadBandConnectedClientUtils {
 		String errorMessage = null;
 		// response obtained
 		String commandResponse = null;
+		String command = null;
 		if (stepNumbers.length == 4) {
 			checkIpAddressObtainedAfterWifiDisabled(device, tapEnv, connectedDeviceActivated, testId,
 					new String[] { stepNumbers[0], stepNumbers[1] });
@@ -2783,23 +2806,32 @@ public class BroadBandConnectedClientUtils {
 			LOGGER.info("******************************************************");
 			testStepNumber = stepNumbers[2];
 			status = false;
-			String command = ((Device) connectedDeviceActivated).getOsType()
-					.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
-							? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV4_ADDRESS
-							: BroadBandConnectedClientTestConstants.COMMAND_CURL_WINDOWS_IPV4_ADDRESS;
-			errorMessage = "Connectivty check using IPV4 address failed";
-			commandResponse = tapEnv.executeCommandOnOneIPClients(connectedDeviceActivated, command);
-			if (CommonMethods.isNotNull(commandResponse)) {
-				status = commandResponse.contains("Failed to connect to www.google.com")
-						|| commandResponse.contains("Could not resolve host");
-				if (!status) {
-					errorMessage = "Expected Failed to connect to www.google.com as response .But obtained "
-							+ commandResponse;
+			if (!DeviceModeHandler.isRPIDevice(device)) {
+				command = ((Device) connectedDeviceActivated).getOsType()
+						.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
+								? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV4_ADDRESS.replace(
+										"<INTERFACE>", BroadbandPropertyFileHandler.getLinuxClientWifiInterface())
+								: BroadBandConnectedClientTestConstants.COMMAND_CURL_WINDOWS_IPV4_ADDRESS;
+				errorMessage = "Connectivty check using IPV4 address failed";
+				commandResponse = tapEnv.executeCommandOnOneIPClients(connectedDeviceActivated, command);
+				if (CommonMethods.isNotNull(commandResponse)) {
+					status = commandResponse.contains("Failed to connect to www.google.com")
+							|| commandResponse.contains("Could not resolve host");
+					if (!status) {
+						errorMessage = "Expected Failed to connect to www.google.com as response .But obtained "
+								+ commandResponse;
+					}
+				} else {
+					errorMessage = "Unable to execute curl command for IPV4 on connected client device. Please check the connectivity between connected client and Jump server.";
 				}
 			} else {
-				errorMessage = "Unable to execute curl command for IPV4 on connected client device. Please check the connectivity between connected client and Jump server.";
+				errorMessage = "Connectivty check using IPV4 address failed";
+				BroadBandResultObject result = verifyInternetAccessUsingCurlForRPi(tapEnv, device,
+						connectedDeviceActivated, BroadBandTestConstants.URL_GOOGLE);
+				status = result.isStatus();
 			}
 			tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
+
 
 			LOGGER.info("******************************************************");
 			LOGGER.info("STEP " + stepNumbers[3]
@@ -2809,6 +2841,7 @@ public class BroadBandConnectedClientUtils {
 			testStepNumber = stepNumbers[3];
 			status = false;
 			errorMessage = "Connectivty check using IPV6 address failed";
+			if (BroadbandPropertyFileHandler.isIpv6Enabled()){
 			command = ((Device) connectedDeviceActivated).getOsType()
 					.equalsIgnoreCase(BroadBandConnectedClientTestConstants.OS_LINUX)
 							? BroadBandConnectedClientTestConstants.COMMAND_CURL_LINUX_IPV6_ADDRESS
@@ -2826,6 +2859,11 @@ public class BroadBandConnectedClientUtils {
 			}
 			tapEnv.updateExecutionStatus(device, testId, testStepNumber, status, errorMessage, false);
 		} else {
+			LOGGER.info("IPv6 is not available/disabled : skipping teststep...");
+			tapEnv.updateExecutionForAllStatus(device, testId, testStepNumber, ExecutionStatus.NOT_APPLICABLE,
+					errorMessage, false);
+		}
+	} else {
 			LOGGER.info("This function is meant for executing 4 steps.Current steps passed are " + stepNumbers.length);
 		}
 	}
@@ -5650,6 +5688,7 @@ public class BroadBandConnectedClientUtils {
 		testStepNumber = "s" + testNumber;
 		status = false;
 		errorMessage = "Interface didnt get the correct IPV6 address";
+		if (BroadbandPropertyFileHandler.isIpv6Enabled()) {
 		LOGGER.info("******************************************************************************");
 		LOGGER.info("STEP " + testNumber + " :DESCRIPTION: VERIFY WHETHER " + connectionType
 				+ " OBTAINED THE IPV6 ADDRESS.");
@@ -5660,10 +5699,11 @@ public class BroadBandConnectedClientUtils {
 
 		if (!isSystemdPlatforms) {
 			String osType = ((Device) connectedClient).getOsType();
-			status = BroadBandConnectedClientUtils.verifyIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(osType,
-					connectedClient, tapEnv);
+			status = BroadBandConnectedClientUtils
+					.verifyIpv6AddressForWiFiOrLanInterfaceConnectedWithRdkbDevice(osType, connectedClient, tapEnv);
 			if (status) {
-				LOGGER.info("STEP " + testNumber + " ACTUAL :Connected client has IPv6 address validated successfully");
+				LOGGER.info(
+						"STEP " + testNumber + " ACTUAL :Connected client has IPv6 address validated successfully");
 			} else {
 				LOGGER.error("STEP " + testNumber + " ACTUAL :" + errorMessage);
 			}
@@ -5674,6 +5714,11 @@ public class BroadBandConnectedClientUtils {
 			tapEnv.updateExecutionForAllStatus(device, testCaseId, testStepNumber, ExecutionStatus.NOT_APPLICABLE,
 					BroadBandTestConstants.FIBRE_NOT_APPLICABLE_IPV6, false);
 		}
+	} else {
+		LOGGER.info("IPv6 is not available/disabled : Skipping Step...");
+		tapEnv.updateExecutionForAllStatus(device, testCaseId, testStepNumber, ExecutionStatus.NOT_APPLICABLE,
+				errorMessage, false);
+	}
 
 		testNumber++;
 		testStepNumber = "s" + testNumber;
@@ -5702,6 +5747,7 @@ public class BroadBandConnectedClientUtils {
 		testNumber++;
 		status = false;
 		testStepNumber = "s" + testNumber;
+		if (BroadbandPropertyFileHandler.isIpv6Enabled()) {
 		LOGGER.info("******************************************************************************");
 		LOGGER.info("STEP " + testNumber + ": DESCRIPTION :VERIFY CONNECTIVITY OF " + connectionType
 				+ " USING IPV6 WITH CURL REQUEST");
@@ -5711,8 +5757,9 @@ public class BroadBandConnectedClientUtils {
 		LOGGER.info("******************************************************************************");
 
 		if (!isSystemdPlatforms) {
-			broadBandResultObject = BroadBandConnectedClientUtils.verifyInternetIsAccessibleInConnectedClientUsingCurl(
-					tapEnv, connectedClient, BroadBandTestConstants.URL_GOOGLE, BroadBandTestConstants.IP_VERSION6);
+			broadBandResultObject = BroadBandConnectedClientUtils
+					.verifyInternetIsAccessibleInConnectedClientUsingCurl(tapEnv, connectedClient,
+							BroadBandTestConstants.URL_GOOGLE, BroadBandTestConstants.IP_VERSION6);
 			status = broadBandResultObject.isStatus();
 			errorMessage = broadBandResultObject.getErrorMessage();
 			if (status) {
@@ -5727,6 +5774,11 @@ public class BroadBandConnectedClientUtils {
 			tapEnv.updateExecutionForAllStatus(device, testCaseId, testStepNumber, ExecutionStatus.NOT_APPLICABLE,
 					BroadBandTestConstants.FIBRE_NOT_APPLICABLE_IPV6, false);
 		}
+	} else {
+		LOGGER.info("IPv6 is not available/disabled : Skipping Step...");
+		tapEnv.updateExecutionForAllStatus(device, testCaseId, testStepNumber, ExecutionStatus.NOT_APPLICABLE,
+				errorMessage, false);
+	}
 	}
 
 	/**
@@ -5873,6 +5925,7 @@ public class BroadBandConnectedClientUtils {
 			stepNum = "S" + stepNumber;
 			errorMessage = "Connected Client haven't got a valid IPV6 Address from the gateway";
 			status = false;
+			if (BroadbandPropertyFileHandler.isIpv6Enabled()) {
 			LOGGER.info("**********************************************************************************");
 			LOGGER.info("STEP " + stepNumber
 					+ ": DESCRIPTION : Verify the Connected client has got the valid IPv6 Address");
@@ -5886,7 +5939,8 @@ public class BroadBandConnectedClientUtils {
 				do {
 					LOGGER.info("Waiting for device to verify IPV6 Address status");
 					ipv6AddressRetrievedFromClient = BroadBandConnectedClientUtils
-							.retrieveIPv6AddressFromConnectedClientWithDeviceCOnnected(connectedClientDevice, tapEnv);
+							.retrieveIPv6AddressFromConnectedClientWithDeviceCOnnected(connectedClientDevice,
+									tapEnv);
 					status = CommonMethods.isIpv6Address(ipv6AddressRetrievedFromClient);
 				} while (!status
 						&& (System.currentTimeMillis() - startTime) < BroadBandTestConstants.FIVE_MINUTE_IN_MILLIS
@@ -5908,6 +5962,11 @@ public class BroadBandConnectedClientUtils {
 				tapEnv.updateExecutionForAllStatus(device, testCaseId, stepNum, ExecutionStatus.NOT_APPLICABLE,
 						BroadBandTestConstants.FIBRE_NOT_APPLICABLE_IPV6, false);
 			}
+		} else {
+			LOGGER.info("IPv6 is not available/disabled : skipping teststep...");
+			tapEnv.updateExecutionForAllStatus(device, testCaseId, stepNum, ExecutionStatus.NOT_APPLICABLE,
+					errorMessage, false);
+		}
 			LOGGER.info("**********************************************************************************");
 
 			stepNumber++;
@@ -6304,6 +6363,79 @@ public class BroadBandConnectedClientUtils {
 			LOGGER.error("Exception Occured in dhcpRenewInConnectedClient():" + e.getMessage());
 		}
 		LOGGER.debug("ENDING METHOD : dhcpRenewInConnectedClient()");
+	}
+	
+	
+	/**
+	 * 
+	 * @param tapEnv                instance of {@link AutomaticsTapApi}
+	 * @param connectedClientSettop Connected client device instance
+	 * @param url                   Internet access of URL which needs to be checked
+	 * @return BroadBandResultObject
+	 * @refactor Said Hisham
+	 */
+	public static BroadBandResultObject verifyInternetAccessUsingCurlForRPi(AutomaticsTapApi tapEnv, Dut device,
+			Dut connectedClientDevice, String url) {
+
+		boolean isNotAccessible = false;
+		String errorMessage = null;
+		String ipAddressRetrievedFromClient = getIpv4AddressFromConnClient(tapEnv, device, connectedClientDevice);
+		LOGGER.info("IP ADDRESS ASSIGNED TO THE CONNECTED CLIENT FROM DHCP : " + ipAddressRetrievedFromClient);
+		BroadBandResultObject result = new BroadBandResultObject();
+		if (CommonMethods.isNotNull(ipAddressRetrievedFromClient)) {
+			String curlCommand = BroadBandCommonUtils.concatStringUsingStringBuffer(
+					BroadBandCommandConstants.CMD_CURL_WITH_TIMEOUT_AND_HEADER_AND_INTERFACE.replace("<INTERFACE IP>",
+							ipAddressRetrievedFromClient),
+					url);
+			LOGGER.info("CURL COMMAND :" + curlCommand);
+
+			String response = tapEnv.executeCommandOnOneIPClients(connectedClientDevice, curlCommand);
+			errorMessage = "Null response obtained on checking Internet access in the connected client.";
+			if (CommonMethods.isNotNull(response)) {
+				isNotAccessible = CommonUtils.patternSearchFromTargetString(response,
+						BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_SSL_HANDSHAKE_FAILURE_MESSAGE)
+						|| CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_FAILURE_MESSAGE)
+						|| CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE)
+						|| CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE_RPI_1)
+						|| CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_TIMEOUT_MESSAGE_RPI_2)
+						|| CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_OPERATION_TIMEOUT_MESSAGE)
+						|| CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_RESOLVING_TIMEOUT_MESSAGE)
+						|| CommonUtils.patternSearchFromTargetString(response,
+								BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_CONNECTION_COULD_NOT_RESOLVE_HOST_MESSAGE);
+				errorMessage = (!isNotAccessible && CommonUtils.patternSearchFromTargetString(response,
+						BroadBandTestConstants.CURL_NOT_INSTALLED_ERROR_MESSAGE))
+								? "Curl is not installed in the "
+										+ ((Device) connectedClientDevice).getConnectedDeviceInfo().getConnectionType()
+										+ " Connected Client"
+								: (!isNotAccessible && (CommonUtils.patternSearchFromTargetString(response,
+										BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_HEADER_SUCCESS_MESSAGE)
+										|| CommonUtils.patternSearchFromTargetString(response,
+												BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_HEADER_SUCCESS_HTTP_1_1)
+										|| CommonUtils.patternSearchFromTargetString(response,
+												BroadBandTestConstants.ACCESS_TO_URL_USING_CURL_SUCCESS_MESSAGE)
+										|| CommonUtils.patternSearchFromTargetString(response,
+												BroadBandConnectedClientTestConstants.RESPONSE_STATUS_OK)))
+														? "Website/IP Address is accessible in the Connected Client"
+														: "Unable to check the internet access in the connected client using curl";
+			}
+
+			result.setErrorMessage(errorMessage);
+			result.setStatus(isNotAccessible);
+		} else {
+			result.setErrorMessage(
+					"IP ADDRESS ASSIGNED TO THE CONNECTED CLIENT FROM DHCP IS NULL : NO INTERNET CONNECTIVITY");
+			isNotAccessible = true;
+			result.setStatus(isNotAccessible);
+
+		}
+
+		return result;
 	}
 
 }

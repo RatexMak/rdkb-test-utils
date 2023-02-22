@@ -52,6 +52,7 @@ import com.automatics.rdkb.constants.RDKBTestConstants;
 import com.automatics.rdkb.utils.BroadBandCommonUtils;
 import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
 import com.automatics.rdkb.utils.CommonUtils;
+import com.automatics.rdkb.utils.DeviceModeHandler;
 import com.automatics.rdkb.utils.SplunkUtils;
 import com.automatics.rdkb.utils.dmcli.DmcliUtils;
 import com.automatics.rdkb.utils.webpa.BroadBandWebPaUtils;
@@ -1194,26 +1195,44 @@ public class BroadBandTelemetryUtils {
      */
     public static List<String> getTelemetryDataPayloadGeneratedFromDcmScriptLog(Dut device, AutomaticsTapApi tapEnv) {
 
-	String response = null;
-	int totalWaitTime = 0;
-	boolean requiredLogFound = false;
-	try {
-	    for (int retry = 0; retry < 25; retry++) {
+		String response = null;
+		int totalWaitTime = 0;
+		String searchResults2 = null;
+		boolean requiredLogFound = false;
+		try {
+			for (int retry = 0; retry < 25; retry++) {
 
-		response = tapEnv.executeCommandUsingSsh(device,
-			BroadBandTelemetryConstants.CMD_GET_TELEMETRY_REQUEST_DETAILS);
+				response = tapEnv.executeCommandUsingSsh(device,
+						BroadBandTelemetryConstants.CMD_GET_TELEMETRY_REQUEST_DETAILS);
+				searchResults2 = tapEnv.executeCommandUsingSsh(device,
+						BroadBandTelemetryConstants.CMD_GET_TELEMETRY_SEARCHRESULTS_DETAILS);
 
-		if (CommonMethods.isNotNull(response) && response.contains("searchResult")
-			&& response.contains("HTTP RESPONSE CODE : 200")) {
+				if (DeviceModeHandler.isRPIDevice(device)) {
 
-		    int indexOfSearchResults = response.lastIndexOf("searchResult");
-		    int indexOfResponseCodeForUploadSuccess = response.lastIndexOf("HTTP RESPONSE CODE : 200");
+					if (CommonMethods.isNotNull(response) && response.contains("searchResult")
+							&& response.contains("Uploading logs") && response.contains("Direct connection success")) {
 
-		    if (indexOfResponseCodeForUploadSuccess > indexOfSearchResults) {
-			requiredLogFound = true;
-			break;
-		    }
-		}
+						int indexOfSearchResults = response.lastIndexOf("searchResult");
+						int indexOfResponseCodeForUploadSuccess = response.lastIndexOf("Direct connection success");
+
+						if (indexOfResponseCodeForUploadSuccess > indexOfSearchResults) {
+							requiredLogFound = true;
+							break;
+						}
+					}
+				} else {
+					if (CommonMethods.isNotNull(response) && response.contains("searchResult")
+							&& response.contains("HTTP RESPONSE CODE : 200")) {
+
+						int indexOfSearchResults = response.lastIndexOf("searchResult");
+						int indexOfResponseCodeForUploadSuccess = response.lastIndexOf("HTTP RESPONSE CODE : 200");
+
+						if (indexOfResponseCodeForUploadSuccess > indexOfSearchResults) {
+							requiredLogFound = true;
+							break;
+						}
+					}
+				}
 
 		if (!requiredLogFound) {
 
@@ -1242,14 +1261,24 @@ public class BroadBandTelemetryUtils {
 	}
 
 	List<String> listOfSearchStrings = new ArrayList<String>();
-	String searchResults = null;
-	String[] allResponses = response.split("\\n");
-	LOGGER.info("Number of strings: " + allResponses.length);
-	for (int lineIndex = 0; lineIndex < allResponses.length; lineIndex++) {
-	    searchResults = CommonMethods.patternFinder(allResponses[lineIndex], "\\'(\\{\"searchResult\".*\\})\\'");
-	    if (CommonMethods.isNotNull(searchResults)) {
-		listOfSearchStrings.add(searchResults);
-	    }
+	if (DeviceModeHandler.isRPIDevice(device)) {
+		LOGGER.info("searchResults2 is : " + searchResults2);
+		searchResults2 = searchResults2.substring(35).trim();
+		LOGGER.info("searchResults2 is : " + searchResults2);
+		if (CommonMethods.isNotNull(searchResults2)) {
+			listOfSearchStrings.add(searchResults2);
+		}
+	} else {
+		String searchResults = null;
+		String[] allResponses = response.split("\\n");
+		LOGGER.info("Number of strings: " + allResponses.length);
+		for (int lineIndex = 0; lineIndex < allResponses.length; lineIndex++) {
+			searchResults = CommonMethods.patternFinder(allResponses[lineIndex],
+					"\\'(\\{\"searchResult\".*\\})\\'");
+			if (CommonMethods.isNotNull(searchResults)) {
+				listOfSearchStrings.add(searchResults);
+			}
+		}
 	}
 	if (listOfSearchStrings.isEmpty()) {
 	    throw new TestException(

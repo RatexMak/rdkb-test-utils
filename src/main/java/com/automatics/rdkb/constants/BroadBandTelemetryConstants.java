@@ -258,4 +258,7 @@ ECM_MACADDRESS,
 MODEL,
 FIRMWARE_VERSION;
 }
+
+public static final String CMD_GET_TELEMETRY_SEARCHRESULTS_DETAILS = "cat /rdklogs/logs/dcmscript.log | grep searchResult";
+
 }

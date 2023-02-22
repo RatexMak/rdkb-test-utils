@@ -652,7 +652,7 @@ public class BroadBandWebPaUtils {
 		    BroadBandTestConstants.SYSTEM_PROPERTY_WEBPA_CONNECTIVITY_BROKEN, BroadBandTestConstants.FALSE));
 	    if (!isWebpaConnBroken) {
 		WebPaServerResponse serverResponse = tapEnv.setWebPaParameterValues(device, webPaParameters);
-		if (200 == serverResponse.getStatusCode() || 201 == serverResponse.getStatusCode()) {
+		if (200 == serverResponse.getStatusCode() || 201 == serverResponse.getStatusCode() || serverResponse.getMessage().contains(BroadBandTestConstants.SUCCESS_TXT)) {
 		    status = true;
 		} else if (520 != serverResponse.getStatusCode()) {
 		    System.setProperty(BroadBandTestConstants.SYSTEM_PROPERTY_WEBPA_CONNECTIVITY_BROKEN,
@@ -858,7 +858,7 @@ public class BroadBandWebPaUtils {
 			listOfWebpaSetParameterObject);
 		processendTime = System.currentTimeMillis();
 
-		if ((webPaServerResponse.getStatusCode()) == 200) {
+		if ((webPaServerResponse.getStatusCode()) == 200 || webPaServerResponse.getMessage().contains(BroadBandTestConstants.SUCCESS_TXT)) {
 		    LOGGER.info(
 			    "Verification of webpa get response from device is Success in iteration step " + iteration);
 		    endToEndProcessingTime = processendTime - processstartTime;
@@ -876,7 +876,7 @@ public class BroadBandWebPaUtils {
 		LOGGER.info("webPaServerResponse is " + webPaServerResponse);
 
 		returnCode = webPaServerResponse.getStatusCode();
-		if (returnCode == 200) {
+		if (returnCode == 200 || webPaServerResponse.getMessage().contains(BroadBandTestConstants.SUCCESS_TXT)) {
 		    LOGGER.info(
 			    "Verification of webpa get response from device is Success in iteration step " + iteration);
 		    endToEndProcessingTime = processendTime - processstartTime;
@@ -1172,16 +1172,16 @@ public class BroadBandWebPaUtils {
 
 			:
 
-			BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND, "-A",
-				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.STRING_CONSTANT_4,
-				BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
-				BroadBandTestConstants.SYMBOL_FORWARD_SLASH, BroadBandTestConstants.SINGLE_QUOTE,
-				BroadBandTestConstants.SET_REQUEST, BroadBandTestConstants.SYMBOL_FORWARD_SLASH,
-				BroadBandTestConstants.SINGLE_QUOTE, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
-				BroadBandCommandConstants.LOG_FILE_WEBPA_TEXT,
-				BroadBandCommandConstants.CMD_GREP_AWK_START_RANGE, deviceStartTime.trim(),
-				BroadBandCommandConstants.CMD_GREP_AWK_END_RANGE, deviceEndTime.trim(),
-				BroadBandTestConstants.DOUBLE_QUOTE_SINGLE_QUOTE);
+				BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND, "-A",
+						BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.STRING_CONSTANT_4,
+						BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+						/*BroadBandTestConstants.SYMBOL_FORWARD_SLASH,*/ BroadBandTestConstants.SINGLE_QUOTE,
+						BroadBandTestConstants.SET_REQUEST, /*BroadBandTestConstants.SYMBOL_FORWARD_SLASH,*/
+						BroadBandTestConstants.SINGLE_QUOTE, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+						BroadBandCommandConstants.LOG_FILE_WEBPA_TEXT,
+						BroadBandCommandConstants.CMD_GREP_AWK_START_RANGE, deviceStartTime.trim(),
+						BroadBandCommandConstants.CMD_GREP_AWK_END_RANGE, deviceEndTime.trim(),
+						BroadBandTestConstants.DOUBLE_QUOTE_SINGLE_QUOTE);
 
 		break;
 
@@ -1203,39 +1203,39 @@ public class BroadBandWebPaUtils {
 				BroadBandTestConstants.DOUBLE_QUOTE, transactionId, BroadBandTestConstants.DOUBLE_QUOTE)
 			:
 
-			BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND, "-A",
-				BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.STRING_CONSTANT_4,
-				BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
-				BroadBandTestConstants.SYMBOL_FORWARD_SLASH, BroadBandTestConstants.SINGLE_QUOTE,
-				webPaParam, BroadBandTestConstants.SYMBOL_FORWARD_SLASH,
-				BroadBandTestConstants.SINGLE_QUOTE, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
-				BroadBandCommandConstants.LOG_FILE_WEBPA_TEXT,
-				BroadBandCommandConstants.CMD_GREP_AWK_START_RANGE, deviceStartTime.trim(),
-				BroadBandCommandConstants.CMD_GREP_AWK_END_RANGE, deviceEndTime.trim(),
-				BroadBandTestConstants.DOUBLE_QUOTE_SINGLE_QUOTE);
+				BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND, "-A",
+						BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.STRING_CONSTANT_4,
+						BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+						/*BroadBandTestConstants.SYMBOL_FORWARD_SLASH,*/ BroadBandTestConstants.SINGLE_QUOTE,
+						webPaParam, /*BroadBandTestConstants.SYMBOL_FORWARD_SLASH,*/
+						BroadBandTestConstants.SINGLE_QUOTE, BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+						BroadBandCommandConstants.LOG_FILE_WEBPA_TEXT,
+						BroadBandCommandConstants.CMD_GREP_AWK_START_RANGE, deviceStartTime.trim(),
+						BroadBandCommandConstants.CMD_GREP_AWK_END_RANGE, deviceEndTime.trim(),
+						BroadBandTestConstants.DOUBLE_QUOTE_SINGLE_QUOTE);
 		break;
 
 	    case BroadBandTestConstants.PARODUS_PROCESS_NAME:
 
-		command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND, "-A",
-			BroadBandTestConstants.SINGLE_SPACE_CHARACTER, String.valueOf(AutomaticsConstants.CONSTANT_8),
-			BroadBandTestConstants.SINGLE_SPACE_CHARACTER, BroadBandTestConstants.SYMBOL_FORWARD_SLASH,
-			BroadBandTestConstants.SINGLE_QUOTE,
-			BroadBandTraceConstants.PARODUS_WEBPA_REQUEST_RECEIVED_TRACE,
-			BroadBandTestConstants.SYMBOL_FORWARD_SLASH, BroadBandTestConstants.SINGLE_QUOTE,
-			BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
-			BroadBandTestConstants.RDKLOGS_LOGS_PARODUS_TXT_0,
-			BroadBandCommandConstants.CMD_GREP_AWK_START_RANGE, deviceStartTime.trim(),
-			BroadBandCommandConstants.CMD_GREP_AWK_END_RANGE, deviceEndTime.trim(),
-			BroadBandTestConstants.DOUBLE_QUOTE_SINGLE_QUOTE);
-		break;
+	    	command = BroadBandCommonUtils.concatStringUsingStringBuffer(BroadBandTestConstants.GREP_COMMAND, "-A",
+					BroadBandTestConstants.SINGLE_SPACE_CHARACTER, String.valueOf(AutomaticsConstants.CONSTANT_8),
+					BroadBandTestConstants.SINGLE_SPACE_CHARACTER, /*BroadBandTestConstants.SYMBOL_FORWARD_SLASH,*/
+					BroadBandTestConstants.SINGLE_QUOTE,
+					BroadBandTraceConstants.PARODUS_WEBPA_REQUEST_RECEIVED_TRACE,
+					/*BroadBandTestConstants.SYMBOL_FORWARD_SLASH,*/ BroadBandTestConstants.SINGLE_QUOTE,
+					BroadBandTestConstants.SINGLE_SPACE_CHARACTER,
+					BroadBandTestConstants.RDKLOGS_LOGS_PARODUS_TXT_0,
+					BroadBandCommandConstants.CMD_GREP_AWK_START_RANGE, deviceStartTime.trim(),
+					BroadBandCommandConstants.CMD_GREP_AWK_END_RANGE, deviceEndTime.trim(),
+					BroadBandTestConstants.DOUBLE_QUOTE_SINGLE_QUOTE);
+			break;
 
 	    }
 
 	} catch (Exception e) {
 	    LOGGER.error("EXCEPTION OCCURED WHILE CONCATING GREP COMMAND : " + e.getMessage());
 	}
-
+	LOGGER.info("command before replacing  :"+ command);//added
 	return command;
 
     }

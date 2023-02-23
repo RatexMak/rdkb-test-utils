@@ -2946,10 +2946,11 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 				response = tapEnv.executeCommandUsingSsh(device, command);
 			} else {
 				command = (band == WiFiFrequencyBand.WIFI_BAND_2_GHZ)
-						? BroadbandPropertyFileHandler.getAutomaticsPropsValueByResolvingPlatform(device,
-								BroadBandTestConstants.PROP_KEY_WIFI_PRIVATE_2GHZ_INTERFACE_NAME_BY_BSSID)
-						: BroadbandPropertyFileHandler.getAutomaticsPropsValueByResolvingPlatform(device,
-								BroadBandTestConstants.PROP_KEY_WIFI_PRIVATE_5GHZ_INTERFACE_NAME_BY_BSSID);
+						? BroadBandWebPaUtils.getWiFiInterface(device, tapEnv, BroadBandTestConstants.BAND_2_4GHZ,
+								BroadBandTestConstants.PRIVATE_WIFI_TYPE, BroadBandTestConstants.BSSID_PARAM)
+						: BroadBandWebPaUtils.getWiFiInterface(device, tapEnv, BroadBandTestConstants.BAND_5GHZ,
+								BroadBandTestConstants.PRIVATE_WIFI_TYPE, BroadBandTestConstants.BSSID_PARAM);
+				LOGGER.info("command :" + command);
 				response = tapEnv.executeCommandUsingSsh(device, command);
 			}
 			if (CommonMethods.isNotNull(response))

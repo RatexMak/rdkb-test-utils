@@ -4841,12 +4841,16 @@ public class BroadBandCommonUtils {
 				errorMessage += "Failed to validate ipv4 rules";
 			}
 			LOGGER.info("Status For validating ipv4 rules -" + statusForIpv4TablesValidation);
-			statusForIpv6TablesValidation = validateIpRules(ipv6TablesInitial, ipv6TablesFinal);
-			if (!statusForIpv6TablesValidation) {
-				errorMessage += "Failed to validate ipv6 rules";
+			if (BroadbandPropertyFileHandler.isIpv6Enabled()) {
+				statusForIpv6TablesValidation = validateIpRules(ipv6TablesInitial, ipv6TablesFinal);
+				if (!statusForIpv6TablesValidation) {
+					errorMessage += "Failed to validate ipv6 rules";
+				}
+				LOGGER.info("Status For validating ipv6 rules -" + statusForIpv6TablesValidation);
+				status = statusForIpv4TablesValidation && statusForIpv6TablesValidation;
+			} else {
+				status = statusForIpv4TablesValidation;
 			}
-			LOGGER.info("Status For validating ipv6 rules -" + statusForIpv6TablesValidation);
-			status = statusForIpv4TablesValidation && statusForIpv6TablesValidation;
 			if (!status) {
 				throw new TestException(errorMessage);
 			}

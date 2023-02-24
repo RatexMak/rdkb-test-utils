@@ -315,12 +315,12 @@ public class BroadBandRegressionQuickTestUtils {
 
 	    WebPaParameter primaryRemoteEndpoint = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 		    BroadBandWebPaConstants.WEBPA_PARAM_PRIMARY_REMOTE_ENDPOINT,
-		    BroadBandTestConstants.PRIMARY_REMOTE_ENDPOINT, WebPaDataTypes.STRING.getValue());
+		    BroadbandPropertyFileHandler.getPrimaryRemoteEndPoint(), WebPaDataTypes.STRING.getValue());
 	    wifiComponents.add(primaryRemoteEndpoint);
 
 	    WebPaParameter secondaryRemoteEndpoint = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(
 		    BroadBandWebPaConstants.WEBPA_PARAM_SECONDARY_REMOTE_ENDPOINT,
-		    BroadBandTestConstants.SECONDARY_REMOTE_ENDPOINT, WebPaDataTypes.STRING.getValue());
+		    BroadbandPropertyFileHandler.getSecondaryRemoteEndPoint(), WebPaDataTypes.STRING.getValue());
 	    wifiComponents.add(secondaryRemoteEndpoint);
 
 	    WebPaParameter ssidAdvEnable_2ghz = BroadBandWebPaUtils.generateWebpaParameterWithValueAndType(

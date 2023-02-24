@@ -20,7 +20,6 @@ package com.automatics.rdkb.constants;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
 import com.automatics.tap.AutomaticsTapApi;
 
 public class BroadBandCommandConstants extends RDKBTestConstants {
@@ -1584,19 +1583,16 @@ public class BroadBandCommandConstants extends RDKBTestConstants {
     public static final String CMD_REMOVE_DUMMY_FILE = "rm /tmp/dummy.txt";
 
     /** Cmd to grep valid primary ip from tcpdump to /tmp/cpature.txt */
-    public static final String CMD_TO_GET_DNS_PRIMARY_IP_TCPDUMP = BroadbandPropertyFileHandler
-	    .getDNSPrimaryIpTcpDump();
+    public static final String CMD_TO_GET_DNS_PRIMARY_IP_TCPDUMP = "";
 
     /** Cmd to remove dummy file from /tmp */
     public static final String CMD_REMOVE_CAPTURE_FILE = "rm /tmp/capture.txt";
 
     /** Cmd to grep valid secondary ip from tcpdump to /tmp/cpature.txt */
-    public static final String CMD_TO_GET_DNS_SECONDARY_IP_TCPDUMP = BroadbandPropertyFileHandler
-	    .getDNSSecondaryIpTcpDump();
+    public static final String CMD_TO_GET_DNS_SECONDARY_IP_TCPDUMP = "";
 
     /** Cmd to grep invalid primary ip from tcpdump to /tmp/cpature.txt */
-    public static final String CMD_TO_GET_INVALID_DNS_PRIMARY_IP_TCPDUMP = BroadbandPropertyFileHandler
-	    .getInvalidDNSPrimaryIpTcpDump();
+    public static final String CMD_TO_GET_INVALID_DNS_PRIMARY_IP_TCPDUMP = "";
 
     /** Constant to hold file path for dcmscriptl og file */
     public static final String FILE_TMP_DCMSCRIPT_LOG = "/tmp/dcmscript";

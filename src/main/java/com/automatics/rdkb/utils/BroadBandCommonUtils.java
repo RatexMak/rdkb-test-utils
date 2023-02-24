@@ -4789,7 +4789,11 @@ public class BroadBandCommonUtils {
 			throw new TestException(errorMessage);
 		}
 		LOGGER.debug("ENDING METHOD :validateBrlan0Configuration");
-		return statusForInet4 && statusForInet6;
+		if (BroadbandPropertyFileHandler.isIpv6Enabled()) {
+			return statusForInet4 && statusForInet6;
+		} else {
+			return statusForInet4;
+		}
 	}
 
 	/**

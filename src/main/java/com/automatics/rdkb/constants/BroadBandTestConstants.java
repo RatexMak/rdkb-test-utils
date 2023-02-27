@@ -25,7 +25,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.automatics.rdkb.utils.BroadbandPropertyFileHandler;
 import com.automatics.rdkb.utils.snmp.BroadBandSnmpMib;
 import com.automatics.snmp.SnmpDataType;
 import com.automatics.utils.AutomaticsPropertyUtility;

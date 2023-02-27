@@ -2989,12 +2989,12 @@ public class BroadbandPropertyFileHandler {
 	 */
 	public static String getDeviceModelFromProperties(Dut device) {
 		try {
-		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.DEVICE_MODEL);
-		}catch(Exception e) {
+			return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.DEVICE_MODEL);
+		} catch (Exception e) {
 			return device.getModel();
-		}		
+		}
 	}
-	
+
 	/**
 	 * This API will get the 2.4Ghz operating standard of RPi device from properties
 	 * 
@@ -3038,6 +3038,14 @@ public class BroadbandPropertyFileHandler {
 	 */
 	public static String getWbpaCfgFileLocation() {
 		return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.WEBPA_CFG_AUTOVAULT_LOCATION);
+	}
+
+	public static String getServerIP() {
+		try {
+			return AutomaticsTapApi.getSTBPropsValue(BroadBandPropertyKeyConstants.SERVER_IP_FROM_PROPERTIES);
+		} catch (Exception e) {
+			return "localhost";
+		}
 	}
 
 }

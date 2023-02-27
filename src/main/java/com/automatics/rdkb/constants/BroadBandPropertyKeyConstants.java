@@ -841,4 +841,6 @@ public class BroadBandPropertyKeyConstants {
 	public static final String CLI_CONFIG_AUTOVAULT_LOCATION = "autovault.cliconfig.file.path";
 
 	public static final String WEBPA_CFG_AUTOVAULT_LOCATION = "autovault.webpacfg.file.path";
+
+	public static final String SERVER_IP_FROM_PROPERTIES = "server.ip.from.properties";
 }

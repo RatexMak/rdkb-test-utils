@@ -733,7 +733,7 @@ public class BroadBandCommonUtils {
 				: BroadBandCommandConstants.CMD_PING_LINUX;
 		pingCommand = BroadBandCommonUtils.concatStringUsingStringBuffer(pingCommand, url);
 
-		pingResponse = tapEnv.executeCommandUsingSshConnection(WhiteListServer.getInstance(tapEnv, "localhost"),
+		pingResponse = tapEnv.executeCommandUsingSshConnection(WhiteListServer.getInstance(tapEnv, BroadbandPropertyFileHandler.getServerIP()),
 				pingCommand);
 		LOGGER.info("PING RESPONSE :" + pingResponse);
 

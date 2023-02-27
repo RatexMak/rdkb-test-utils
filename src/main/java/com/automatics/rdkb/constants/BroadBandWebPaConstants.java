@@ -1357,6 +1357,9 @@ public class BroadBandWebPaConstants {
 
     /** WebPa Parameter for trace route first hop host */
     public static final String WEBPA_PARAM_TRACEROUTE_HOPS_FIRST_HOST = "Device.IP.Diagnostics.TraceRoute.RouteHops.1.Host";
+    
+    /** WebPa Parameter for trace route first hop host Address */
+    public static final String WEBPA_PARAM_TRACEROUTE_HOPS_FIRST_HOST_ADDRESS = "Device.IP.Diagnostics.TraceRoute.RouteHops.1.HostAddress";
 
     /** TR69 parameter to get the last reboot reason */
     public static final String WEBPA_COMMAND_LAST_REBOOT_REASON = "Device.DeviceInfo.X_RDKCENTRAL-COM_LastRebootReason";

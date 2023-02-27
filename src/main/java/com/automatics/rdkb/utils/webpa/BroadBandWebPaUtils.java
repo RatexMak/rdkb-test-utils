@@ -2581,7 +2581,7 @@ public class BroadBandWebPaUtils {
 					BroadBandWebPaConstants.WEBPA_PARAM_TRACEROUTE_HOPS_FIRST_HOST)) {
 				errorMessage = "Unable to validate traceroute host IP address";
 				response = tapEnv.executeWebPaCommand(device,
-						BroadBandWebPaConstants.WEBPA_PARAM_TRACEROUTE_HOPS_FIRST_HOST);
+						BroadBandWebPaConstants.WEBPA_PARAM_TRACEROUTE_HOPS_FIRST_HOST_ADDRESS);
 				if (CommonMethods.isNotNull(response)) {
 					if (isIpv6Address) {
 						status = CommonMethods.isIpv6Address(response);

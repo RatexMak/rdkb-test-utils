@@ -5342,8 +5342,11 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 	/** String constant value Channel No 161 */
 	public static final String CHANNEL_NO_161 = "161";
 	
-	/** String constant value Channel No 161 */
+	/** String constant value Channel No 140 */
 	public static final String CHANNEL_NO_140 = "140";
+	
+	/** String constant value Channel No 44 */
+	public static final String CHANNEL_NO_44 = "44";
 
 	/** String to hold the default value of MFPConfig Values */
 	public static final String DEFAULT_VALUE_MFPCONFIG_ACCESSPOINT = "Disabled";

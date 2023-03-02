@@ -2955,8 +2955,9 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 				response = response.trim();
 				LOGGER.info("Response :" + response);
 			}
-			if (CommonMethods.isNotNull(response))
+			if (CommonMethods.isNotNull(response)) {
 				bssid = CommonMethods.patternFinder(response, BroadBandTestConstants.REGEX_GREP_BSSID);
+			}
 		} catch (Exception e) {
 			LOGGER.error("Exception occured while trying to grep bssid from gateway");
 		}

@@ -6050,9 +6050,9 @@ public class BroadBandTestConstants extends RDKBTestConstants {
 
 	/** Interface for ATOM SYNC PRIVATE_5 GHZ */
 	public static final String INTERFACE_FIBER_PRIVATE_5 = "wl -i wl1 status";
-
+	
 	/** Constant to hold regex to grep bssid */
-	public static final String REGEX_GREP_BSSID = ":\\s(\\w+:\\w+:\\w+:\\w+:\\w+:\\w+)";
+	public static final String REGEX_GREP_BSSID = "(\\w+:\\w+:\\w+:\\w+:\\w+:\\w+)";
 
 	/**
 	 * String variable to store test_connection which is used to test ssh

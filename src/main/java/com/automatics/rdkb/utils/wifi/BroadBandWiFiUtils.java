@@ -2952,10 +2952,11 @@ public class BroadBandWiFiUtils extends AutomaticsTestBase {
 								BroadBandTestConstants.PRIVATE_WIFI_TYPE, BroadBandTestConstants.BSSID_PARAM);
 				LOGGER.info("command :" + command);
 				response = tapEnv.executeCommandUsingSsh(device, command);
+				response = response.trim();
 				LOGGER.info("Response :" + response);
 			}
-			if (CommonMethods.isNotNull(response.trim()))
-				bssid = CommonMethods.patternFinder(response.trim(), BroadBandTestConstants.REGEX_GREP_BSSID);
+			if (CommonMethods.isNotNull(response))
+				bssid = CommonMethods.patternFinder(response, BroadBandTestConstants.REGEX_GREP_BSSID);
 		} catch (Exception e) {
 			LOGGER.error("Exception occured while trying to grep bssid from gateway");
 		}

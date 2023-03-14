@@ -5441,7 +5441,7 @@ public class BroadBandConnectedClientUtils {
 				hashMap.put(key, value);
 			}
 		} catch (Exception e) {
-			LOGGER.error("Exception occured while retrieving map values" + e.getMessage());
+			LOGGER.error("Exception occured while retrieving map values " + e.getMessage());
 		}
 		if (hashMap.size() == 0) {
 			throw new TestException("Null response obtained while retrieving map values");
@@ -5524,7 +5524,7 @@ public class BroadBandConnectedClientUtils {
 					status = isFileExistsInConnectedClient(device, tapEnv, command, true);
 				}
 			} else {
-				LOGGER.info("Failed to downlaod the gecko driver:" + driverVersion);
+				LOGGER.info("Failed to download the gecko driver:" + driverVersion);
 			}
 		} catch (Exception e) {
 			LOGGER.error("Exception occured in downloadAndMoveGeckoDriverToConfigLocation()" + e.getMessage());

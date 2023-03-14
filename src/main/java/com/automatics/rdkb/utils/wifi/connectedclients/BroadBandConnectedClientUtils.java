@@ -5399,6 +5399,11 @@ public class BroadBandConnectedClientUtils {
 			hashMap = getBrowserAndDriverVersionFromProperty(tapEnv);
 			LOGGER.info("+++++++++++++++++++++++++++++++ DEBUG BrowserVersion +++++++++++++++++++++++++++++++++++++");
 			LOGGER.info(String.valueOf(browserVersion));
+			
+			for (String key : hashMap.keySet()) {
+				LOGGER.info("Key = " + key + ", Value = " + hashMap.get(key));
+			}	
+
 			LOGGER.info(hashMap.get(String.valueOf(browserVersion)));
 			LOGGER.info(BroadBandConnectedClientTestConstants.PATTERN_TO_GET_GECKO_DRIVER_VERSION_FROM_PROPERTY);
 			LOGGER.info("+++++++++++++++++++++++++++++++ DEBUG BrowserVersion +++++++++++++++++++++++++++++++++++++");

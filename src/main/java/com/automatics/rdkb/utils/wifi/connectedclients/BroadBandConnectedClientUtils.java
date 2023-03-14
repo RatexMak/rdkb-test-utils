@@ -5397,11 +5397,11 @@ public class BroadBandConnectedClientUtils {
 		try {
 			LOGGER.info("Actaul Driver Version: " + driverVersion + " Actual Browser Version: " + browserVersion);
 			hashMap = getBrowserAndDriverVersionFromProperty(tapEnv);
-			LOGGER.info("+++++++++++++++++++++++++++++++ DEBUG browerVersion +++++++++++++++++++++++++++++++++++++")
+			LOGGER.info("+++++++++++++++++++++++++++++++ DEBUG BrowserVersion +++++++++++++++++++++++++++++++++++++");
 			LOGGER.info(String.valueOf(browserVersion));
 			LOGGER.info(hashMap.get(String.valueOf(browserVersion)));
 			LOGGER.info(BroadBandConnectedClientTestConstants.PATTERN_TO_GET_GECKO_DRIVER_VERSION_FROM_PROPERTY);
-			LOGGER.info("+++++++++++++++++++++++++++++++ DEBUG browerVersion +++++++++++++++++++++++++++++++++++++")
+			LOGGER.info("+++++++++++++++++++++++++++++++ DEBUG BrowserVersion +++++++++++++++++++++++++++++++++++++");
 			expectedDriverVersion = BroadBandCommonUtils
 					.convertStringToInteger(CommonMethods.patternFinder(hashMap.get(String.valueOf(browserVersion)),
 							BroadBandConnectedClientTestConstants.PATTERN_TO_GET_GECKO_DRIVER_VERSION_FROM_PROPERTY));

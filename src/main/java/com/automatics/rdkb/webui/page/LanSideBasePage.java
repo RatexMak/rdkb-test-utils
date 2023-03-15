@@ -273,8 +273,11 @@ public class LanSideBasePage {
 	    Device connDevice = (Device) clientDevice;
 	    seleniumNode = new SeleniumNodeConnectionHandler();
 		LOGGER.info("isRaspbianLinux: "+String.valueOf(connDevice.isRaspbianLinux()));
+		LOGGER.info("isLinux: "+String.valueOf(connDevice.isLinux()));
 	    if (connDevice.isLinux() || connDevice.isRaspbianLinux()) {
+			LOGGER.info("set platform");
 		platform = Platform.LINUX;
+		LOGGER.info("set defaultBrowser");
 		defaultBrowser = Browser.FIREFOX;
 	    } else if (connDevice.isWindows()) {
 		platform = Platform.WINDOWS;

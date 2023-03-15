@@ -261,6 +261,9 @@ public class LanSideBasePage {
 	// build error
 	Platform platform = null;
 	Browser defaultBrowser = null;
+	LOGGER.info("+++++++++++++++++++ DEBUG BROWSER +++++++++++++++++++");
+	LOGGER.info("BROWSER : "+browser.getValue());
+	LOGGER.info("+++++++++++++++++++ DEBUG BROWSER +++++++++++++++++++");
 	try {
 	    Device connDevice = (Device) clientDevice;
 	    seleniumNode = new SeleniumNodeConnectionHandler();

@@ -289,6 +289,7 @@ public class LanSideBasePage {
 		// //Commented to remove build error
 		// setDriver(seleniumNode.invokeBrowserInNode(clientSettop, browser,
 		// capabilities));
+		LOGGER.info("BROWSER current: "+browser.getValue());
 		setDriver(seleniumNode.invokeBrowserInNode(clientDevice, browser));
 	    } else {
 		// capabilities = new CustomizableBrowserCapabilities(defaultBrowser, platform,
@@ -296,6 +297,7 @@ public class LanSideBasePage {
 		// //Commented to remove build error
 		// setDriver(seleniumNode.invokeBrowserInNode(clientSettop, defaultBrowser,
 		// capabilities));
+		LOGGER.info("BROWSER default: "+defaultBrowser.getValue());
 		setDriver(seleniumNode.invokeBrowserInNode(clientDevice, defaultBrowser));
 	    }
 	} catch (Exception e) {

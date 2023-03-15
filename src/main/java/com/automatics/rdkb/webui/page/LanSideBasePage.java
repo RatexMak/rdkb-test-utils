@@ -20,6 +20,7 @@ package com.automatics.rdkb.webui.page;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.ObjectUtils.Null;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -262,7 +263,12 @@ public class LanSideBasePage {
 	Platform platform = null;
 	Browser defaultBrowser = null;
 	LOGGER.info("+++++++++++++++++++ DEBUG BROWSER +++++++++++++++++++");
-	LOGGER.info("BROWSER : "+browser.getValue());
+	if(browser != null){
+		LOGGER.info("BROWSER : "+browser.getValue());
+	}else{
+		LOGGER.info("BROWSER : NULL");
+	}
+	
 	LOGGER.info("+++++++++++++++++++ DEBUG BROWSER +++++++++++++++++++");
 	try {
 	    Device connDevice = (Device) clientDevice;

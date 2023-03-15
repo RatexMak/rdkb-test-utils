@@ -269,10 +269,10 @@ public class LanSideBasePage {
 		LOGGER.info("BROWSER : NULL");
 	}
 	
-	LOGGER.info("+++++++++++++++++++ DEBUG BROWSER +++++++++++++++++++");
 	try {
 	    Device connDevice = (Device) clientDevice;
 	    seleniumNode = new SeleniumNodeConnectionHandler();
+		LOGGER.info("isRaspbianLinux: "+String.valueOf(connDevice.isRaspbianLinux()));
 	    if (connDevice.isLinux() || connDevice.isRaspbianLinux()) {
 		platform = Platform.LINUX;
 		defaultBrowser = Browser.FIREFOX;
@@ -301,6 +301,12 @@ public class LanSideBasePage {
 	} catch (Exception e) {
 	    LOGGER.error("Exception occured in setBrowserAndDriverCapabilities():" + e.getMessage());
 	}
+	if(browser != null){
+		LOGGER.info("BROWSER return: "+browser.getValue());
+	}else{
+		LOGGER.info("BROWSER return: NULL");
+	}
+	LOGGER.info("+++++++++++++++++++ DEBUG BROWSER +++++++++++++++++++");
     }
 
     /**

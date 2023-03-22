@@ -349,7 +349,8 @@ public class BroadBandConnectedClientTestConstants {
     public static final String PATTERN_TO_GET_GECKO_DRIVER_VERSION_FROM_PROPERTY = "\\d+.(\\d+).\\d+";
 
     /** Pattern to get firefox browser version */
-    public static final String PATTERN_TO_GET_FIREFOX_VERSION = "Mozilla Firefox\\s+(\\d+).\\d+.\\d+";
+    // public static final String PATTERN_TO_GET_FIREFOX_VERSION = "Mozilla Firefox\\s+(\\d+)\.\\d+.\\d+";
+    public static final String PATTERN_TO_GET_FIREFOX_VERSION = "Mozilla Firefox\\s+(\\d+)\\.\\d+";
     
     /** Gecko driver downlaod url from property file */
     public static final String GECKO_DRIVER_DOWNLOAD_URL = "gecko.driver.download.url";
